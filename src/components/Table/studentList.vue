@@ -99,7 +99,7 @@ export default {
       }
       getCollage(ids).then(response => {
         const collage = response.subjects
-        for (var i = 0; i < collage.length; i++) {
+        for (let i = 0; i < collage.length; i++) {
           // Iterate over numeric indexes from 0 to 5, as everyone expects.
           this.collageMap[collage[i].id] = collage[i]
           this.dataDisplay = this.dataFormat
