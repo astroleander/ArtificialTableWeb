@@ -10,7 +10,7 @@
       </el-tab-pane>
     </el-tabs>
 
-
+    <table-list :lesson_id="current_lesson_id"></table-list>
 
     <el-table :data="dataDisplay" v-loading.body="listLoading" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column align="center" label='ID' width="95">
@@ -50,15 +50,19 @@
 
 <script>
 import { getLesson } from '@/api/lesson'
+import TableList from '@/components/Table/tableList'
 import axios from 'axios'
 
 export default {
   data() {
     return {
+      current_lesson_id: '',
+      lesson_list: [],
       dataDisplay: null,
       listLoading: true
     }
   },
+  components: { TableList },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -71,9 +75,31 @@ export default {
   },
   created() {
     this.fetchData()
+    this.fetchLessonData()
     this.fetchPointData()
   },
+  computed: {
+    getFirstLessonCode() {
+      if (this.lesson_list.length > 0) {
+        return this.current_lesson_id
+      }
+    }
+  },
   methods: {
+    fetchLessonData() {
+      getLesson().then(response => {
+        const list = response.subjects
+        // if response not null
+        if (list && list.length > 0) {
+          this.lesson_list = list
+          this.current_lesson_id = list[0].id + ''
+        } else if (list) {
+          this.$router.push('/manage/nostudentpage')
+        } else {
+          this.$router.push('/404')
+        }
+      })
+    },
     fetchPointData() {
       getLesson().then(response => {
         const list = response.subjects
@@ -135,7 +161,7 @@ export default {
           done()
         })
         .catch(_ => {})
-    },
+    }
   }
 }
 </script>
