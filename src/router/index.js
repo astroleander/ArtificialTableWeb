@@ -29,8 +29,9 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
+    name: 'ArtificialTable',
     hidden: true,
+    meta: { title: 'Artificial Table' },
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index')
@@ -38,23 +39,42 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/example',
+    path: '/manage',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/manage/table',
+    name: 'Manage',
+    meta: { title: '教学管理', icon: 'example' },
     children: [
+      {
+        path: 'plist',
+        name: 'Point List',
+        component: () => import('@/views/plist/index'),
+        meta: { title: '分数条目', icon: 'plist' }
+      },
+      {
+        path: 'slist',
+        name: 'Student List',
+        component: () => import('@/views/slist/index'),
+        meta: { title: '学生列表', icon: 'slist' }
+      },
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '成绩表格', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree' }
+      },
+      {
+        path: 'nostudentpage',
+        name: 'No Student Page',
+        hidden: true,
+        component: () => import('@/views/slist/nostudentpage'),
+        meta: { title: '错误提示', icon: 'slist' }
       }
     ]
   },
@@ -68,6 +88,34 @@ export const constantRouterMap = [
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: 'Form', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/io',
+    component: Layout,
+    redirect: '/io/index',
+    meta: { title: 'I / O', icon: 'example' },
+    children: [
+      {
+        path: 'upload',
+        name: 'Upload Excel',
+        component: () => import('@/views/io/upload'),
+        meta: { title: '上传 Excel', icon: 'tree' }
+      },
+      {
+        path: 'export',
+        name: 'Export Excel',
+        component: () => import('@/views/io/export'),
+        meta: { title: '导出 Excel', icon: 'tree' }
+      },
+      {
+        path: 'index',
+        name: 'Tooltips',
+        component: () => import('@/views/io/index'),
+        meta: { title: 'Tooltips', icon: 'tree' },
+        hidden: true
       }
     ]
   },
