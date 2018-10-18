@@ -8,5 +8,8 @@ const userMap = {
 export default {
   login: config => {
     return userMap.admin
+  },
+  logout: config => {
+    return null
   }
 }

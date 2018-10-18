@@ -27,6 +27,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+import * as DataInterface from '@/data'
 
 export default {
   name: 'login',
@@ -70,13 +71,22 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          // using vuex dispatch call up Login api
-          this.$store.dispatch('Login', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          // login.vue -> loginDataLayer -> vuex dispatcher -> remote
+          DataInterface.Login
+            .login(this.loginForm)
+            .then(() => {
+              this.loading = false
+              console.log('log success')
+              this.$router.push({ path: '/' })
+            }).catch(() => {
+              this.loading = false
+            })
+          // this.$store.dispatch('Login', this.loginForm).then(() => {
+          //   this.loading = false
+          //   this.$router.push({ path: '/' })
+          // }).catch(() => {
+          //   this.loading = false
+          // })
         } else {
           console.log('error submit!!')
           return false
