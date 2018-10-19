@@ -1,21 +1,25 @@
 import Vue from 'vue'
-
-import 'normalize.css/normalize.css'// A modern alternative to CSS resets
-
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
-
-import '@/styles/index.scss' // global css
-
 import App from './App'
 import router from './router'
 import store from './store'
 
-import '@/icons' // icon
-import '@/permission' // permission control
+// lang i18n
+import locale from 'element-ui/lib/locale/lang/en'
 
-import './mock' // using mock
+// global css
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import '@/styles/index.scss'
+import 'normalize.css/normalize.css'// A modern alternative to CSS resets
+
+// icon
+import '@/icons'
+// permission control
+import '@/permission'
+// urls
+import '@/urls'
+// mockjs
+import './mock'
 
 Vue.use(ElementUI, { locale })
 
