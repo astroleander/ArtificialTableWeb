@@ -6,8 +6,12 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
+// layout
 import Layout from '../views/layout/Layout'
+// import { url } from 'inspector'
+
+// url path
+import urls from '@/urls'
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -24,20 +28,17 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'ArtificialTable',
-    hidden: true,
-    meta: { title: 'Artificial Table' },
+    redirect: 'index',
+    name: 'mainpage',
     children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      meta: { title: '主界面', icon: 'tree' },
+      path: 'index',
+      component: () => import('@/views/mainpage/index')
     }]
   },
-
   {
     path: '/manage',
     component: Layout,
@@ -119,10 +120,52 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  {
+    path: urls.comparison,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'comparison',
+      component: () => import('@/views/comparison/index'),
+      meta: { title: '成绩比较', icon: 'tree' }
+    }]
+  },
+  {
+    path: urls.weight,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'weight',
+      component: () => import('@/views/weight/index'),
+      meta: { title: '权重调整', icon: 'tree' }
+    }]
+  },
+  {
+    path: urls.input,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'input',
+      component: () => import('@/views/input/index'),
+      meta: { title: '导入成绩', icon: 'tree' }
+    }]
+  },
+  {
+    path: urls.transcript,
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'transcript',
+      component: () => import('@/views/transcript/index'),
+      meta: { title: '课程信息', icon: 'tree' },
+      hidden: true
+    }]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+console.log(urls)
 export default new Router({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),

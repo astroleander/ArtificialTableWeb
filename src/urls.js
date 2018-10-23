@@ -1,6 +1,8 @@
-export default function() {
-  return {
-    login: '/user/login'
-  }
+export default {
+  login: '/user/login',
+  weight: '/weight',
+  transcript: '/transcript',
+  comparison: '/comparison',
+  input: '/input'
 }
 

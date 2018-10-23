@@ -8,7 +8,9 @@ div(mainpage)
             |- TODO: class list inside
 -->
 <template>
-    
+    <div>
+        <h1>Main Page Dashboard</h1>
+    </div>
 </template>
 
 <script>
