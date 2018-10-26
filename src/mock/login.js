@@ -10,6 +10,6 @@ export default {
     return userMap.admin
   },
   logout: config => {
-    return null
+    return {}
   }
 }

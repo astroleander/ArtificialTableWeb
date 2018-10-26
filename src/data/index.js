@@ -1,5 +1,3 @@
 import * as login from './login'
 
-export {
-  login as Login
-}
+export { login as Login }
