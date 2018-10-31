@@ -10,13 +10,18 @@ div(mainpage)
 <template>
     <div>
         <h1>Main Page Dashboard</h1>
+        <semester>1024 1024</semester>
     </div>
 </template>
 
 <script>
+import semester from '@/components/Mainpage/Semester'
+
 export default {
-    
+    components: {
+        'Semester' : semester
     }
+  }
 </script>
 
 <style lang="scss" scoped>
