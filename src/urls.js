@@ -1,8 +1,11 @@
 export default {
-  login: '/user/login',
   weight: '/weight',
   transcript: '/transcript',
   comparison: '/comparison',
+
+  login: '/user/login',
+  info: '/user/info',
+
   input: '/input'
 }
 
