@@ -3,9 +3,9 @@
 div(mainpage)
     |- TODO: welcome card
     |- TODO: class list
-        |- TODO: semester selected list
-        |- TODO: semester list
-            |- TODO: class list inside
+        |- TODO: semester selected list 
+        |- DONE : semester list
+            |- DONE: class list inside
 -->
 <template>
     <div>
