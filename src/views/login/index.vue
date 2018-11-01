@@ -1,7 +1,12 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">vue-element-admin</h3>
+    <el-form class="login-form" 
+      autoComplete="on" 
+      :model="loginForm" 
+      :rules="loginRules" 
+      ref="loginForm" 
+      label-position="left">
+      <h2 class="title">{{AppName}}</h2>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
@@ -18,7 +23,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-          Sign in
+          进入系统
         </el-button>
       </el-form-item>
     </el-form>
@@ -47,6 +52,7 @@ export default {
       }
     }
     return {
+      AppName: "英语课程成绩管理系统",
       loginForm: {
         username: 'admin',
         password: 'admin'
@@ -67,6 +73,13 @@ export default {
         this.pwdType = 'password'
       }
     },
+    // LOGIN EVENT CHAIN
+    // 1. Click event
+    // 2. * call callback 'handleLogin'
+    // 3. validate form
+    // 4. view requests data layer to login
+    // 5. datalayer requests vuex dispatcher
+    // 6. vuex dispatcher requests login  
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -100,9 +113,11 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;
-
+$black: #212121;
 /* reset element-ui css */
 .login-container {
+  background-image: 
+    url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
   .el-input {
     display: inline-block;
     height: 47px;
@@ -116,6 +131,7 @@ $light_gray:#eee;
       color: $light_gray;
       height: 47px;
       &:-webkit-autofill {
+        box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: #fff !important;
       }
@@ -124,16 +140,25 @@ $light_gray:#eee;
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    border-radius: 2px;
     color: #454545;
   }
+  .el-button{
+    border-radius: 0px;
+    background: $black;
+    border: none;
+    transition: 0 2s ease-in-out;
+    &:hover{
+      transition: 0 2s ease-in-out;
+    }
+  }
 }
-
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
+$white:#FFF;
 $light_gray:#eee;
 .login-container {
   position: fixed;
@@ -160,7 +185,7 @@ $light_gray:#eee;
   }
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: $white;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -181,7 +206,7 @@ $light_gray:#eee;
     right: 10px;
     top: 7px;
     font-size: 16px;
-    color: $dark_gray;
+    color: $white;
     cursor: pointer;
     user-select: none;
   }
