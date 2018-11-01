@@ -117,6 +117,7 @@ img.cover{
   width: 90%;
   min-width: 540px;
   min-height: 150px;
+  margin: 1rem;
 }
 
 p{

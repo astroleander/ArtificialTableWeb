@@ -7,6 +7,7 @@
 
 body {
   height: 100%;
+  background: #EAEAEA;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -72,7 +73,8 @@ a:hover {
 //main-container全局样式
 .app-main{
   min-height: 100%;
-  padding: 20px;
+  // cant set padding here
+  // padding: 20px;
 }
 
 .app-container {
