@@ -148,9 +148,6 @@ $black: #212121;
     background: $black;
     border: none;
     transition: 0 2s ease-in-out;
-    &:hover{
-      transition: 0 2s ease-in-out;
-    }
   }
 }
 </style>
