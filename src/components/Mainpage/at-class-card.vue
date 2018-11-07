@@ -40,8 +40,8 @@ export default {
   props: {
     dataset: {
       type: Object,
-      default: ()=>{
-        const dafault = '';
+      default: () => {
+        const dafault = ''
         return {
           title: dafault,
           id: dafault,
@@ -54,14 +54,14 @@ export default {
       }
     }
   },
-  computed:{
-    showProps: function(){
+  computed: {
+    showProps: function() {
       // show loading when dataset doesnot ready yet
-      return (this.dataset && this.dataset.id !== '') ? this.dataset.title:this.t_loading
+      return (this.dataset && this.dataset.id !== '') ? this.dataset.title : this.t_loading
     }
   },
-  data(){
-    return{
+  data() {
+    return {
       titles: {
         title: '课程名称',
         id: '课程编号',
@@ -69,11 +69,11 @@ export default {
         room: '上课教室',
         semester: '学年度/学期',
         studentCount: '学生人数',
-        schedule: '上课时间',
+        schedule: '上课时间'
       },
-      t_loading: 'loading....',
+      t_loading: 'loading....'
     }
-  },
+  }
 }
 </script>
 

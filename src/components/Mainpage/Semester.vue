@@ -1,22 +1,37 @@
 <!-- As container for Class Card Conponent -->
 <template>
-    <div>
-        <!-- Semester Title -->
-        <input id='at-m-collapsible-checkbox' class="toggle" type="checkbox">
-        <label for='at-m-collapsible-checkbox' class="label-toggle">
-            <slot></slot>
-        </label>
-        <!-- Card List -->
-        <div id="at-m-list-container" class="at-collapsible">
-            <at-class-card :key="idx" v-for="idx in [1,2,3,4,5]"></at-class-card>
-        </div>
+  <div>
+    <!-- Semester Title -->
+    <input id='at-m-collapsible-checkbox' class="toggle" type="checkbox">
+    <label for='at-m-collapsible-checkbox' class="label-toggle">
+      <slot></slot>
+    </label>
+    <!-- Card List -->
+    <div id="at-m-list-container" class="at-collapsible">
+      <at-class-card :key="item.cid" v-on:click.native="onClickCard(item.cid)" v-for="item in dataset"></at-class-card>
     </div>
+  </div>
 </template>
 
 <script>
 import AtClassCard from '@/components/Mainpage/at-class-card'
 export default {
-    components:{AtClassCard}
+  components: { AtClassCard },
+  props: {
+    dataset: {
+      type: Array,
+      default: () => [{
+        cid: '1' }, {
+        cid: '2' }, {
+        cid: '3'
+      }]
+    }
+  },
+  methods: {
+    onClickCard: (cid) => {
+      alert('Click id ' + cid)
+    }
+  }
 }
 </script>
 
@@ -48,6 +63,7 @@ export default {
     }
     // 建立小三角形，并添加动画效果，在::before
     // 更多信息 @see https://css-tricks.com/snippets/css/css-triangle/
+    // TODO: 小三角
     &::before {
       content: ' ';
       display: inline-block;

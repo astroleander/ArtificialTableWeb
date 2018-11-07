@@ -31,30 +31,30 @@ div(mainpage)
 import AtSemester from '@/components/Mainpage/Semester'
 import AtAvatar from '@/components/Avatar'
 
-// const indigo = '';
-const cyan = '#00BCD4';
-const blue = '#2196F3';
-const green = '#4CAF50';
-const light_green = '#4CAF50';
+// const indigo = ''
+const cyan = '#00BCD4'
+const blue = '#2196F3'
+const green = '#4CAF50'
+// const light_green = '#4CAF50'
 
 export default {
   components: {
-    'AtSemester' : AtSemester,
-    'AtAvatar': AtAvatar,
+    'AtSemester': AtSemester,
+    'AtAvatar': AtAvatar
   },
-  data(){
+  data() {
     return {
-      infos_arrays:[
-        { icon:'domain', color: cyan,hint: '学校 / 机构', content: '中国人民大学' },
-        { icon:'school', color: blue,hint: '院系', content: '外国语学院' },
-        { icon:'user', color:green,hint: '认证', content: '教师' },
+      infos_arrays: [
+        { icon: 'domain', color: cyan, hint: '学校 / 机构', content: '中国人民大学' },
+        { icon: 'school', color: blue, hint: '院系', content: '外国语学院' },
+        { icon: 'user', color: green, hint: '认证', content: '教师' }
       ]
     }
   },
-  created(){
+  created() {
     setTimeout(() => {
       this.infos_arrays[0].content = '美国人民大学'
-    }, 10000);
+    }, 10000)
   }
 }
 </script>

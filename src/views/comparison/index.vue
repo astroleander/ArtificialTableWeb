@@ -8,13 +8,12 @@
 </template>
 
 <script>
-import * as DataInterface from '@/data'
+// import * as DataInterface from '@/data'
 export default {
-  data(){
-    return{
-      
+  data() {
+    return {
     }
-  },
+  }
 }
 </script>
 

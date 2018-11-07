@@ -15,7 +15,7 @@ const userMap = {
     ],
     count: 1
   }
-};
+}
 
 export default {
   info: config => {

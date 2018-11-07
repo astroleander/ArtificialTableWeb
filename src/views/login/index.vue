@@ -33,7 +33,6 @@
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import * as DataInterface from '@/data'
-import Axios from 'axios';
 import { Message } from 'element-ui'
 
 const validateUsername = (rule, value, callback) => {
@@ -55,7 +54,7 @@ export default {
   name: 'login',
   data() {
     return {
-      AppName: "英语课程成绩管理系统",
+      AppName: '英语课程成绩管理系统',
       loginForm: {
         username: '10011',
         password: 'password'
@@ -82,9 +81,8 @@ export default {
     // 3. validate form
     // 4. view requests data layer to login
     // 5. datalayer requests vuex dispatcher
-    // 6. vuex dispatcher requests login  
+    // 6. vuex dispatcher requests login
     handleLogin() {
-
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -106,7 +104,7 @@ export default {
           // })
         } else {
           Message.error({
-            message: "请确认您的登陆信息合规。",
+            message: '用户名或密码不符合规则，请校验',
             type: 'error',
             duration: 5 * 1000
           })

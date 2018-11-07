@@ -9,14 +9,14 @@
 
 <script>
 export default {
-  name:'at-avatar',
-    data(){
-      return{
-        url: 'https://api.xjdog.cn/Get-Image" ',
-        name: 'Scaffold',
-        tid: 'Scotland'
-      }
+  name: 'at-avatar',
+  data() {
+    return {
+      url: 'https://api.xjdog.cn/Get-Image" ',
+      name: 'Scaffold',
+      tid: 'Scotland'
     }
+  }
 }
 </script>
 
