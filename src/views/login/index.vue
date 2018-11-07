@@ -33,29 +33,32 @@
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import * as DataInterface from '@/data'
+import Axios from 'axios';
+import { Message } from 'element-ui'
+
+const validateUsername = (rule, value, callback) => {
+  if (!isvalidUsername(value)) {
+    callback(new Error('请输入正确的用户名'))
+  } else {
+    callback()
+  }
+}
+const validatePass = (rule, value, callback) => {
+  if (value.length < 5) {
+    callback(new Error('密码不能小于5位'))
+  } else {
+    callback()
+  }
+}
 
 export default {
   name: 'login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
-      } else {
-        callback()
-      }
-    }
-    const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
-      } else {
-        callback()
-      }
-    }
     return {
       AppName: "英语课程成绩管理系统",
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '10011',
+        password: 'password'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -81,6 +84,7 @@ export default {
     // 5. datalayer requests vuex dispatcher
     // 6. vuex dispatcher requests login  
     handleLogin() {
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -89,7 +93,7 @@ export default {
             .login(this.loginForm)
             .then(() => {
               this.loading = false
-              console.log('log success')
+              console.log('login request success')
               this.$router.push({ path: '/' })
             }).catch(() => {
               this.loading = false
@@ -101,7 +105,11 @@ export default {
           //   this.loading = false
           // })
         } else {
-          console.log('error submit!!')
+          Message.error({
+            message: "请确认您的登陆信息合规。",
+            type: 'error',
+            duration: 5 * 1000
+          })
           return false
         }
       })
@@ -118,6 +126,8 @@ $black: #212121;
 .login-container {
   background-image: 
     url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   .el-input {
     display: inline-block;
     height: 47px;

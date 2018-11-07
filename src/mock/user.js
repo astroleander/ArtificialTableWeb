@@ -1,14 +1,21 @@
 const userMap = {
   admin: {
-    id: 12313123131341,
-    tid: '2013412444',
-    name: 'Dvocka',
-    collage: 502,
-    manager: true,
-    email: '2@1.com',
-    mobile: '234214'
+    code: '1031',
+    message: 'get\u8bf7\u6c42\u6210\u529f',
+    subjects: [
+      {
+        id: 1,
+        tid: '10011',
+        name: '\u65b9\u4e16\u73891\u53f7',
+        college_id: 3,
+        isManager: false,
+        email: '2@1.com',
+        mobile: '1313131'
+      }
+    ],
+    count: 1
   }
-}
+};
 
 export default {
   info: config => {

@@ -25,7 +25,9 @@ service.interceptors.request.use(config => {
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    // const res = response.data
+    const res = response.data
+    console.log('[response from Remote]')
+    console.log(res)
     // if (res.code !== 20000) {
     //   Message({
     //     message: res.message,
@@ -48,11 +50,10 @@ service.interceptors.response.use(
     //   return Promise.reject('error')
     // } else {
     //    return response.data
-    return response.data
-    // }
+    return Promise.resolve(res)
   },
   error => {
-    console.log('err' + error) // for debug
+    console.log('[Request err]:\t' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

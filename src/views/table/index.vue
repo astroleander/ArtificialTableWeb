@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-tabs :value="getFirstLessonCode" type="card" @tab-click="handleTabChange" ref="tab">
       <el-tab-pane
-        v-for="(item, index) in lesson_list"
+        v-for="(item) in lesson_list"
         :key="item.id"
         :label="item.name"
         :name="item.id+''"

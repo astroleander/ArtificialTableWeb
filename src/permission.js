@@ -10,6 +10,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
+      console.log('[Router Permission]: to login page')
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
@@ -17,6 +18,7 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
           next()
         }).catch((err) => {
+          console.log('[Router Permission]: fetch userinfo failed, execute logout')
           store.dispatch('FedLogOut').then(() => {
             Message.error(err || 'Verification failed, please login again')
             next({ path: '/' })

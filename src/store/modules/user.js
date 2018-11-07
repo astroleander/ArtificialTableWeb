@@ -71,8 +71,8 @@ const user = {
         login(username, userInfo.password).then(response => {
           window.console.log(response)
           const data = response
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+          setToken(data.subjects.token)
+          commit('SET_TOKEN', data.subjects.token)
           resolve()
         }).catch(error => {
           window.console.log('login err: ' + error)
@@ -85,18 +85,14 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          const data = response.subject
-          // if (data.group && data.group.length > 0) { // 验证返回的roles是否是一个非空数组
-          //   commit('SET_GROUPS', data.group)
-          // } else {
-          //   reject('getInfo: roles must be a non-null array !')
-          // }
-
           // set user info
-          commit('SET_GROUPS', data.groups)
-          commit('SET_NAME', data.name)
+          // commit('SET_GROUPS', data.groups)
+          const data = response && response.subjects && response.subjects[0]
+          console.log(data)
           // set user profile info
-          commit('SET_AVATAR', data.avatar)
+          // TODO: refactor user profile info in vuex
+          commit('SET_NAME', data.name)
+          // commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)

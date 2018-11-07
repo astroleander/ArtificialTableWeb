@@ -3,8 +3,13 @@
  */
 
 export function isvalidUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  // const valid_map = ['10011', '10012']
+  return validateNumber(str)
+}
+
+export function validateNumber(str) {
+  const urlregex = /^([0-9]){5,}$/
+  return urlregex.test(str)
 }
 
 /* 合法uri*/
