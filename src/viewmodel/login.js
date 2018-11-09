@@ -1,6 +1,6 @@
 import store from '@/store'
 // TODO: change data -> viewmodel
-const loginPromise = (form) => {
+export const login = (form) => {
   return new Promise((resolve, reject) => {
     store.dispatch('Login', form)
       .then(() => resolve())
@@ -8,9 +8,5 @@ const loginPromise = (form) => {
         reject(err)
       })
   })
-}
-
-export {
-  loginPromise as login
 }
 

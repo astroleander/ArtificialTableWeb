@@ -17,20 +17,25 @@
     </aside>
     <section class="col-frame info">
      <header>{{showProps}}</header>
+     <!-- 要是嫌写的难看可以自己封装 titles 和 dataset -->
      <div class="row-frame">
         <p><span>{{titles.id}}</span>：
           <span>{{dataset.id}}</span></p>
         <p><span>{{titles.className}}</span>：
-          <span>{{dataset.className}}</span></p>
+          <span>{{dataset.name}}</span></p>
+        <p><span>{{titles.cid}}</span>：
+          <span>{{dataset.cid}}</span></p>
+        <p><span>{{titles.teacher}}</span>：
+          <span>{{dataset.teacher_id}}</span></p>
         <p><span>{{titles.room}}</span>：
           <span>{{dataset.room}}</span></p>
         <p><span>{{titles.semester}}</span>：
-          <span>{{dataset.semester}}</span></p>
+          <span>{{dataset.year}}-{{dataset.month}}</span></p>
         <p><span>{{titles.studentCount}}</span>：
           <span>{{dataset.studentCount}}</span></p>
         <p><span>{{titles.schedule}}</span>：
           <span>{{dataset.schedule}}</span></p>
-        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -43,15 +48,17 @@ export default {
     dataset: {
       type: Object,
       default: () => {
-        const dafault = ''
+        const defaultProp = ''
         return {
-          title: dafault,
+          cid: defaultProp,
           id: 0,
-          className: dafault,
-          room: dafault,
-          semester: dafault,
-          studentCount: dafault,
-          schedule: dafault
+          name: defaultProp,
+          room: defaultProp,
+          year: defaultProp,
+          month: defaultProp,
+          date: 0,
+          studentCount: 0,
+          teacher_id: defaultProp
         }
       }
     }
@@ -59,14 +66,16 @@ export default {
   computed: {
     showProps: function() {
       // show loading when dataset doesnot ready yet
-      return (this.dataset && this.dataset.id !== '') ? this.dataset.title : this.t_loading
+      return (this.dataset && this.dataset.name !== '') ? this.dataset.name : this.t_loading
     }
   },
   data() {
     return {
       titles: {
         title: '课程名称',
+        cid: '课程代码',
         id: '课程编号',
+        teacher: '任课教师',
         className: '课程名',
         room: '上课教室',
         semester: '学年度/学期',
@@ -78,7 +87,6 @@ export default {
   },
   methods: {
     onClick: function(id) {
-      console.log(this.dataset.id)
       this.$router.push({
         path: '/transcript/index',
         query: { id: this.dataset.id }
@@ -90,7 +98,8 @@ export default {
 
 <style lang="scss" scoped>
 img.cover{
-  width: 150px; 
+  min-width: 180px; 
+  width: 100%; 
   height: 100%;
   object-fit: cover;
 }
@@ -127,7 +136,7 @@ img.cover{
 .box {
   width: 90%;
   min-width: 540px;
-  min-height: 150px;
+  min-height: 180px;
   margin: 1rem;
 }
 

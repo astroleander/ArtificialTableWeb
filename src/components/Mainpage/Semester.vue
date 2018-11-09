@@ -9,8 +9,9 @@
     <!-- Card List -->
     <div id="at-m-list-container" class="at-collapsible">
       <at-class-card 
-        :key="item.cid"
-        v-for="item in dataset">
+        :key="item.id"
+        v-for="item in dataset"
+        :dataset="item">
         </at-class-card>
     </div>
   </div>
@@ -23,11 +24,7 @@ export default {
   props: {
     dataset: {
       type: Array,
-      default: () => [{
-        cid: '1' }, {
-        cid: '2' }, {
-        cid: '3'
-      }]
+      default: () => []
     }
   },
   methods: {

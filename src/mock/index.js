@@ -1,7 +1,9 @@
+/*
 import Mock from 'mockjs'
 
 import loginMock from './login'
 import userMock from './user'
+*/
 
 /*
 Mock.mock(/\/user\/login/, 'post', loginMock.login)

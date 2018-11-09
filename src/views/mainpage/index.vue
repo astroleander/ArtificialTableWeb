@@ -23,13 +23,21 @@ div(mainpage)
           <p><span class="content">{{item.content}}</span></p>
         </div>
       </header>
-    <at-semester class="semester">在此插入学期</at-semester>
+    <at-semester 
+      class="semester"
+      v-for="(item, index) in semeseterDataset" :key="index"
+      :dataset="item"      
+      >
+        Year: {{index}}
+    </at-semester>
   </div>
 </template>
 
 <script>
 import AtSemester from '@/components/Mainpage/Semester'
 import AtAvatar from '@/components/Avatar'
+
+import classInfoViewmModel from '@/viewmodel/classinfo'
 
 // const indigo = ''
 const cyan = '#00BCD4'
@@ -48,13 +56,31 @@ export default {
         { icon: 'domain', color: cyan, hint: '学校 / 机构', content: '中国人民大学' },
         { icon: 'school', color: blue, hint: '院系', content: '外国语学院' },
         { icon: 'user', color: green, hint: '认证', content: '教师' }
-      ]
+      ],
+      semeseterDataset: {} // A dictionary, integrate class by year
+    }
+  },
+  methods: {
+    buildSemester: function(allClass) {
+      for (const eachClass of allClass) {
+        if (!this.semeseterDataset[eachClass.year]) {
+          this.$set(this.semeseterDataset, eachClass.year, [eachClass])
+        } else {
+          this.semeseterDataset[eachClass.year].push(eachClass)
+        }
+      }
     }
   },
   created() {
-    setTimeout(() => {
-      this.infos_arrays[0].content = '美国人民大学'
-    }, 10000)
+    classInfoViewmModel
+      .requestClassInfo(/* this.$store.getters.id */)
+      .then(response => {
+        try {
+          this.buildSemester(response.subjects)
+        } catch (exception) {
+          console.error(exception)
+        }
+      })
   }
 }
 </script>

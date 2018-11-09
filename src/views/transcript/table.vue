@@ -14,8 +14,6 @@ table
 </template>
 
 <script>
-
-
 export default {
   name: 'transcriptTable',
   components: {},
@@ -33,8 +31,7 @@ export default {
   computed: {},
   methods: {},
   created() {
-    
-  },
+  }
 }
 </script>
 

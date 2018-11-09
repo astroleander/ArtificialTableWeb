@@ -32,7 +32,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import * as ViewModel from '@/viewmodel'
+import { login as ViewModel } from '@/viewmodel/'
 import { Message } from 'element-ui'
 
 const validateUsername = (rule, value, callback) => {
@@ -79,16 +79,16 @@ export default {
     // 1. Click event
     // 2. * call callback 'handleLogin'
     // 3. validate form
-    // 4. view requests data layer to login
-    // 5. datalayer requests vuex dispatcher
-    // 6. vuex dispatcher requests login
+    // 4. view requests viewmodel layer to login
+    // 5. viewmodel requests vuex dispatcher
+    // 6. vuex dispatcher requests login api remote server
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          // login.vue -> 
+          // login.vue ->
           // login view model -> vuex dispatcher -> remote
-          ViewModel.Login
+          ViewModel
             .login(this.loginForm)
             .then(() => {
               this.loading = false
