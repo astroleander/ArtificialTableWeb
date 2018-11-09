@@ -31,7 +31,7 @@ export default {
     transcriptTable,
     transcriptWeight
   },
-  data() { 
+  data() {
     return {
       containerShown: true
     }

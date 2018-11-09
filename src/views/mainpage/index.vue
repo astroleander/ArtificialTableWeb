@@ -69,6 +69,12 @@ export default {
           this.semeseterDataset[eachClass.year].push(eachClass)
         }
       }
+      // for (const eachClass of allClass) {
+      //   if (!this.semeseterDataset[eachClass.year+'test']) {
+      //     this.$set(this.semeseterDataset, eachClass.year+'test', [eachClass])
+      //   } else {
+      //   }
+      // }
     }
   },
   created() {
