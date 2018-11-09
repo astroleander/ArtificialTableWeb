@@ -1,10 +1,10 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getId, setId, removeId } from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
-    id: '',
+    id: getId(),
     name: '',
     collage: '',
     year: '',
@@ -74,6 +74,7 @@ const user = {
           const data = response
           try {
             setToken(data.subjects.token)
+            setId(data.subjects.id)
 
             commit('SET_TOKEN', data.subjects.token)
             commit('SET_ID', data.subjects.id)
@@ -93,7 +94,7 @@ const user = {
       return new Promise((resolve, reject) => {
         const token = state.token
         const id = state.id
-
+        console.log(id + ' ' + token)
         getInfo({ token, id }).then(response => {
           // set user info
           // commit('SET_GROUPS', data.groups)
@@ -115,8 +116,9 @@ const user = {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
-          commit('SET_GROUP', -1)
+          commit('SET_ID', '')
           removeToken()
+          removeId()
           resolve()
         }).catch(error => {
           reject(error)
@@ -129,6 +131,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
+        removeId()
         resolve()
       })
     }

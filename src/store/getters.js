@@ -5,6 +5,7 @@ const getters = {
   // user cookies
   token: state => state.user.token,
   name: state => state.user.name,
+  id: state => state.user.id,
   avatar: state => state.user.avatar,
   groups: state => state.user.groups
 }
