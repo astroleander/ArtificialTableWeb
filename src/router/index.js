@@ -157,9 +157,8 @@ export const constantRouterMap = [
     children: [{
       path: 'index',
       name: 'transcript',
-      component: () => import('@/views/transcript/index'),
-      meta: { title: '课程信息', icon: 'tree' },
-      hidden: true
+      component: () => import('@/views/transcript'),
+      meta: { title: '课程信息', icon: 'tree' }
     }]
   },
   { path: '*', redirect: '/404', hidden: true }

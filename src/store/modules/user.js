@@ -27,6 +27,7 @@ const user = {
     SET_ID: (state, id) => {
       state.id = id
     },
+
     SET_NAME: (state, name) => {
       state.name = name
     },
@@ -72,7 +73,10 @@ const user = {
           window.console.log(response)
           const data = response
           setToken(data.subjects.token)
+          
           commit('SET_TOKEN', data.subjects.token)
+          commit('SET_ID', data.subjects.id)
+          
           resolve()
         }).catch(error => {
           window.console.log('login err: ' + error)
@@ -84,7 +88,11 @@ const user = {
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
+
+        const token = state.token
+        const id = state.id
+
+        getInfo({ token, id }).then(response => {
           // set user info
           // commit('SET_GROUPS', data.groups)
           const data = response && response.subjects && response.subjects[0]

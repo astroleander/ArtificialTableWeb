@@ -8,7 +8,10 @@
     </label>
     <!-- Card List -->
     <div id="at-m-list-container" class="at-collapsible">
-      <at-class-card :key="item.cid" v-on:click.native="onClickCard(item.cid)" v-for="item in dataset"></at-class-card>
+      <at-class-card 
+        :key="item.cid"
+        v-for="item in dataset">
+        </at-class-card>
     </div>
   </div>
 </template>
@@ -29,7 +32,7 @@ export default {
   },
   methods: {
     onClickCard: (cid) => {
-      alert('Click id ' + cid)
+      //
     }
   }
 }

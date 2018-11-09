@@ -6,7 +6,9 @@
   @version: 1.0.0
 -->
 <template>
-  <div class="at-card at-card-shadow box row-frame">
+  <div 
+    class="at-card at-card-shadow box row-frame" 
+    @click='onClick(dataset.id)'>
     <aside>
       <slot name="header">
         <!-- TODO: to replace with real image url -->
@@ -44,7 +46,7 @@ export default {
         const dafault = ''
         return {
           title: dafault,
-          id: dafault,
+          id: 0,
           className: dafault,
           room: dafault,
           semester: dafault,
@@ -72,6 +74,15 @@ export default {
         schedule: '上课时间'
       },
       t_loading: 'loading....'
+    }
+  },
+  methods: {
+    onClick: function(id) {
+      console.log(this.dataset.id)
+      this.$router.push({
+        path: '/transcript/index',
+        query: { id: this.dataset.id }
+      })
     }
   }
 }
@@ -130,6 +141,5 @@ p{
     color: #666;
  }
 }
-
 
 </style>

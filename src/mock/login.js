@@ -1,7 +1,9 @@
 const userMap = {
   admin: {
-    tid: 'mockadmin',
-    subjects: { token: 'mockadmin' }
+    subjects: {
+      id: 'mockadmin',
+      token: 'mockadmin'
+    }
   }
 }
 
