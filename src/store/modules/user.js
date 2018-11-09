@@ -70,16 +70,19 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
-          window.console.log(response)
+          console.log(response)
           const data = response
-          setToken(data.subjects.token)
-          
-          commit('SET_TOKEN', data.subjects.token)
-          commit('SET_ID', data.subjects.id)
-          
+          try {
+            setToken(data.subjects.token)
+
+            commit('SET_TOKEN', data.subjects.token)
+            commit('SET_ID', data.subjects.id)
+          } catch (err) {
+            const message = '\ncode:' + data.code + '\nmessage:' + data.message
+            throw new Error(message)
+          }
           resolve()
         }).catch(error => {
-          window.console.log('login err: ' + error)
           reject(error)
         })
       })
@@ -88,7 +91,6 @@ const user = {
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-
         const token = state.token
         const id = state.id
 

@@ -32,7 +32,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import * as DataInterface from '@/data'
+import * as ViewModel from '@/viewmodel'
 import { Message } from 'element-ui'
 
 const validateUsername = (rule, value, callback) => {
@@ -86,22 +86,18 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          // login.vue -> loginDataLayer -> vuex dispatcher -> remote
-          DataInterface.Login
+          // login.vue -> 
+          // login view model -> vuex dispatcher -> remote
+          ViewModel.Login
             .login(this.loginForm)
             .then(() => {
               this.loading = false
               console.log('login request success')
               this.$router.push({ path: '/' })
-            }).catch(() => {
+            }).catch(err => {
               this.loading = false
+              console.error(err)
             })
-          // this.$store.dispatch('Login', this.loginForm).then(() => {
-          //   this.loading = false
-          //   this.$router.push({ path: '/' })
-          // }).catch(() => {
-          //   this.loading = false
-          // })
         } else {
           Message.error({
             message: '用户名或密码不符合规则，请校验',
