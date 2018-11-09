@@ -8,9 +8,9 @@ table
 -->
 <!---->
 <template>
-    <div>
-
-    </div>
+  <div>
+    weight
+  </div>
 </template>
 
 <script>

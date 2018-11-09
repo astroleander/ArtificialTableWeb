@@ -8,15 +8,13 @@ div(head)
 -->
 
 <template>
-    <div id="head">
-        <span></span>
-
-    </div>
+  <header class="at-card at-card-shadow header">
+    <span>head head Head HEAD</span>
+  </header>
 </template>
 
 <script>
 export default {
-    
 }
 </script>
 

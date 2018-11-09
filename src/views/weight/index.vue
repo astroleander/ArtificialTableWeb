@@ -15,7 +15,9 @@ div(head)
         |- TODO: group pies 
 -->
 <template>
-    
+    <div>
+        1312314
+    </div>
 </template>
 
 <script>
