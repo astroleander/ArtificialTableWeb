@@ -8,11 +8,11 @@ import { Message } from 'element-ui'
  *
  */
 const responseHandler = (response) => {
-  console.log('[response from Remote]')
+  console.log('[response from Remote]:')
   console.log(response)
   return new Promise((resolve, reject) => {
     // TODO: refactor error code
-    if (response.code === '1016' || response.code === '1017') {
+    if (RegExp('^4').test(response.code)) {
       const error = new Error('Customary Error on response!\ncode:' + response.code + '\nmessage:' + response.message)
       const code = response.code
       const msg = response.message

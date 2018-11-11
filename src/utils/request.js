@@ -13,12 +13,19 @@ const service = axios.create({
 
 // request 拦截器
 service.interceptors.request.use(config => {
-  if (store.getters.token) {
+  if (store.getters.token && config.method === 'get') {
     if (config.params === undefined) {
       config.params = {}
     }
     if (config.params.token === undefined) {
       config.params.token = getToken()
+    }
+  } else if (store.getters.token) {
+    if (config.data === undefined) {
+      config.data = {}
+    }
+    if (config.data.token === undefined) {
+      config.data.token = getToken()
     }
   }
   return config
