@@ -15,6 +15,23 @@ div(head)
 
 <script>
 export default {
+  name: 'transcriptHead',
+  components: {},
+  props: [],
+  data() {
+    return {
+      loading: true,
+      dataset: {
+        points: null,
+        students: null,
+        titles: null
+      }
+    }
+  },
+  computed: {},
+  methods: {},
+  created() {
+  }
 }
 </script>
 

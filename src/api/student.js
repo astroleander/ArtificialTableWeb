@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getPoint(class_id) {
+export function getStudent(class_id) {
   return request({
-    url: '/point/format',
+    url: '/student/display',
     method: 'get',
     params: { classInfo_id: class_id }
   })

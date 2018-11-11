@@ -6,13 +6,13 @@
   @version: 1.0.0
 -->
 <template>
-  <div 
-    class="at-card at-card-shadow box row-frame" 
+  <div
+    class="at-card at-card-shadow box row-frame"
     @click='onClick(dataset.id)'>
     <aside>
       <slot name="header">
         <!-- TODO: to replace with real image url -->
-       <img class='cover' src="https://via.placeholder.com/300"/>
+       <img class='cover' src="https://via.placeholder.com/150"/>
       </slot>
     </aside>
     <section class="col-frame info">
@@ -88,8 +88,7 @@ export default {
   methods: {
     onClick: function(id) {
       this.$router.push({
-        path: '/transcript/index',
-        query: { id: this.dataset.id }
+        path: '/transcript/' + this.dataset.id
       })
     }
   }
@@ -98,8 +97,8 @@ export default {
 
 <style lang="scss" scoped>
 img.cover{
-  min-width: 180px; 
-  width: 100%; 
+  min-width: 180px;
+  width: 100%;
   height: 100%;
   object-fit: cover;
 }
@@ -142,10 +141,10 @@ img.cover{
 
 p{
  padding: 4px;
- margin: 0px; 
+ margin: 0px;
  & span {
     &:first-child{
-      color: #444;  
+      color: #444;
     }
     color: #666;
  }

@@ -155,7 +155,7 @@ export const constantRouterMap = [
     component: Layout,
     hidden: true,
     children: [{
-      path: 'index',
+      path: ':id',
       name: 'transcript',
       component: () => import('@/views/transcript'),
       meta: { title: '课程信息', icon: 'tree' }
