@@ -9,15 +9,25 @@ table
 <!---->
 <template>
   <el-table
+    @cell-dblclick='onCellClicked'
     :data="viewDataset"
-    v-loading.body="this.loading"
+    v-loading.body="loading"
     element-loading-text="Loading">
     <el-table-column
-      v-for="item in viewDataset"
-      :label="item.studentId"
-      :key="item.studentId"
-      :prop="item.studentId"
-    >
+      prop="student.name"
+      label="学生姓名">
+    </el-table-column>
+
+    <el-table-column
+      prop="student.sid"
+      label="学号">
+    </el-table-column>
+
+    <el-table-column
+      v-for="{ name, id } in titles"
+      :key="id"
+      :prop="id + ''"
+      :label="name">
     </el-table-column>
   </el-table>
 </template>
@@ -30,6 +40,10 @@ export default {
     view: {
       type: Array,
       require: true
+    },
+    titles: {
+      type: Array,
+      require: true
     }
   },
   data() {
@@ -39,16 +53,16 @@ export default {
     }
   },
   computed: {},
-  methods: {},
+  methods: {
+    onCellClicked: function(row, column, cell, event){
+      console.log(row)
+    }
+  },
   created() {
-    console.log(this.viewDataset)
-    console.log(this.view)
   },
   watch: {
     view: function(newView) {
-      console.log('viewset changed')
       this.viewDataset = newView
-      console.log(this.viewDataset)
       this.loading = false
     }
   }

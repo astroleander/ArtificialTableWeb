@@ -16,7 +16,8 @@ index
     <div id="transcript-container">
       <transcript-table
         v-show='isTable'
-        v-bind:view='this.view'
+        :view='this.view'
+        :titles='this.model.titles'
       >
       </transcript-table>
       <transcript-weight v-show='!isTable'></transcript-weight>
@@ -97,26 +98,21 @@ export default {
       // build table cell
       // each student map to a row on table
       this.model.studentMap.forEach(element => {
-        this.view.push({
+        let row = {
           // add student info (first two column line of the table)
           student: element,
-          studentName: element.name,
-          studentId: element.sid,
-          // add student's point
-          points: (() => {
-            const resPoints = {}
-            this.model.points.forEach(pointItem => {
-              if (pointItem.student_id === element.id) {
-                this.$set(resPoints, pointItem.title_id, pointItem)
-              }
-            })
-            return resPoints
-          })()
+          point: []
+        }
+        // add student's point
+        this.model.points.forEach(pointItem => {
+          if (pointItem.student_id === element.id) {
+            row.point.push(pointItem)
+            row[pointItem.title_id] = pointItem.pointNumber
+          }
         })
+        this.view.push(row)
       })
-      this.loading = false
-      console.log('this.view:')
-      console.log(this.view)
+      // build title
     },
     findStudentById(student_id) {
       return this.model.studentMap.get(student_id)
