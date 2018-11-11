@@ -92,7 +92,7 @@ export default {
             .login(this.loginForm)
             .then(() => {
               this.loading = false
-              console.log('login request success')
+              // console.log('login request success')
               this.$router.push({ path: '/' })
             }).catch(err => {
               this.loading = false

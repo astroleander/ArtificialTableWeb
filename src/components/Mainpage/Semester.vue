@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import AtClassCard from "@/components/Mainpage/at-class-card";
+import AtClassCard from '@/components/Mainpage/at-class-card'
+
 export default {
   components: { AtClassCard },
   props: {
@@ -36,14 +37,14 @@ export default {
   data() {
     return {
       collapsed: true
-    };
+    }
   },
   methods: {
     onClickCard: cid => {
       //
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

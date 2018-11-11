@@ -70,7 +70,6 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
-          console.log(response)
           const data = response
           try {
             setToken(data.subjects.token)
@@ -94,12 +93,11 @@ const user = {
       return new Promise((resolve, reject) => {
         const token = state.token
         const id = state.id
-        console.log(id + ' ' + token)
         getInfo({ token, id }).then(response => {
           // set user info
           // commit('SET_GROUPS', data.groups)
           const data = response && response.subjects && response.subjects[0]
-          console.log(data)
+          // console.log(data)
           // set user profile info
           // TODO: refactor user profile info in vuex
           commit('SET_NAME', data.name)
