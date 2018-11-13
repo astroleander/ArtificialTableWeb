@@ -18,12 +18,12 @@ index
     <button class='select' @click='switchMode()'>Switch</button><!-- Switch Bar -->
     <div id="transcript-container">
       <transcript-table
-        v-show='isTable'
+        v-show='this.isTable'
         :view='this.table'
         :titles='this.model.titles'
       >
       </transcript-table>
-      <transcript-weight v-show='!isTable'></transcript-weight>
+      <transcript-weight v-show='!this.isTable'></transcript-weight>
     </div>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       id: this.$router.currentRoute.params.id,
-      info: this.$store.getters.course(this.id),
+      info: this.getInfo,
       containerShown: true,
       loading: true,
       model: {
@@ -67,10 +67,13 @@ export default {
     },
     isShown: function() {
       return !this.loading
+    },
+    getInfo: function() {
+      return this.$store.getters.course(this.id)
     }
   },
   created() {
-    console.log(this.$store.getters.course(this.id))
+    this.info = this.$store.getters.course(this.id)
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
