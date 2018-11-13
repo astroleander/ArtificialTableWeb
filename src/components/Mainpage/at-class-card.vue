@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   // at-course-card 确实是更准确的名字，但是这里应该让类别名字和其对应的数据库表单名字尽可能的相同
   name: 'at-class-card',
@@ -64,6 +66,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'token'
+    ]),
     showProps: function() {
       // show loading when dataset doesnot ready yet
       return (this.dataset && this.dataset.name !== '') ? this.dataset.name : this.t_loading
@@ -87,6 +92,8 @@ export default {
   },
   methods: {
     onClick: function(id) {
+      this.$store.dispatch('addCourse', { course: this.dataset })
+      // console.log(this.$store.getters.course(1))
       this.$router.push({
         path: '/transcript/' + this.dataset.id
       })

@@ -5,18 +5,8 @@ const user = {
   state: {
     token: getToken(),
     id: getId(),
-    name: '',
-    collage: '',
-    year: '',
-    class_field: '',
-    groups: -1,
-    status: 0,
 
-    position: '',
-    avatar: '',
-    email: '',
-    alternate_email: '',
-    mobile: '',
+    name: '',
     manager: false
   },
 
@@ -31,37 +21,9 @@ const user = {
     SET_NAME: (state, name) => {
       state.name = name
     },
-    SET_COLLAGE: (state, collage) => {
-      state.collage = collage
-    },
-    SET_YEAR: (state, year) => {
-      state.year = year
-    },
-    SET_CLASS: (state, class_field) => {
-      state.class_field = class_field
-    },
     SET_GROUPS: (state, group) => {
       state.group = group
-    },
-    SET_STATUS: (state, status) => {
-      state.status = status
-    },
-    SET_POSITION: (state, position) => {
-      state.position = position
-    },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar
-    },
-    SET_EMAIL: (state, email) => {
-      state.email = email
-    },
-    SET_ALTER_EMAIL: (state, alter_email) => {
-      state.alter_email = alter_email
-    },
-    SET_MOBILE: (state, mobile) => {
-      state.mobile = mobile
     }
-
   },
 
   actions: {
@@ -97,11 +59,9 @@ const user = {
           // set user info
           // commit('SET_GROUPS', data.groups)
           const data = response && response.subjects && response.subjects[0]
-          // console.log(data)
-          // set user profile info
           // TODO: refactor user profile info in vuex
           commit('SET_NAME', data.name)
-          // commit('SET_AVATAR', data.avatar)
+          commit('SET_MANAGER', data.isManager)
           resolve(response)
         }).catch(error => {
           reject(error)

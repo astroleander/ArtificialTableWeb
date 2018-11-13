@@ -54,7 +54,7 @@ export default {
   },
   computed: {},
   methods: {
-    onCellClicked: function(row, column, cell, event){
+    onCellClicked: function(row, column, cell, event) {
       console.log(row)
     }
   },

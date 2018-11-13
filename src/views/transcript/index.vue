@@ -11,12 +11,15 @@ index
 <!---->
 <template>
   <div>
-    <transcript-head></transcript-head>
+    <transcript-head
+      :info='this.info'
+    >
+    </transcript-head>
     <button class='select' @click='switchMode()'>Switch</button><!-- Switch Bar -->
     <div id="transcript-container">
       <transcript-table
         v-show='isTable'
-        :view='this.view'
+        :view='this.table'
         :titles='this.model.titles'
       >
       </transcript-table>
@@ -41,6 +44,7 @@ export default {
   data() {
     return {
       id: this.$router.currentRoute.params.id,
+      info: this.$store.getters.course(this.id),
       containerShown: true,
       loading: true,
       model: {
@@ -48,13 +52,13 @@ export default {
         studentMap: new Map(),
         titles: null
       },
-      view: [],
+      table: []
     }
   },
   watch: {
-    view: function(newValue){
-      console.log('view changed')
-      console.log(newValue)
+    id: function(newValue) {
+      // console.log('view changed')
+      // console.log(newValue)
     }
   },
   computed: {
@@ -66,6 +70,8 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.getters.course(this.id))
+    // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
     this.fetchDataset()
@@ -98,7 +104,7 @@ export default {
       // build table cell
       // each student map to a row on table
       this.model.studentMap.forEach(element => {
-        let row = {
+        const row = {
           // add student info (first two column line of the table)
           student: element,
           point: []
@@ -110,7 +116,7 @@ export default {
             row[pointItem.title_id] = pointItem.pointNumber
           }
         })
-        this.view.push(row)
+        this.table.push(row)
       })
       // build title
     },
