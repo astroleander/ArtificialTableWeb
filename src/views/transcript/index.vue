@@ -13,6 +13,8 @@ index
   <div>
     <transcript-head
       :info='this.info'
+      :table='this.table'
+      :titles='this.model.titles'
     >
     </transcript-head>
     <button class='select' @click='switchMode()'>Switch</button><!-- Switch Bar -->
