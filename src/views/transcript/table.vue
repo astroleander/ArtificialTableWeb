@@ -38,7 +38,6 @@ table
   </el-table>
 
   <el-dialog
-    class=""
     :visible.sync="pointDialogVisible"
     :before-close="onDialogClose">
     <template slot-scope="title" slot="title">
@@ -80,14 +79,19 @@ export default {
   computed: {},
   methods: {
     onCellClicked: function(row, column, cell, event) {
+      console.log('....')
+      console.log(column.property)
+      console.log(column.label)
+      console.log(row)
+      console.log(event)
       this.showDialog(row, column, cell, event)
     },
     showDialog: function(row, column, cell, event) {
-      this.dialogData.title = cell
+      this.dialogData.title = row[column.colSpan]
       this.pointDialogVisible = true
     },
     onDialogClose: function() {
-    },
+    }
   },
   created() {
   },
