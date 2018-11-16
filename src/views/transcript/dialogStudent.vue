@@ -58,7 +58,7 @@ $white: #eee;
 $white: #eee;
 $grey: #ccc;
 $black: #2d2d2d;
-#student-card /deep/ .el-dialog {
+#student-card .el-dialog {
   width: 250px;
   display: block;
   background: #4caf50;
