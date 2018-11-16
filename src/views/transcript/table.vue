@@ -31,33 +31,31 @@ table
       :label="name">
       <template slot-scope="scope">
         <div slot="reference" class="item-wrapper">
-          {{ scope.row[id] }}
+          {{ scope.row[id].pointNumber }}
         </div>
       </template>
     </el-table-column>
   </el-table>
 
-  <el-dialog
-    :visible.sync="pointDialogVisible"
-    :before-close="onDialogClose">
-    <template slot-scope="title" slot="title">
-      {{dialogData.title}}
-    </template>
-    <slot>
-      {{dialogData.title}}
-    </slot>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="pointDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="pointDialogVisible = false">确 定</el-button>
-    </span>
-  </el-dialog>
+  <at-point-dialog
+    :visible="this.pointDialogVisible"
+    :point="this.dialogData"
+    @onDialogClose="onDialogClose()"
+  ></at-point-dialog>
+  <at-student-dialog
+    :visible="this.studentDialogVisible"
+    :student="this.dialogData"
+    @onDialogClose="onDialogClose()"></at-student-dialog>
   </section>
 </template>
 
 <script>
 export default {
   name: 'transcriptTable',
-  components: {},
+  components: {
+    AtPointDialog: () => import('./dialogPoint'),
+    AtStudentDialog: () => import('./dialogStudent')
+  },
   props: {
     view: {
       type: Array,
@@ -73,24 +71,33 @@ export default {
       viewDataset: [],
       loading: true,
       pointDialogVisible: false,
+      studentDialogVisible: false,
       dialogData: {}
     }
   },
   computed: {},
   methods: {
     onCellClicked: function(row, column, cell, event) {
-      console.log('....')
-      console.log(column.property)
-      console.log(column.label)
-      console.log(row)
-      console.log(event)
-      this.showDialog(row, column, cell, event)
+      if (RegExp('^student.').test(column.property)) {
+        this.showStudentDialog(row.student)
+      } else {
+        row
+        const dataset = row[column.property]
+        dataset.label = column.label
+        this.showPointDialog(dataset)
+      }
     },
-    showDialog: function(row, column, cell, event) {
-      this.dialogData.title = row[column.colSpan]
+    showPointDialog: function(dataset) {
+      this.dialogData = dataset
       this.pointDialogVisible = true
     },
+    showStudentDialog: function(dataset) {
+      this.dialogData = dataset
+      this.studentDialogVisible = true
+    },
     onDialogClose: function() {
+      this.pointDialogVisible = false
+      this.studentDialogVisible = false
     }
   },
   created() {

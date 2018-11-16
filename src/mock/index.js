@@ -1,4 +1,4 @@
-// /*
+/*
 import Mock from 'mockjs'
 
 import collegeMock from './college'
@@ -13,7 +13,7 @@ import universityMock from './university'
 import userMock from './user'
 // */
 
-// /*
+/*
 
 Mock.mock(/\/college\/format/, 'get', collegeMock.info)
 // course mock
