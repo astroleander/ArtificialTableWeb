@@ -23,6 +23,7 @@ index
         v-show='this.isTable'
         :view='this.table'
         :titles='this.model.titles'
+        :info='this.info'
       >
       </transcript-table>
       <transcript-weight v-show='!this.isTable'></transcript-weight>

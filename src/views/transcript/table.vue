@@ -65,7 +65,7 @@ table
   <!-- Dialog for showing and modifying details -->
   <at-point-dialog
     :visible="this.pointDialogVisible"
-    :point="this.dialogData"
+    :cell="this.dialogData"
     @onDialogClose="onDialogClose()"
   ></at-point-dialog>
   <at-student-dialog
@@ -90,6 +90,10 @@ export default {
     titles: {
       type: Array,
       require: true
+    },
+    info: {
+      type: Object,
+      require: false
     }
   },
   data() {
@@ -104,15 +108,6 @@ export default {
   computed: {
   },
   methods: {
-    onCellClicked: function(row, column, cell, event) {
-      if (RegExp('^student.').test(column.property)) {
-        this.showStudentDialog(row.student)
-      } else {
-        const dataset = row[column.property]
-        dataset.label = column.label
-        this.showPointDialog(dataset)
-      }
-    },
     showPointDialog: function(dataset) {
       this.dialogData = dataset
       this.pointDialogVisible = true
@@ -120,10 +115,6 @@ export default {
     showStudentDialog: function(dataset) {
       this.dialogData = dataset
       this.studentDialogVisible = true
-    },
-    onDialogClose: function() {
-      this.pointDialogVisible = false
-      this.studentDialogVisible = false
     },
     getPointNumber: function(scope, title) {
       const item = scope.row.point.find(point => point.title_id === title.id)
@@ -133,28 +124,58 @@ export default {
       const item = scope.row.point.find(point => point.title_id === title.id)
       return item
     },
-    onModifyClicked: function({scope, title}) {
-      const point = this.getPointItem(scope,title)
-      if(point) {
-        console.log(point)
+    // listener
+    onDialogClose: function() {
+      this.pointDialogVisible = false
+      this.studentDialogVisible = false
+    },
+    onAddClicked: function({ scope, title }) {
+      // using point prototype to create a point item
+      import('@/mock/point').then(mock => {
+        const pointNewItem = {point:{}, student:{},title:{}}
+        // modify standard point card info
+        pointNewItem.point = mock.default.getPointPrototype()
+        pointNewItem.point.title_id = title.id
+        pointNewItem.point.student_id = scope.row.student.id
+        pointNewItem.point.date = Date.now()
+        pointNewItem.point.classInfo_id = this.$router.currentRoute.params.id
+        // add some extra info message to help build the dialog
+        pointNewItem.student = scope.row.student
+        pointNewItem.title = title
+        pointNewItem.info = this.info
+        this.showPointDialog(pointNewItem)
+      })
+    },
+    onModifyClicked: function({ scope, title }) {
+      const pointExistItem = { point:{}, student:{}, title:{} }
+      pointExistItem.point = this.getPointItem(scope, title)
+      // add some extra info to build dialog
+      pointExistItem.title = title
+      pointExistItem.info = this.info
+      pointExistItem.student = scope.row.student
+      if (pointExistItem) {
+        this.showPointDialog(pointExistItem)
       } else {
-        console.log(point)
+        console.error(pointExistItem)
         // this.showPointDialog(dataset)
       }
-
     },
-    onDeleteClicked: function({scope, title}) {
-      const point = this.getPointItem(scope,title)
-      if(point) {
+    onDeleteClicked: function({ scope, title }) {
+      const point = this.getPointItem(scope, title)
+      if (point) {
         console.log(point)
       }
-
     },
-    onAddClicked: function({scope, title}) {
-
+    onCellClicked: function(row, column, cell, event) {
+      if (RegExp('^student.').test(column.property)) {
+        this.showStudentDialog(row.student)
+      }
+      // else {
+      // const dataset = row[column.property]
+      // dataset.label = column.label
+      // this.showPointDialog(dataset)
+      // }
     }
-
-
   },
   created() {
   },

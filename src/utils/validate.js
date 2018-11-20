@@ -2,6 +2,11 @@
  * Created by jiachenpan on 16/11/18.
  */
 
+export function notPointNumber(str) {
+  const notPointNumber = /^\d{1,}(.\d{1,2}$)?/
+  return notPointNumber.test(str)
+}
+
 export function isvalidUsername(str) {
   // const valid_map = ['10011', '10012']
   return validateNumber(str)

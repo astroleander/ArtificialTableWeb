@@ -1,3 +1,13 @@
+const pointPrototype = {
+  id: 1,
+  classInfo_id: 0,
+  student_id: 0,
+  title_id: 0,
+  pointNumber: 0,
+  date: null,
+  note: ''
+}
+
 const pointMap = {
   point: {
     code: '1031',
@@ -19,5 +29,8 @@ const pointMap = {
 export default {
   info: config => {
     return pointMap.point
+  },
+  getPointPrototype: () => {
+    return pointPrototype
   }
 }
