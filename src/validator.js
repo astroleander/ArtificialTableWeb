@@ -1,4 +1,0 @@
-/**
- * to store validation function
- *
- */
