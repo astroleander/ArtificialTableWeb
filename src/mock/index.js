@@ -1,4 +1,4 @@
-/*
+// /*
 import Mock from 'mockjs'
 
 import collegeMock from './college'
@@ -11,9 +11,6 @@ import studentMock from './student'
 import titleMock from './title'
 import universityMock from './university'
 import userMock from './user'
-// */
-
-/*
 
 Mock.mock(/\/college\/format/, 'get', collegeMock.info)
 // course mock
@@ -28,6 +25,7 @@ Mock.mock(/\/user\/logout/, 'post', loginMock.logout)
 Mock.mock(/\/major\/format/, 'get', majorMock.info)
 // point mock
 Mock.mock(/\/point\/format/, 'get', pointMock.info)
+Mock.mock(/\/point\/format/, 'post', pointMock.info)
 // student mock
 Mock.mock(/\/student\/format/, 'get', studentMock.info)
 Mock.mock(/\/student\/display/, 'get', studentMock.info)

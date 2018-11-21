@@ -7,46 +7,70 @@
     </template>
     <slot>
       <el-form
-        :rules="pointRules"
+        :rules="this.pointRules"
+        :model="this.cell_copy"
+        ref="form"
         class="container">
         <p class="display-info course-info">
           <svg-icon class="svg" icon-class="table" />
-          <span>{{cell.info.name}}</span>
-          <span>{{cell.title.name}}</span>
+          <span>{{cell_copy.info.name}}</span>
+          <span>{{cell_copy.title.name}}</span>
         </p>
         <p class="display-info student-info">
           <svg-icon class="svg" icon-class="user" />
-          <span>{{cell.student.name}}</span>
+          <span>{{cell_copy.student.name}}</span>
         </p>
         <div class="text-editor">
-          <el-input type="number"
-            v-model.number="cell.point.pointNumber"
-          ></el-input>
-          note: ''
-          <el-date-picker type="date"
-            placeholder="选择日期"
-            value-format="timestamp"
-            v-model="cell.point.date">
-          </el-date-picker>
+          <el-form-item prop="point">
+            <!-- TODO: 更加交互性的提示 -->
+            <el-input type="number"
+              v-model.number="cell_copy.point.pointNumber"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="date">
+            <el-date-picker type="date"
+              placeholder="选择日期"
+              value-format="timestamp"
+              v-model="cell_copy.point.date">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item prop="note">
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="备注"
+              v-model="cell_copy.point.note">
+            </el-input>
+          </el-form-item>
         </div>
       </el-form>
     </slot>
     <template slot="footer" class="dialog-footer">
       <el-button @click="onDialogClose()">取 消</el-button>
-      <el-button type="primary" @click="onDialogClose()">确 定</el-button>
+      <el-button type="primary" @click="handleSubmit()">确 定</el-button>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import { notPointNumber } from '@/utils/validate'
+import { isPointNumber } from '@/utils/validate'
+import viewmodel from '@/viewmodel/transcript/'
+
 const validatePointNumber = (rule, value, callback) => {
-  if (notPointNumber(value)) {
-    callback(new Error('请确保输入的数字，且至多保留两位小数点'))
-  } else {
+  if (isPointNumber(value.pointNumber)) {
     callback()
+  } else {
+    callback(new Error('分数至多保留两位小数点'))
   }
 }
+
+const cell_prototype = {
+  info: {},
+  title: {},
+  point: {},
+  student: {}
+}
+
 export default {
   // pointItem items here are not equal to pointItem model,
   // they contain some extra info to display cards
@@ -59,26 +83,46 @@ export default {
   components: {
   },
   computed: {
-    // date: {
-    //   get() {
-    //     return new Date(this.cell.point.date)
-    //   },
-    //   set(value) {
-    //     this.cell.point.date = value.getTime();
-    //   }
-    // }
+  },
+  watch: {
+    cell: function(newValue) {
+      this.cell_copy = JSON.parse(JSON.stringify(newValue))
+    }
   },
   data() {
     return {
+      // using cell_copy to avoid modify without submit
+      // initialize cell_copy to avoid vue bind error
+      cell_copy: cell_prototype,
       pointRules: {
         point: [{ required: true, trigger: 'blur', validator: validatePointNumber }]
         // date: [{ required: true, trigger: 'blur', validator: validateDate }]
-      },
+      }
     }
   },
   methods: {
     onDialogClose: function() {
+      // reset cell_copy and validator
+      this.cell_copy = cell_prototype
+      this.$refs.form.resetFields();
       this.$emit('onDialogClose', false)
+    },
+    handleSubmit: function() {
+      this.$refs.form.validate(valid => {
+        console.log(this)
+        if (valid) {
+          // upload request for modifying
+          // and close dialog if success
+          viewmodel.addPoint({ pointItem: this.cell_copy }).then(response => {
+            this.$emit('onPointChanged',this.cell_copy)
+            onDialogClose()
+          }).catch(err => {
+
+          })
+        } else {
+          return false
+        }
+      })
     }
   }
 }

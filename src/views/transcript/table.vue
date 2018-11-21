@@ -15,6 +15,7 @@ table
     v-loading.body="loading"
     element-loading-text="Loading"
     height="calc(100vh - 315px)"
+    ref="table"
     class="table">
     <el-table-column
       min-width="100px"
@@ -34,7 +35,7 @@ table
       v-for="title in titles"
       min-width="120px"
       :key="title.id"
-      :prop="title.id + ''"
+      :Z="title.id + ''"
       :label="title.name">
       <template slot-scope="scope">
         <div slot="reference" v-if="getPointNumber(scope, title)"
@@ -64,11 +65,14 @@ table
 
   <!-- Dialog for showing and modifying details -->
   <at-point-dialog
+    :v-if="this.pointDialogVisible"
     :visible="this.pointDialogVisible"
     :cell="this.dialogData"
     @onDialogClose="onDialogClose()"
+    @onPointChanged="onPointChanged"
   ></at-point-dialog>
   <at-student-dialog
+    :v-if="this.studentDialogVisible"
     :visible="this.studentDialogVisible"
     :student="this.dialogData"
     @onDialogClose="onDialogClose()"></at-student-dialog>
@@ -132,27 +136,32 @@ export default {
     onAddClicked: function({ scope, title }) {
       // using point prototype to create a point item
       import('@/mock/point').then(mock => {
-        const pointNewItem = {point:{}, student:{},title:{}}
+        // const pointNewItem = {point:{}, student:{}, title:{} }
+        const pointNewItem = {}
         // modify standard point card info
-        pointNewItem.point = mock.default.getPointPrototype()
+        pointNewItem['point'] = mock.default.getPointPrototype()
         pointNewItem.point.title_id = title.id
         pointNewItem.point.student_id = scope.row.student.id
         pointNewItem.point.date = Date.now()
         pointNewItem.point.classInfo_id = this.$router.currentRoute.params.id
         // add some extra info message to help build the dialog
-        pointNewItem.student = scope.row.student
-        pointNewItem.title = title
-        pointNewItem.info = this.info
+        pointNewItem['student'] = scope.row.student
+        pointNewItem['title'] = title
+        pointNewItem['info'] = this.info
+        pointNewItem['type'] = 'add' // declear if item is exist
+
         this.showPointDialog(pointNewItem)
       })
     },
     onModifyClicked: function({ scope, title }) {
-      const pointExistItem = { point:{}, student:{}, title:{} }
-      pointExistItem.point = this.getPointItem(scope, title)
+      // const pointExistItem = { point:{}, student:{}, title:{} }
+      const pointExistItem = {}
+      pointExistItem['point'] = this.getPointItem(scope, title)
       // add some extra info to build dialog
-      pointExistItem.title = title
-      pointExistItem.info = this.info
-      pointExistItem.student = scope.row.student
+      pointExistItem['student'] = scope.row.student
+      pointExistItem['title'] = title
+      pointExistItem['info'] = this.info
+      pointExistItem['type'] = 'modify' // declear if item is exist
       if (pointExistItem) {
         this.showPointDialog(pointExistItem)
       } else {
@@ -175,6 +184,24 @@ export default {
       // dataset.label = column.label
       // this.showPointDialog(dataset)
       // }
+    },
+    onPointChanged: function(item) {
+      // for ( let rowIndex in this.viewDataset ) {
+
+      //   if (String(rowIndex) === String(item.title.id)){
+      //     console.log(this.viewDataset[title_id].student)
+
+      //     if (this.viewDataset[title_id].student.id === item.student.id) {
+      //       console.log(this.viewDataset[title_id].student.id)
+
+      //       // viewDataset[title_id][item.point.id] = item.point
+      //       this.$set(this.viewDataset[title_id], item.point.id, item.point)
+      //       // viewDataset[title_id].point[item.point.id] = item.point
+      //       this.$set(this.viewDataset[title_id].point, item.point.id, item.point)
+      //     }
+      //   }
+      // }
+
     }
   },
   created() {

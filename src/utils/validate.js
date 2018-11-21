@@ -2,9 +2,8 @@
  * Created by jiachenpan on 16/11/18.
  */
 
-export function notPointNumber(str) {
-  const notPointNumber = /^\d{1,}(.\d{1,2}$)?/
-  return notPointNumber.test(str)
+export function isPointNumber(str) {
+  return RegExp(/^\d{1,}(.\d{1,2})?$/, 'g').test(str)
 }
 
 export function isvalidUsername(str) {

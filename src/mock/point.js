@@ -32,5 +32,8 @@ export default {
   },
   getPointPrototype: () => {
     return pointPrototype
+  },
+  post: config => {
+    return { code: '2004', 'message': 'OK, No Response content' }
   }
 }
