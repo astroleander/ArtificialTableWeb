@@ -119,8 +119,7 @@ export default {
         this.model.points.forEach(pointItem => {
           if (pointItem.student_id === element.id) {
             row.point.push(pointItem)
-            row[pointItem.title_id] = pointItem
-            // row[pointItem.title_id] = pointItem.pointNumber
+            // row[pointItem.title_id] = pointItem
           }
         })
         this.table.push(row)

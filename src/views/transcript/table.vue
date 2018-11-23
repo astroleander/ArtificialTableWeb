@@ -109,8 +109,7 @@ export default {
       dialogData: {}
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     showPointDialog: function(dataset) {
       this.dialogData = dataset
@@ -186,26 +185,27 @@ export default {
       // }
     },
     onPointChanged: function(item) {
-      // for ( let rowIndex in this.viewDataset ) {
-
-      //   if (String(rowIndex) === String(item.title.id)){
-      //     console.log(this.viewDataset[title_id].student)
-
-      //     if (this.viewDataset[title_id].student.id === item.student.id) {
-      //       console.log(this.viewDataset[title_id].student.id)
-
-      //       // viewDataset[title_id][item.point.id] = item.point
-      //       this.$set(this.viewDataset[title_id], item.point.id, item.point)
-      //       // viewDataset[title_id].point[item.point.id] = item.point
-      //       this.$set(this.viewDataset[title_id].point, item.point.id, item.point)
-      //     }
-      //   }
-      // }
-
+      // search table original dataset and replace or add new point item
+      this.viewDataset.forEach(row => {
+        if (row.student.id === item.student.id) {
+          if (item.type === 'modify') {
+            for (const pointIdx in row.point) {
+              if (row.point.hasOwnProperty(pointIdx)) {
+                const element = row.point[pointIdx]
+                if (String(item.point.id) === String(element.id)) {
+                  this.$set(row.point, pointIdx, item.point)
+                } // end if
+              } // end hasOwnProperty if
+            } // end for
+          } else {
+            console.log('not exist yet, create new one')
+            row.point.push(item.point)
+          }
+        }
+      })
     }
   },
-  created() {
-  },
+  created() {},
   watch: {
     view: function(newView) {
       this.viewDataset = newView
@@ -217,7 +217,7 @@ export default {
 
 <style lang="scss" scoped>
 .table {
-  width: 100%
+  width: 100%;
 }
 .table-wrapper {
   height: 100%;
@@ -248,7 +248,8 @@ export default {
   white-space: nowrap;
 }
 
-.with-point-div, .with-out-point-div {
+.with-point-div,
+.with-out-point-div {
   display: flex;
   .operator {
     margin-right: 33%;
@@ -268,5 +269,4 @@ export default {
 .with-point-div {
   justify-content: space-between;
 }
-
 </style>

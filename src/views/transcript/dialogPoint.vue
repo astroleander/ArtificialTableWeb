@@ -104,7 +104,7 @@ export default {
     onDialogClose: function() {
       // reset cell_copy and validator
       this.cell_copy = cell_prototype
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
       this.$emit('onDialogClose', false)
     },
     handleSubmit: function() {
@@ -114,10 +114,18 @@ export default {
           // upload request for modifying
           // and close dialog if success
           viewmodel.addPoint({ pointItem: this.cell_copy }).then(response => {
-            this.$emit('onPointChanged',this.cell_copy)
-            onDialogClose()
+            this.$emit('onPointChanged', this.cell_copy)
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.onDialogClose()
           }).catch(err => {
-
+            console.log(err)
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            })
           })
         } else {
           return false
