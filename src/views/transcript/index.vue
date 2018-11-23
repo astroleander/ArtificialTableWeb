@@ -10,7 +10,7 @@ index
 -->
 <!---->
 <template>
-  <div>
+  <div class="transcript-wrapper">
     <transcript-head
       :info='this.info'
       :table='this.table'
@@ -139,5 +139,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.transcript-wrapper {
+  background: white;
+}
 </style>
