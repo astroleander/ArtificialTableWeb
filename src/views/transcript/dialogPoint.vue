@@ -79,6 +79,7 @@ export default {
   //   |- title
   //   |- student
   //   |- info
+  //   |- type
   props: ['visible', 'cell'],
   components: {
   },
