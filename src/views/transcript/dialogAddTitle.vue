@@ -16,7 +16,7 @@
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="onDialogClose">取 消</el-button>
-    <el-button type="primary" @click="onDialogClose">确 定</el-button>
+    <el-button type="primary" @click="onAddNewTitle">确 定</el-button>
   </div>
 </el-dialog>
 </template>

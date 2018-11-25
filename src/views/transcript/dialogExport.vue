@@ -24,7 +24,8 @@ export default {
       this.$emit('onDialogClose')
     },
     onExport: function() {
-      this.$emit('onExport', this.filename)
+      const filename = this.filename
+      this.$emit('onExport', { filename })
       this.onDialogClose()
     }
   }

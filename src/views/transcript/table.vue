@@ -12,10 +12,10 @@ table
 
     <!-- table menu-->
     <el-row class="menu">
-      <el-button @click="handleAddNewTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
-      <el-button @click="handleExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
-      <el-button @click="handleRefresh()" type="warning" icon="el-icon-refresh" >重新加载</el-button>
-      <el-button @click="handleBackToMainpage()" type="danger" icon="el-icon-back" >返回主页</el-button>
+      <el-button @click="onClickAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+      <el-button @click="onClickExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
+      <el-button @click="onClickRefresh()" type="warning" icon="el-icon-refresh" >重新加载</el-button>
+      <el-button @click="onClickBackToMainpage()" type="danger" icon="el-icon-back" >返回主页</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
     </el-row>
@@ -72,7 +72,7 @@ table
     :visible="this.pointDialogVisible"
     :cell="this.tableDialogDataset"
     @onDialogClose="onDialogClose()"
-    @onPointChanged="onPointChanged"
+    @onPointChanged="handlePointChanged"
   ></at-point-dialog>
   <at-student-dialog
     :v-if="this.studentDialogVisible"
@@ -84,13 +84,13 @@ table
     :v-if="this.menuAddTitleDialogVisible"
     :visible="this.menuAddTitleDialogVisible"
     @onDialogClose="onDialogClose()"
-    @onAddNewTitle="handleAddNewTitle">
+    @onAddNewTitle="this.handleAddTitle">
   </at-add-title-dialog>
   <at-export-dialog
     :v-if="this.menuExportDialogVisible"
     :visible="this.menuExportDialogVisible"
     @onDialogClose="onDialogClose()"
-    @onExport="handleExportTable">
+    @onExport="this.handleExport">
   </at-export-dialog>
   </section>
 </template>
@@ -154,7 +154,6 @@ export default {
       // this.menuDialogDataset = dataset
       this.menuExportDialogVisible = true
     },
-
     getPointNumber: function(scope, title) {
       const item = scope.row.point.find(point => point.title_id === title.id)
       return item && item.pointNumber
@@ -225,7 +224,20 @@ export default {
       // this.showPointDialog(dataset)
       // }
     },
-    onPointChanged: function(item) {
+    onClickAddTitle: function() {
+      this.showAddTitleDialog({})
+    },
+    onClickExportTable: function() {
+      this.showExportDialog({})
+    },
+    onClickRefresh: function() {
+
+    },
+    onClickBackToMainpage: function() {
+
+    },
+    handlePointChanged: function(dialogResult) {
+      const item = dialogResult
       // search table original dataset and replace or add new point item
       this.viewDataset.forEach(row => {
         if (row.student.id === item.student.id) {
@@ -245,17 +257,11 @@ export default {
         }
       })
     },
-    handleAddNewTitle: function() {
-      this.showAddTitleDialog({})
+    handleAddTitle: function(dialogResult) {
+      this.$emit('onTitleAdded', dialogResult)
     },
-    handleExportTable: function() {
-      this.showExportDialog({})
-    },
-    handleRefresh: function() {
-
-    },
-    handleBackToMainpage: function() {
-
+    handleExport: function(dialogResult) {
+      console.log(dialogResult)
     }
   },
   created() {},

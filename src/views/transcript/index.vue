@@ -24,6 +24,7 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
+        @onTitleAdded='handleTitleChanged'
       >
       </transcript-table>
       <transcript-weight v-show='!this.isTable'></transcript-weight>
@@ -133,6 +134,9 @@ export default {
       return this.model.titles.find(title => {
         return title.id === title_id
       })
+    },
+    handleTitleChanged(title) {
+      this.model.titles.push(title)
     }
   }
 }
