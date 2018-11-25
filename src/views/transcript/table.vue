@@ -1,42 +1,45 @@
 <!-- Tree Structure of Transcript Table of Transcript section -->
 <!--
 table
-  |- div
+  |- section
   |- TODO: menu
-  |- TODO: table
-  |- ... TODO: row
+  |- DONE: table
+  |- ... DONE: row
 -->
 <!---->
 <template>
   <section class="table-wrapper">
-  <el-table
-    @cell-dblclick='onCellClicked'
-    :data="viewDataset"
-    v-loading.body="loading"
-    element-loading-text="Loading"
-    height="calc(100vh - 315px)"
-    ref="table"
-    class="table">
-    <el-table-column
-      min-width="100px"
-      prop="student.name"
-      fixed
-      label="学生姓名">
+
+    <!-- table menu-->
+    <el-row class="menu">
+      <el-button @click="handleAddNewTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+      <el-button @click="handleExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
+      <el-button @click="handleRefresh()" type="warning" icon="el-icon-refresh" >重新加载</el-button>
+      <el-button @click="handleBackToMainpage()" type="danger" icon="el-icon-back" >返回主页</el-button>
+      <!-- <el-button icon="el-icon-search"></el-button> -->
+      <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
+    </el-row>
+    <!-- table main container-->
+    <el-table
+      :data="viewDataset"
+      @cell-dblclick='onCellClicked'
+      v-loading.body="loading"
+      ref="table"
+      element-loading-text="Loading"
+      height="calc(100vh - 340px)"
+      class="table">
+
+    <el-table-column label="学生姓名" prop="student.name"
+      fixed min-width="100px">
+    </el-table-column>
+
+    <el-table-column label="学号" prop="student.sid"
+      fixed min-width="100px">
     </el-table-column>
 
     <el-table-column
-      min-width="100px"
-      prop="student.sid"
-      fixed
-      label="学号">
-    </el-table-column>
-
-    <el-table-column
-      v-for="title in titles"
-      min-width="120px"
-      :key="title.id"
-      :Z="title.id + ''"
-      :label="title.name">
+      v-for="title in titles" :label="title.name" :key="title.id"
+      min-width="120px">
       <template slot-scope="scope">
         <div slot="reference" v-if="getPointNumber(scope, title)"
           class="item-wrapper with-point-div">
@@ -75,7 +78,8 @@ table
     :v-if="this.studentDialogVisible"
     :visible="this.studentDialogVisible"
     :student="this.dialogData"
-    @onDialogClose="onDialogClose()"></at-student-dialog>
+    @onDialogClose="onDialogClose()">
+    </at-student-dialog>
   </section>
 </template>
 
@@ -129,8 +133,11 @@ export default {
     },
     // listener
     onDialogClose: function() {
+      // reset flag
       this.pointDialogVisible = false
       this.studentDialogVisible = false
+      // cannot reset dialog data set before dialog close
+      // this.dialogData = {} // cant here
     },
     onAddClicked: function({ scope, title }) {
       // using point prototype to create a point item
@@ -203,6 +210,18 @@ export default {
           }
         }
       })
+    },
+    handleAddNewTitle: function() {
+
+    },
+    handleExportTable: function() {
+
+    },
+    handleRefresh: function() {
+
+    },
+    handleBackToMainpage: function() {
+
     }
   },
   created() {},
@@ -222,7 +241,9 @@ export default {
 .table-wrapper {
   height: 100%;
 }
-
+.menu {
+  margin: 12px 5px;
+}
 .item-wrapper {
   cursor: pointer;
   user-select: none;
