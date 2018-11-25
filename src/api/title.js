@@ -13,7 +13,7 @@ export function getTitle({ titleGroup_id, class_id }) {
 
 export function getTitleGroup({ class_id }) {
   return request({
-    url: '/titlegroup/format',
+    url: '/titleGroup/format',
     method: 'get',
     params: { classInfo_id: class_id }
   })
