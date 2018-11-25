@@ -38,7 +38,9 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     const res = response.data
-    // 如果又异常将会返回异常处理流程，
+    /**
+     * 如异常将会返回异常处理流程，@see @/utils/except.js'
+     */
     return exceptHandler(res)
   },
   error => {

@@ -2,6 +2,7 @@
  * Created by jiachenpan on 16/11/18.
  */
 
+/* 至多保留两位小数*/
 export function isPointNumber(str) {
   return RegExp(/^\d{1,}(.\d{1,2})?$/, 'g').test(str)
 }
@@ -11,6 +12,7 @@ export function isvalidUsername(str) {
   return validateNumber(str)
 }
 
+/* 五位以上数字*/
 export function validateNumber(str) {
   const urlregex = /^([0-9]){5,}$/
   return urlregex.test(str)
