@@ -12,9 +12,10 @@ export const requestTitle = (class_field_id) => {
   })
 }
 
-export const requestTitleGroup = ({ titleGourp_id }) => {
+// TODO: redefine titleGroup api, specially redefine the lesson table
+export const requestTitleGroup = ({ classInfo_id }) => {
   return new Promise((resolve, reject) => {
-    titleGroupApi({ titleGourp_id }).then(response => {
+    titleGroupApi({ classInfo_id }).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(err => {
