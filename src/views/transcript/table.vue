@@ -70,16 +70,28 @@ table
   <at-point-dialog
     :v-if="this.pointDialogVisible"
     :visible="this.pointDialogVisible"
-    :cell="this.dialogData"
+    :cell="this.tableDialogDataset"
     @onDialogClose="onDialogClose()"
     @onPointChanged="onPointChanged"
   ></at-point-dialog>
   <at-student-dialog
     :v-if="this.studentDialogVisible"
     :visible="this.studentDialogVisible"
-    :student="this.dialogData"
+    :student="this.tableDialogDataset"
     @onDialogClose="onDialogClose()">
-    </at-student-dialog>
+  </at-student-dialog>
+  <at-add-title-dialog
+    :v-if="this.menuAddTitleDialogVisible"
+    :visible="this.menuAddTitleDialogVisible"
+    @onDialogClose="onDialogClose()"
+    @onAddNewTitle="handleAddNewTitle">
+  </at-add-title-dialog>
+  <at-export-dialog
+    :v-if="this.menuExportDialogVisible"
+    :visible="this.menuExportDialogVisible"
+    @onDialogClose="onDialogClose()"
+    @onExport="handleExportTable">
+  </at-export-dialog>
   </section>
 </template>
 
@@ -88,7 +100,9 @@ export default {
   name: 'transcriptTable',
   components: {
     AtPointDialog: () => import('./dialogPoint'),
-    AtStudentDialog: () => import('./dialogStudent')
+    AtStudentDialog: () => import('./dialogStudent'),
+    AtAddTitleDialog: () => import('./dialogAddTitle.vue'),
+    AtExportDialog: () => import('./dialogExport')
   },
   props: {
     view: {
@@ -108,21 +122,39 @@ export default {
     return {
       viewDataset: [],
       loading: true,
+      // point dialog and student dialog use the same one dataset,
+      // every time open the dialog will re-set the dataset
       pointDialogVisible: false,
       studentDialogVisible: false,
-      dialogData: {}
+      tableDialogDataset: {},
+      // "add title" dialog and "export" dialog use the same dataset,
+      // every time open the dialog will re-set the dataset
+      menuAddTitleDialogVisible: false,
+      menuExportDialogVisible: false
+      // 暂时不用携带数据
+      // menuDialogDataset: {}
     }
   },
   computed: {},
   methods: {
+    // shown controller, ensure dataset before
     showPointDialog: function(dataset) {
-      this.dialogData = dataset
+      this.tableDialogDataset = dataset
       this.pointDialogVisible = true
     },
     showStudentDialog: function(dataset) {
-      this.dialogData = dataset
+      this.tableDialogDataset = dataset
       this.studentDialogVisible = true
     },
+    showAddTitleDialog: function(dataset) {
+      // this.menuDialogDataset = dataset
+      this.menuAddTitleDialogVisible = true
+    },
+    showExportDialog: function(dataset) {
+      // this.menuDialogDataset = dataset
+      this.menuExportDialogVisible = true
+    },
+
     getPointNumber: function(scope, title) {
       const item = scope.row.point.find(point => point.title_id === title.id)
       return item && item.pointNumber
@@ -136,8 +168,10 @@ export default {
       // reset flag
       this.pointDialogVisible = false
       this.studentDialogVisible = false
+      this.menuAddTitleDialogVisible = false
+      this.menuExportDialogVisible = false
       // cannot reset dialog data set before dialog close
-      // this.dialogData = {} // cant here
+      // this.tableDialogDataset = {} // cant here
     },
     onAddClicked: function({ scope, title }) {
       // using point prototype to create a point item
@@ -212,10 +246,10 @@ export default {
       })
     },
     handleAddNewTitle: function() {
-
+      this.showAddTitleDialog({})
     },
     handleExportTable: function() {
-
+      this.showExportDialog({})
     },
     handleRefresh: function() {
 
