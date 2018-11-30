@@ -19,8 +19,6 @@
      <header>{{showProps}}</header>
      <!-- 要是嫌写的难看可以自己封装 titles 和 dataset -->
      <div class="row-frame">
-        <p><span>{{titles.id}}</span>：
-          <span>{{dataset.id}}</span></p>
         <p><span>{{titles.className}}</span>：
           <span>{{dataset.name}}</span></p>
         <p><span>{{titles.cid}}</span>：
@@ -29,8 +27,8 @@
           <span>{{dataset.teacher_id}}</span></p>
         <p><span>{{titles.room}}</span>：
           <span>{{dataset.room}}</span></p>
-        <p><span>{{titles.semester}}</span>：
-          <span>{{dataset.year}}-{{dataset.month}}</span></p>
+        <!-- <p><span>{{titles.semester}}</span>：
+          <span>{{dataset.year}}-{{dataset.month}}</span></p> -->
         <p><span>{{titles.studentCount}}</span>：
           <span>{{dataset.studentCount}}</span></p>
         <p><span>{{titles.schedule}}</span>：
@@ -78,7 +76,7 @@ export default {
     return {
       titles: {
         title: '课程名称',
-        cid: '课程代码',
+        cid: '课程编号',
         id: '课程编号',
         teacher: '任课教师',
         className: '课程名',
@@ -144,6 +142,7 @@ img.cover{
   min-width: 540px;
   min-height: 180px;
   margin: 1rem;
+  cursor: pointer;
 }
 
 p{

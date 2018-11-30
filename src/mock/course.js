@@ -6,16 +6,17 @@ export default {
     return classInfoMap.infos
   }
 }
+// TODO: classField need add lesson_id
 const classInfoMap = {
   infos: {
     code: '1031',
     message: 'get\u8bf7\u6c42\u6210\u529f',
     subjects: [
-      { id: 1, name: '\u82f1\u8bed\u5b66\u672f\u542c\u8bf41\u73ed', teacher_id: 1, year: '', month: '', data: '', room: '3-319', cid: '007' },
-      { id: 2, name: '\u82f1\u8bed\u5b66\u672f\u542c\u8bf42\u73ed', teacher_id: 2, year: '', month: '', data: '', room: '3-319', cid: '007' },
-      { id: 3, name: '\u82f1\u8bed\u5b66\u672f\u542c\u8bf43\u73ed', teacher_id: 3, year: '', month: '', data: '', room: '3-319', cid: '007' },
-      { id: 4, name: '\u82f1\u8bed\u7535\u5f71\u89c6\u542c\u8bf41\u73ed', teacher_id: 4, year: '', month: '', data: '', room: '3-319', cid: '007' },
-      { id: 5, name: '\u82f1\u8bed\u7535\u5f71\u89c6\u542c\u8bf42\u73ed', teacher_id: 5, year: '', month: '', data: '', room: '3-319', cid: '007' }
+      { id: 1, name: '\u82f1\u8bed\u5b66\u672f\u542c说', teacher_id: '孔老师', year: '2018-2019 春季', month: '', data: '', room: '3-319', cid: '007' },
+      { id: 2, name: '\u82f1\u8bed\u5b66\u672f\u542c说', teacher_id: '孔老师', year: '2018-2019 春季', month: '', data: '', room: '3-319', cid: '007' },
+      { id: 3, name: '\u82f1\u8bed\u5b66\u672f\u542c说', teacher_id: '孔老师', year: '2018-2019 春季', month: '', data: '', room: '3-319', cid: '007' },
+      { id: 4, name: '\u82f1\u8bed\u7535\u5f71\u89c6说', teacher_id: '孔老师', year: '2014-2015 秋季', month: '', data: '', room: '3-319', cid: '007' },
+      { id: 5, name: '\u82f1\u8bed\u7535\u5f71\u89c6说', teacher_id: '孔老师', year: '2014-2015 秋季', month: '', data: '', room: '3-319', cid: '007' }
     ],
     count: 5
   }

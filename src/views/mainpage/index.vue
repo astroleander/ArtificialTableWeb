@@ -1,9 +1,9 @@
 <!-- Tree Structure of Mainpage -->
-<!-- 
+<!--
 div(mainpage)
     |- DONE: welcome card
     |- TODO: class list
-        |- TODO: semester selected list 
+        |- TODO: semester selected list
         |- DONE: semester list
             |- DONE: class list inside
 -->
@@ -13,7 +13,7 @@ div(mainpage)
         <div><!-- 区域1 -->
         </div>
         <at-avatar></at-avatar>
-        <div>          <!-- 区域3 -->
+        <div><!-- 区域3 -->
         </div>
         <div class="info-card" v-for="item in this.infos_arrays" :key="item.hint">
           <p>
@@ -23,12 +23,12 @@ div(mainpage)
           <p><span class="content">{{item.content}}</span></p>
         </div>
       </header>
-    <at-semester 
+    <at-semester
       class="semester"
       v-for="(item, index) in semeseterDataset" :key="index"
-      :dataset="item"      
+      :dataset="item"
       >
-        Year: {{index}}
+        {{index}} 学期
     </at-semester>
   </div>
 </template>
@@ -53,8 +53,8 @@ export default {
   data() {
     return {
       infos_arrays: [
-        { icon: 'domain', color: cyan, hint: '学校 / 机构', content: '中国人民大学' },
-        { icon: 'school', color: blue, hint: '院系', content: '外国语学院' },
+        { icon: 'domain', color: cyan, hint: '学校 / 机构', content: '北京交通大学' },
+        { icon: 'school', color: blue, hint: '院系', content: '语言与传播学院' },
         { icon: 'user', color: green, hint: '认证', content: '教师' }
       ],
       semeseterDataset: {} // A dictionary, integrate class by year
@@ -120,7 +120,7 @@ $white: #FFF;
 
 .info-card{
     flex-flow: column nowrap;
-    min-width: 250px; 
+    min-width: 250px;
     max-width: 400px;
     margin: 12px;
     padding: 8px;
@@ -128,7 +128,7 @@ $white: #FFF;
         width: 24px;
         height: 24px;
     }
-    p { 
+    p {
         display: inline-flex;
         flex-direction: row;
         align-items: center;
@@ -154,7 +154,7 @@ $white: #FFF;
     background: $black;
     color: $white;
     border-radius: 2px;
-    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30),
                 0 15px 12px rgba(0,0,0,0.22);
     position: relative;
   };

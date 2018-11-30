@@ -5,6 +5,9 @@ table
   |- TODO: menu
   |- DONE: table
   |- ... DONE: row
+
+TODO: 增加一个 [切换至大项视图] 按钮和功能
+TODO: post 返回需要 ID
 -->
 <!---->
 <template>
@@ -14,7 +17,7 @@ table
     <el-row class="menu">
       <el-button @click="onClickAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
       <el-button @click="onClickExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
-      <el-button @click="onClickRefresh()" type="warning" icon="el-icon-refresh" >重新加载</el-button>
+      <el-button @click="onClickRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button>
       <el-button @click="onClickBackToMainpage()" type="danger" icon="el-icon-back" >返回主页</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
@@ -26,7 +29,7 @@ table
       v-loading.body="loading"
       ref="table"
       element-loading-text="Loading"
-      height="calc(100vh - 340px)"
+      height="calc(100vh - 316px)"
       class="table">
 
     <el-table-column label="学生姓名" prop="student.name"
@@ -282,7 +285,7 @@ export default {
   height: 100%;
 }
 .menu {
-  margin: 12px 5px;
+  margin: 12px 10px;
 }
 .item-wrapper {
   cursor: pointer;

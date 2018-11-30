@@ -1,13 +1,11 @@
 <template>
-  <el-dialog title="添加新的小项" :visible.sync="visible" :before-close="onDialogClose">
+  <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
   <el-form :model="titleForm" ref="form">
-    <el-form-item label="小项名称">
+    <el-form-item label="新列名称">
       <el-input v-model="titleForm.name" autoComplete="off"></el-input>
     </el-form-item>
     <el-form-item label="所属类别">
       <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
         <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
           :label='titleGroup.name' :value='titleGroup.id'>
         </el-option>

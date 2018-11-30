@@ -12,9 +12,9 @@ export default {
   name: 'at-avatar',
   data() {
     return {
-      url: 'https://api.xjdog.cn/Get-Image" ',
-      name: 'Scaffold',
-      tid: 'Scotland'
+      url: 'https://api.xjdog.cn/Get-Image',
+      name: '孔老师',
+      tid: '2018140659'
     }
   }
 }
@@ -49,7 +49,7 @@ $black: #2D2D2D;
     margin: 3px;
   }
   .at-text-secondary{
-    margin: 3px;  
+    margin: 3px;
   }
 }
 </style>

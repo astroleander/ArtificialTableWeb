@@ -12,25 +12,22 @@ div(head)
     <section class="row-frame">
      <!-- 要是嫌写的难看可以自己封装 head_titles 和 info -->
      <div class="row-frame info">
-        <p class="info-item"><span>{{head_titles.id}}</span>：
-          <span>{{info.id}}</span></p>
-        <p class="info-item"><span>{{head_titles.className}}</span>：
+        <p class="info-item"><span class="info-title">{{head_titles.className}}</span>：
           <span>{{info.name}}</span></p>
-        <p class="info-item"><span>{{head_titles.cid}}</span>：
+        <p class="info-item"><span class="info-title">{{head_titles.cid}}</span>：
           <span>{{info.cid}}</span></p>
-        <p class="info-item"><span>{{head_titles.teacher}}</span>：
+        <p class="info-item"><span class="info-title">{{head_titles.teacher}}</span>：
           <span>{{info.teacher_id}}</span></p>
-        <p class="info-item"><span>{{head_titles.room}}</span>：
-          <span>{{info.room}}</span></p>
-        <p class="info-item"><span>{{head_titles.semester}}</span>：
-          <span>{{info.year}}-{{info.month}}</span></p>
-        <p class="info-item"><span>{{head_titles.studentCount}}</span>：
+        <p class="info-item"><span class="info-title">{{head_titles.semester}}</span>：
+          <span>{{info.year}}</span></p>
+        <p class="info-item"><span class="info-title">{{head_titles.studentCount}}</span>：
           <span>{{info.studentCount}}</span></p>
-        <p class="info-item"><span>{{head_titles.schedule}}</span>：
+        <p class="info-item"><span class="info-title">{{head_titles.schedule}}</span>：
           <span>{{info.schedule}}</span></p>
-
+        <p class="info-item"><span class="info-title">{{head_titles.room}}</span>：
+          <span>{{info.room}}</span></p>
       </div>
-      <img class='cover' src="https://via.placeholder.com/200"/>
+      <img class='cover' src="https://via.placeholder.com/120"/>
     </section>
 
   </header>
@@ -82,7 +79,11 @@ export default {
     justify-content: flex-start;
   }
   .info-item {
-    width: 30%
+    width: 30%;
+    margin: 6px;
+    & .info-title {
+      font-weight: bold;
+    }
   }
   .info {
     padding: 24px;

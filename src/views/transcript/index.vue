@@ -17,17 +17,31 @@ index
       :titles='this.model.titles'
     >
     </transcript-head>
-    <button class='select' @click='switchMode()'>Switch</button><!-- Switch Bar -->
+
+    <input class="state" @click='switchMode("table")' type="radio" title="tab-one" name="tabs-state" id="tab-one" checked />
+    <input class="state" @click='switchMode("stats")' type="radio" title="tab-two" name="tabs-state" id="tab-two" />
+    <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" />
+    <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" />
+
+    <div class="tabs flex-tabs">
+      <label for="tab-one" id="tab-one-label" class="tab">成绩表</label>
+      <label for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
+      <label for="tab-three" id="tab-three-label" class="tab">班级成员</label>
+      <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label>
+    </div>
+
+
     <div id="transcript-container">
-      <transcript-table
-        v-show='this.isTable'
+      <transition>
+        <transcript-table
+        v-show='this.getMode("table")'
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
-        @onTitleAdded='handleTitleChanged'
-      >
-      </transcript-table>
-      <transcript-weight v-show='!this.isTable'></transcript-weight>
+        @onTitleAdded='handleTitleChanged'>
+        </transcript-table>
+      </transition>
+      <transcript-weight v-show='getMode("stats")'></transcript-weight>
     </div>
   </div>
 </template>
@@ -49,7 +63,7 @@ export default {
     return {
       id: this.$router.currentRoute.params.id,
       info: this.getInfo,
-      containerShown: true,
+      shownTab: 'table',
       loading: true,
       model: {
         points: null,
@@ -66,9 +80,6 @@ export default {
     }
   },
   computed: {
-    isTable: function() {
-      return this.containerShown === true
-    },
     isShown: function() {
       return !this.loading
     },
@@ -84,8 +95,12 @@ export default {
     this.fetchDataset()
   },
   methods: {
-    switchMode: function() {
-      this.containerShown = !this.containerShown
+    getMode: function(code) {
+      if(code === this.shownTab) return true
+      else false
+    },
+    switchMode: function(code) {
+      this.shownTab = code
     },
     fetchDataset: function() {
       Promise.all([
@@ -146,4 +161,44 @@ export default {
 .transcript-wrapper {
   background: white;
 }
+
+.state{
+  position: absolute;
+  left: -10000px;
+}
+
+.flex-tabs{
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  .tab{
+    opacity: 0.6;
+    flex-grow: 0.5;
+    max-width: 200px;
+    max-height: 40px;
+    transition: 0.3s ease-in-out;
+  }
+}
+
+.tab {
+  display: inline-block;
+  padding: 10px;
+  vertical-align: top;
+  cursor: hand;
+  cursor: pointer;
+  border-bottom: 4px solid #fff;
+}
+
+#tab-one:checked ~ .tabs #tab-one-label,
+#tab-two:checked ~ .tabs #tab-two-label,
+#tab-three:checked ~ .tabs #tab-three-label,
+#tab-four:checked ~ .tabs #tab-four-label{
+    cursor: default;
+    opacity: 1;
+    transition: 0.3s ease-in-out;
+    border-color: #69be28;
+}
+
 </style>
