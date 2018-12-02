@@ -9,7 +9,7 @@
       @drop="handleDrop"
       @dragover="handleDragover" @dragenter="handleDragover">
       拖拽 Excel 文件到此处或者
-      <el-button style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">浏览文件夹</el-button>
+      <el-button style="margin-left:16px;" size="mini" type="primary" icon="el-icon-upload" @click="handleUpload">浏览文件夹</el-button>
     </div>
   </div>
 </template>
@@ -21,14 +21,12 @@ export default {
     return {
       loading: false,
       excelData: {
-        header: null,
         results: null
       }
     }
   },
   methods: {
-    generateDate({ header, results }) {
-      this.excelData.header = header
+    generateData({ results }) {
       this.excelData.results = results
       this.$emit('on-selected-file', this.excelData)
     },
@@ -37,7 +35,7 @@ export default {
       e.preventDefault()
       const files = e.dataTransfer.files
       if (files.length !== 1) {
-        this.$message.error('Only support uploading one file!')
+        this.$message.error('一次仅能选择一个文件!')
         return
       }
       const itemFile = files[0] // only use files[0]
@@ -66,11 +64,14 @@ export default {
         const data = e.target.result
         const fixedData = this.fixData(data)
         const workbook = XLSX.read(btoa(fixedData), { type: 'base64' })
+        // load sheet 0
         const firstSheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[firstSheetName]
-        const header = this.getHeaderRow(worksheet)
-        const results = XLSX.utils.sheet_to_json(worksheet)
-        this.generateDate({ header, results })
+        /**
+         * @see https://docs.sheetjs.com/#json
+         */
+        const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+        this.generateData({ results })
       }
       reader.readAsArrayBuffer(itemFile)
     },
@@ -105,15 +106,20 @@ export default {
     z-index: -9999;
   }
   #drop{
+    box-sizing: border-box;
     border: 2px dashed #bbb;
-    width: 600px;
-    height: 160px;
-    line-height: 160px;
+    width: 98%;
+    height: 100px;
+    line-height: 100px;
     margin: 0 auto;
     font-size: 24px;
-    border-radius: 5px;
+    border-radius: 2px;
     text-align: center;
     color: #bbb;
     position: relative;
+    background: repeating-linear-gradient(45deg, #FFF 0, #FFF 15px, #EEE 15px, #EEE 30px)
+  }
+  #drop * {
+    background: #242;
   }
 </style>
