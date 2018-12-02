@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     getMode: function(code) {
-      if(code === this.shownTab) return true
+      if (code === this.shownTab) return true
       else false
     },
     switchMode: function(code) {

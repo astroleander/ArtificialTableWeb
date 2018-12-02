@@ -1,16 +1,27 @@
 <template>
   <div>
     <el-steps :active="activeStep" class="steps">
-      <el-step title="步骤 1" description="这是一段很长很长很长的描述性文字"></el-step>
-      <el-step title="步骤 2" description="这是一段很长很长很长的描述性文字"></el-step>
-      <el-step title="步骤 3" description="这段就没那么长了"></el-step>
+      <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
     </el-steps>
-    <div id="hot-preview" class="table-wrapper">
-      <section class="table-content">
-        <hot-table :settings="settings" class="table-hot"></hot-table>
+    <div id="step-import" :v-if="activeStep === 1"
+      class="content-wrapper flex-parent">
+      <section class="table-wrapper flex-left flex-half">
+        <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
       </section>
-      <section class="table-menu">
-        <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" close-text="知道了" type="warning" show-icon></el-alert>
+      <section class="menu-wrapper flex-right flex-half">
+        <div id="menu-input-helper">
+          <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
+        </div>
+        <div id="menu-table-board">
+          <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" type="warning" show-icon></el-alert>
+          <el-alert v-for="alert of alerts" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon></el-alert>
+        </div>
+        <div id="menu-data-previewer">
+          <p v-for="stats of importTableInfo" :key="stats.id">
+            <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
+            <span>{{stats.content}}</span>
+          </p>
+        </div>
       </section>
     </div>
   </div>
@@ -19,16 +30,37 @@
 <script>
 import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
+import ImportExcelComponent from '@/components/ImportExcel.vue'
+
+const REQUIRE_STUDENT_COLUMN = '您可能缺少学号列'
+const REQUIRE_STUDENT_COLUMN_LEFT = '您的最左侧的列不是最长的列, 您的最左列不是学号吗?'
+
+const calHeight = () => {
+  return window.innerHeight - 200
+}
+
+// xlsx 的输出模式被制定为 header:1, 与 handsontable 兼容， 不需要转换
+const xlsxToHotAdapter = (xlsxData) => {
+  return xlsxData
+}
 
 export default {
   components: {
-    HotTable
+    HotTable, ImportExcelComponent
   },
   data() {
     return {
-      settings: {
+      steps: [
+        { title: '引入数据', description: '将您的数据直接粘贴到面板，或导入一个 Excel 文件' },
+        { title: '选择要导入系统的数据', description: '选择要导入的列项和学生信息，并且补充一些必要的信息' },
+        { title: '校验导入结果', description: '确认您的导入结果' }
+      ],
+      hotSettings: {
         startRows: 80,
-        startCols: 15,
+        startCols: 13,
+        minCols: 13,
+        minRows: 60,
+        height: calHeight(),
         colHeaders: true,
         rowHeaders: true,
         contextMenu: {
@@ -54,10 +86,115 @@ export default {
               name: '剪切'
             }
           }
-        } // contextMenu-end
-      }, // settings-end
-      activeStep: 1
+        }, // contextMenu-end
+        /** 下面都是 hook
+         * @see https://handsontable.com/docs/6.2.0/tutorial-introduction.html
+         */
+        afterChange: function() {
+          let importDataset = this.getData()
+          // 返回不是全空的行
+          importDataset = importDataset.filter((row, rowIndex, arr) => {
+            return !row.every(cell => {
+              return cell === null || cell === '' || cell === undefined
+            })
+          })
+          const env = this.rootElement.__vue__
+          env.$store.dispatch('saveImportTable', { table: importDataset })
+        }
+      }, // hotSettings-end
+      activeStep: 1,
+      alerts: []
     }
+  }, // data-end
+  computed: {
+    importTable: {
+      get() {
+        return this.$store.state.table.importTable
+      }
+    },
+    importTableInfo: {
+      get() {
+        const importTable = this.$store.state.table.importTable
+        let count = 0
+        const col_size = importTable[0] && importTable[0].length || 12
+        const col_count = Array(col_size).fill(0)
+        importTable.forEach(row => {
+          row.forEach((cell, idx) => {
+            if (cell === null || cell === '' || cell === undefined) { '' } // 没有 pass 的第 3024 天, 想它
+            else {
+              count++
+              col_count[idx]++
+            }
+          })
+        })
+
+        const importRows = importTable && importTable.length || 0
+        const importCols = col_count.filter(v => v !== 0).length
+
+        if (Math.max(...col_count) < importRows) {
+          this.raiseUnalignError(Math.max(...col_count), importRows)
+        } else {
+          this.closeUnalignError()
+        }
+
+        if (col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0)) {
+          this.raiseLeftUnalignWarning()
+        } else {
+          this.closeLeftUnalignWarning()
+        }
+
+        return [
+          { id: 1, title: '学生数', meaning: '导入的行数', content: importRows },
+          { id: 2, title: '类别数', meaning: '导入的列数', content: importCols },
+          { id: 3, title: '共计' + count + '条记录' }
+        ]
+      }
+    }
+  },
+  methods: {
+    raiseUnalignError(expect, actual) {
+      this.addAlert({
+        title: REQUIRE_STUDENT_COLUMN,
+        description: '您的总行数和最大行数不匹配 (最大的行数为 ' + expect + ' 行, 但您共导入了 ' + actual + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失',
+        type: 'error'
+      })
+    },
+    closeUnalignError() {
+      if (this.alerts.find(item => item.title === REQUIRE_STUDENT_COLUMN)) {
+        this.alerts = this.alerts.filter(item => item.title !== REQUIRE_STUDENT_COLUMN)
+      }
+    },
+    raiseLeftUnalignWarning() {
+      this.addAlert({
+        title: REQUIRE_STUDENT_COLUMN_LEFT,
+        description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入',
+        type: 'warning'
+      })
+    },
+    closeLeftUnalignWarning() {
+      if (this.alerts.find(item => item.title === REQUIRE_STUDENT_COLUMN_LEFT)) {
+        this.alerts = this.alerts.filter(item => item.title !== REQUIRE_STUDENT_COLUMN_LEFT)
+      }
+    },
+    addAlert(alert) {
+      // if exist the splice, else execute push statement
+      let existAlertIdx
+      if ((existAlertIdx = this.alerts.findIndex(item => item.title === alert.title)) !== -1) {
+        this.alerts.splice(existAlertIdx, 1, alert)
+      } else {
+        this.alerts.push(alert)
+      }
+    },
+    onSelectedLocalExcel(data) {
+      // console.log(data.results)
+      this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
+    }
+  },
+  watch: {
+
+  },
+  created() {
+    this.$store.dispatch('saveImportTable', { table: [] })
   }
 }
 </script>
@@ -67,29 +204,24 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+.flex-half {
+  float: left;
+  width: 50%;
+  background: white;
+}
+
 .steps {
   background: white;
-  padding: 2em;
+  padding: 1em;
+  height: 150px;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  display: block;
 }
 
 .table-wrapper {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: columns;
-  align-items: flex-start;
+  max-width: 55%;
 }
-
-.table-content {
-  flex: 0 0 auto;
-  box-sizing: border-box;
-}
-
-.table-menu {
-  box-sizing: border-box;
-  width: 60%;
-  flex: 1 1 auto;
-}
-
-
 </style>
