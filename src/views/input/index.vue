@@ -1,29 +1,64 @@
 <template>
   <div>
-    <el-steps :active="activeStep" class="steps">
+    <el-steps :active="activeStep" class="steps" finish-status="success">
       <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
     </el-steps>
-    <div id="step-import" :v-if="activeStep === 1"
-      class="content-wrapper flex-parent">
-      <section class="table-wrapper flex-left flex-half">
-        <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
-      </section>
-      <section class="menu-wrapper flex-right flex-half">
-        <div id="menu-input-helper">
-          <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
+    <el-tabs v-model="getActiveStep" tab-position="hidden">
+      <!-- contains 3 steps -->
+      <el-tab-pane name="1">
+        <span slot="label" style="display:none"></span>
+        <div id="step-import"
+          class="content-wrapper flex-parent">
+          <!-- 左边的导入表格 -->
+          <section class="table-wrapper flex-left flex-half">
+            <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
+          </section>
+          <!-- 右边的统计和控制项 -->
+          <section class="menu-wrapper flex-right flex-half">
+            <div id="menu-input-helper">
+              <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
+            </div>
+            <div id="menu-table-board">
+              <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" type="warning" show-icon class="alert"></el-alert>
+              <el-alert v-for="alert of alerts" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
+            </div>
+            <div id="menu-continue" class="menu-continue">
+              <el-switch
+                style="display: block"
+                id="menu-continue-switch-btn"
+                v-model="isHead"
+                active-color="#4caf50"
+                inactive-color="#ff4949"
+                active-text="数据包含列名"
+                >
+              </el-switch>
+              <el-button class="button" type="success" @click="handleNextStep(1)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            </div>
+            <div id="menu-data-previewer">
+              <p v-for="stats of importTableInfo" :key="stats.id">
+                <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
+                <span>{{stats.content}}</span>
+              </p>
+            </div>
+          </section>
         </div>
-        <div id="menu-table-board">
-          <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" type="warning" show-icon></el-alert>
-          <el-alert v-for="alert of alerts" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon></el-alert>
+      </el-tab-pane><!-- step 1 end, and step 2 start -->
+      <el-tab-pane name="2">
+        <span slot="label" style="display:none"></span>
+        <div id="step-settings"
+          >
+          <el-table>
+
+          </el-table>
         </div>
-        <div id="menu-data-previewer">
-          <p v-for="stats of importTableInfo" :key="stats.id">
-            <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
-            <span>{{stats.content}}</span>
-          </p>
+      </el-tab-pane><!-- step 2 end, and step 3 start -->
+      <el-tab-pane name="3">
+        <span slot="label" style="display:none"></span>
+        <div id="step-preview"
+        >
         </div>
-      </section>
-    </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -103,6 +138,7 @@ export default {
         }
       }, // hotSettings-end
       activeStep: 1,
+      isHead: false,
       alerts: []
     }
   }, // data-end
@@ -110,6 +146,11 @@ export default {
     importTable: {
       get() {
         return this.$store.state.table.importTable
+      }
+    },
+    getActiveStep: {
+      get() {
+        return String(this.activeStep)
       }
     },
     importTableInfo: {
@@ -120,7 +161,8 @@ export default {
         const col_count = Array(col_size).fill(0)
         importTable.forEach(row => {
           row.forEach((cell, idx) => {
-            if (cell === null || cell === '' || cell === undefined) { '' } // 没有 pass 的第 3024 天, 想它
+            // eslint-disable-next-line
+            if (cell === null || cell === '' || cell === undefined) {}// 没有 pass 的第 3024 天, 想它
             else {
               count++
               col_count[idx]++
@@ -188,6 +230,20 @@ export default {
     onSelectedLocalExcel(data) {
       // console.log(data.results)
       this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
+    },
+    handleNextStep(step) {
+      switch (step) {
+        case 1:
+          this.activeStep = 2
+          // this.renderSettingsPage()
+          break
+        case 2:
+          this.activeStep = 3
+          // this.renderPreviewPages()
+          break
+        case 3:
+          break
+      }
     }
   },
   watch: {
@@ -217,11 +273,45 @@ export default {
   box-sizing: border-box;
 }
 
+#menu-table-board {
+  .alert{
+    margin: 8px 12px
+  }
+}
+
 .content-wrapper {
   display: block;
 }
 
 .table-wrapper {
   max-width: 55%;
+}
+
+.menu-continue {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 12px;
+  * {
+    margin: 0 12px 0 0;
+  }
+
+  .button {
+    background: #4caf50
+  }
+}
+</style>
+
+<!-- override element-ui switch button active style -->
+<style>
+#menu-continue-switch-btn .el-switch__label * {
+  color: #BBB;
+}
+#menu-continue-switch-btn .el-switch__label.is-active * {
+  color: #212121;
+}
+.el-tabs__header.is-hidden {
+  display: none
 }
 </style>
