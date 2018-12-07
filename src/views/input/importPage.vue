@@ -3,9 +3,6 @@
     <el-steps :active="activeStep" class="steps" finish-status="success">
       <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
     </el-steps>
-
-    <router-view></router-view>
-
     <el-tabs v-model="getActiveStep" tab-position="hidden">
       <!-- contains 3 steps -->
 
@@ -432,12 +429,12 @@ export default {
       })
     },
     renderSettingsPage() {
-      this.$router.push({ path: 'settings' })
       this.settingsPageData = {}
       this.settingsPageData = hotToElementAdapter(this.importTable, this.isHead)
     },
     renderPreviewPage() {
-      this.$router.push({ path: 'preview' })
+      this.
+      this.$router.push({ path: 'input/preview' })
     }
   },
   // watch: {
