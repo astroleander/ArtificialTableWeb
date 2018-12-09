@@ -4,8 +4,6 @@
       <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
     </el-steps>
 
-    <router-view></router-view>
-
     <el-tabs v-model="getActiveStep" tab-position="hidden">
       <!-- contains 3 steps -->
 
