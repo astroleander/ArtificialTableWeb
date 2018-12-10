@@ -8,7 +8,7 @@
       <!-- contains 3 steps -->
 
       <!-- STEP - 1 -->
-      <el-tab-pane name="1">
+      <el-tab-pane name="0">
         <span slot="label" style="display:none"></span>
         <div id="step-import"
           class="content-wrapper flex-parent">
@@ -32,7 +32,7 @@
               <el-switch
                 style="display: block"
                 id="menu-continue-switch-btn"
-                v-model="isHead"
+                v-model="importDataHasHead"
                 active-color="#4caf50"
                 inactive-color="#ff4949"
                 active-text="数据包含列名"
@@ -51,29 +51,30 @@
         </div>
       </el-tab-pane><!-- step 1 end, and step 2 start -->
        <!-- STEP - 2 -->
-      <el-tab-pane name="2">
+      <el-tab-pane name="1">
         <span slot="label" style="display:none"></span>
         <div id="step-settings" slot-scope="pane"
           class="content-wrapper flex-parent">
           <!-- STEP - 2 - 左边的导入表格 -->
           <section class="flex-left flex-70">
           <!-- STEP - 2 -->
-          <el-table id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)"
+          <!-- 使用 v-if rerender 表格，消耗一定的性能，使得表格强制刷新 -->
+          <el-table v-if="activeStep === 1" :key="activeStep" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)"
             >
             <el-table-column
                 v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
-                min-width="150px">
+                min-width="150px" width="200px">
                 <!-- 自定义表头，用于选择列的属性 -->
                 <template slot="header" slot-scope="scope" >
                   <div class="settings-table-header">
                     <label :for='"el-selector-for-type-col-" + title.idx'
-                        class="selector-for-hidden-selector" :style='"background:"+getSelectorColorByType(title.type)+";"'>
+                        class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title.type)+";"'>
                     </label>
                     <el-select v-model="title.type" placeholder="请选择"
                       :id='"el-selector-for-type-col-" + title.idx'
                       class="hidden-selector" size="mini">
                       <el-option
-                        v-for="item in typeOptions"
+                        v-for="item in headTypeList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -125,7 +126,7 @@
           </section>
         </div>
       </el-tab-pane><!-- step 2 end, and step 3 start -->
-      <el-tab-pane name="3">
+      <el-tab-pane name="2">
         <span slot="label" style="display:none"></span>
         <div id="step-preview"
         >
@@ -221,7 +222,7 @@ export default {
         { title: '选择要导入系统的数据', description: '选择要导入的列项和学生信息，并且补充一些必要的信息' },
         { title: '校验导入结果', description: '确认您的导入结果' }
       ],
-      typeOptions: [
+      headTypeList: [
         { value: 'default', label: '默认(丢弃)', color: 'repeating-linear-gradient(45deg ,#FFCC33 0, #FFCC33 4px, #665 4px, #665 8px)' },
         { value: 'sid', label: '学号列', color: COLOR_SID },
         { value: 'title', label: '列项名', color: '#4CAF50' },
@@ -276,8 +277,8 @@ export default {
           env.$store.dispatch('saveImportTable', { table: importDataset })
         }
       }, // hotSettings-end
-      activeStep: 1,
-      isHead: false,
+      activeStep: 0,
+      importDataHasHead: false,
       alerts: [],
       settingsPageData: {},
       titleGroupList: []
@@ -335,14 +336,69 @@ export default {
         ]
       }
     },
-    getSettingsPagesDataset: function() {
-      return this.settingsPageData.dataset
-    },
-    getSettingsPagesTitles() {
-      return this.settingsPageData.titles
-    }
   },
   methods: {
+    addAlert(alert) {
+      // if exist the splice, else execute push statement
+      let existAlertIdx
+      if ((existAlertIdx = this.alerts.findIndex(item => item.title === alert.title)) !== -1) {
+        this.alerts.splice(existAlertIdx, 1, alert)
+      } else {
+        this.alerts.push(alert)
+      }
+    },
+    getSelectorColorByType(type) {
+      const q = this.headTypeList.find(title => title.value === type)
+      // console.log(q)
+      return q.color
+    },
+    getCellColorByType(type) {
+      if (type === 'title') {
+        return CELL_COLOR_TITLE
+      } else if (type === 'sid') {
+        return CELL_COLOR_SID
+      } else {
+        return CELL_COLOR_USELESS
+      }
+    },
+    toStep(step) {
+      switch (step) {
+        case 1:
+          this.activeStep = 0
+          this.$router.push({ path: 'import' })
+          break
+        case 2: {
+          this.activeStep = 1
+          this.settingsPageData = {}
+          this.$router.push({ path: 'settings' })
+          this.renderSettingsPage()
+          break
+        }
+        case 3:
+          this.activeStep = 2
+          this.$router.push({ path: 'preview' })
+          this.renderPreviewPage()
+          break
+      }
+    },
+    renderSettingsPage() {
+      Object.assign(this.$data.settingsPageData, {})
+      this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+    },
+    renderPreviewPage() {
+    },
+    fetchTitleGroup: function() {
+      // TODO: Add request params
+      tableViewmodel.requestTitleGroup({ classInfo_id: 1 }).then(list => {
+        this.titleGroupList = list
+      }).catch(err => {
+        console.error(err)
+        this.$message({
+          message: err,
+          type: 'error'
+        })
+      })
+    },
     raiseUnalignError(expect, actual) {
       this.addAlert({
         title: REQUIRE_STUDENT_COLUMN,
@@ -367,29 +423,7 @@ export default {
         this.alerts = this.alerts.filter(item => item.title !== REQUIRE_STUDENT_COLUMN_LEFT)
       }
     },
-    addAlert(alert) {
-      // if exist the splice, else execute push statement
-      let existAlertIdx
-      if ((existAlertIdx = this.alerts.findIndex(item => item.title === alert.title)) !== -1) {
-        this.alerts.splice(existAlertIdx, 1, alert)
-      } else {
-        this.alerts.push(alert)
-      }
-    },
-    getSelectorColorByType(type) {
-      const q = this.typeOptions.find(title => title.value === type)
-      // console.log(q)
-      return q.color
-    },
-    getCellColorByType(type) {
-      if (type === 'title') {
-        return CELL_COLOR_TITLE
-      } else if (type === 'sid') {
-        return CELL_COLOR_SID
-      } else {
-        return CELL_COLOR_USELESS
-      }
-    },
+    // listners
     onSelectedLocalExcel(data) {
       // console.log(data.results)
       this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
@@ -400,43 +434,6 @@ export default {
     handleTitleTypeChange(title, type) {
       title.type = type
     },
-    toStep(step) {
-      switch (step) {
-        case 1:
-          this.activeStep = 1
-          break
-        case 2: {
-          this.activeStep = 2
-          this.settingsPageData = {}
-          this.renderSettingsPage()
-          break
-        }
-        case 3:
-          this.activeStep = 3
-          this.renderPreviewPage()
-          break
-      }
-    },
-    fetchTitleGroup: function() {
-      // TODO: Add request params
-      tableViewmodel.requestTitleGroup({ classInfo_id: 1 }).then(list => {
-        this.titleGroupList = list
-      }).catch(err => {
-        console.error(err)
-        this.$message({
-          message: err,
-          type: 'error'
-        })
-      })
-    },
-    renderSettingsPage() {
-      this.$router.push({ path: 'settings' })
-      this.settingsPageData = {}
-      this.settingsPageData = hotToElementAdapter(this.importTable, this.isHead)
-    },
-    renderPreviewPage() {
-      this.$router.push({ path: 'preview' })
-    }
   },
   // watch: {
   //   activeStep: function(newStep) {
