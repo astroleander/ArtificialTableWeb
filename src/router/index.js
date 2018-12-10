@@ -167,8 +167,8 @@ export const constantRouterMap = [
       component: () => import('@/views/input/index'),
       children: [
         { path: 'import', meta: { title: '引入数据', icon: 'tree' }, hidden: true, name: 'import', component: () => import('@/views/input/importPage') },
-        { path: 'preview', meta: { title: '选择导入项', icon: 'tree' }, hidden: true, name: 'preview', component: () => import('@/views/input/previewPage') },
-        { path: 'settings', meta: { title: '预览结果', icon: 'tree' }, hidden: true, name: 'settings', component: () => import('@/views/input/settingsPage') }
+        { path: 'preview', meta: { title: '预览结果', icon: 'tree' }, hidden: true, name: 'preview', component: () => import('@/views/input/previewPage') },
+        { path: 'settings', meta: { title: '选择导入项', icon: 'tree' }, hidden: true, name: 'settings', component: () => import('@/views/input/settingsPage') }
       ]
     }]
   },
@@ -182,7 +182,7 @@ export const constantRouterMap = [
       component: () => import('@/views/transcript'),
       meta: { title: '课程信息', icon: 'tree' }
     }]
-  },
+  }
   // { path: '*', redirect: '/404', hidden: true }
 ]
 
