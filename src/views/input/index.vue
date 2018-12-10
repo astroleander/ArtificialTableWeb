@@ -24,7 +24,6 @@
             </div>
             <!-- STEP - 1 - 警示公告板 -->
             <div id="menu-table-board">
-              <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" type="warning" show-icon class="alert"></el-alert>
               <el-alert v-for="alert of importAlertList" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
             </div>
             <!-- STEP - 1 - 按钮组 -->
@@ -144,6 +143,13 @@ import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import tableViewmodel from '@/viewmodel/transcript/'
 
+const CLIP_BOARD_ALERT = {
+  id: '0',
+  title: '请使用 「Ctrl+V」 进行粘贴',
+  description: '出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。',
+  type: 'warning'
+}
+
 const REQUIRE_STUDENT_COLUMN = {
   id: '1',
   title: '您可能缺少学号列',
@@ -154,6 +160,13 @@ const REQUIRE_STUDENT_COLUMN_LEFT = {
   id: '2',
   title: '您的最左侧的列不是最长的列, 您的最左列不是学号吗?',
   description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入'
+}
+
+const DUPLICATE_SID = {
+  id: '114154',
+  title: '重复的学号列',
+  description: '系统检测到多个学号列, 请修复后再进行下一步。',
+  type: 'error'
 }
 
 const COLOR_SID = '#1976D2'
@@ -226,6 +239,7 @@ export default {
   },
   data() {
     return {
+      activeStep: 0,
       steps: [
         { title: '引入数据', description: '将您的数据直接粘贴到面板，或导入一个 Excel 文件' },
         { title: '选择要导入系统的数据', description: '选择要导入的列项和学生信息，并且补充一些必要的信息' },
@@ -286,9 +300,9 @@ export default {
           env.$store.dispatch('saveImportTable', { table: importDataset })
         }
       }, // hotSettings-end
-      activeStep: 0,
       importDataHasHead: false,
-      importAlertList: [],
+      importAlertList: [CLIP_BOARD_ALERT],
+      settingsAlertList: [],
       settingsPageData: {},
       titleGroupList: []
     }
@@ -336,7 +350,6 @@ export default {
         if (col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0)) {
           this.raiseLeftUnalignWarning()
         } else {
-          console.log('closeLeftUnalignWarning')
           this.closeLeftUnalignWarning()
         }
         return [
@@ -362,7 +375,6 @@ export default {
     },
     raiseUnalignError(expect, actual) {
       const description = '您的总行数和最大行数不匹配 (最大的行数为 ' + expect + ' 行, 但您共导入了 ' + actual + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失'
-      console.log(description)
       this.addAlert(
         Object.assign(REQUIRE_STUDENT_COLUMN, {
           type: 'error',
@@ -370,14 +382,12 @@ export default {
         }), this.importAlertList)
     },
     closeAlert(list, toClose) {
-        console.log('close left')
-        if (list.find(item => item.id === toClose.id)) {
-          list = list.filter(item => item.id !== toClose.id)
-        }
-        return list
+      if (list.find(item => item.id === toClose.id)) {
+        list = list.filter(item => item.id !== toClose.id)
+      }
+      return list
     },
     closeLeftUnalignWarning() {
-      console.log('close left')
       this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT)
     },
     closeUnalignError() {
