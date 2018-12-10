@@ -433,7 +433,6 @@ export default {
       this.settingsPageData = hotToElementAdapter(this.importTable, this.isHead)
     },
     renderPreviewPage() {
-      this.
       this.$router.push({ path: 'input/preview' })
     }
   },
