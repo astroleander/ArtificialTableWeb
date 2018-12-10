@@ -25,7 +25,7 @@
             <!-- STEP - 1 - 警示公告板 -->
             <div id="menu-table-board">
               <el-alert title="请使用 「Ctrl+V」 进行粘贴" description="出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。" type="warning" show-icon class="alert"></el-alert>
-              <el-alert v-for="alert of alerts" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
+              <el-alert v-for="alert of importAlertList" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
             </div>
             <!-- STEP - 1 - 按钮组 -->
             <div id="menu-continue" class="menu-continue">
@@ -144,8 +144,17 @@ import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import tableViewmodel from '@/viewmodel/transcript/'
 
-const REQUIRE_STUDENT_COLUMN = '您可能缺少学号列'
-const REQUIRE_STUDENT_COLUMN_LEFT = '您的最左侧的列不是最长的列, 您的最左列不是学号吗?'
+const REQUIRE_STUDENT_COLUMN = {
+  id: '1',
+  title: '您可能缺少学号列',
+  description: ''
+}
+
+const REQUIRE_STUDENT_COLUMN_LEFT = {
+  id: '2',
+  title: '您的最左侧的列不是最长的列, 您的最左列不是学号吗?',
+  description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入'
+}
 
 const COLOR_SID = '#1976D2'
 const CELL_COLOR_SID = 'linear-gradient(135deg, ' + COLOR_SID + ', ' + COLOR_SID + ' 6px , #FFF 10px, #FFF 100%)'
@@ -279,7 +288,7 @@ export default {
       }, // hotSettings-end
       activeStep: 0,
       importDataHasHead: false,
-      alerts: [],
+      importAlertList: [],
       settingsPageData: {},
       titleGroupList: []
     }
@@ -327,6 +336,7 @@ export default {
         if (col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0)) {
           this.raiseLeftUnalignWarning()
         } else {
+          console.log('closeLeftUnalignWarning')
           this.closeLeftUnalignWarning()
         }
         return [
@@ -335,17 +345,43 @@ export default {
           { id: 3, title: '共计' + count + '条记录' }
         ]
       }
-    },
+    }
   },
   methods: {
-    addAlert(alert) {
+    addAlert(alert, alertList) {
       // if exist the splice, else execute push statement
       let existAlertIdx
-      if ((existAlertIdx = this.alerts.findIndex(item => item.title === alert.title)) !== -1) {
-        this.alerts.splice(existAlertIdx, 1, alert)
+      if ((existAlertIdx = alertList.findIndex(item => item.title === alert.title)) !== -1) {
+        alertList.splice(existAlertIdx, 1, alert)
       } else {
-        this.alerts.push(alert)
+        alertList.push(alert)
       }
+    },
+    raiseLeftUnalignWarning() {
+      this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, { type: 'warning' }), this.importAlertList)
+    },
+    raiseUnalignError(expect, actual) {
+      const description = '您的总行数和最大行数不匹配 (最大的行数为 ' + expect + ' 行, 但您共导入了 ' + actual + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失'
+      console.log(description)
+      this.addAlert(
+        Object.assign(REQUIRE_STUDENT_COLUMN, {
+          type: 'error',
+          description
+        }), this.importAlertList)
+    },
+    closeAlert(list, toClose) {
+        console.log('close left')
+        if (list.find(item => item.id === toClose.id)) {
+          list = list.filter(item => item.id !== toClose.id)
+        }
+        return list
+    },
+    closeLeftUnalignWarning() {
+      console.log('close left')
+      this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT)
+    },
+    closeUnalignError() {
+      this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN)
     },
     getSelectorColorByType(type) {
       const q = this.headTypeList.find(title => title.value === type)
@@ -399,30 +435,6 @@ export default {
         })
       })
     },
-    raiseUnalignError(expect, actual) {
-      this.addAlert({
-        title: REQUIRE_STUDENT_COLUMN,
-        description: '您的总行数和最大行数不匹配 (最大的行数为 ' + expect + ' 行, 但您共导入了 ' + actual + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失',
-        type: 'error'
-      })
-    },
-    closeUnalignError() {
-      if (this.alerts.find(item => item.title === REQUIRE_STUDENT_COLUMN)) {
-        this.alerts = this.alerts.filter(item => item.title !== REQUIRE_STUDENT_COLUMN)
-      }
-    },
-    raiseLeftUnalignWarning() {
-      this.addAlert({
-        title: REQUIRE_STUDENT_COLUMN_LEFT,
-        description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入',
-        type: 'warning'
-      })
-    },
-    closeLeftUnalignWarning() {
-      if (this.alerts.find(item => item.title === REQUIRE_STUDENT_COLUMN_LEFT)) {
-        this.alerts = this.alerts.filter(item => item.title !== REQUIRE_STUDENT_COLUMN_LEFT)
-      }
-    },
     // listners
     onSelectedLocalExcel(data) {
       // console.log(data.results)
@@ -433,7 +445,7 @@ export default {
     },
     handleTitleTypeChange(title, type) {
       title.type = type
-    },
+    }
   },
   // watch: {
   //   activeStep: function(newStep) {
