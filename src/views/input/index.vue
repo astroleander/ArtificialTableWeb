@@ -58,7 +58,7 @@
           <section class="flex-left flex-70">
           <!-- STEP - 2 -->
           <!-- 使用 v-if rerender 表格，消耗一定的性能，使得表格强制刷新 -->
-          <el-table v-if="activeStep === 1" :key="activeStep" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)"
+          <el-table v-if="activeStep === 1" :key="activeStep" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)" border
             >
             <el-table-column
                 v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
@@ -67,7 +67,7 @@
                 <template slot="header" slot-scope="scope" >
                   <div class="settings-table-header">
                     <label :for='"el-selector-for-type-col-" + title.idx'
-                        class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title.type)+";"'>
+                        class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title)+";"'>
                     </label>
                     <el-select v-model="title.type" placeholder="请选择"
                       :id='"el-selector-for-type-col-" + title.idx'
@@ -152,44 +152,16 @@ import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import tableViewmodel from '@/viewmodel/transcript/'
-
-const CLIP_BOARD_ALERT = {
-  id: '0',
-  title: '请使用 「Ctrl+V」 进行粘贴',
-  description: '出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。',
-  type: 'warning'
-}
-
-const REQUIRE_STUDENT_COLUMN = {
-  id: '1',
-  title: '您可能缺少学号列',
-  description: ''
-}
-
-const REQUIRE_STUDENT_COLUMN_LEFT = {
-  id: '2',
-  title: '您的最左侧的列不是最长的列, 您的最左列不是学号吗?',
-  description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入'
-}
-
-const DUPLICATE_SID = {
-  id: '114154',
-  title: '重复的学号列',
-  description: '系统检测到多个学号列, 请修复后再进行下一步。',
-  type: 'error'
-}
-
-const REQUIRED_SID = {
-  id: 'AEDVHF',
-  title: '缺少学号列',
-  description: '系统没有检测到学号列, 请添加学号列后再进行下一步。',
-  type: 'error'
-}
+import { CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_TITLE } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
+const COLOR_UNFINISHED = '#FFCC33'
+const COLOR_TITLE = '#4caf50'
 const CELL_COLOR_SID = 'linear-gradient(135deg, ' + COLOR_SID + ', ' + COLOR_SID + ' 6px , #FFF 10px, #FFF 100%)'
 const CELL_COLOR_TITLE = '#FFF'
 const CELL_COLOR_USELESS = '#DDD'
+const COLOR_LEFT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_TITLE + ', ' + COLOR_TITLE + ' 50% ,' + COLOR_UNFINISHED + ' 50%, ' + COLOR_UNFINISHED + ' 100%)'
+const COLOR_RIGHT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 50% ,' + COLOR_TITLE + ' 50%, ' + COLOR_TITLE + ' 100%)'
 
 const calHeight = () => {
   return window.innerHeight - 200
@@ -266,10 +238,10 @@ export default {
       headTypeList: [
         { value: 'default', label: '默认(丢弃)', color: 'repeating-linear-gradient(45deg ,#FFCC33 0, #FFCC33 4px, #665 4px, #665 8px)' },
         { value: 'sid', label: '学号列', color: COLOR_SID },
-        { value: 'title', label: '列项名', color: '#4CAF50' },
+        { value: 'title', label: '列项名', color: COLOR_UNFINISHED },
         { value: 'useless',
           label: '无用项',
-          color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)' }
+          color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)' },
       ],
       hotSettings: {
         startRows: 80,
@@ -428,6 +400,11 @@ export default {
             validator: sidCount < 1,
             action: () => this.addAlert(REQUIRED_SID, this.settingsAlertList),
             close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_SID))
+          },
+          {
+            validator: titleCount < 1,
+            action: () => this.addAlert(REQUIRED_TITLE, this.settingsAlertList),
+            close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_TITLE))
           }
         ]
 
@@ -461,9 +438,20 @@ export default {
       }
       return list
     },
-    getSelectorColorByType(type) {
-      const q = this.headTypeList.find(title => title.value === type)
-      // console.log(q)
+    getSelectorColorByType(title) {
+      const q = this.headTypeList.find(types => {
+        return types.value === title.type
+      })
+
+      if (title.type === 'title') {
+        if (title.name !== '' && title.name !== undefined && title.name !== null && title.titleGroup !== '' && title.titleGroup !== undefined && title.titleGroup !== null) {
+          return COLOR_TITLE
+        } else if (title.name !== '' && title.name !== undefined && title.name !== null) {
+          return COLOR_LEFT_HALF_TITLE
+        } else if (title.titleGroup !== '' && title.titleGroup !== undefined && title.titleGroup !== null) {
+          return COLOR_RIGHT_HALF_TITLE
+        }
+      }
       return q.color
     },
     getCellColorByType(type) {
