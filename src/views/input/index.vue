@@ -23,7 +23,7 @@
               <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
             </div>
             <!-- STEP - 1 - 警示公告板 -->
-            <div id="menu-table-board">
+            <div id="import-menu-table-board">
               <el-alert v-for="alert of importAlertList" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
             </div>
             <!-- STEP - 1 - 按钮组 -->
@@ -41,7 +41,7 @@
             </div>
             <!-- STEP - 1 - 统计信息 -->
             <div id="menu-data-previewer">
-              <p v-for="stats of importTableInfos" :key="stats.id">
+              <p v-for="stats of importTableAnalysis" :key="stats.id">
                 <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
                 <span>{{stats.content}}</span>
               </p>
@@ -120,6 +120,16 @@
           </section>
           <!-- STEP - 2 -  右边的补充项 -->
           <section class="menu-wrapper flex-right flex-30">
+            <div id="menu-data-previewer">
+              <p v-for="stats of settingsTableAnalysis" :key="stats.id">
+                <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
+                <span>{{stats.content}}</span>
+              </p>
+              <!-- STEP - 2 - 警示公告板 -->
+              <div id="settings-menu-table-board">
+                <el-alert v-for="alert of settingsAlertList" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
+              </div>
+            </div>
             <el-button class="button" type="success" @click="toStep(1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
             <el-button class="button" type="success" @click="toStep(3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </section>
@@ -169,6 +179,13 @@ const DUPLICATE_SID = {
   type: 'error'
 }
 
+const REQUIRED_SID = {
+  id: 'AEDVHF',
+  title: '缺少学号列',
+  description: '系统没有检测到学号列, 请添加学号列后再进行下一步。',
+  type: 'error'
+}
+
 const COLOR_SID = '#1976D2'
 const CELL_COLOR_SID = 'linear-gradient(135deg, ' + COLOR_SID + ', ' + COLOR_SID + ' 6px , #FFF 10px, #FFF 100%)'
 const CELL_COLOR_TITLE = '#FFF'
@@ -208,10 +225,10 @@ const hotToElementAdapter = (hotData, withHeader) => {
         // 初始化 title 项
         if (!titleMap.get(colIdx)) {
           const newTitle = { idx: colIdx, type: 'default', name: colNameList[colIdx], titleGroup: undefined }
-          // 自动设置 title.type
+          // 如果包含项名，则自动设置 title.type
           if (withHeader && !(hotData[0][colIdx] === undefined || hotData[0][colIdx] === null || hotData[0][colIdx] === '')) {
             // console.log(hotData[0][colIdx])
-            if (RegExp('^学').test(hotData[0][colIdx])) newTitle.type = 'sid'
+            if (RegExp('学号').test(hotData[0][colIdx])) newTitle.type = 'sid'
             else newTitle.type = 'title'
           }
           titleMap.set(colIdx, newTitle)
@@ -219,12 +236,13 @@ const hotToElementAdapter = (hotData, withHeader) => {
       }
     })
   }
-
+  // 输出数据集结果
   hotData.forEach((rowArray, rowIdx) => {
     resDataSet[rowIdx] = [];
     [...titleMap.keys()].forEach(colIdx => (resDataSet[rowIdx][colIdx] = rowArray[colIdx]))
   })
 
+  // 如果是包含项名的输入，则将第一列删除
   if (withHeader) resDataSet.shift()
 
   return {
@@ -321,7 +339,7 @@ export default {
         this.activeStep = Number(step)
       }
     },
-    importTableInfos: {
+    importTableAnalysis: {
       get() {
         const importTable = this.$store.state.table.importTable
         let count = 0
@@ -341,21 +359,88 @@ export default {
         const importRows = importTable && importTable.length || 0
         const importCols = col_count.filter(v => v !== 0).length
 
-        if (Math.max(...col_count) < importRows) {
-          this.raiseUnalignError(Math.max(...col_count), importRows)
-        } else {
-          this.closeUnalignError()
-        }
+        const alertsRaiseRules = [
+          {
+            validator: Math.max(...col_count) < importRows,
+            action: () => {
+              const description = '您的总行数和最大行数不匹配 (最大的行数为 ' + Math.max(...col_count) + ' 行, 但您共导入了 ' + importRows + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失'
+              this.addAlert(
+                Object.assign(REQUIRE_STUDENT_COLUMN, {
+                  type: 'error',
+                  description
+                }), this.importAlertList)
+            },
+            close: () => (this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN))
+          },
+          {
+            validator: col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0),
+            action: () => this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, { type: 'warning' }), this.importAlertList),
+            close: () => (this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT))
+          }
+        ]
 
-        if (col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0)) {
-          this.raiseLeftUnalignWarning()
-        } else {
-          this.closeLeftUnalignWarning()
-        }
+        alertsRaiseRules.forEach(matchRule => {
+          if (matchRule.validator) matchRule.action()
+          else matchRule.close()
+        })
+
         return [
           { id: 1, title: '学生数', meaning: '导入的行数', content: importRows },
           { id: 2, title: '类别数', meaning: '导入的列数', content: importCols },
           { id: 3, title: '共计' + count + '条记录' }
+        ]
+      }
+    },
+    settingsTableAnalysis: {
+      get() {
+        if (this.settingsPageData.dataset === undefined) return []
+
+        const settingsTable = this.settingsPageData
+        console.log(settingsTable)
+        let titleCount = 0
+        let sidCount = 0
+        let uselessCount = 0
+        let defaultCount = 0
+
+        // switch rules
+        const t_rules = [
+          { type: 'sid', action: () => sidCount++ },
+          { type: 'title', action: () => titleCount++ },
+          { type: 'useless', action: () => uselessCount++ },
+          { type: 'default', action: () => defaultCount++ }
+        ]
+        // executing switch by rule
+        settingsTable.titles.forEach(title => {
+          t_rules.forEach(rule => {
+            if (rule.type === title.type) {
+              rule.action()
+            }
+          })
+        })
+
+        const alertsRaiseRules = [
+          {
+            validator: sidCount > 1,
+            action: () => this.addAlert(DUPLICATE_SID, this.settingsAlertList),
+            close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, DUPLICATE_SID))
+          },
+          {
+            validator: sidCount < 1,
+            action: () => this.addAlert(REQUIRED_SID, this.settingsAlertList),
+            close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_SID))
+          }
+        ]
+
+        alertsRaiseRules.forEach(matchRule => {
+          if (matchRule.validator) matchRule.action()
+          else matchRule.close()
+        })
+
+        return [
+          { id: 1, title: '学生数', content: '24' },
+          { id: 2, title: '导入的小项数', content: titleCount },
+          { id: 3, title: '学生数', content: '24' },
+          { id: 4, title: '将有' + (uselessCount + defaultCount) + '列被废弃' }
         ]
       }
     }
@@ -370,28 +455,11 @@ export default {
         alertList.push(alert)
       }
     },
-    raiseLeftUnalignWarning() {
-      this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, { type: 'warning' }), this.importAlertList)
-    },
-    raiseUnalignError(expect, actual) {
-      const description = '您的总行数和最大行数不匹配 (最大的行数为 ' + expect + ' 行, 但您共导入了 ' + actual + ' 行)' + ', 这会导致那些没有学号的分数项在导入时丢失'
-      this.addAlert(
-        Object.assign(REQUIRE_STUDENT_COLUMN, {
-          type: 'error',
-          description
-        }), this.importAlertList)
-    },
     closeAlert(list, toClose) {
       if (list.find(item => item.id === toClose.id)) {
         list = list.filter(item => item.id !== toClose.id)
       }
       return list
-    },
-    closeLeftUnalignWarning() {
-      this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT)
-    },
-    closeUnalignError() {
-      this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN)
     },
     getSelectorColorByType(type) {
       const q = this.headTypeList.find(title => title.value === type)
@@ -414,11 +482,18 @@ export default {
           this.$router.push({ path: 'import' })
           break
         case 2: {
-          this.activeStep = 1
-          this.settingsPageData = {}
-          this.$router.push({ path: 'settings' })
-          this.renderSettingsPage()
-          break
+          if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
+            this.renderSettingsPage()
+            this.activeStep = 1
+            this.$router.push({ path: 'settings' })
+            break
+          } else {
+            this.$message({
+              message: '您首先需要引入数据',
+              type: 'warning'
+            })
+            break
+          }
         }
         case 3:
           this.activeStep = 2
@@ -457,19 +532,6 @@ export default {
       title.type = type
     }
   },
-  // watch: {
-  //   activeStep: function(newStep) {
-  //     switch (newStep) {
-  //       case 1:
-  //         // 没有操作
-  //         break
-  //       case 2:
-  //         break
-  //       case 3:
-  //         break
-  //     }
-  //   }
-  // },
   created() {
     this.$store.dispatch('saveImportTable', { table: [] })
     this.fetchTitleGroup()
@@ -504,7 +566,7 @@ export default {
   box-sizing: border-box;
 }
 
-#menu-table-board {
+#import-menu-table-board {
   .alert{
     margin: 8px 12px
   }
