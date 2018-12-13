@@ -1,7 +1,7 @@
 export const CLIP_BOARD_ALERT = {
   id: '0',
   title: '请使用 「Ctrl+V」 进行粘贴',
-  description: '出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。',
+  description: '出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。'
 }
 
 export const REQUIRE_STUDENT_COLUMN = {
