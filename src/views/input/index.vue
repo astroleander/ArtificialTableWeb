@@ -139,13 +139,25 @@
         <span slot="label" style="display:none"></span>
         <div id="step-preview"
         >
+          <!-- STEP - 3 - 步骤操作菜单 -->
           <el-button class="button" type="success" @click="toStep(2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
           <el-button class="button" type="success" @click="alert('submit')" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+
+          <!-- STEP - 3 - 预览表格 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
-          <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable' :data="previewPageData.dataset" height="calc(100vh - 200px)" border
+          <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable' 
+            :data="previewPageData.dataset" 
+            class="preivew-table"
+            border stripe size="mini"
           >
+            <el-table-column label="学号" width="150px">
+              <template slot-scope="scope">
+                {{ getStudentNumber(scope) }}
+              </template>
+            </el-table-column>
+
             <el-table-column
-                v-for="title in previewPageData.titles" :prop="String(title.idx)" :key="title.idx"
+                v-for="title in previewPageData.titles" :prop="String(title.idx)" :key="title.idx" :label="title.name"
                 min-width="80px" width="120px">
             </el-table-column>
           </el-table>
@@ -182,12 +194,14 @@ const xlsxToHotAdapter = (xlsxData) => {
 }
 
 /**
+ * 将 importPage 中的 Handontable 数据转化为 settingsPage 中的 Element 需要的数据格式
  * 主要目的是生成和保存列名
  * @return Object
  *           |- titles  // made by hotData idx
  *           |    |- idx: column index
- *           |    |- type: default set to 0
+ *           |    |- type: default set to 'title'
  *           |    |- name: set column name
+ *           |    |- titlegroup
  *           |
  *           |- dataset // hotData
  */
@@ -231,6 +245,50 @@ const hotToElementAdapter = (hotData, withHeader) => {
   }
 }
 
+/**
+ * 将 settingsPage 中的 Element 数据过滤，只剩下需要的字段。
+ * @return output: Object
+ *           |- sid
+ *           |- titles  // made by hotData idx
+ *           |    |- idx: column index
+ *           |    |- name: set column name
+ *           |
+ *           |- dataset // hotData
+ */
+const previewFilter = (settingsData) => {
+  const output = {
+    dataset: [],
+    sid: [],
+    titles: []
+  }
+
+  const dataset = settingsData.dataset
+  const titles = settingsData.titles
+
+  let hasReadTitle = false
+  let count = 0
+
+  // save sid
+  dataset.forEach(row => {
+    const res = row.filter((cell, idx, arr) => {
+      if (titles[idx].type === 'sid') {
+        output.sid.push(cell)
+      }
+      if (titles[idx].type === 'title') {
+        if (!hasReadTitle) {
+          hasReadTitle = true
+          output.titles.push({ idx: count, name: titles[idx].name })
+          count++
+        }
+        return true
+      }
+      return false
+    })
+    output.dataset.push(res)
+  })/* push end */ // forEach end
+  return output
+}
+
 export default {
   components: {
     HotTable, ImportExcelComponent
@@ -249,7 +307,7 @@ export default {
         { value: 'title', label: '列项名', color: COLOR_UNFINISHED },
         { value: 'useless',
           label: '无用项',
-          color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)' },
+          color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)' }
       ],
       hotSettings: {
         startRows: 80,
@@ -304,7 +362,7 @@ export default {
       settingsPageData: {},
       previewPageData: {},
       // request from remote
-      remoteTitleGroupList: [],
+      remoteTitleGroupList: []
     }
   }, // data-end
   computed: {
@@ -378,12 +436,12 @@ export default {
         if (this.settingsPageData.dataset === undefined) return []
 
         const settingsTable = this.settingsPageData
-        console.log(settingsTable)
+        // console.log(settingsTable)
         let titleCount = 0
         let sidCount = 0
         let uselessCount = 0
         let defaultCount = 0
-        let undefinedTitles = []
+        // let undefinedTitles = []
         // switch rules
         const t_rules = [
           { type: 'sid', action: () => sidCount++ },
@@ -421,9 +479,9 @@ export default {
           },
           {
             validator: (() => {
-              let rets = false
+              // let rets = false
               for (let index = 0; index < settingsTable.titles.length; index++) {
-                const title = settingsTable.titles[index];
+                const title = settingsTable.titles[index]
                 if (title.type === 'title') {
                   if (title.titleGroup === null || title.titleGroup === '' || title.titleGroup === undefined) {
                     return true
@@ -436,9 +494,9 @@ export default {
           },
           {
             validator: (() => {
-              let rets = false
+              // let rets = false
               for (let index = 0; index < settingsTable.titles.length; index++) {
-                const title = settingsTable.titles[index];
+                const title = settingsTable.titles[index]
                 if (title.type === 'title') {
                   if (title.name === null || title.name === '' || title.name === undefined) {
                     return true
@@ -526,19 +584,43 @@ export default {
             break
           }
         }
-        case 3:
-          if (this.settingsPageData.titles && this.settingsPageData.dataset) {
+        case 3: {
+          let legalRequest = true
+          const previewPermission = [
+            {
+              validator: this.settingsPageData.titles && this.settingsPageData.dataset,
+              action: () => {},
+              reject: () => {
+                legalRequest = false
+                this.$message({
+                  message: '您需要在第一步先引入数据',
+                  type: 'warning'
+                })
+              }
+            },
+            {
+              validator: this.settingsAlertList.length === 0,
+              action: () => {},
+              reject: () => {
+                legalRequest = false
+                this.$message({
+                  message: '请确认您已经排除了所有错误项',
+                  type: 'error'
+                })
+              }
+            }
+          ]
+          previewPermission.forEach(rule => {
+            rule.validator ? rule.action() : rule.reject()
+          })
+
+          if (legalRequest) {
             this.activeStep = 2
             this.$router.push({ path: 'preview' })
             this.renderPreviewPage()
-            break
-          } else {
-            this.$message({
-              message: '您需要在第一步先引入数据',
-              type: 'warning'
-            })
-            break
           }
+          break
+        }
       }
     },
     renderSettingsPage() {
@@ -570,6 +652,9 @@ export default {
     },
     handleTitleTypeChange(title, type) {
       title.type = type
+    },
+    getStudentNumber(scope) {
+      return this.previewPageData.sid[scope.$index]
     }
   },
   created() {
@@ -679,6 +764,11 @@ export default {
   //   width: 24px;
   //   height: 24px;
   // }
+}
+.preivew-table {
+  margin: 20px;
+  width: calc(100% - 40px);
+  border: 10px solid #EEE;
 }
 </style>
 
