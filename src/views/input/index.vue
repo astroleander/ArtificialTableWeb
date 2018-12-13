@@ -145,8 +145,8 @@
 
           <!-- STEP - 3 - 预览表格 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
-          <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable' 
-            :data="previewPageData.dataset" 
+          <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable'
+            :data="previewPageData.dataset"
             class="preivew-table"
             border stripe size="mini"
           >
@@ -256,37 +256,58 @@ const hotToElementAdapter = (hotData, withHeader) => {
  *           |- dataset // hotData
  */
 const previewFilter = (settingsData) => {
-  const output = {
-    dataset: [],
-    sid: [],
-    titles: []
-  }
 
   const dataset = settingsData.dataset
   const titles = settingsData.titles
+  const sid = []
 
-  let hasReadTitle = false
-  let count = 0
+  const sidIdx = titles.findIndex(item => item.type === 'sid')
+  titles.splice(sidIdx, 1)
 
-  // save sid
-  dataset.forEach(row => {
-    const res = row.filter((cell, idx, arr) => {
-      if (titles[idx].type === 'sid') {
-        output.sid.push(cell)
+  dataset.forEach((row, rowIdx) => {
+    // row = row.filter((cell, idx, arr) => idx === sidIdx)
+    row.forEach((cell, cellIdx) => {
+      if (cellIdx === sidIdx) {
+        const array = row.splice(cellIdx, 1)
+        sid[rowIdx] = array[0]
       }
-      if (titles[idx].type === 'title') {
-        if (!hasReadTitle) {
-          hasReadTitle = true
-          output.titles.push({ idx: count, name: titles[idx].name })
-          count++
-        }
-        return true
-      }
-      return false
     })
-    output.dataset.push(res)
-  })/* push end */ // forEach end
-  return output
+  })
+  console.log(titles)
+  console.log(dataset)
+  return {
+    titles,
+    dataset,
+    sid
+  }
+  // const output = {
+  //   dataset: [],
+  //   sid: [],
+  //   titles: []
+  // }
+
+
+  // let count = 0
+
+  // // save sid
+  // dataset.forEach(row => {
+  //   const res = row.filter((cell, idx, arr) => {
+  //     if (titles[idx].type === 'sid') {
+  //       output.sid.push(cell)
+  //     }
+  //     if (titles[idx].type === 'title') {
+  //       console.log(row)
+  //       if (output) {
+  //         output.titles.push({ idx: count, name: titles[idx].name })
+  //         count++
+  //       }
+  //       return true
+  //     }
+  //     return false
+  //   })
+  //   output.dataset.push(res)
+  // })/* push end */ // forEach end
+  // return output
 }
 
 export default {
@@ -628,6 +649,7 @@ export default {
       this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
     },
     renderPreviewPage() {
+      console.log(this.settingsPageData)
       this.previewPageData = previewFilter(this.settingsPageData)
     },
     fetchTitleGroup: function() {
