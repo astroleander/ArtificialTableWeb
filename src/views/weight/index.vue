@@ -57,7 +57,7 @@ div(head)
 <script>
   import lessonViewModel from '@/viewmodel/lesson'
   import titleViewModel from '@/viewmodel/title'
-  import classInfoModel from '@/viewmodel/classInfo'
+  import classInfoModel from '@/viewmodel/classinfos'
   import AtTitlegroupCard from '@/components/Weight/TitlegroupCard'
   import AtLessonCard from '@/components/Weight/LessonCard'
   export default {
