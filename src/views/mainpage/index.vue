@@ -37,7 +37,7 @@ div(mainpage)
 import AtSemester from '@/components/Mainpage/Semester'
 import AtAvatar from '@/components/Avatar'
 
-import classInfoViewmModel from '@/viewmodel/classinfo'
+import classInfoViewmModel from '@/viewmodel/classinfos'
 
 // const indigo = ''
 const cyan = '#00BCD4'
