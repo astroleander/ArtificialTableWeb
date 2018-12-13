@@ -18,21 +18,31 @@ export const REQUIRE_STUDENT_COLUMN_LEFT = {
 
 export const DUPLICATE_SID = {
   id: '114154',
-  title: '重复的学号列',
-  description: '系统检测到多个学号列, 请删除多余的学号列后再进行下一步。',
+  title: '系统检测到多个学号列, 请删除多余的学号列后再进行下一步。',
   type: 'error'
 }
 
 export const REQUIRED_SID = {
   id: 'AEDVHF',
-  title: '缺少学号列',
-  description: '系统没有检测到学号列, 请添加学号列后再进行下一步。',
+  title: '系统没有检测到学号列, 请添加学号列后再进行下一步。',
+  // description: '',
   type: 'error'
 }
 
-export const REQUIRED_TITLE = {
+export const REQUIRED_AT_LEAST_A_TITLE = {
   id: 'AFIAFHJAIOD',
   title: '您需要至少设置一个导入的项。',
   type: 'error'
 }
 
+export const REQUIRED_TITLEGROUP = {
+  id: 'DJAIOPHDAIODHA',
+  title: '您尚有未分类的小项, 点击列头的「类别」框来为小项选择一个类别。',
+  type: 'error'
+}
+
+export const REQUIRED_TITLE = {
+  id: 'FHAOIFOI',
+  title: '您尚有未命名的小项。点击列头的「列名」框来为小项输入一个名字。',
+  type: 'error'
+}

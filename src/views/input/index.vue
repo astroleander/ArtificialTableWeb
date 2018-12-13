@@ -57,7 +57,7 @@
           <!-- STEP - 2 - 左边的导入表格 -->
           <section class="flex-left flex-70">
           <!-- STEP - 2 -->
-          <!-- 使用 v-if rerender 表格，消耗一定的性能，使得表格强制刷新 -->
+          <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
           <el-table v-if="activeStep === 1" :key="activeStep" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)" border
             >
             <el-table-column
@@ -85,7 +85,7 @@
                         placeholder="列名" size="mini" class="title-name"/>
                       <el-select v-model="title.titleGroup" placeholder="类别"
                       size="mini" class="title-name">
-                        <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
+                        <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
                           :label='titleGroup.name' :value='titleGroup.id'>
                         </el-option>
                       </el-select>
@@ -141,6 +141,14 @@
         >
           <el-button class="button" type="success" @click="toStep(2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
           <el-button class="button" type="success" @click="alert('submit')" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
+          <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable' :data="previewPageData.dataset" height="calc(100vh - 200px)" border
+          >
+            <el-table-column
+                v-for="title in previewPageData.titles" :prop="String(title.idx)" :key="title.idx"
+                min-width="80px" width="120px">
+            </el-table-column>
+          </el-table>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -152,7 +160,7 @@ import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import tableViewmodel from '@/viewmodel/transcript/'
-import { CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_TITLE } from '@/utils/alerts'
+import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
 const COLOR_UNFINISHED = '#FFCC33'
@@ -294,7 +302,9 @@ export default {
       importAlertList: [CLIP_BOARD_ALERT],
       settingsAlertList: [],
       settingsPageData: {},
-      titleGroupList: []
+      previewPageData: {},
+      // request from remote
+      remoteTitleGroupList: [],
     }
   }, // data-end
   computed: {
@@ -373,7 +383,7 @@ export default {
         let sidCount = 0
         let uselessCount = 0
         let defaultCount = 0
-
+        let undefinedTitles = []
         // switch rules
         const t_rules = [
           { type: 'sid', action: () => sidCount++ },
@@ -390,6 +400,9 @@ export default {
           })
         })
 
+        /**
+         * validator 校验规则, 通过则执行 action(), 否则执行 close()
+         */
         const alertsRaiseRules = [
           {
             validator: sidCount > 1,
@@ -403,6 +416,36 @@ export default {
           },
           {
             validator: titleCount < 1,
+            action: () => this.addAlert(REQUIRED_AT_LEAST_A_TITLE, this.settingsAlertList),
+            close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_AT_LEAST_A_TITLE))
+          },
+          {
+            validator: (() => {
+              let rets = false
+              for (let index = 0; index < settingsTable.titles.length; index++) {
+                const title = settingsTable.titles[index];
+                if (title.type === 'title') {
+                  if (title.titleGroup === null || title.titleGroup === '' || title.titleGroup === undefined) {
+                    return true
+                  }
+                }
+              }
+            })(),
+            action: () => this.addAlert(REQUIRED_TITLEGROUP, this.settingsAlertList),
+            close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_TITLEGROUP))
+          },
+          {
+            validator: (() => {
+              let rets = false
+              for (let index = 0; index < settingsTable.titles.length; index++) {
+                const title = settingsTable.titles[index];
+                if (title.type === 'title') {
+                  if (title.name === null || title.name === '' || title.name === undefined) {
+                    return true
+                  }
+                }
+              }
+            })(),
             action: () => this.addAlert(REQUIRED_TITLE, this.settingsAlertList),
             close: () => (this.settingsAlertList = this.closeAlert(this.settingsAlertList, REQUIRED_TITLE))
           }
@@ -414,9 +457,9 @@ export default {
         })
 
         return [
-          { id: 1, title: '学生数', content: '24' },
+          // { id: 1, title: '学生数', content: '24' },
           { id: 2, title: '导入的小项数', content: titleCount },
-          { id: 3, title: '学生数', content: '24' },
+          // { id: 3, title: '学生数', content: '24' },
           { id: 4, title: '将有' + (uselessCount + defaultCount) + '列被废弃' }
         ]
       }
@@ -484,10 +527,18 @@ export default {
           }
         }
         case 3:
-          this.activeStep = 2
-          this.$router.push({ path: 'preview' })
-          this.renderPreviewPage()
-          break
+          if (this.settingsPageData.titles && this.settingsPageData.dataset) {
+            this.activeStep = 2
+            this.$router.push({ path: 'preview' })
+            this.renderPreviewPage()
+            break
+          } else {
+            this.$message({
+              message: '您需要在第一步先引入数据',
+              type: 'warning'
+            })
+            break
+          }
       }
     },
     renderSettingsPage() {
@@ -495,11 +546,12 @@ export default {
       this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
     },
     renderPreviewPage() {
+      this.previewPageData = previewFilter(this.settingsPageData)
     },
     fetchTitleGroup: function() {
       // TODO: Add request params
       tableViewmodel.requestTitleGroup({ classInfo_id: 1 }).then(list => {
-        this.titleGroupList = list
+        this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)
         this.$message({
@@ -588,7 +640,7 @@ export default {
 }
 
 .settings-table-header {
-  margin-left: -10px;
+  margin-left: -4px;
   display: flex;
   flex-flow: row;
   justify-content: start;
