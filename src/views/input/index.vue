@@ -37,7 +37,7 @@
                 active-text="数据包含列名"
                 >
               </el-switch>
-              <el-button class="button" type="success" @click="toStep(2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+              <el-button class="button" type="success" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
             <!-- STEP - 1 - 统计信息 -->
             <div id="menu-data-previewer">
@@ -58,7 +58,7 @@
           <section class="flex-left flex-70">
           <!-- STEP - 2 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
-          <el-table v-if="activeStep === 1" :key="activeStep" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)" border
+          <el-table v-if="activeStep === 1" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)" border
             >
             <el-table-column
                 v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
@@ -130,8 +130,8 @@
                 <el-alert v-for="alert of settingsAlertList" :key="alert.title" :title="alert.title" :description="alert.description" :type="alert.type" show-icon class="alert"></el-alert>
               </div>
             </div>
-            <el-button class="button" type="success" @click="toStep(1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-            <el-button class="button" type="success" @click="toStep(3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            <el-button class="button" type="success" @click="toStep(2, 1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
+            <el-button class="button" type="success" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </section>
         </div>
       </el-tab-pane><!-- step 2 end, and step 3 start -->
@@ -140,7 +140,7 @@
         <div id="step-preview"
         >
           <!-- STEP - 3 - 步骤操作菜单 -->
-          <el-button class="button" type="success" @click="toStep(2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
+          <el-button class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
           <el-button class="button" type="success" @click="alert('submit')" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 
           <!-- STEP - 3 - 预览表格 -->
@@ -257,8 +257,8 @@ const hotToElementAdapter = (hotData, withHeader) => {
  *           |- dataset // hotData
  */
 const previewFilter = (settingsData) => {
-  const dataset = settingsData.dataset
-  const titles = settingsData.titles
+  const dataset = JSON.parse(JSON.stringify(settingsData.dataset))
+  const titles = JSON.parse(JSON.stringify(settingsData.titles))
 
   let sidColIdx
   const deprecatedColIdx = []
@@ -579,15 +579,15 @@ export default {
         return CELL_COLOR_USELESS
       }
     },
-    toStep(step) {
-      switch (step) {
+    toStep(from, to) {
+      switch (to) {
         case 1:
           this.activeStep = 0
           this.$router.push({ path: 'import' })
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
-            this.renderSettingsPage()
+            if (from === 1) this.renderSettingsPage()
             this.activeStep = 1
             this.$router.push({ path: 'settings' })
             break
@@ -643,9 +643,10 @@ export default {
       this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
     },
     renderPreviewPage() {
-      console.log(this.settingsPageData)
+      // console.log(this.settingsPageData)
+      this.previewPageData = {}
       this.previewPageData = previewFilter(this.settingsPageData)
-      console.log(this.previewPageData)
+      // console.log(this.previewPageData)
     },
     fetchTitleGroup: function() {
       // TODO: Add request params
