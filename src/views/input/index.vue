@@ -157,7 +157,8 @@
             </el-table-column>
 
             <el-table-column
-                v-for="title in previewPageData.titles" :prop="String(title.idx)" :key="title.idx" :label="title.name"
+                v-for="title in previewPageData.titles" :key="title.idx"
+                :prop="String(title.idx)" :label="title.name"
                 min-width="80px" width="120px">
             </el-table-column>
           </el-table>
@@ -256,58 +257,51 @@ const hotToElementAdapter = (hotData, withHeader) => {
  *           |- dataset // hotData
  */
 const previewFilter = (settingsData) => {
-
   const dataset = settingsData.dataset
   const titles = settingsData.titles
-  const sid = []
 
-  const sidIdx = titles.findIndex(item => item.type === 'sid')
-  titles.splice(sidIdx, 1)
+  let sidColIdx
+  const deprecatedColIdx = []
+
+  const sid = []
+  const previewDataset = []
+  const previewTitles = []
+
+  titles.forEach((title, idx) => {
+    if (title.type === 'sid') {
+      sidColIdx = String(idx)
+      return
+    }
+    if (title.type === 'useless' || title.type === 'default') {
+      deprecatedColIdx.push(String(idx))
+      return
+    }
+    title.type = 'title'
+    previewTitles.push(title)
+  })
 
   dataset.forEach((row, rowIdx) => {
-    // row = row.filter((cell, idx, arr) => idx === sidIdx)
-    row.forEach((cell, cellIdx) => {
-      if (cellIdx === sidIdx) {
-        const array = row.splice(cellIdx, 1)
-        sid[rowIdx] = array[0]
+    const sidItem = row[sidColIdx]
+    sid.push(sidItem)
+    const previewRow = []
+    row.forEach((cell, colIdx) => {
+      // 被标记的错误: in 取的是 key, 哪怕目标是数组取的也TM是下标
+      // if (String(colIdx) in deprecatedColIdx === false && String(colIdx) !== sidColIdx) {
+      if (String(colIdx) !== sidColIdx && !deprecatedColIdx.includes(String(colIdx))) {
+        console.log('\t\tadd ' + cell + '\t' + String(colIdx))
+        previewRow.push(cell)
       }
     })
+    previewDataset.push(previewRow)
   })
-  console.log(titles)
-  console.log(dataset)
+
+  previewTitles.forEach((title, idx) => (title.idx = String(idx)))
+
   return {
-    titles,
-    dataset,
+    titles: previewTitles,
+    dataset: previewDataset,
     sid
   }
-  // const output = {
-  //   dataset: [],
-  //   sid: [],
-  //   titles: []
-  // }
-
-
-  // let count = 0
-
-  // // save sid
-  // dataset.forEach(row => {
-  //   const res = row.filter((cell, idx, arr) => {
-  //     if (titles[idx].type === 'sid') {
-  //       output.sid.push(cell)
-  //     }
-  //     if (titles[idx].type === 'title') {
-  //       console.log(row)
-  //       if (output) {
-  //         output.titles.push({ idx: count, name: titles[idx].name })
-  //         count++
-  //       }
-  //       return true
-  //     }
-  //     return false
-  //   })
-  //   output.dataset.push(res)
-  // })/* push end */ // forEach end
-  // return output
 }
 
 export default {
@@ -651,6 +645,7 @@ export default {
     renderPreviewPage() {
       console.log(this.settingsPageData)
       this.previewPageData = previewFilter(this.settingsPageData)
+      console.log(this.previewPageData)
     },
     fetchTitleGroup: function() {
       // TODO: Add request params
