@@ -6,22 +6,14 @@ import request from '@/utils/request'
  * description：学生信息的增删改查
  */
 
-// before
-export function getStudent(class_id) {
-  return request({
-    url: '/student/display',
-    method: 'get',
-    params: { classInfo_id: class_id }
-  })
-}
 /**
  * 查找学生信息
  * params：参数对象（id，sid,name,classInfo_id,major_id,year 6个可选参数,
  * 若参数里有classInfo_id，其他参数被忽略）
  */
-export function getClassFields(params) {
+export function getStudents(params) {
   return request({
-    url: '/table/class_field/format',
+    url: '/student/format',
     method: 'get',
     params: {
       params

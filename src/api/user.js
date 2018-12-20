@@ -3,11 +3,11 @@ import request from '@/utils/request'
  * date：2018.12.18
  * author:liqian
  * description：用户信息的增删改查
- */
+*/
 
 /**
- * 返回时不会返回密码
- * @param params
+ *  查找用户信息，返回时不会返回密码
+ * @param params 参数对象（id,tid,name,college_id,email,mobile,is_manager七个可选参数）
  */
 export function getUsersWithOutPass(params) {
   return request({
@@ -28,10 +28,10 @@ export function getUser(id) {
     }
   })
 }
+
 /**
- * 查找用户信息
- * params：参数对象
- * （id,tid,name,college_id,email,mobile,is_manager七个可选参数）
+ * 查找用户信息，返回时带有密码
+ * @param params 参数对象（id,tid,name,college_id,email,mobile,is_manager七个可选参数）
  */
 export function getUsersWithPass(params) {
   return request({
