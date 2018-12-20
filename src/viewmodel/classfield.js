@@ -13,7 +13,7 @@ import {
  * @param params  参数对象（id，classInfo_id,student_id 三个可选参数）
  * @returns {Promise<any>}
  */
-export const requestClassFileds = (params) => {
+export const requestClassFields = (params) => {
   return new Promise((resolve, reject) => {
     getClassFields(params).then(response => {
       resolve(response)
