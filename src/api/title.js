@@ -1,73 +1,109 @@
 import request from '@/utils/request'
-// 根据titleGroup_id,class_id查询小项
-export function getTitle({ titleGroup_id, class_id }) {
+/**
+ * date：2018.12.18
+ * author:liqian
+ * description：小项条目信息的增删改查
+ */
+
+/**
+ * 通过titleGroup_id,classInfo_id查询小项条目信息
+ */
+export function getTitle(titleGroup_id, classInfo_id) {
   return request({
     url: '/title/format',
     method: 'get',
     params: {
       titleGroup_id: titleGroup_id,
-      classInfo_id: class_id
+      classInfo_id: classInfo_id
     }
   })
 }
-
-// 根据classinfo_id查询对应小项数据
-export function getTitles(class_id) {
+/**
+ * 查找小项条目信息
+ * params：参数对象
+ * （id,name,type,titleGroup_id,classInfo_id五个可选参数）
+ */
+export function getTitles(params) {
   return request({
     url: '/title/format',
     method: 'get',
     params: {
-      classInfo_id: class_id
+      params
     }
   })
 }
-// 修改多条titileGroup_id相同的小项数据
-export function putTitles(titles) {
-  return request({
-    url: '/title/format',
-    method: 'put',
-    data: {
-      subjects: titles
-    }
-  })
-}
-// 添加一条小项记录
-export function postTitle(title) {
+/**
+ * 添加一条小项条目信息
+ */
+export function postTitle(TitleItem) {
   return request({
     url: '/title/format',
     method: 'post',
     data: {
-      subjects: title
+      subjects: [TitleItem]
     }
   })
 }
-
-// 根据lesson_id查询大项数据
-export function getTitleGroups(lesson_id) {
+/**
+ * 添加多条小项条目信息
+ */
+export function postTitles(TitleArray) {
   return request({
-    url: '/titlegroup/format',
-    method: 'get',
-    params: { lesson_id: lesson_id }
-  })
-}
-
-// 添加一条大项记录
-export function postTitleGroup(titleGroup) {
-  return request({
-    url: '/titlegroup/format',
+    url: '/title/format',
     method: 'post',
     data: {
-      subjects: titleGroup
+      subjects: TitleArray
     }
   })
 }
-// 修改多条lesson_id相同的大项记录
-export function putTitleGroups(titleGroups) {
+/**
+ * 修改一条小项条目信息
+ */
+export function putTitle(TitleItem) {
   return request({
-    url: '/titlegroup/format',
+    url: '/title/format',
     method: 'put',
     data: {
-      subjects: titleGroups
+      subjects: [TitleItem]
     }
   })
 }
+/**
+ * 修改多条小项条目信息
+ */
+export function putTitles(TitleArray) {
+  return request({
+    url: '/title/format',
+    method: 'put',
+    data: {
+      subjects: TitleArray
+    }
+  })
+}
+/**
+ * 删除一条小项条目信息
+ */
+export function deleteTitle(Title_id) {
+  return request({
+    url: '/title/format',
+    method: 'delete',
+    data: {
+      subjects: [
+        { id: Title_id }
+      ]
+    }
+  })
+}
+/**
+ * 批量删除小项条目信息
+ */
+export function deleteTitles(TitleIdArray) {
+  return request({
+    url: '/title/format',
+    method: 'delete',
+    data: {
+      subjects: TitleIdArray
+    }
+  })
+}
+

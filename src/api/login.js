@@ -13,6 +13,11 @@ export function login(username, password) {
   })
 }
 
+/**
+ *
+ * @param token
+ * @param id
+ */
 export function getInfo({ token, id }) {
   return request({
     url: '/user/info/format',
@@ -22,9 +27,25 @@ export function getInfo({ token, id }) {
   })
 }
 
+/**
+ * 退出登录
+ */
 export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
+  })
+}
+
+/**
+ * 注册
+ */
+export function regist(User) {
+  return request({
+    url: '/user/logon',
+    method: 'post',
+    data: {
+      subjects: [User]
+    }
   })
 }
