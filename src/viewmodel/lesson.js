@@ -1,1 +1,145 @@
-  
+import { getLessons, getAllLessons, getByCollegeId,
+  postLesson, postLessons,
+  putLesson, putLessons,
+  deleteLesson, deleteLessons } from '@/api/lesson'
+/**
+ * date:2018/12/20
+ * author:liqian
+ * description：课程组信息的get put post delete
+ */
+
+/**
+ * description:请求课程组信息
+ * @param params  参数对象（id，name,college_id，all四个可选参数）
+ * 若参数中all=true，其他参数会被忽略
+ * @returns {Promise<any>}
+ */
+export const requestLessons = (params) => {
+  return new Promise((resolve, reject) => {
+    getLessons(params).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * description:请求所有课程组
+ * @returns {Promise<any>}
+ */
+export const requestAllLessons = () => {
+  return new Promise((resolve, reject) => {
+    getAllLessons().then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 通过college_id查询课程组信息
+ * @param college_id
+ * @returns {Promise<any>}
+ */
+export const requestByCollegeId = (college_id) => {
+  return new Promise((resolve, reject) => {
+    getByCollegeId(college_id).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求修改一条课程组信息
+ * @param lessonItem
+ * @returns {Promise<any>}
+ */
+export const requestPutLesson = (lessonItem) => {
+  return new Promise((resolve, reject) => {
+    putLesson(lessonItem).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求修改多条课程组信息
+ * @param lessonArray
+ * @returns {Promise<any>}
+ */
+export const requestPutLessons = (lessonArray) => {
+  return new Promise((resolve, reject) => {
+    putLessons(lessonArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求添加一条课程组信息
+ * @param lessonItem
+ * @returns {Promise<any>}
+ */
+export const requestPostLesson = (lessonItem) => {
+  return new Promise((resolve, reject) => {
+    postLesson(lessonItem).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求添加多条课程组信息
+ * @param lessonArray
+ * @returns {Promise<any>}
+ */
+export const requestPostLessons = (lessonArray) => {
+  return new Promise((resolve, reject) => {
+    postLessons(lessonArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求删除单条课程组信息
+ * @param lessonId
+ * @returns {Promise<any>}
+ */
+export const requestDelLesson = (lessonId) => {
+  return new Promise((resolve, reject) => {
+    deleteLesson(lessonId).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求删除多条课程组信息
+ * @param lessonIdArray
+ * @returns {Promise<any>}
+ */
+export const requestDelLessons = (lessonIdArray) => {
+  return new Promise((resolve, reject) => {
+    deleteLessons(lessonIdArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+

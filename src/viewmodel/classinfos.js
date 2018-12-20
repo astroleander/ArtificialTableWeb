@@ -1,14 +1,130 @@
-import { getClassInfo } from '@/api/class'
+import { getClassInfos, getByTeacherId,
+  postClassInfo, postClassInfos,
+  putClassInfo, putClassInfos,
+  deleteClassInfo, deleteClassInfos } from '@/api/class_info'
+/**
+ * date:2018/12/20
+ * author:liqian
+ * description：课程辅助信息的get put post delete
+ */
 
-const requestClassInfo = user_id => {
+/**
+ * description:请求课程辅助信息
+ * @param params  参数对象 （id，name,cid,teacher_id,semester,week,room 七个可选参数）
+ * @returns {Promise<any>}
+ */
+export const requestClassInfos = (params) => {
   return new Promise((resolve, reject) => {
-    getClassInfo(user_id)
-      .then(response => {
-        resolve(response)
-      })
-      .catch(error => {
-        reject(error)
-      })
+    getClassInfos(params).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
   })
 }
-export default { requestClassInfo }
+
+/**
+ * 查找某一教师所执教的所有课程
+ * @param teacher_id 教师的id
+ * @returns {Promise<any>}
+ */
+export const requestByTeacherId = (teacher_id) => {
+  return new Promise((resolve, reject) => {
+    getByTeacherId(teacher_id).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求修改一条课程辅助信息
+ * @param classInfoItem
+ * @returns {Promise<any>}
+ */
+export const requestPutClassInfo = (classInfoItem) => {
+  return new Promise((resolve, reject) => {
+    putClassInfo(classInfoItem).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求修改多条课程辅助信息
+ * @param classInfoArray
+ * @returns {Promise<any>}
+ */
+export const requestPutClassInfos = (classInfoArray) => {
+  return new Promise((resolve, reject) => {
+    putClassInfos(classInfoArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求添加一条课程辅助信息
+ * @param classInfoItem
+ * @returns {Promise<any>}
+ */
+export const requestPostClassInfo = (classInfoItem) => {
+  return new Promise((resolve, reject) => {
+    postClassInfo(classInfoItem).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求添加多条课程辅助信息
+ * @param classInfoArray
+ * @returns {Promise<any>}
+ */
+export const requestPostClassInfos = (classInfoArray) => {
+  return new Promise((resolve, reject) => {
+    postClassInfos(classInfoArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求删除单条课程辅助信息
+ * @param classInfoId
+ * @returns {Promise<any>}
+ */
+export const requestDelClassInfo = (classInfoId) => {
+  return new Promise((resolve, reject) => {
+    deleteClassInfo(classInfoId).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求删除多条课程辅助信息
+ * @param classInfoIdArray
+ * @returns {Promise<any>}
+ */
+export const requestDelClassInfos = (classInfoIdArray) => {
+  return new Promise((resolve, reject) => {
+    deleteClassInfos(classInfoIdArray).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
