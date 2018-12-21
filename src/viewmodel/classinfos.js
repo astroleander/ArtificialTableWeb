@@ -13,7 +13,7 @@ import { getClassInfos, getByTeacherId,
  * @param params  参数对象 （id，name,cid,teacher_id,semester,week,room 七个可选参数）
  * @returns {Promise<any>}
  */
-export const requestClassInfos = (params) => {
+const requestClassInfos = (params) => {
   return new Promise((resolve, reject) => {
     getClassInfos(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestClassInfos = (params) => {
  * @param teacher_id 教师的id
  * @returns {Promise<any>}
  */
-export const requestByTeacherId = (teacher_id) => {
+const requestByTeacherId = (teacher_id) => {
   return new Promise((resolve, reject) => {
     getByTeacherId(teacher_id).then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestByTeacherId = (teacher_id) => {
  * @param classInfoItem
  * @returns {Promise<any>}
  */
-export const requestPutClassInfo = (classInfoItem) => {
+const requestPutClassInfo = (classInfoItem) => {
   return new Promise((resolve, reject) => {
     putClassInfo(classInfoItem).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestPutClassInfo = (classInfoItem) => {
  * @param classInfoArray
  * @returns {Promise<any>}
  */
-export const requestPutClassInfos = (classInfoArray) => {
+const requestPutClassInfos = (classInfoArray) => {
   return new Promise((resolve, reject) => {
     putClassInfos(classInfoArray).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPutClassInfos = (classInfoArray) => {
  * @param classInfoItem
  * @returns {Promise<any>}
  */
-export const requestPostClassInfo = (classInfoItem) => {
+const requestPostClassInfo = (classInfoItem) => {
   return new Promise((resolve, reject) => {
     postClassInfo(classInfoItem).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPostClassInfo = (classInfoItem) => {
  * @param classInfoArray
  * @returns {Promise<any>}
  */
-export const requestPostClassInfos = (classInfoArray) => {
+const requestPostClassInfos = (classInfoArray) => {
   return new Promise((resolve, reject) => {
     postClassInfos(classInfoArray).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestPostClassInfos = (classInfoArray) => {
  * @param classInfoId
  * @returns {Promise<any>}
  */
-export const requestDelClassInfo = (classInfoId) => {
+const requestDelClassInfo = (classInfoId) => {
   return new Promise((resolve, reject) => {
     deleteClassInfo(classInfoId).then(response => {
       resolve(response)
@@ -118,7 +118,7 @@ export const requestDelClassInfo = (classInfoId) => {
  * @param classInfoIdArray
  * @returns {Promise<any>}
  */
-export const requestDelClassInfos = (classInfoIdArray) => {
+const requestDelClassInfos = (classInfoIdArray) => {
   return new Promise((resolve, reject) => {
     deleteClassInfos(classInfoIdArray).then(response => {
       resolve(response)
@@ -128,3 +128,9 @@ export const requestDelClassInfos = (classInfoIdArray) => {
   })
 }
 
+export default {
+  requestByTeacherId, requestClassInfos,
+  requestPutClassInfo, requestPutClassInfos,
+  requestPostClassInfo, requestPostClassInfos,
+  requestDelClassInfo, requestDelClassInfos
+}

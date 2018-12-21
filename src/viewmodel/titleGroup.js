@@ -13,7 +13,7 @@ import { getTitleGroup, getTitleGroups,
  * @param params  参数对象（id,name,lesson_id,weight四个可选参数）
  * @returns {Promise<any>}
  */
-export const requestTitleGroups = (params) => {
+const requestTitleGroups = (params) => {
   return new Promise((resolve, reject) => {
     getTitleGroup(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestTitleGroups = (params) => {
  * @param lesson_id
  * @returns {Promise<any>}
  */
-export const requestByLessonId = (lesson_id) => {
+const requestByLessonId = (lesson_id) => {
   return new Promise((resolve, reject) => {
     getTitleGroups(lesson_id).then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestByLessonId = (lesson_id) => {
  * @param titleGroupItem
  * @returns {Promise<any>}
  */
-export const requestPutTitleGroup = (titleGroupItem) => {
+const requestPutTitleGroup = (titleGroupItem) => {
   return new Promise((resolve, reject) => {
     putTitleGroup(titleGroupItem).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestPutTitleGroup = (titleGroupItem) => {
  * @param titleGroupArray
  * @returns {Promise<any>}
  */
-export const requestPutTitleGroups = (titleGroupArray) => {
+const requestPutTitleGroups = (titleGroupArray) => {
   return new Promise((resolve, reject) => {
     putTitleGroups(titleGroupArray).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPutTitleGroups = (titleGroupArray) => {
  * @param titleGroupItem
  * @returns {Promise<any>}
  */
-export const requestPostTitleGroup = (titleGroupItem) => {
+const requestPostTitleGroup = (titleGroupItem) => {
   return new Promise((resolve, reject) => {
     postTitleGroup(titleGroupItem).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPostTitleGroup = (titleGroupItem) => {
  * @param titleGroupArray
  * @returns {Promise<any>}
  */
-export const requestPostTitleGroups = (titleGroupArray) => {
+const requestPostTitleGroups = (titleGroupArray) => {
   return new Promise((resolve, reject) => {
     postTitleGroups(titleGroupArray).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestPostTitleGroups = (titleGroupArray) => {
  * @param titleGroupId
  * @returns {Promise<any>}
  */
-export const requestDelTitleGroup = (titleGroupId) => {
+const requestDelTitleGroup = (titleGroupId) => {
   return new Promise((resolve, reject) => {
     deleteTitleGroup(titleGroupId).then(response => {
       resolve(response)
@@ -118,7 +118,7 @@ export const requestDelTitleGroup = (titleGroupId) => {
  * @param titleGroupIdArray
  * @returns {Promise<any>}
  */
-export const requestDelTitleGroups = (titleGroupIdArray) => {
+const requestDelTitleGroups = (titleGroupIdArray) => {
   return new Promise((resolve, reject) => {
     deleteTitleGroups(titleGroupIdArray).then(response => {
       resolve(response)
@@ -128,3 +128,9 @@ export const requestDelTitleGroups = (titleGroupIdArray) => {
   })
 }
 
+export default{
+  requestTitleGroups, requestByLessonId,
+  requestPutTitleGroup, requestPutTitleGroups,
+  requestPostTitleGroup, requestPostTitleGroups,
+  requestDelTitleGroup, requestDelTitleGroups
+}

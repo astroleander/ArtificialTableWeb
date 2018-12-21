@@ -14,7 +14,7 @@ import { getColleges, getByUniversityId,
  *                若参数中有university_id，其他参数会被忽略
  * @returns {Promise<any>}
  */
-export const requestColleges = (params) => {
+const requestColleges = (params) => {
   return new Promise((resolve, reject) => {
     getColleges(params).then(response => {
       resolve(response)
@@ -29,7 +29,7 @@ export const requestColleges = (params) => {
  * @param university_id
  * @returns {Promise<any>}
  */
-export const requestByUniversityId = (university_id) => {
+const requestByUniversityId = (university_id) => {
   return new Promise((resolve, reject) => {
     getByUniversityId(university_id).then(response => {
       resolve(response)
@@ -44,7 +44,7 @@ export const requestByUniversityId = (university_id) => {
  * @param collegeItem
  * @returns {Promise<any>}
  */
-export const requestPutCollege = (collegeItem) => {
+const requestPutCollege = (collegeItem) => {
   return new Promise((resolve, reject) => {
     putCollege(collegeItem).then(response => {
       resolve(response)
@@ -59,7 +59,7 @@ export const requestPutCollege = (collegeItem) => {
  * @param collegeArray
  * @returns {Promise<any>}
  */
-export const requestPutColleges = (collegeArray) => {
+const requestPutColleges = (collegeArray) => {
   return new Promise((resolve, reject) => {
     putColleges(collegeArray).then(response => {
       resolve(response)
@@ -74,7 +74,7 @@ export const requestPutColleges = (collegeArray) => {
  * @param collegeItem
  * @returns {Promise<any>}
  */
-export const requestPostCollege = (collegeItem) => {
+const requestPostCollege = (collegeItem) => {
   return new Promise((resolve, reject) => {
     postCollege(collegeItem).then(response => {
       resolve(response)
@@ -89,7 +89,7 @@ export const requestPostCollege = (collegeItem) => {
  * @param collegeArray
  * @returns {Promise<any>}
  */
-export const requestPostColleges = (collegeArray) => {
+const requestPostColleges = (collegeArray) => {
   return new Promise((resolve, reject) => {
     postColleges(collegeArray).then(response => {
       resolve(response)
@@ -104,7 +104,7 @@ export const requestPostColleges = (collegeArray) => {
  * @param collegeId
  * @returns {Promise<any>}
  */
-export const requestDelCollege = (collegeId) => {
+const requestDelCollege = (collegeId) => {
   return new Promise((resolve, reject) => {
     deleteCollege(collegeId).then(response => {
       resolve(response)
@@ -119,7 +119,7 @@ export const requestDelCollege = (collegeId) => {
  * @param collegeIdArray
  * @returns {Promise<any>}
  */
-export const requestDelColleges = (collegeIdArray) => {
+const requestDelColleges = (collegeIdArray) => {
   return new Promise((resolve, reject) => {
     deleteColleges(collegeIdArray).then(response => {
       resolve(response)
@@ -129,3 +129,9 @@ export const requestDelColleges = (collegeIdArray) => {
   })
 }
 
+export default {
+  requestByUniversityId, requestColleges,
+  requestPutCollege, requestPutColleges,
+  requestPostCollege, requestPostColleges,
+  requestDelCollege, requestDelColleges
+}

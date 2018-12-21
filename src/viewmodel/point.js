@@ -13,7 +13,7 @@ import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
  * @param params  （classInfo_id必需，id,student_id,title_id,date,note五个可选参数）
  * @returns {Promise<any>}
  */
-export const requestPoints = (params) => {
+const requestPoints = (params) => {
   return new Promise((resolve, reject) => {
     getPoints(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestPoints = (params) => {
  * @param classInfo_id
  * @returns {Promise<any>}
  */
-export const requestByClassInfoId = (classInfo_id) => {
+const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
       resolve(response)
@@ -44,7 +44,7 @@ export const requestByClassInfoId = (classInfo_id) => {
  * @param student_id
  * @returns {Promise<any>}
  */
-export const requestByStudentId = (classInfo_id, student_id) => {
+const requestByStudentId = (classInfo_id, student_id) => {
   return new Promise((resolve, reject) => {
     getByStudentId(classInfo_id, student_id).then(response => {
       resolve(response)
@@ -60,7 +60,7 @@ export const requestByStudentId = (classInfo_id, student_id) => {
  * @param title_id
  * @returns {Promise<any>}
  */
-export const requestByTitleId = (classInfo_id, title_id) => {
+const requestByTitleId = (classInfo_id, title_id) => {
   return new Promise((resolve, reject) => {
     getByTitleId(classInfo_id, title_id).then(response => {
       resolve(response)
@@ -75,7 +75,7 @@ export const requestByTitleId = (classInfo_id, title_id) => {
  * @param pointItem
  * @returns {Promise<any>}
  */
-export const requestPutPoint = (pointItem) => {
+const requestPutPoint = (pointItem) => {
   return new Promise((resolve, reject) => {
     putPoint(pointItem).then(response => {
       resolve(response)
@@ -90,7 +90,7 @@ export const requestPutPoint = (pointItem) => {
  * @param pointArray
  * @returns {Promise<any>}
  */
-export const requestPutPoints = (pointArray) => {
+const requestPutPoints = (pointArray) => {
   return new Promise((resolve, reject) => {
     putPoints(pointArray).then(response => {
       resolve(response)
@@ -105,7 +105,7 @@ export const requestPutPoints = (pointArray) => {
  * @param pointItem
  * @returns {Promise<any>}
  */
-export const requestPostPoint = (pointItem) => {
+const requestPostPoint = (pointItem) => {
   return new Promise((resolve, reject) => {
     postPoint(pointItem).then(response => {
       resolve(response)
@@ -120,7 +120,7 @@ export const requestPostPoint = (pointItem) => {
  * @param pointArray
  * @returns {Promise<any>}
  */
-export const requestPostPoints = (pointArray) => {
+const requestPostPoints = (pointArray) => {
   return new Promise((resolve, reject) => {
     postPoints(pointArray).then(response => {
       resolve(response)
@@ -135,7 +135,7 @@ export const requestPostPoints = (pointArray) => {
  * @param pointId
  * @returns {Promise<any>}
  */
-export const requestDelPoint = (pointId) => {
+const requestDelPoint = (pointId) => {
   return new Promise((resolve, reject) => {
     deletePoint(pointId).then(response => {
       resolve(response)
@@ -150,7 +150,7 @@ export const requestDelPoint = (pointId) => {
  * @param pointIdArray
  * @returns {Promise<any>}
  */
-export const requestDelPoints = (pointIdArray) => {
+const requestDelPoints = (pointIdArray) => {
   return new Promise((resolve, reject) => {
     deletePoints(pointIdArray).then(response => {
       resolve(response)
@@ -160,3 +160,9 @@ export const requestDelPoints = (pointIdArray) => {
   })
 }
 
+export default {
+  requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
+  requestPutPoint, requestPutPoints,
+  requestPostPoint, requestPostPoints,
+  requestDelPoint, requestDelPoints
+}

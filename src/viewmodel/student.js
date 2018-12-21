@@ -14,7 +14,7 @@ import { getStudents, getByClassInfoId,
  *                若参数里有classInfo_id，其他参数被忽略）
  * @returns {Promise<any>}
  */
-export const requestStudents = (params) => {
+const requestStudents = (params) => {
   return new Promise((resolve, reject) => {
     getStudents(params).then(response => {
       resolve(response)
@@ -29,7 +29,7 @@ export const requestStudents = (params) => {
  * @param classInfo_id
  * @returns {Promise<any>}
  */
-export const requestByClassInfoId = (classInfo_id) => {
+const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
       resolve(response)
@@ -44,7 +44,7 @@ export const requestByClassInfoId = (classInfo_id) => {
  * @param studentItem
  * @returns {Promise<any>}
  */
-export const requestPutStudent = (studentItem) => {
+const requestPutStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
     putStudent(studentItem).then(response => {
       resolve(response)
@@ -59,7 +59,7 @@ export const requestPutStudent = (studentItem) => {
  * @param studentArray
  * @returns {Promise<any>}
  */
-export const requestPutStudents = (studentArray) => {
+const requestPutStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
     putStudents(studentArray).then(response => {
       resolve(response)
@@ -74,7 +74,7 @@ export const requestPutStudents = (studentArray) => {
  * @param studentItem
  * @returns {Promise<any>}
  */
-export const requestPostStudent = (studentItem) => {
+const requestPostStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
     postStudent(studentItem).then(response => {
       resolve(response)
@@ -89,7 +89,7 @@ export const requestPostStudent = (studentItem) => {
  * @param studentArray
  * @returns {Promise<any>}
  */
-export const requestPostStudents = (studentArray) => {
+const requestPostStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
     postStudents(studentArray).then(response => {
       resolve(response)
@@ -104,7 +104,7 @@ export const requestPostStudents = (studentArray) => {
  * @param studentId
  * @returns {Promise<any>}
  */
-export const requestDelStudent = (studentId) => {
+const requestDelStudent = (studentId) => {
   return new Promise((resolve, reject) => {
     deleteStudent(studentId).then(response => {
       resolve(response)
@@ -119,7 +119,7 @@ export const requestDelStudent = (studentId) => {
  * @param studentIdArray
  * @returns {Promise<any>}
  */
-export const requestDelStudents = (studentIdArray) => {
+const requestDelStudents = (studentIdArray) => {
   return new Promise((resolve, reject) => {
     deleteStudents(studentIdArray).then(response => {
       resolve(response)
@@ -129,3 +129,9 @@ export const requestDelStudents = (studentIdArray) => {
   })
 }
 
+export default {
+  requestByClassInfoId, requestStudents,
+  requestPutStudent, requestPutStudents,
+  requestPostStudent, requestPostStudents,
+  requestDelStudent, requestDelStudents
+}

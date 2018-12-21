@@ -13,7 +13,7 @@ import { getTitles, getTitle,
  * @param params  参数对象（id,name,type,titleGroup_id,classInfo_id五个可选参数）
  * @returns {Promise<any>}
  */
-export const requestTitles = (params) => {
+const requestTitles = (params) => {
   return new Promise((resolve, reject) => {
     getTitles(params).then(response => {
       resolve(response)
@@ -29,7 +29,7 @@ export const requestTitles = (params) => {
  * @param classInfo_id
  * @returns {Promise<any>}
  */
-export const requestTitle = (titleGroup_id, classInfo_id) => {
+const requestTitle = (titleGroup_id, classInfo_id) => {
   return new Promise((resolve, reject) => {
     getTitle(titleGroup_id, classInfo_id).then(response => {
       resolve(response)
@@ -44,7 +44,7 @@ export const requestTitle = (titleGroup_id, classInfo_id) => {
  * @param titleItem
  * @returns {Promise<any>}
  */
-export const requestPutTitle = (titleItem) => {
+const requestPutTitle = (titleItem) => {
   return new Promise((resolve, reject) => {
     putTitle(titleItem).then(response => {
       resolve(response)
@@ -59,7 +59,7 @@ export const requestPutTitle = (titleItem) => {
  * @param titleArray
  * @returns {Promise<any>}
  */
-export const requestPutTitles = (titleArray) => {
+const requestPutTitles = (titleArray) => {
   return new Promise((resolve, reject) => {
     putTitles(titleArray).then(response => {
       resolve(response)
@@ -74,7 +74,7 @@ export const requestPutTitles = (titleArray) => {
  * @param titleItem
  * @returns {Promise<any>}
  */
-export const requestPostTitle = (titleItem) => {
+const requestPostTitle = (titleItem) => {
   return new Promise((resolve, reject) => {
     postTitle(titleItem).then(response => {
       resolve(response)
@@ -89,7 +89,7 @@ export const requestPostTitle = (titleItem) => {
  * @param titleArray
  * @returns {Promise<any>}
  */
-export const requestPostTitles = (titleArray) => {
+const requestPostTitles = (titleArray) => {
   return new Promise((resolve, reject) => {
     postTitles(titleArray).then(response => {
       resolve(response)
@@ -104,7 +104,7 @@ export const requestPostTitles = (titleArray) => {
  * @param titleId
  * @returns {Promise<any>}
  */
-export const requestDelTitle = (titleId) => {
+const requestDelTitle = (titleId) => {
   return new Promise((resolve, reject) => {
     deleteTitle(titleId).then(response => {
       resolve(response)
@@ -119,7 +119,7 @@ export const requestDelTitle = (titleId) => {
  * @param titleIdArray
  * @returns {Promise<any>}
  */
-export const requestDelTitles = (titleIdArray) => {
+const requestDelTitles = (titleIdArray) => {
   return new Promise((resolve, reject) => {
     deleteTitles(titleIdArray).then(response => {
       resolve(response)
@@ -129,3 +129,9 @@ export const requestDelTitles = (titleIdArray) => {
   })
 }
 
+export default {
+  requestTitle, requestTitles,
+  requestPutTitle, requestPutTitles,
+  requestPostTitle, requestPostTitles,
+  requestDelTitle, requestDelTitles
+}

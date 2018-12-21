@@ -13,7 +13,7 @@ import {
  * @param params  参数对象（id，classInfo_id,student_id 三个可选参数）
  * @returns {Promise<any>}
  */
-export const requestClassFields = (params) => {
+const requestClassFields = (params) => {
   return new Promise((resolve, reject) => {
     getClassFields(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestClassFields = (params) => {
  * @param classInfo_id 教学班id
  * @returns {Promise<any>}
  */
-export const requestByClassInfoId = (classInfo_id) => {
+const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestByClassInfoId = (classInfo_id) => {
  * @param student_id
  * @returns {Promise<any>}
  */
-export const requestByStudentId = (student_id) => {
+const requestByStudentId = (student_id) => {
   return new Promise((resolve, reject) => {
     getByStudentID(student_id).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestByStudentId = (student_id) => {
  * @param classFieldItem
  * @returns {Promise<any>}
  */
-export const requestPostClassField = (classFieldItem) => {
+const requestPostClassField = (classFieldItem) => {
   return new Promise((resolve, reject) => {
     postClassField(classFieldItem).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPostClassField = (classFieldItem) => {
  * @param classFieldArray
  * @returns {Promise<any>}
  */
-export const requestPostClassFields = (classFieldArray) => {
+const requestPostClassFields = (classFieldArray) => {
   return new Promise((resolve, reject) => {
     postClassFields(classFieldArray).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPostClassFields = (classFieldArray) => {
  * @param classFieldId
  * @returns {Promise<any>}
  */
-export const requestDelClassField = (classFieldId) => {
+const requestDelClassField = (classFieldId) => {
   return new Promise((resolve, reject) => {
     deleteClassField(classFieldId).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestDelClassField = (classFieldId) => {
  * @param classFieldIdArray
  * @returns {Promise<any>}
  */
-export const requestDelClassFields = (classFieldIdArray) => {
+const requestDelClassFields = (classFieldIdArray) => {
   return new Promise((resolve, reject) => {
     deleteClassFields(classFieldIdArray).then(response => {
       resolve(response)
@@ -112,9 +112,15 @@ export const requestDelClassFields = (classFieldIdArray) => {
     })
   })
 }
+
+export default {
+  requestByClassInfoId, requestClassFields, requestByStudentId,
+  requestPostClassFields, requestPostClassField,
+  requestDelClassField, requestDelClassFields
+}
 /*
 // before
- export const requestClassField = (user_id) => {
+ const requestClassField = (user_id) => {
   return new Promise((resolve, reject) => {
     getClassField(user_id).then(response => {
       resolve(response)

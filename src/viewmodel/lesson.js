@@ -14,7 +14,7 @@ import { getLessons, getAllLessons, getByCollegeId,
  * 若参数中all=true，其他参数会被忽略
  * @returns {Promise<any>}
  */
-export const requestLessons = (params) => {
+const requestLessons = (params) => {
   return new Promise((resolve, reject) => {
     getLessons(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestLessons = (params) => {
  * description:请求所有课程组
  * @returns {Promise<any>}
  */
-export const requestAllLessons = () => {
+const requestAllLessons = () => {
   return new Promise((resolve, reject) => {
     getAllLessons().then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestAllLessons = () => {
  * @param college_id
  * @returns {Promise<any>}
  */
-export const requestByCollegeId = (college_id) => {
+const requestByCollegeId = (college_id) => {
   return new Promise((resolve, reject) => {
     getByCollegeId(college_id).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestByCollegeId = (college_id) => {
  * @param lessonItem
  * @returns {Promise<any>}
  */
-export const requestPutLesson = (lessonItem) => {
+const requestPutLesson = (lessonItem) => {
   return new Promise((resolve, reject) => {
     putLesson(lessonItem).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPutLesson = (lessonItem) => {
  * @param lessonArray
  * @returns {Promise<any>}
  */
-export const requestPutLessons = (lessonArray) => {
+const requestPutLessons = (lessonArray) => {
   return new Promise((resolve, reject) => {
     putLessons(lessonArray).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPutLessons = (lessonArray) => {
  * @param lessonItem
  * @returns {Promise<any>}
  */
-export const requestPostLesson = (lessonItem) => {
+const requestPostLesson = (lessonItem) => {
   return new Promise((resolve, reject) => {
     postLesson(lessonItem).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestPostLesson = (lessonItem) => {
  * @param lessonArray
  * @returns {Promise<any>}
  */
-export const requestPostLessons = (lessonArray) => {
+const requestPostLessons = (lessonArray) => {
   return new Promise((resolve, reject) => {
     postLessons(lessonArray).then(response => {
       resolve(response)
@@ -118,7 +118,7 @@ export const requestPostLessons = (lessonArray) => {
  * @param lessonId
  * @returns {Promise<any>}
  */
-export const requestDelLesson = (lessonId) => {
+const requestDelLesson = (lessonId) => {
   return new Promise((resolve, reject) => {
     deleteLesson(lessonId).then(response => {
       resolve(response)
@@ -133,7 +133,7 @@ export const requestDelLesson = (lessonId) => {
  * @param lessonIdArray
  * @returns {Promise<any>}
  */
-export const requestDelLessons = (lessonIdArray) => {
+const requestDelLessons = (lessonIdArray) => {
   return new Promise((resolve, reject) => {
     deleteLessons(lessonIdArray).then(response => {
       resolve(response)
@@ -143,3 +143,9 @@ export const requestDelLessons = (lessonIdArray) => {
   })
 }
 
+export default{
+  requestAllLessons, requestByCollegeId, requestLessons,
+  requestPostLesson, requestPostLessons,
+  requestPutLesson, requestPutLessons,
+  requestDelLesson, requestDelLessons
+}

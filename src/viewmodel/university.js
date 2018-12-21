@@ -13,7 +13,7 @@ import { getUniversity, getUniversityById,
  * @param params  参数对象（id，name,shortname 三个可选参数）
  * @returns {Promise<any>}
  */
-export const requestUniversitys = (params) => {
+const requestUniversitys = (params) => {
   return new Promise((resolve, reject) => {
     getUniversity(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestUniversitys = (params) => {
  * @param university_id
  * @returns {Promise<any>}
  */
-export const requestUniversityById = (university_id) => {
+const requestUniversityById = (university_id) => {
   return new Promise((resolve, reject) => {
     getUniversityById(university_id).then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestUniversityById = (university_id) => {
  * @param universityItem
  * @returns {Promise<any>}
  */
-export const requestPutUniversity = (universityItem) => {
+const requestPutUniversity = (universityItem) => {
   return new Promise((resolve, reject) => {
     putUniversity(universityItem).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestPutUniversity = (universityItem) => {
  * @param universityArray
  * @returns {Promise<any>}
  */
-export const requestPutUniversitys = (universityArray) => {
+const requestPutUniversitys = (universityArray) => {
   return new Promise((resolve, reject) => {
     putUniversitys(universityArray).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPutUniversitys = (universityArray) => {
  * @param universityItem
  * @returns {Promise<any>}
  */
-export const requestPostUniversity = (universityItem) => {
+const requestPostUniversity = (universityItem) => {
   return new Promise((resolve, reject) => {
     postUniversity(universityItem).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPostUniversity = (universityItem) => {
  * @param universityArray
  * @returns {Promise<any>}
  */
-export const requestPostUniversitys = (universityArray) => {
+const requestPostUniversitys = (universityArray) => {
   return new Promise((resolve, reject) => {
     postUniversitys(universityArray).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestPostUniversitys = (universityArray) => {
  * @param universityId
  * @returns {Promise<any>}
  */
-export const requestDelUniversity = (universityId) => {
+const requestDelUniversity = (universityId) => {
   return new Promise((resolve, reject) => {
     deleteUniversity(universityId).then(response => {
       resolve(response)
@@ -118,7 +118,7 @@ export const requestDelUniversity = (universityId) => {
  * @param universityIdArray
  * @returns {Promise<any>}
  */
-export const requestDelUniversitys = (universityIdArray) => {
+const requestDelUniversitys = (universityIdArray) => {
   return new Promise((resolve, reject) => {
     deleteUniversitys(universityIdArray).then(response => {
       resolve(response)
@@ -126,5 +126,12 @@ export const requestDelUniversitys = (universityIdArray) => {
       reject(error)
     })
   })
+}
+
+export default {
+  requestUniversitys, requestUniversityById,
+  requestPutUniversity, requestPutUniversitys,
+  requestPostUniversity, requestPostUniversitys,
+  requestDelUniversity, requestDelUniversitys
 }
 

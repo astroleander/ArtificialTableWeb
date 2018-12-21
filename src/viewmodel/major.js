@@ -13,7 +13,7 @@ import { getMajors, getByCollegeId,
  * @param params  （id，name,college_id三个可选参数）
  * @returns {Promise<any>}
  */
-export const requestMajors = (params) => {
+const requestMajors = (params) => {
   return new Promise((resolve, reject) => {
     getMajors(params).then(response => {
       resolve(response)
@@ -28,7 +28,7 @@ export const requestMajors = (params) => {
  * @param college_id
  * @returns {Promise<any>}
  */
-export const requestByCollegeId = (college_id) => {
+const requestByCollegeId = (college_id) => {
   return new Promise((resolve, reject) => {
     getByCollegeId(college_id).then(response => {
       resolve(response)
@@ -43,7 +43,7 @@ export const requestByCollegeId = (college_id) => {
  * @param majorItem
  * @returns {Promise<any>}
  */
-export const requestPutMajor = (majorItem) => {
+const requestPutMajor = (majorItem) => {
   return new Promise((resolve, reject) => {
     putMajor(majorItem).then(response => {
       resolve(response)
@@ -58,7 +58,7 @@ export const requestPutMajor = (majorItem) => {
  * @param majorArray
  * @returns {Promise<any>}
  */
-export const requestPutMajors = (majorArray) => {
+const requestPutMajors = (majorArray) => {
   return new Promise((resolve, reject) => {
     putMajors(majorArray).then(response => {
       resolve(response)
@@ -73,7 +73,7 @@ export const requestPutMajors = (majorArray) => {
  * @param majorItem
  * @returns {Promise<any>}
  */
-export const requestPostMajor = (majorItem) => {
+const requestPostMajor = (majorItem) => {
   return new Promise((resolve, reject) => {
     postMajor(majorItem).then(response => {
       resolve(response)
@@ -88,7 +88,7 @@ export const requestPostMajor = (majorItem) => {
  * @param majorArray
  * @returns {Promise<any>}
  */
-export const requestPostMajors = (majorArray) => {
+const requestPostMajors = (majorArray) => {
   return new Promise((resolve, reject) => {
     postMajors(majorArray).then(response => {
       resolve(response)
@@ -103,7 +103,7 @@ export const requestPostMajors = (majorArray) => {
  * @param majorId
  * @returns {Promise<any>}
  */
-export const requestDelMajor = (majorId) => {
+const requestDelMajor = (majorId) => {
   return new Promise((resolve, reject) => {
     deleteMajor(majorId).then(response => {
       resolve(response)
@@ -118,7 +118,7 @@ export const requestDelMajor = (majorId) => {
  * @param majorIdArray
  * @returns {Promise<any>}
  */
-export const requestDelMajors = (majorIdArray) => {
+const requestDelMajors = (majorIdArray) => {
   return new Promise((resolve, reject) => {
     deleteMajors(majorIdArray).then(response => {
       resolve(response)
@@ -126,5 +126,12 @@ export const requestDelMajors = (majorIdArray) => {
       reject(error)
     })
   })
+}
+
+export default {
+  requestByCollegeId, requestMajors,
+  requestPutMajor, requestPutMajors,
+  requestPostMajor, requestPostMajors,
+  requestDelMajor, requestDelMajors
 }
 
