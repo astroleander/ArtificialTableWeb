@@ -16,7 +16,8 @@ import { getUsersWithOutPass, getUser, getUsersWithPass,
 const requestUsersWithoutPass = (params) => {
   return new Promise((resolve, reject) => {
     getUsersWithOutPass(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -30,7 +31,8 @@ const requestUsersWithoutPass = (params) => {
 const requestUsersWithPass = (params) => {
   return new Promise((resolve, reject) => {
     getUsersWithPass(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -44,7 +46,8 @@ const requestUsersWithPass = (params) => {
 const requestUserById = (id) => {
   return new Promise((resolve, reject) => {
     getUser(id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -59,7 +62,8 @@ const requestUserById = (id) => {
 const requestPutUser = (userItem) => {
   return new Promise((resolve, reject) => {
     putUser(userItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -74,7 +78,8 @@ const requestPutUser = (userItem) => {
 const requestPutUsers = (userArray) => {
   return new Promise((resolve, reject) => {
     putUsers(userArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -89,7 +94,8 @@ const requestPutUsers = (userArray) => {
 const requestPostUser = (userItem) => {
   return new Promise((resolve, reject) => {
     postUser(userItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -104,7 +110,8 @@ const requestPostUser = (userItem) => {
 const requestPostUsers = (userArray) => {
   return new Promise((resolve, reject) => {
     postUsers(userArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -119,7 +126,8 @@ const requestPostUsers = (userArray) => {
 const requestDelUser = (userId) => {
   return new Promise((resolve, reject) => {
     deleteUser(userId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -134,7 +142,8 @@ const requestDelUser = (userId) => {
 const requestDelUsers = (userIdArray) => {
   return new Promise((resolve, reject) => {
     deleteUsers(userIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

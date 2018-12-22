@@ -16,7 +16,8 @@ import { getMajors, getByCollegeId,
 const requestMajors = (params) => {
   return new Promise((resolve, reject) => {
     getMajors(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestMajors = (params) => {
 const requestByCollegeId = (college_id) => {
   return new Promise((resolve, reject) => {
     getByCollegeId(college_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestByCollegeId = (college_id) => {
 const requestPutMajor = (majorItem) => {
   return new Promise((resolve, reject) => {
     putMajor(majorItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestPutMajor = (majorItem) => {
 const requestPutMajors = (majorArray) => {
   return new Promise((resolve, reject) => {
     putMajors(majorArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPutMajors = (majorArray) => {
 const requestPostMajor = (majorItem) => {
   return new Promise((resolve, reject) => {
     postMajor(majorItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPostMajor = (majorItem) => {
 const requestPostMajors = (majorArray) => {
   return new Promise((resolve, reject) => {
     postMajors(majorArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestPostMajors = (majorArray) => {
 const requestDelMajor = (majorId) => {
   return new Promise((resolve, reject) => {
     deleteMajor(majorId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -121,7 +128,8 @@ const requestDelMajor = (majorId) => {
 const requestDelMajors = (majorIdArray) => {
   return new Promise((resolve, reject) => {
     deleteMajors(majorIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

@@ -16,7 +16,8 @@ import { getTitleGroup, getTitleGroups,
 const requestTitleGroups = (params) => {
   return new Promise((resolve, reject) => {
     getTitleGroup(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestTitleGroups = (params) => {
 const requestByLessonId = (lesson_id) => {
   return new Promise((resolve, reject) => {
     getTitleGroups(lesson_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestByLessonId = (lesson_id) => {
 const requestPutTitleGroup = (titleGroupItem) => {
   return new Promise((resolve, reject) => {
     putTitleGroup(titleGroupItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestPutTitleGroup = (titleGroupItem) => {
 const requestPutTitleGroups = (titleGroupArray) => {
   return new Promise((resolve, reject) => {
     putTitleGroups(titleGroupArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPutTitleGroups = (titleGroupArray) => {
 const requestPostTitleGroup = (titleGroupItem) => {
   return new Promise((resolve, reject) => {
     postTitleGroup(titleGroupItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPostTitleGroup = (titleGroupItem) => {
 const requestPostTitleGroups = (titleGroupArray) => {
   return new Promise((resolve, reject) => {
     postTitleGroups(titleGroupArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestPostTitleGroups = (titleGroupArray) => {
 const requestDelTitleGroup = (titleGroupId) => {
   return new Promise((resolve, reject) => {
     deleteTitleGroup(titleGroupId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -121,7 +128,8 @@ const requestDelTitleGroup = (titleGroupId) => {
 const requestDelTitleGroups = (titleGroupIdArray) => {
   return new Promise((resolve, reject) => {
     deleteTitleGroups(titleGroupIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

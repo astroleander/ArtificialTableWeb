@@ -17,7 +17,8 @@ import { getLessons, getAllLessons, getByCollegeId,
 const requestLessons = (params) => {
   return new Promise((resolve, reject) => {
     getLessons(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestLessons = (params) => {
 const requestAllLessons = () => {
   return new Promise((resolve, reject) => {
     getAllLessons().then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestAllLessons = () => {
 const requestByCollegeId = (college_id) => {
   return new Promise((resolve, reject) => {
     getByCollegeId(college_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestByCollegeId = (college_id) => {
 const requestPutLesson = (lessonItem) => {
   return new Promise((resolve, reject) => {
     putLesson(lessonItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPutLesson = (lessonItem) => {
 const requestPutLessons = (lessonArray) => {
   return new Promise((resolve, reject) => {
     putLessons(lessonArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPutLessons = (lessonArray) => {
 const requestPostLesson = (lessonItem) => {
   return new Promise((resolve, reject) => {
     postLesson(lessonItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestPostLesson = (lessonItem) => {
 const requestPostLessons = (lessonArray) => {
   return new Promise((resolve, reject) => {
     postLessons(lessonArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -121,7 +128,8 @@ const requestPostLessons = (lessonArray) => {
 const requestDelLesson = (lessonId) => {
   return new Promise((resolve, reject) => {
     deleteLesson(lessonId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -136,7 +144,8 @@ const requestDelLesson = (lessonId) => {
 const requestDelLessons = (lessonIdArray) => {
   return new Promise((resolve, reject) => {
     deleteLessons(lessonIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

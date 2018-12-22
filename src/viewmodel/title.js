@@ -16,7 +16,8 @@ import { getTitles, getTitle,
 const requestTitles = (params) => {
   return new Promise((resolve, reject) => {
     getTitles(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -32,7 +33,8 @@ const requestTitles = (params) => {
 const requestTitle = (titleGroup_id, classInfo_id) => {
   return new Promise((resolve, reject) => {
     getTitle(titleGroup_id, classInfo_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -47,7 +49,8 @@ const requestTitle = (titleGroup_id, classInfo_id) => {
 const requestPutTitle = (titleItem) => {
   return new Promise((resolve, reject) => {
     putTitle(titleItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -62,7 +65,8 @@ const requestPutTitle = (titleItem) => {
 const requestPutTitles = (titleArray) => {
   return new Promise((resolve, reject) => {
     putTitles(titleArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -77,7 +81,8 @@ const requestPutTitles = (titleArray) => {
 const requestPostTitle = (titleItem) => {
   return new Promise((resolve, reject) => {
     postTitle(titleItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -92,7 +97,8 @@ const requestPostTitle = (titleItem) => {
 const requestPostTitles = (titleArray) => {
   return new Promise((resolve, reject) => {
     postTitles(titleArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -107,7 +113,8 @@ const requestPostTitles = (titleArray) => {
 const requestDelTitle = (titleId) => {
   return new Promise((resolve, reject) => {
     deleteTitle(titleId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -122,7 +129,8 @@ const requestDelTitle = (titleId) => {
 const requestDelTitles = (titleIdArray) => {
   return new Promise((resolve, reject) => {
     deleteTitles(titleIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

@@ -17,7 +17,8 @@ import { getStudents, getByClassInfoId,
 const requestStudents = (params) => {
   return new Promise((resolve, reject) => {
     getStudents(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -32,7 +33,8 @@ const requestStudents = (params) => {
 const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -47,7 +49,8 @@ const requestByClassInfoId = (classInfo_id) => {
 const requestPutStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
     putStudent(studentItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -62,7 +65,8 @@ const requestPutStudent = (studentItem) => {
 const requestPutStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
     putStudents(studentArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -77,7 +81,8 @@ const requestPutStudents = (studentArray) => {
 const requestPostStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
     postStudent(studentItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -92,7 +97,8 @@ const requestPostStudent = (studentItem) => {
 const requestPostStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
     postStudents(studentArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -107,7 +113,8 @@ const requestPostStudents = (studentArray) => {
 const requestDelStudent = (studentId) => {
   return new Promise((resolve, reject) => {
     deleteStudent(studentId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -122,7 +129,8 @@ const requestDelStudent = (studentId) => {
 const requestDelStudents = (studentIdArray) => {
   return new Promise((resolve, reject) => {
     deleteStudents(studentIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

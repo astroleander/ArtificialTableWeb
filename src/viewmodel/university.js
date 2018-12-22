@@ -16,7 +16,8 @@ import { getUniversity, getUniversityById,
 const requestUniversitys = (params) => {
   return new Promise((resolve, reject) => {
     getUniversity(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestUniversitys = (params) => {
 const requestUniversityById = (university_id) => {
   return new Promise((resolve, reject) => {
     getUniversityById(university_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestUniversityById = (university_id) => {
 const requestPutUniversity = (universityItem) => {
   return new Promise((resolve, reject) => {
     putUniversity(universityItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestPutUniversity = (universityItem) => {
 const requestPutUniversitys = (universityArray) => {
   return new Promise((resolve, reject) => {
     putUniversitys(universityArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPutUniversitys = (universityArray) => {
 const requestPostUniversity = (universityItem) => {
   return new Promise((resolve, reject) => {
     postUniversity(universityItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPostUniversity = (universityItem) => {
 const requestPostUniversitys = (universityArray) => {
   return new Promise((resolve, reject) => {
     postUniversitys(universityArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestPostUniversitys = (universityArray) => {
 const requestDelUniversity = (universityId) => {
   return new Promise((resolve, reject) => {
     deleteUniversity(universityId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -121,7 +128,8 @@ const requestDelUniversity = (universityId) => {
 const requestDelUniversitys = (universityIdArray) => {
   return new Promise((resolve, reject) => {
     deleteUniversitys(universityIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

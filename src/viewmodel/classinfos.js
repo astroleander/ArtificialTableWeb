@@ -16,7 +16,8 @@ import { getClassInfos, getByTeacherId,
 const requestClassInfos = (params) => {
   return new Promise((resolve, reject) => {
     getClassInfos(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestClassInfos = (params) => {
 const requestByTeacherId = (teacher_id) => {
   return new Promise((resolve, reject) => {
     getByTeacherId(teacher_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestByTeacherId = (teacher_id) => {
 const requestPutClassInfo = (classInfoItem) => {
   return new Promise((resolve, reject) => {
     putClassInfo(classInfoItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestPutClassInfo = (classInfoItem) => {
 const requestPutClassInfos = (classInfoArray) => {
   return new Promise((resolve, reject) => {
     putClassInfos(classInfoArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPutClassInfos = (classInfoArray) => {
 const requestPostClassInfo = (classInfoItem) => {
   return new Promise((resolve, reject) => {
     postClassInfo(classInfoItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPostClassInfo = (classInfoItem) => {
 const requestPostClassInfos = (classInfoArray) => {
   return new Promise((resolve, reject) => {
     postClassInfos(classInfoArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestPostClassInfos = (classInfoArray) => {
 const requestDelClassInfo = (classInfoId) => {
   return new Promise((resolve, reject) => {
     deleteClassInfo(classInfoId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -121,7 +128,8 @@ const requestDelClassInfo = (classInfoId) => {
 const requestDelClassInfos = (classInfoIdArray) => {
   return new Promise((resolve, reject) => {
     deleteClassInfos(classInfoIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

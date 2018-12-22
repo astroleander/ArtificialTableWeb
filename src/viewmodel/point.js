@@ -16,7 +16,8 @@ import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
 const requestPoints = (params) => {
   return new Promise((resolve, reject) => {
     getPoints(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestPoints = (params) => {
 const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -47,7 +49,8 @@ const requestByClassInfoId = (classInfo_id) => {
 const requestByStudentId = (classInfo_id, student_id) => {
   return new Promise((resolve, reject) => {
     getByStudentId(classInfo_id, student_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -63,7 +66,8 @@ const requestByStudentId = (classInfo_id, student_id) => {
 const requestByTitleId = (classInfo_id, title_id) => {
   return new Promise((resolve, reject) => {
     getByTitleId(classInfo_id, title_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -78,7 +82,8 @@ const requestByTitleId = (classInfo_id, title_id) => {
 const requestPutPoint = (pointItem) => {
   return new Promise((resolve, reject) => {
     putPoint(pointItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -93,7 +98,8 @@ const requestPutPoint = (pointItem) => {
 const requestPutPoints = (pointArray) => {
   return new Promise((resolve, reject) => {
     putPoints(pointArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -108,7 +114,8 @@ const requestPutPoints = (pointArray) => {
 const requestPostPoint = (pointItem) => {
   return new Promise((resolve, reject) => {
     postPoint(pointItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -123,7 +130,8 @@ const requestPostPoint = (pointItem) => {
 const requestPostPoints = (pointArray) => {
   return new Promise((resolve, reject) => {
     postPoints(pointArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -138,7 +146,8 @@ const requestPostPoints = (pointArray) => {
 const requestDelPoint = (pointId) => {
   return new Promise((resolve, reject) => {
     deletePoint(pointId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -153,7 +162,8 @@ const requestDelPoint = (pointId) => {
 const requestDelPoints = (pointIdArray) => {
   return new Promise((resolve, reject) => {
     deletePoints(pointIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })

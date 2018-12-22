@@ -16,7 +16,8 @@ import {
 const requestClassFields = (params) => {
   return new Promise((resolve, reject) => {
     getClassFields(params).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -31,7 +32,8 @@ const requestClassFields = (params) => {
 const requestByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -46,7 +48,8 @@ const requestByClassInfoId = (classInfo_id) => {
 const requestByStudentId = (student_id) => {
   return new Promise((resolve, reject) => {
     getByStudentID(student_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -61,7 +64,8 @@ const requestByStudentId = (student_id) => {
 const requestPostClassField = (classFieldItem) => {
   return new Promise((resolve, reject) => {
     postClassField(classFieldItem).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -76,7 +80,8 @@ const requestPostClassField = (classFieldItem) => {
 const requestPostClassFields = (classFieldArray) => {
   return new Promise((resolve, reject) => {
     postClassFields(classFieldArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -91,7 +96,8 @@ const requestPostClassFields = (classFieldArray) => {
 const requestDelClassField = (classFieldId) => {
   return new Promise((resolve, reject) => {
     deleteClassField(classFieldId).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -106,7 +112,8 @@ const requestDelClassField = (classFieldId) => {
 const requestDelClassFields = (classFieldIdArray) => {
   return new Promise((resolve, reject) => {
     deleteClassFields(classFieldIdArray).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
@@ -123,7 +130,8 @@ export default {
  const requestClassField = (user_id) => {
   return new Promise((resolve, reject) => {
     getClassField(user_id).then(response => {
-      resolve(response)
+      const dataset = response && response.subjects
+      resolve(dataset)
     }).catch(error => {
       reject(error)
     })
