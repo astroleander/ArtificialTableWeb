@@ -273,8 +273,10 @@ export default {
       /* generate workbook object from table */
       let wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
       let size = wb.Sheets[wb.SheetNames[0]]['!ref']
-      let number = size.match(/\d?$/)
-      console.log(number)
+      let number = size.match(/\d+$/)
+      let newNumber = parseInt(number[0]) / 2
+      let newSize = size.slice(0, number.index) + newNumber
+      wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
       /* get binary string as output */
       let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
       try {
