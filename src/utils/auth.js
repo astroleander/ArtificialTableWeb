@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 
 const TOKEN_KEY = 'Admin-Token'
 const ID_KEY = 'Admin-Id'
-
+const User_KEY = 'User'
 export function getToken() {
   return Cookies.get(TOKEN_KEY)
 }
@@ -25,4 +25,15 @@ export function setId(id) {
 
 export function removeId() {
   return Cookies.remove(ID_KEY)
+}
+
+// 2018/12/15
+export function getUser() {
+  return Cookies.get(User_KEY)
+}
+export function setUser(user) {
+  return Cookies.set(User_KEY, user)
+}
+export function removeUser() {
+  return Cookies.remove(User_KEY)
 }

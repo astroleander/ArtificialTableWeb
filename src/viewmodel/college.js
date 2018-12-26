@@ -1,21 +1,22 @@
-import { getTitles, getTitle,
-  postTitle, postTitles,
-  putTitle, putTitles,
-  deleteTitle, deleteTitles } from '@/api/title'
+import { getColleges, getByUniversityId,
+  postCollege, postColleges,
+  putCollege, putColleges,
+  deleteCollege, deleteColleges } from '@/api/college'
 /**
  * date:2018/12/20
  * author:liqian
- * description：小项信息的get put post delete
+ * description：院系信息的get put post delete
  */
 
 /**
- * description:请求小项信息
- * @param params  参数对象（id,name,type,titleGroup_id,classInfo_id五个可选参数）
+ * description:请求院系信息
+ * @param params  参数对象（id，name,university_id三个可选参数）
+ *                若参数中有university_id，其他参数会被忽略
  * @returns {Promise<any>}
  */
-const requestTitles = (params) => {
+const requestColleges = (params) => {
   return new Promise((resolve, reject) => {
-    getTitles(params).then(response => {
+    getColleges(params).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -25,14 +26,13 @@ const requestTitles = (params) => {
 }
 
 /**
- * 通过classInfo_id和titleGroup_id查询小项条目信息
- * @param titleGroup_id
- * @param classInfo_id
+ * 通过university_id查询院系信息
+ * @param university_id
  * @returns {Promise<any>}
  */
-const requestTitle = (titleGroup_id, classInfo_id) => {
+const requestByUniversityId = (university_id) => {
   return new Promise((resolve, reject) => {
-    getTitle(titleGroup_id, classInfo_id).then(response => {
+    getByUniversityId(university_id).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -42,13 +42,13 @@ const requestTitle = (titleGroup_id, classInfo_id) => {
 }
 
 /**
- * 请求修改一条小项信息
- * @param titleItem
+ * 请求修改一条院系信息
+ * @param collegeItem
  * @returns {Promise<any>}
  */
-const requestPutTitle = (titleItem) => {
+const requestPutCollege = (collegeItem) => {
   return new Promise((resolve, reject) => {
-    putTitle(titleItem).then(response => {
+    putCollege(collegeItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -58,13 +58,13 @@ const requestPutTitle = (titleItem) => {
 }
 
 /**
- * 请求修改多条小项信息
- * @param titleArray
+ * 请求修改多条院系信息
+ * @param collegeArray
  * @returns {Promise<any>}
  */
-const requestPutTitles = (titleArray) => {
+const requestPutColleges = (collegeArray) => {
   return new Promise((resolve, reject) => {
-    putTitles(titleArray).then(response => {
+    putColleges(collegeArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -74,13 +74,13 @@ const requestPutTitles = (titleArray) => {
 }
 
 /**
- * 请求添加一条小项信息
- * @param titleItem
+ * 请求添加一条院系信息
+ * @param collegeItem
  * @returns {Promise<any>}
  */
-const requestPostTitle = (titleItem) => {
+const requestPostCollege = (collegeItem) => {
   return new Promise((resolve, reject) => {
-    postTitle(titleItem).then(response => {
+    postCollege(collegeItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -90,13 +90,13 @@ const requestPostTitle = (titleItem) => {
 }
 
 /**
- * 请求添加多条小项信息
- * @param titleArray
+ * 请求添加多条院系信息
+ * @param collegeArray
  * @returns {Promise<any>}
  */
-const requestPostTitles = (titleArray) => {
+const requestPostColleges = (collegeArray) => {
   return new Promise((resolve, reject) => {
-    postTitles(titleArray).then(response => {
+    postColleges(collegeArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -106,13 +106,13 @@ const requestPostTitles = (titleArray) => {
 }
 
 /**
- * 请求删除单条小项信息
- * @param titleId
+ * 请求删除单条院系信息
+ * @param collegeId
  * @returns {Promise<any>}
  */
-const requestDelTitle = (titleId) => {
+const requestDelCollege = (collegeId) => {
   return new Promise((resolve, reject) => {
-    deleteTitle(titleId).then(response => {
+    deleteCollege(collegeId).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -122,13 +122,13 @@ const requestDelTitle = (titleId) => {
 }
 
 /**
- * 请求删除多条小项信息
- * @param titleIdArray
+ * 请求删除多条院系信息
+ * @param collegeIdArray
  * @returns {Promise<any>}
  */
-const requestDelTitles = (titleIdArray) => {
+const requestDelColleges = (collegeIdArray) => {
   return new Promise((resolve, reject) => {
-    deleteTitles(titleIdArray).then(response => {
+    deleteColleges(collegeIdArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -138,8 +138,8 @@ const requestDelTitles = (titleIdArray) => {
 }
 
 export default {
-  requestTitle, requestTitles,
-  requestPutTitle, requestPutTitles,
-  requestPostTitle, requestPostTitles,
-  requestDelTitle, requestDelTitles
+  requestByUniversityId, requestColleges,
+  requestPutCollege, requestPutColleges,
+  requestPostCollege, requestPostColleges,
+  requestDelCollege, requestDelColleges
 }

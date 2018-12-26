@@ -7,13 +7,14 @@
         </div>
         <div class="error-box">
           <el-alert v-show="isError"
-                    :title="errorMsg" type="error" :closable="false" show-icon>
+                    :title="errorMsg" :type="errorType" :closable="false" show-icon>
           </el-alert>
         </div>
         <div class="button-group">
-          <el-button @click="dealLeft">一键分配</el-button>
+          <el-button @click="dealAvg"  :disabled="btnDisabled">一键平均</el-button>
+          <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
           <el-button @click="addLessonItem">添加大项</el-button>
-          <el-button @click="dealCancel">还原</el-button>
+          <!--<el-button @click="dealCancel">还原</el-button>-->
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
         </div>
       </div>
@@ -98,10 +99,13 @@
         }
       }
       return {
-        isError: false,
-        errorMsg: '',
+        isError: true,
+        errorMsg: '当前课程组无大项信息',
+        errorType: '',
+        groupId: 0,
         currentDataSet: [],
-        modifyDisabled: false,
+        modifyDisabled: true,
+        btnDisabled: false,
         titleDisabled: [],
         dialogFormVisible: false,
         NewTitleGroup: {
@@ -150,6 +154,31 @@
         }
         return sum
       },
+      // 计算已锁定权重信息
+      weightLockInfo: function() {
+        let sum = 0
+        let num = 0
+        for (let i = 0; i < this.currentDataSet.length; i++) {
+          if (this.titleDisabled[i] === true) {
+            sum += this.currentDataSet[i].weight
+            num++
+          }
+        }
+        return [sum, num]
+      },
+      // 计算可分配权重信息
+      weightNoLockInfo: function() {
+        let sum = 100
+        let num = 0
+        for (let i = 0; i < this.currentDataSet.length; i++) {
+          if (this.titleDisabled[i] === true) {
+            sum -= this.currentDataSet[i].weight
+          } else {
+            num++
+          }
+        }
+        return [sum, num]
+      },
       // 点击修改按钮
       openDialog() {
         this.$confirm('此操作将修改权重信息, 是否继续?', '提示', {
@@ -159,6 +188,7 @@
         }).then(() => {
           this.$emit('notifyChanged', this.currentDataSet)
         }).catch(() => {
+          this.dealCancel()
           this.$message({
             type: 'info',
             message: '已取消修改'
@@ -168,6 +198,17 @@
       // 改变锁定状态
       changeLock: function(id) {
         this.$set(this.titleDisabled, id, !this.titleDisabled[id])
+        const weightLockInfo = this.weightLockInfo()
+        // 锁定值大于等于100时，不能一键平均和一键分配
+        if (weightLockInfo[0] >= 100) {
+          this.btnDisabled = true
+          this.$message({
+            type: 'info',
+            message: '锁定值大于等于100时，不能一键平均'
+          })
+        } else {
+          this.btnDisabled = false
+        }
       },
       // (1)处理非法输入，主要是非数字，空值，null，数值前的0等情况
       // (2)根据权重的改变修改状态
@@ -186,18 +227,7 @@
         title.weight = result
         title.value = result
         this.$set(this.currentDataSet, id, title)
-        if (this.weightSum() > 100) {
-          this.modifyDisabled = false
-          this.isError = true
-          this.errorMsg = '权重之和超过100，请重新修改'
-        } else if (this.weightSum() < 100) {
-          this.modifyDisabled = false
-          this.isError = true
-          this.errorMsg = '权重之和不足100，请重新修改'
-        } else {
-          this.modifyDisabled = true
-          this.isError = false
-        }
+        this.dealAlert()
       },
       dealCancel: function() {
         this.dealDataSet()
@@ -213,8 +243,6 @@
       },
       // 添加大项
       submitForm: function(formName) {
-        console.log(this.NewTitleGroup.name)
-        console.log(this.NewTitleGroup.weight)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.dialogFormVisible = false
@@ -224,6 +252,27 @@
           }
         })
       },
+      // 平均分配总权重
+      dealAvg: function() {
+        const DataSet = this.currentDataSet
+        const weightInfo = this.weightNoLockInfo()
+        const sum = weightInfo[0]
+        const num = weightInfo[1]
+        let space = sum % num
+        const avg = (sum - space) / num
+        // console.log('space = ' + space)
+        // console.log('avg = ' + avg)
+        for (let i = 0; i < DataSet.length; i++) {
+          if (this.titleDisabled[i] !== true) {
+            if (space === 0) {
+              DataSet[i].weight = avg
+            } else {
+              DataSet[i].weight = avg + 1
+              space--
+            }
+          }
+        }
+      },
       // 一键分配剩余
       dealLeft: function() {
         const newDataSet = this.currentDataSet
@@ -232,7 +281,7 @@
           const copySpace = space
           while (space > 0) {
             let i = 0
-            for (;i < newDataSet.length; i++) {
+            for (; i < newDataSet.length; i++) {
               if (space === 0) break
               if (this.titleDisabled[i] !== true && newDataSet[i].weight < 100) {
                 newDataSet[i].weight++
@@ -247,7 +296,7 @@
           const copySpace = space
           while (space > 0) {
             let i = 0
-            for (;i < newDataSet.length; i++) {
+            for (; i < newDataSet.length; i++) {
               if (space === 0) break
               if (this.titleDisabled[i] !== true && newDataSet[i].weight > 0) {
                 newDataSet[i].weight--
@@ -262,7 +311,7 @@
           this.$set(this.currentDataSet, i, newDataSet[i])
         }
       },
-      // 数据预处理
+      // 数据预处理 初始化锁
       initLocks: function() {
         for (let i = 0; i < this.currentDataSet.length; i++) {
           this.titleDisabled[i] = false
@@ -280,36 +329,51 @@
             value: this.dataSet[i].weight
           })
         }
-        if (this.weightSum() === 100) {
+        this.dealAlert()
+      },
+      // 处理提示信息
+      dealAlert: function() {
+        if (this.currentDataSet.length === 0) {
           this.modifyDisabled = false
+          this.isError = true
+          this.errorType = ''
+          this.errorMsg = '当前课程组下无大项信息'
         } else {
-          this.modifyDisabled = true
+          if (this.weightSum() === 100) {
+            this.modifyDisabled = false
+            this.isError = false
+          } else if (this.weightSum() < 100) {
+            this.modifyDisabled = true
+            this.isError = true
+            this.errorType = 'error'
+            this.errorMsg = '权重之和不足100'
+          } else if (this.weightSum() > 100) {
+            this.modifyDisabled = true
+            this.isError = true
+            this.errorType = 'error'
+            this.errorMsg = '权重之和超过100'
+          }
         }
       }
     },
     watch: {
       dataSet: function(val) {
+        // console.log('this.dataSet watch = ' + this.dataSet)
+        // console.log('this.dataSet watch = ' + this.dataSet.length)
         this.dealDataSet()
       }
     },
     created() {
+      // console.log('this.dataSet created = ' + this.dataSet)
+      // console.log('this.dataSet created = ' + this.dataSet.length)
+      this.dealAlert()
       this.initLocks()
       this.dealDataSet()
-      console.log('this.dataSet' + this.dataSet)
     },
     updated() {
-      if (this.weightSum() > 100) {
-        this.modifyDisabled = true
-        this.isError = true
-        this.errorMsg = '权重之和超过100，请重新修改'
-      } else if (this.weightSum() < 100) {
-        this.modifyDisabled = true
-        this.isError = true
-        this.errorMsg = '权重之和不足100，请重新修改或者一键分配'
-      } else {
-        this.modifyDisabled = false
-        this.isError = false
-      }
+      // console.log('this.dataSet updated = ' + this.dataSet)
+      // console.log('this.dataSet updated = ' + this.dataSet.length)
+      this.dealAlert()
     }
   }
 </script>

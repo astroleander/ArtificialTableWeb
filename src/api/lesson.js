@@ -6,6 +6,21 @@ import request from '@/utils/request'
  */
 
 /**
+ *查找课程组信息
+ * params：参数对象（id，name,college_id，all四个可选参数）
+ * 若参数中all=true，其他参数会被忽略
+ * @param params 参数列表
+ */
+export function getLessons(params) {
+  return request({
+    url: '/table/lesson/format',
+    method: 'get',
+    params: {
+      params
+    }
+  })
+}
+/**
  * get lesson taught by teacher with right-token
  * 获取所有的课程组(get)
  */

@@ -1,21 +1,22 @@
-import {
-  getClassFields, getByClassInfoId, getByStudentID,
-  postClassField, postClassFields,
-  deleteClassField, deleteClassFields } from '@/api/class_field'
+import { getStudents, getByClassInfoId,
+  postStudent, postStudents,
+  putStudent, putStudents,
+  deleteStudent, deleteStudents } from '@/api/student'
 /**
  * date:2018/12/20
  * author:liqian
- * description：教学班组织信息的get post delete
+ * description：学生信息的get put post delete
  */
 
 /**
- * description:请求教学班组织信息
- * @param params  参数对象（id，classInfo_id,student_id 三个可选参数）
+ * description:请求学生信息
+ * @param params  参数对象（id，sid,name,classInfo_id,major_id,year 6个可选参数,
+ *                若参数里有classInfo_id，其他参数被忽略）
  * @returns {Promise<any>}
  */
-const requestClassFields = (params) => {
+const requestStudents = (params) => {
   return new Promise((resolve, reject) => {
-    getClassFields(params).then(response => {
+    getStudents(params).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -25,8 +26,8 @@ const requestClassFields = (params) => {
 }
 
 /**
- * 请求某一教学班信息
- * @param classInfo_id 教学班id
+ * 通过classInfo_id查询学生信息
+ * @param classInfo_id
  * @returns {Promise<any>}
  */
 const requestByClassInfoId = (classInfo_id) => {
@@ -41,13 +42,13 @@ const requestByClassInfoId = (classInfo_id) => {
 }
 
 /**
- * 请求某一学生参加的课程
- * @param student_id
+ * 请求修改一条学生信息
+ * @param studentItem
  * @returns {Promise<any>}
  */
-const requestByStudentId = (student_id) => {
+const requestPutStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
-    getByStudentID(student_id).then(response => {
+    putStudent(studentItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -57,13 +58,13 @@ const requestByStudentId = (student_id) => {
 }
 
 /**
- * 请求添加一条教学班组织信息
- * @param classFieldItem
+ * 请求修改多条学生信息
+ * @param studentArray
  * @returns {Promise<any>}
  */
-const requestPostClassField = (classFieldItem) => {
+const requestPutStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
-    postClassField(classFieldItem).then(response => {
+    putStudents(studentArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -73,13 +74,13 @@ const requestPostClassField = (classFieldItem) => {
 }
 
 /**
- * 请求添加多条教学班组织信息
- * @param classFieldArray
+ * 请求添加一条学生信息
+ * @param studentItem
  * @returns {Promise<any>}
  */
-const requestPostClassFields = (classFieldArray) => {
+const requestPostStudent = (studentItem) => {
   return new Promise((resolve, reject) => {
-    postClassFields(classFieldArray).then(response => {
+    postStudent(studentItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -89,13 +90,13 @@ const requestPostClassFields = (classFieldArray) => {
 }
 
 /**
- * 请求删除单条教学班组织信息
- * @param classFieldId
+ * 请求添加多条学生信息
+ * @param studentArray
  * @returns {Promise<any>}
  */
-const requestDelClassField = (classFieldId) => {
+const requestPostStudents = (studentArray) => {
   return new Promise((resolve, reject) => {
-    deleteClassField(classFieldId).then(response => {
+    postStudents(studentArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -105,13 +106,29 @@ const requestDelClassField = (classFieldId) => {
 }
 
 /**
- * 请求删除多条教学班组织信息
- * @param classFieldIdArray
+ * 请求删除单条学生信息
+ * @param studentId
  * @returns {Promise<any>}
  */
-const requestDelClassFields = (classFieldIdArray) => {
+const requestDelStudent = (studentId) => {
   return new Promise((resolve, reject) => {
-    deleteClassFields(classFieldIdArray).then(response => {
+    deleteStudent(studentId).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 请求删除多条学生信息
+ * @param studentIdArray
+ * @returns {Promise<any>}
+ */
+const requestDelStudents = (studentIdArray) => {
+  return new Promise((resolve, reject) => {
+    deleteStudents(studentIdArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -121,19 +138,8 @@ const requestDelClassFields = (classFieldIdArray) => {
 }
 
 export default {
-  requestByClassInfoId, requestClassFields, requestByStudentId,
-  requestPostClassFields, requestPostClassField,
-  requestDelClassField, requestDelClassFields
+  requestByClassInfoId, requestStudents,
+  requestPutStudent, requestPutStudents,
+  requestPostStudent, requestPostStudents,
+  requestDelStudent, requestDelStudents
 }
-/*
-// before
- const requestClassField = (user_id) => {
-  return new Promise((resolve, reject) => {
-    getClassField(user_id).then(response => {
-      const dataset = response && response.subjects
-      resolve(dataset)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}*/

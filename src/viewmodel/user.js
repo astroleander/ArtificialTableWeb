@@ -1,22 +1,51 @@
-import { getLessons, getAllLessons, getByCollegeId,
-  postLesson, postLessons,
-  putLesson, putLessons,
-  deleteLesson, deleteLessons } from '@/api/lesson'
+import { getUsersWithOutPass, getUser, getUsersWithPass,
+  postUser, postUsers,
+  putUser, putUsers,
+  deleteUser, deleteUsers } from '@/api/user'
 /**
  * date:2018/12/20
  * author:liqian
- * description：课程组信息的get put post delete
+ * description：用户信息的get put post delete
  */
 
 /**
- * description:请求课程组信息
- * @param params  参数对象（id，name,college_id，all四个可选参数）
- * 若参数中all=true，其他参数会被忽略
+ * description:请求用户信息,返回时不会返回密码
+ * @param params  （id,tid,name,college_id,email,mobile,is_manager七个可选参数）
  * @returns {Promise<any>}
  */
-const requestLessons = (params) => {
+const requestUsersWithoutPass = (params) => {
   return new Promise((resolve, reject) => {
-    getLessons(params).then(response => {
+    getUsersWithOutPass(params).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+/**
+ * description:请求用户信息,返回时返回密码
+ * @param params  （id,tid,name,college_id,email,mobile,is_manager七个可选参数）
+ * @returns {Promise<any>}
+ */
+const requestUsersWithPass = (params) => {
+  return new Promise((resolve, reject) => {
+    getUsersWithPass(params).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+/**
+ * 通过id查询用户信息
+ * @param id
+ * @returns {Promise<any>}
+ */
+const requestUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    getUser(id).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -26,12 +55,13 @@ const requestLessons = (params) => {
 }
 
 /**
- * description:请求所有课程组
+ * 请求修改一条用户信息
+ * @param userItem
  * @returns {Promise<any>}
  */
-const requestAllLessons = () => {
+const requestPutUser = (userItem) => {
   return new Promise((resolve, reject) => {
-    getAllLessons().then(response => {
+    putUser(userItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -41,13 +71,13 @@ const requestAllLessons = () => {
 }
 
 /**
- * 通过college_id查询课程组信息
- * @param college_id
+ * 请求修改多条用户信息
+ * @param userArray
  * @returns {Promise<any>}
  */
-const requestByCollegeId = (college_id) => {
+const requestPutUsers = (userArray) => {
   return new Promise((resolve, reject) => {
-    getByCollegeId(college_id).then(response => {
+    putUsers(userArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -57,13 +87,13 @@ const requestByCollegeId = (college_id) => {
 }
 
 /**
- * 请求修改一条课程组信息
- * @param lessonItem
+ * 请求添加一条用户信息
+ * @param userItem
  * @returns {Promise<any>}
  */
-const requestPutLesson = (lessonItem) => {
+const requestPostUser = (userItem) => {
   return new Promise((resolve, reject) => {
-    putLesson(lessonItem).then(response => {
+    postUser(userItem).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -73,13 +103,13 @@ const requestPutLesson = (lessonItem) => {
 }
 
 /**
- * 请求修改多条课程组信息
- * @param lessonArray
+ * 请求添加多条用户信息
+ * @param userArray
  * @returns {Promise<any>}
  */
-const requestPutLessons = (lessonArray) => {
+const requestPostUsers = (userArray) => {
   return new Promise((resolve, reject) => {
-    putLessons(lessonArray).then(response => {
+    postUsers(userArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -89,13 +119,13 @@ const requestPutLessons = (lessonArray) => {
 }
 
 /**
- * 请求添加一条课程组信息
- * @param lessonItem
+ * 请求删除单条用户信息
+ * @param userId
  * @returns {Promise<any>}
  */
-const requestPostLesson = (lessonItem) => {
+const requestDelUser = (userId) => {
   return new Promise((resolve, reject) => {
-    postLesson(lessonItem).then(response => {
+    deleteUser(userId).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -105,13 +135,13 @@ const requestPostLesson = (lessonItem) => {
 }
 
 /**
- * 请求添加多条课程组信息
- * @param lessonArray
+ * 请求删除多条用户信息
+ * @param userIdArray
  * @returns {Promise<any>}
  */
-const requestPostLessons = (lessonArray) => {
+const requestDelUsers = (userIdArray) => {
   return new Promise((resolve, reject) => {
-    postLessons(lessonArray).then(response => {
+    deleteUsers(userIdArray).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -120,41 +150,9 @@ const requestPostLessons = (lessonArray) => {
   })
 }
 
-/**
- * 请求删除单条课程组信息
- * @param lessonId
- * @returns {Promise<any>}
- */
-const requestDelLesson = (lessonId) => {
-  return new Promise((resolve, reject) => {
-    deleteLesson(lessonId).then(response => {
-      const dataset = response && response.subjects
-      resolve(dataset)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}
-
-/**
- * 请求删除多条课程组信息
- * @param lessonIdArray
- * @returns {Promise<any>}
- */
-const requestDelLessons = (lessonIdArray) => {
-  return new Promise((resolve, reject) => {
-    deleteLessons(lessonIdArray).then(response => {
-      const dataset = response && response.subjects
-      resolve(dataset)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}
-
-export default{
-  requestAllLessons, requestByCollegeId, requestLessons,
-  requestPostLesson, requestPostLessons,
-  requestPutLesson, requestPutLessons,
-  requestDelLesson, requestDelLessons
+export default {
+  requestUserById, requestUsersWithoutPass, requestUsersWithPass,
+  requestPutUser, requestPutUsers,
+  requestPostUser, requestPostUsers,
+  requestDelUser, requestDelUsers
 }

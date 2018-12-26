@@ -55,7 +55,7 @@ export function postClassField(classFieldItem) {
   })
 }
 /**
- * 添加多条课程组信息
+ * 添加多条教学班组织信息
  */
 export function postClassFields(classFieldArray) {
   return request({
@@ -67,7 +67,7 @@ export function postClassFields(classFieldArray) {
   })
 }
 /**
- * 删除一条课程组信息
+ * 删除一条教学班组织信息
  */
 export function deleteClassField(classField_id) {
   return request({
@@ -81,7 +81,7 @@ export function deleteClassField(classField_id) {
   })
 }
 /**
- * 批量删除课程组
+ * 批量删除教学班组织信息
  */
 export function deleteClassFields(classFieldIdArray) {
   return request({
