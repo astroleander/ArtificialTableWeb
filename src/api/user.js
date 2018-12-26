@@ -1,25 +1,36 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
- * description：用户信息的增删改查
+ * 2018.12.18
+ * - 2018.12.25 v1 modify by Astroleander
+ * @author liqian
+ * @description 用户信息的增删改查
 */
 
 /**
- *  查找用户信息，返回时不会返回密码
- * @param params 参数对象（id,tid,name,college_id,email,mobile,is_manager七个可选参数）
+ * @description 查找用户信息，返回时不会返回密码
+ * @param {headers} token
+ * @param params.id
+ * @param params.tid
+ * @param params.name
+ * @param params.college_id
+ * @param params.email
+ * @param params.mobile
  */
-export function getUsersWithOutPass(params) {
+export function getUserInfoWithOutPwd(params, token) {
   return request({
     url: '/user/info/format',
     method: 'get',
-    params: { params }
+    // params = params : params, 同名参数可以简写
+    params,
+    headers: { token }
   })
 }
+// 方法之间要空行 哪怕有注释
+
 /**
- * 通过id查询用户信息
+ * @description 通过id查询用户信息
  */
-export function getUser(id) {
+export function getUserInfo(id) {
   return request({
     url: '/user/info/manage',
     method: 'get',
