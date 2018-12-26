@@ -75,18 +75,21 @@ export default {
       //   } else {
       //   }
       // }
+    },
+    fetchClassInfos: function() {
+      classInfoViewmModel
+        .requestClassInfos({ teacher_id: this.$store.getters.id })
+        .then(responseArray => {
+          try {
+            this.buildSemester(responseArray)
+          } catch (exception) {
+            console.error(exception)
+          }
+        })
     }
   },
   created() {
-    classInfoViewmModel
-      .requestClassInfo(/* this.$store.getters.id */)
-      .then(response => {
-        try {
-          this.buildSemester(response.subjects)
-        } catch (exception) {
-          console.error(exception)
-        }
-      })
+    this.fetchClassInfos()
   }
 }
 </script>
