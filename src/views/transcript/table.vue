@@ -74,6 +74,7 @@ TODO: post 返回需要 ID
     :v-if="this.pointDialogVisible"
     :visible="this.pointDialogVisible"
     :cell="this.tableDialogDataset"
+
     @onDialogClose="onDialogClose()"
     @onPointChanged="handlePointChanged"
   ></at-point-dialog>
@@ -86,6 +87,7 @@ TODO: post 返回需要 ID
   <at-add-title-dialog
     :v-if="this.menuAddTitleDialogVisible"
     :visible="this.menuAddTitleDialogVisible"
+    :classInfo="this.info"
     @onDialogClose="onDialogClose()"
     @onAddNewTitle="this.handleAddTitle">
   </at-add-title-dialog>

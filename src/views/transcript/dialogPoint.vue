@@ -54,8 +54,8 @@
 
 <script>
 import { isPointNumber } from '@/utils/validate'
-import viewmodel from '@/viewmodel/transcript/'
-
+import viewmodel from '@/viewmodel/table'
+console.log(viewmodel)
 const validatePointNumber = (rule, value, callback) => {
   if (isPointNumber(value.pointNumber)) {
     callback()
