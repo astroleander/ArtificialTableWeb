@@ -12,7 +12,7 @@
     <aside>
       <slot name="header">
         <!-- TODO: to replace with real image url -->
-       <img class='cover' src="https://via.placeholder.com/150"/>
+       <img class='cover' :src='"https://picsum.photos/150/150/?image=" + dataset.id'/>
       </slot>
     </aside>
     <section class="col-frame info">
@@ -20,19 +20,15 @@
      <!-- 要是嫌写的难看可以自己封装 titles 和 dataset -->
      <div class="row-frame">
         <p><span>{{titles.className}}</span>：
-          <span>{{dataset.name}}</span></p>
+          <span>{{dataset.lesson_message && dataset.lesson_message.name}}</span></p>
         <p><span>{{titles.cid}}</span>：
           <span>{{dataset.cid}}</span></p>
-        <p><span>{{titles.teacher}}</span>：
-          <span>{{dataset.teacher_id}}</span></p>
         <p><span>{{titles.room}}</span>：
           <span>{{dataset.room}}</span></p>
-        <!-- <p><span>{{titles.semester}}</span>：
-          <span>{{dataset.year}}-{{dataset.month}}</span></p> -->
         <p><span>{{titles.studentCount}}</span>：
-          <span>{{dataset.studentCount}}</span></p>
+          <span>{{dataset.student_count}}</span></p>
         <p><span>{{titles.schedule}}</span>：
-          <span>{{dataset.schedule}}</span></p>
+          <span>{{dataset.week}}</span></p>
       </div>
     </section>
   </div>
@@ -54,11 +50,11 @@ export default {
           id: 0,
           name: defaultProp,
           room: defaultProp,
-          year: defaultProp,
-          month: defaultProp,
+          semester: defaultProp,
           date: 0,
           studentCount: 0,
-          teacher_id: defaultProp
+          teacher_id: defaultProp,
+          lesson_message: {}
         }
       }
     }

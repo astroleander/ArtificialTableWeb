@@ -2,10 +2,10 @@
 <template>
   <div>
     <!-- Semester Title -->
-    <input v-bind:id='"at-collapsible-checkbox-"+this._uid' 
-      value="true" 
-      v-model="collapsed" 
-      class="toggle" 
+    <input v-bind:id='"at-collapsible-checkbox-"+this._uid'
+      value="true"
+      v-model="collapsed"
+      class="toggle"
       type="checkbox">
     <label v-bind:for='"at-collapsible-checkbox-"+this._uid' class="label-toggle">
       <slot></slot>
@@ -13,7 +13,7 @@
     <!-- Card List -->
     <transition name="fade" mode="out-in">
       <div id="at-m-list-container" class="at-collapsible" v-show="collapsed">
-        <at-class-card 
+        <at-class-card
           :key="item.id"
           v-for="item in dataset"
           :dataset="item">
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import AtClassCard from '@/components/Mainpage/at-class-card'
+import AtClassCard from '@/components/Mainpage/ClassCard'
 
 export default {
   components: { AtClassCard },

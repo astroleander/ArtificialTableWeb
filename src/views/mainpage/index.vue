@@ -63,10 +63,10 @@ export default {
   methods: {
     buildSemester: function(allClass) {
       for (const eachClass of allClass) {
-        if (!this.semeseterDataset[eachClass.year]) {
-          this.$set(this.semeseterDataset, eachClass.year, [eachClass])
+        if (!this.semeseterDataset[eachClass['semester']]) {
+          this.$set(this.semeseterDataset, eachClass['semester'], [eachClass])
         } else {
-          this.semeseterDataset[eachClass.year].push(eachClass)
+          this.semeseterDataset[eachClass[['semester']]].push(eachClass)
         }
       }
       // for (const eachClass of allClass) {
