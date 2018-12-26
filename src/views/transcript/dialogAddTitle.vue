@@ -50,7 +50,7 @@ export default {
     },
     fetchTitleGroupList: function() {
       // TODO: Add request params
-      const lessonId = this.classInfo.lesson_id || 1
+      const lessonId = this.classInfo && this.classInfo.lesson_id || 1
       console.log(this.classInfo)
       titleGroupViewModel.requestTitleGroups({ lesson_id: lessonId }).then(list => {
         this.titleGroupList = list

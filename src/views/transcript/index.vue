@@ -38,7 +38,9 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
-        @onTitleAdded='handleTitleChanged'>
+        @onTitleAdded='handleTitleChanged'
+        @onExportTable='handleExportTable'
+        >
         </transcript-table>
       </transition>
       <transcript-weight v-show='getMode("stats")'></transcript-weight>
@@ -50,6 +52,9 @@ index
 import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
+
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 
 import viewmodel from '@/viewmodel/table'
 import titleViewmodel from '@/viewmodel/title'
@@ -138,6 +143,21 @@ export default {
         this.model.titles.push(title)
       })
     },
+    handleExportTable: function(dialogResult) {
+      // /* generate workbook object from table */
+      // console.log(this.table)
+      // let wb = XLSX.utils.json_to_sheet(generateOutput(this.table))
+      // /* get binary string as output */
+      // console.log(wb)
+      // let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      // try {
+      //   FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
+      // } catch (e) {
+      //   if (typeof console !== 'undefined')
+      //     console.log(e, wbout)
+      // }
+      // return wbout
+    },
     fetchDataset: function() {
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
@@ -157,8 +177,7 @@ export default {
           // TODO: show error page
           console.log(err)
         })
-    },
-
+    }
   }
 }
 </script>

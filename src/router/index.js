@@ -92,34 +92,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  {
-    path: '/io',
-    component: Layout,
-    redirect: '/io/index',
-    meta: { title: 'I / O', icon: 'example' },
-    children: [
-      {
-        path: 'upload',
-        name: 'Upload Excel',
-        component: () => import('@/views/io/upload'),
-        meta: { title: '上传 Excel', icon: 'tree' }
-      },
-      {
-        path: 'export',
-        name: 'Export Excel',
-        component: () => import('@/views/io/export'),
-        meta: { title: '导出 Excel', icon: 'tree' }
-      },
-      {
-        path: 'index',
-        name: 'Tooltips',
-        component: () => import('@/views/io/index'),
-        meta: { title: 'Tooltips', icon: 'tree' },
-        hidden: true
-      }
-    ]
-  },
   {
     path: urls.comparison,
     component: Layout,
@@ -164,12 +136,7 @@ export const constantRouterMap = [
       name: 'input',
       redirect: '/input/index/import',
       meta: { title: '导入成绩', icon: 'tree' },
-      component: () => import('@/views/input/index'),
-      children: [
-        { path: 'import', meta: { title: '引入数据', icon: 'tree' }, hidden: true, name: 'import', component: () => import('@/views/input/importPage') },
-        { path: 'preview', meta: { title: '预览结果', icon: 'tree' }, hidden: true, name: 'preview', component: () => import('@/views/input/previewPage') },
-        { path: 'settings', meta: { title: '选择导入项', icon: 'tree' }, hidden: true, name: 'settings', component: () => import('@/views/input/settingsPage') }
-      ]
+      component: () => import('@/views/input/index')
     }]
   },
   {

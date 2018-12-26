@@ -27,7 +27,7 @@ TODO: post 返回需要 ID
       :data="viewDataset"
       @cell-dblclick='onCellClicked'
       v-loading.body="loading"
-      ref="table"
+      ref="table" id="transcript-table"
       element-loading-text="Loading"
       height="calc(100vh - 316px)"
       class="table">
@@ -101,6 +101,9 @@ TODO: post 返回需要 ID
 </template>
 
 <script>
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+
 export default {
   name: 'transcriptTable',
   components: {
@@ -266,8 +269,23 @@ export default {
       this.$emit('onTitleAdded', dialogResult)
     },
     handleExport: function(dialogResult) {
-      console.log(dialogResult)
-    }
+      // this.$emit('onExportTable', dialogResult)
+      /* generate workbook object from table */
+      let wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
+      let size = wb.Sheets[wb.SheetNames[0]]['!ref']
+      let number = size.match(/\d?$/)
+      console.log(number)
+      /* get binary string as output */
+      let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
+      } catch (e) {
+        if (typeof console !== 'undefined')
+          console.log(e, wbout)
+      }
+
+      return wbout
+    },
   },
   created() {},
   watch: {
