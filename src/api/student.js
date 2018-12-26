@@ -15,9 +15,7 @@ export function getStudents(params) {
   return request({
     url: '/student/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

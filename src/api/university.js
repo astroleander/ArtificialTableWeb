@@ -13,9 +13,7 @@ export function getUniversity(params) {
   return request({
     url: '/university/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

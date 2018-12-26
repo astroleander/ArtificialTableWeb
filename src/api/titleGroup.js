@@ -26,9 +26,7 @@ export function getTitleGroup(params) {
   return request({
     url: '/titleGroup/format',
     method: 'get',
-    params: {
-      params
-    }
+    params: params
   })
 }
 /**

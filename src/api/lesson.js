@@ -15,9 +15,7 @@ export function getLessons(params) {
   return request({
     url: '/table/lesson/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

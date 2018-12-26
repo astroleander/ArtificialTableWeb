@@ -48,9 +48,7 @@ export function getUsersWithPass(params) {
   return request({
     url: '/user/info/manage',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

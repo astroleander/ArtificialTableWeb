@@ -136,7 +136,7 @@ const requestDelTitleGroups = (titleGroupIdArray) => {
   })
 }
 
-export default{
+export default {
   requestTitleGroups, requestByLessonId,
   requestPutTitleGroup, requestPutTitleGroups,
   requestPostTitleGroup, requestPostTitleGroups,
