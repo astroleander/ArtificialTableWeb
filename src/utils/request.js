@@ -1,7 +1,6 @@
 import axios from 'axios'
 // import { MessageBox } from 'element-ui'
 import { Message } from 'element-ui'
-import store from '../store'
 import { getToken } from '@/utils/auth'
 import exceptHandler from '@/utils/except'
 
@@ -13,21 +12,12 @@ const service = axios.create({
 
 // request 拦截器
 service.interceptors.request.use(config => {
-  if (store.getters.token && config.method === 'get') {
-    if (config.params === undefined) {
-      config.params = {}
-    }
-    if (config.params.token === undefined) {
-      config.params.token = getToken()
-    }
-  } else if (store.getters.token) {
-    if (config.data === undefined) {
-      config.data = {}
-    }
-    if (config.data.token === undefined) {
-      config.data.token = getToken()
-    }
+  const token = getToken()
+  if (token) {
+    config.headers.token = getToken()
   }
+  console.log('[request to Remote]:')
+  console.log(config)
   return config
 }, error => {
   console.error(error)
