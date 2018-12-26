@@ -163,4 +163,4 @@ export default {
   requestPostUsers,
   requestDelUser,
   requestDelUsers
-};
+}
