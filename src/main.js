@@ -18,8 +18,10 @@ import '@/icons'
 import '@/permission'
 // urls
 import '@/urls'
+
 // mockjs
-import './mock'
+// ban
+// import './mock'
 
 Vue.use(ElementUI, { locale })
 
