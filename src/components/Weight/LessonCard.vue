@@ -360,6 +360,8 @@
       dataSet: function(val) {
         // console.log('this.dataSet watch = ' + this.dataSet)
         // console.log('this.dataSet watch = ' + this.dataSet.length)
+        this.initLocks()
+        this.btnDisabled = false
         this.dealDataSet()
       }
     },

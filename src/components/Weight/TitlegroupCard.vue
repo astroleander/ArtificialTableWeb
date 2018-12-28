@@ -11,8 +11,8 @@
           </el-alert>
         </div>
         <div class="button-group">
-          <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
-          <el-button @click="dealAvg"  :disabled="btnDisabled">一键平均</el-button>
+          <!--<el-button @click="dealLeft" :disabled="avgDisabled">一键分配</el-button>-->
+          <el-button @click="dealAvg"  :disabled="avgDisabled">一键平均</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
           <el-button @click="addTitlegroupItem()">添加小项</el-button>
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
@@ -225,13 +225,13 @@ export default {
       const weightLockInfo = this.weightLockInfo()
       // 锁定值大于等于100时，不能一键平均和一键分配
       if (weightLockInfo[0] >= 100) {
-        this.btnDisabled = true
+        this.avgDisabled = true
         this.$message({
           type: 'info',
           message: '锁定值大于等于100时，不能一键平均'
         })
       } else {
-        this.btnDisabled = false
+        this.avgDisabled = false
       }
     },
     // (1)处理非法输入，主要是非数字，空值，null，数值前的0等情况
@@ -359,28 +359,21 @@ export default {
           value: this.dataSet[i].weight
         })
       }
-      // console.log('this.currentDataSet' + this.currentDataSet)
       this.dealAlert()
     }
   },
   watch: {
     dataSet: function(val) {
-      // console.log('watch DataSet')
+      this.avgDisabled = false
+      this.initLocks()
       this.dealDataSet()
-    },
-    currentDataSet: function(val) {
-      // console.log('watch currentDataSet')
     }
   },
   created() {
-    console.log('test2')
-    console.log('this.dataSet' + this.dataSet)
-    // console.log('create')
     this.initLocks()
     this.dealDataSet()
   },
   updated() {
-    console.log(this.dataSet)
     this.dealAlert()
   }
 }

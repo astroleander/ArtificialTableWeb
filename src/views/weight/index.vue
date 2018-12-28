@@ -73,7 +73,6 @@ div(head)
         value: '', // 选择列表的值
         empty: true, // 页面显示控制
         selectText: '', // 选择列表的placeholder
-        // isManager: false,
         Message: ''
       }
     },
@@ -117,7 +116,8 @@ div(head)
       handleTitleChanged: function(idx, newDataSet) {
         titleViewModel
           .requestPutTitles(newDataSet).then(response => {
-            this.$set(this.titles, idx, newDataSet)
+            this.getTitle()
+            // this.$set(this.titles, idx, newDataSet)
             this.$message({
               message: '修改小项成功',
               type: 'success'
@@ -128,7 +128,7 @@ div(head)
       handleBigChanged: function(newDataSet) {
         titleGroupViewModel
           .requestPutTitleGroups(newDataSet).then(response => {
-            this.titleGroups = [...newDataSet]
+            this.getTitleGroup()
             this.$message({
               message: '修改大项成功',
               type: 'success'
@@ -140,16 +140,18 @@ div(head)
         console.log('NewTitle' + NewTitleGroup.name + ' ' + NewTitleGroup.weight)
         const TitleGroup = {
           name: NewTitleGroup.name,
-          lesson_id: this.value,
+          lesson_id: this.selectData[this.value].id,
           weight: NewTitleGroup.weight
         }
         titleGroupViewModel
           .requestPostTitleGroup(TitleGroup).then(response => {
-            if (!this.titleGroups) { // 若该大项数组下没有大项项
-              this.$set(this.titleGroups, 0, [TitleGroup])
-            } else {
-              this.titleGroups.push(TitleGroup)
-            }
+            this.getTitleGroup()
+            // TitleGroup.id = response[0].id
+            // if (!this.titleGroups) { // 若该大项数组下没有大项
+            //   this.$set(this.titleGroups, 0, [TitleGroup])
+            // } else {
+            //   this.titleGroups.push(TitleGroup)
+            // }
             this.$message({
               message: '添加大项成功',
               type: 'success'
@@ -164,15 +166,17 @@ div(head)
           name: NewTitle.name,
           weight: NewTitle.weight,
           titleGroup_id: titleGroup_id,
-          classInfo_id: this.value
+          classInfo_id: this.selectData[this.value].id
         }
         titleViewModel
           .requestPostTitle(Title).then(response => {
-            if (!this.titles[titleGroup_id]) { // 若该大项下没有小项
-              this.$set(this.titles, titleGroup_id, [Title])
-            } else {
-              this.titles[titleGroup_id].push(Title)
-            }
+            this.getTitle()
+            // Title.id = response[0].id
+            // if (!this.titles[titleGroup_id]) { // 若该大项下没有小项
+            //   this.$set(this.titles, titleGroup_id, [Title])
+            // } else {
+            //   this.titles[titleGroup_id].push(Title)
+            // }
             this.$message({
               message: '添加小项成功',
               type: 'success'
@@ -232,16 +236,32 @@ div(head)
             this.buildTitles(response)
           })
       },
+      init() {
+        this.titles = {}
+        this.titleGroups = []
+        this.titleGroupsInfo = []
+      },
+      // 小项新建或者修改后重新获取
+      getTitle() {
+        this.init()
+        this.fetchTitleGroup(this.selectData[this.value].lesson_id)// 当前角色是教师
+        this.fetchTitlesData(this.selectData[this.value].id)
+      },
+      // 大项新建或者修改后重新获取
+      getTitleGroup() {
+        this.init()
+        this.fetchTitleGroup(this.selectData[this.value].id)
+      },
       // 列表选中值改变时  (角色判断)
       selectedCourse: function(index) {
-        this.titles = {}
+        this.init()
         console.log(index)
-        console.log(this.selectData[index])
         if (this.user.is_manager) {
+          console.log('课程组id = ' + this.selectData[index].id)
           this.fetchTitleGroup(this.selectData[index].id) // 当前角色是管理员
           this.empty = false
         } else {
-          console.log('this.selectData[data_id].lesson_id = ' + this.selectData[index].lesson_id)
+          console.log('班级id = ' + this.selectData[index].id)
           this.fetchTitleGroup(this.selectData[index].lesson_id)// 当前角色是教师
           this.fetchTitlesData(this.selectData[index].id) // 当前角色是教师
         }
@@ -280,7 +300,7 @@ div(head)
     align-items: center;
     background: white;
     height: 60px;
-    border: 1px solid #CCCCCC;
+    /*border: 1px solid #CCCCCC;*/
   }
   .primary-card{
     background-color: #d3dce6;
@@ -296,10 +316,9 @@ div(head)
     font-weight: bold;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     color: #999999;
-    border: 1px solid #CCCCCC;
+    /*border: 1px solid #CCCCCC;*/
     align-items: center;
     justify-content: center;
   }
 
 </style>
-index.vue
