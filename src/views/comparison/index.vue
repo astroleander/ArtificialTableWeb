@@ -292,6 +292,7 @@
             this.dealClassesPointInfo(this.classesActualPointInfo)
             this.empty = false
           }else{
+            this.loading = false
             this.changeMessage('数据不全不能进行成绩分析，请检查小项信息、成绩信息和学生信息是否全部录入')
             this.empty = true
           }
@@ -321,38 +322,30 @@
               // 根据studentId确定学生的pointArray
               // for(let k =0; k< classPoint[studentId].length;k++){
               // 单个学生的成绩数组
-              console.log('1')
               let stuPointArray = classPoint[studentId]
               this.studentActualPointInfo = {
                 classInfo_id: this.classInfo[i].id,
                 student_id: studentId
               }
-              console.log('2')
               let sum = 0
               let studentflag = 0
               // 计算单个学生的总分
               for(let j =0; j < stuPointArray.length; j++){
-                console.log('3')
                 let point = stuPointArray[j]
                 let actualPoint = this.dealPoint(point)
                 if (actualPoint[0]){
-                  console.log('4')
                   sum += actualPoint[1]
                 }else {
-                  console.log('5')
                   studentflag = 1
                   break
                 }
-                console.log('6')
                 this.studentActualPointInfo[point.title_id] = actualPoint[1]
               }
               if (studentflag){
-                console.log('7')
                 // 有学生的成绩无法计算成功
                 classflag = 1
                 break
               }else {
-                console.log('8')
                 this.studentActualPointInfo['总分'] = sum
                 console.log('sum = ' + sum)
                 this.$set(this.classActualPointInfo,studentId,this.studentActualPointInfo)
@@ -361,10 +354,8 @@
             }
             // 一个学生的成绩由于小项或者大项信息不全计算失败，则这个班级的成绩分析失败
             if (classflag){
-              console.log('9')
               flag = false
             }else{
-              console.log('10')
               this.$set(this.classesActualPointInfo,this.classInfo[i].id,this.classActualPointInfo)
               flag = true
             }
@@ -375,28 +366,28 @@
       dealPoint(point){
         let flag = false
         let score = 0
-        console.log('deal1')
         // 根据分数的title_id得到小项及其小项权重
         let title_id = point.title_id
-        console.log('title_id = ' +title_id )
-        for(let item_id in this.titleInfo){
-          console.log('item_id = ' + item_id )
-          console.log('this.titleInfo[item_id]  = ' + this.titleInfo[item_id] )
-        }
+        // console.log('title_id = ' +title_id )
+        // for(let item_id in this.titleInfo){
+        //   console.log('item_id = ' + item_id )
+        //   console.log('this.titleInfo[item_id]  = ' + this.titleInfo[item_id] )
+        // }
 
         let title = this.titleInfo[title_id]
         if (title!==undefined&&title.weight!==undefined){
-          console.log('deal2')
           let titleWeight = title.weight
           // 根据小项的titleGroup_id得到大项及其权重
           let titleGroup_id = title.titleGroup_id
           let titleGroup = this.titleGroupInfo[titleGroup_id]
           if (titleGroup!==undefined&&titleGroup.weight!==undefined){
-            console.log('deal3')
             let titleGroupWeight = titleGroup.weight
             //分值*大项权重数值*小项权重数值/10000
             score = point.pointNumber*titleWeight*titleGroupWeight/10000
-            console.log('deal4')
+            console.log('point.id = '+ point.id)
+            console.log('title_id = '+ title_id)
+            console.log('titleGroup_id =' + titleGroup_id)
+            console.log('score = ' + point.pointNumber + '*' + titleWeight + '*'+titleGroupWeight + ' = ' + score)
             flag = true
           }
         }
