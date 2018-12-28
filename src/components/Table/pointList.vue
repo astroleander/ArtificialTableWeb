@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { getPoint } from '@/api/point'
+import { getByClassInfoId } from '@/api/point'
 import { mapPointTypeName } from '@/format'
 
 export default {
@@ -90,7 +90,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getPoint(this.lesson_id)
+      getByClassInfoId(this.lesson_id)
         .then(response => {
           this.dataFormat = response.subjects
           // handle format data here

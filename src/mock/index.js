@@ -8,6 +8,7 @@ import majorMock from './major'
 import pointMock from './point'
 import studentMock from './student'
 import titleMock from './title'
+import titleGroupMock from './title'
 import lessonMock from './lesson'
 import universityMock from './university'
 import userMock from './user'
@@ -18,7 +19,7 @@ Mock.mock(/\/table\/class_field\/format/, 'get', courseMock.classField)
 Mock.mock(/\/table\/class_info\/format/, 'get', courseMock.classInfo)
 
 // lesson mock
-Mock.mock(/\/lesson\/format/, 'get', lessonMock.info)
+Mock.mock(/\/table\/lesson\/format/, 'get', lessonMock.info)
 
 // login mock
 Mock.mock(/\/user\/login/, 'post', loginMock.login)
@@ -34,9 +35,9 @@ Mock.mock(/\/student\/display/, 'get', studentMock.info)
 Mock.mock(/\/title\/format/, 'get', titleMock.title)
 Mock.mock(/\/title\/format/, 'put', titleMock.title)
 Mock.mock(/\/title\/format/, 'post', titleMock.title)
-Mock.mock(/\/titlegroup\/format/, 'get', titleMock.group)
-Mock.mock(/\/titlegroup\/format/, 'put', titleMock.group)
-Mock.mock(/\/titlegroup\/format/, 'post', titleMock.group)
+Mock.mock(/\/titleGroup\/format/, 'get', titleGroupMock.group)
+Mock.mock(/\/titleGroup\/format/, 'put', titleGroupMock.group)
+Mock.mock(/\/titleGroup\/format/, 'post', titleGroupMock.group)
 
 // university mock
 Mock.mock(/\/university\/format/, 'get', universityMock.info)

@@ -6,6 +6,7 @@ const getters = {
   token: state => state.user.token,
   name: state => state.user.name,
   id: state => state.user.id,
+  user: state => state.user.user,
   groups: state => state.user.groups,
   // course array
   courses: state => state.course.course_list,

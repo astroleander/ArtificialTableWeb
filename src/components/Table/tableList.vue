@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { getPoint } from '@/api/point'
+  import { getPoints } from '@/api/point'
   import { getStudent } from '@/api/user'
   import { mapPointTypeName } from '@/format'
 
@@ -176,7 +176,7 @@
         this.fetchStudentData()
       },
       fetchPointData() {
-        getPoint(this.lesson_id)
+        getPoints(this.lesson_id)
           .then(response => {
             this.dataFormat = response.subjects
             this.attendToBuildTable()
