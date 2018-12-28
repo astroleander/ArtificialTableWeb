@@ -20,11 +20,12 @@
 </template>
 
 <script>
-import viewmodel from '@/viewmodel/transcript/'
+import titleGroupViewModel from '@/viewmodel/titlegroup'
 
 const titlePrototype = {
   name: '',
   titleGroup_id: null,
+  classInfo_id: null,
   weight: 0
 }
 
@@ -43,12 +44,15 @@ export default {
       this.$emit('onDialogClose', false)
     },
     onAddNewTitle: function() {
-      this.$emit('onAddNewTitle', this.titleForm)
+      this.titleForm['classInfo_id'] = this.classInfo.id
+      this.$emit('onAddNewTitle', JSON.parse(JSON.stringify(this.titleForm)))
       this.onDialogClose()
     },
-    fetchTitleGroup: function() {
+    fetchTitleGroupList: function() {
       // TODO: Add request params
-      viewmodel.requestTitleGroup({ classInfo_id: 1 }).then(list => {
+      const lessonId = this.classInfo && this.classInfo.lesson_id || 1
+      console.log(this.classInfo)
+      titleGroupViewModel.requestTitleGroups({ lesson_id: lessonId }).then(list => {
         this.titleGroupList = list
       }).catch(err => {
         console.error(err)
@@ -60,7 +64,7 @@ export default {
     }
   },
   created() {
-    this.fetchTitleGroup()
+    this.fetchTitleGroupList()
   }
 }
 </script>

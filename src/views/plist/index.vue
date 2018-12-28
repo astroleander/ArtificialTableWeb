@@ -32,7 +32,7 @@
 
 <script>
   import PointList from '@/components/Table/pointList'
-  import { getLesson } from '@/api/lesson'
+  import { getLessons } from '@/api/lesson'
 
   export default {
     components: { PointList },
@@ -60,7 +60,7 @@
     },
     methods: {
       fetchPointData() {
-        getLesson().then(response => {
+        getLessons().then(response => {
           const list = response.subjects
           // if response not null
           if (list && list.length > 0) {

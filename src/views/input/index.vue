@@ -172,7 +172,7 @@
 import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
-import tableViewmodel from '@/viewmodel/transcript/'
+import titleGroupViewModel from '@/viewmodel/titleGroup'
 import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
@@ -650,7 +650,7 @@ export default {
     },
     fetchTitleGroup: function() {
       // TODO: Add request params
-      tableViewmodel.requestTitleGroup({ classInfo_id: 1 }).then(list => {
+      titleGroupViewModel.requestTitleGroups({ classInfo_id: 1 }).then(list => {
         this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)

@@ -38,7 +38,9 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
-        @onTitleAdded='handleTitleChanged'>
+        @onTitleAdded='handleTitleChanged'
+        @onExportTable='handleExportTable'
+        >
         </transcript-table>
       </transition>
       <transcript-weight v-show='getMode("stats")'></transcript-weight>
@@ -51,7 +53,11 @@ import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
 
-import viewmodel from '@/viewmodel/transcript/'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+
+import viewmodel from '@/viewmodel/table'
+import titleViewmodel from '@/viewmodel/title'
 
 export default {
   components: {
@@ -102,26 +108,6 @@ export default {
     switchMode: function(code) {
       this.shownTab = code
     },
-    fetchDataset: function() {
-      Promise.all([
-        viewmodel.requestTitle(this.id),
-        viewmodel.requestPoint(this.id),
-        viewmodel.requestStudent(this.id)
-      ])
-        .then(result => {
-          this.model.titles = result[0]
-          this.model.points = result[1]
-
-          result[2].forEach(element => {
-            this.model.studentMap.set(element.id, element)
-          })
-
-          this.buildTable()
-        }).catch(err => {
-          // TODO: show error page
-          console.log(err)
-        })
-    },
     buildTable: function() {
       // build table cell
       // each student map to a row on table
@@ -151,7 +137,46 @@ export default {
       })
     },
     handleTitleChanged(title) {
-      this.model.titles.push(title)
+      console.log(this.model.titles)
+      titleViewmodel.requestPostTitle(title).then(res => {
+        title.id = res[0].id
+        this.model.titles.push(title)
+      })
+    },
+    handleExportTable: function(dialogResult) {
+      // /* generate workbook object from table */
+      // console.log(this.table)
+      // let wb = XLSX.utils.json_to_sheet(generateOutput(this.table))
+      // /* get binary string as output */
+      // console.log(wb)
+      // let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      // try {
+      //   FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
+      // } catch (e) {
+      //   if (typeof console !== 'undefined')
+      //     console.log(e, wbout)
+      // }
+      // return wbout
+    },
+    fetchDataset: function() {
+      Promise.all([
+        viewmodel.requestTitles({ classInfo_id: this.id }),
+        viewmodel.requestPoints({ classInfo_id: this.id }),
+        viewmodel.requestStudents({ classInfo_id: this.id })
+      ])
+        .then(result => {
+          this.model.titles = result[0]
+          this.model.points = result[1]
+
+          result[2].forEach(element => {
+            this.model.studentMap.set(element.id, element)
+          })
+
+          this.buildTable()
+        }).catch(err => {
+          // TODO: show error page
+          console.log(err)
+        })
     }
   }
 }

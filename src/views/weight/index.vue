@@ -19,10 +19,10 @@ div(head)
     <div class="select-box">
       <el-select v-model="value" :placeholder="selectText" @change="selectedCourse">
         <el-option
-          v-for="item in selectData"
+          v-for="(item,index) in selectData"
           :key="item.id"
           :label="item.name"
-          :value="item.id">
+          :value="index">
         </el-option>
       </el-select>
     </div>
@@ -30,7 +30,7 @@ div(head)
      <p >{{Message}}</p>
    </div>
     <div v-if="!empty">
-      <div v-if="role === 'admin'">
+      <div v-if="this.user.is_manager">
         <at-lesson-card
           groupName="权重大项"
           :dataSet="titleGroups"
@@ -61,6 +61,7 @@ div(head)
   import classInfoModel from '@/viewmodel/classinfos'
   import AtTitlegroupCard from '@/components/Weight/TitlegroupCard'
   import AtLessonCard from '@/components/Weight/LessonCard'
+  import { mapGetters } from 'vuex'
   export default {
     components: { AtTitlegroupCard, AtLessonCard },
     data() {
@@ -72,7 +73,7 @@ div(head)
         value: '', // 选择列表的值
         empty: true, // 页面显示控制
         selectText: '', // 选择列表的placeholder
-        role: 'teacher',
+        // isManager: false,
         Message: ''
       }
     },
@@ -83,7 +84,7 @@ div(head)
       },
       // 管理员/教师 大类列表(角色判断)
       buildTitleGroup: function(titlegroups) {
-        if (this.role === 'admin') {
+        if (this.user.is_manager) {
           this.titleGroups = titlegroups // (管理员)
         } else {
           this.titleGroupsInfo = titlegroups // 教师
@@ -179,9 +180,9 @@ div(head)
           })
       },
       // 根据college_id获取该学校课程组信息Lesson（管理员）
-      fetchLessonData() {
+      fetchLessonData(college_id) {
         lessonViewModel
-          .requestByCollegeId(3)
+          .requestByCollegeId(college_id)
           .then(response => {
             if (response !== undefined) {
               this.buildSelectData(response)
@@ -195,14 +196,14 @@ div(head)
           })
       },
       // 根据lesson_id获取该课程组的大项信息titleGroup（管理员）
-      fetchTitleGroup(lesson_id) {
+      fetchTitleGroup(data_id) {
+        console.log('lesson_id = ' + data_id)
         titleGroupViewModel
-          .requestByLessonId(lesson_id)
+          .requestByLessonId(data_id)
           .then(response => {
-            if (response === undefined) {
-              response = []
+            if (response !== undefined) {
+              this.buildTitleGroup(response)
             }
-            this.buildTitleGroup(response)
           })
       },
       // 根据 teacher_id获取该教师的教学班ClassInfo（教师）
@@ -222,37 +223,48 @@ div(head)
           })
       },
       // 根据classInfo_id 获取该课程的所有小项信息（教师）
-      fetchTitlesData() {
+      fetchTitlesData(cid) {
         titleViewModel
-          .requestTitles(this.value)
+          .requestTitles({
+            classInfo_id: cid
+          })
           .then(response => {
             this.buildTitles(response)
           })
       },
       // 列表选中值改变时  (角色判断)
-      selectedCourse: function(data_id) {
-        console.log(data_id)
-        if (this.role === 'admin') {
-          this.fetchTitleGroup(data_id) // 当前角色是管理员
+      selectedCourse: function(index) {
+        this.titles = {}
+        console.log(index)
+        console.log(this.selectData[index])
+        if (this.user.is_manager) {
+          this.fetchTitleGroup(this.selectData[index].id) // 当前角色是管理员
           this.empty = false
         } else {
-          this.fetchTitleGroup(this.selectData[data_id].lesson_id)// 当前角色是教师
-          this.fetchTitlesData() // 当前角色是教师
+          console.log('this.selectData[data_id].lesson_id = ' + this.selectData[index].lesson_id)
+          this.fetchTitleGroup(this.selectData[index].lesson_id)// 当前角色是教师
+          this.fetchTitlesData(this.selectData[index].id) // 当前角色是教师
         }
       }
+    },
+    computed: {
+      ...mapGetters([
+        'user',
+        'id'
+      ])
     },
     // (角色判断)
     created() {
       // 当前角色是管理员
-      if (this.role === 'admin') {
-        console.log(this.role)
+      if (this.user.is_manager) {
+        console.log(this.user.is_manager)
         this.selectText = '请选择课程组'
         this.Message = '请选择调整的课程组'
-        this.fetchLessonData()
+        this.fetchLessonData(this.user.college_id)
       } else { // 当前角色是教师
         this.selectText = '请选择教学班'
         this.Message = '请选择调整的教学班'
-        this.fetchClassInfoData(2)
+        this.fetchClassInfoData(this.user.id)
       }
     }
   }
@@ -290,3 +302,4 @@ div(head)
   }
 
 </style>
+index.vue

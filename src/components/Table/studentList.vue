@@ -41,7 +41,7 @@
 
 <script>
 import { getStudent } from '@/api/user'
-import { getCollage } from '@/api/collage'
+import { getCollege } from '@/api/college'
 
 export default {
   name: 'student-list',
@@ -97,7 +97,7 @@ export default {
           }
         }
       }
-      getCollage(ids).then(response => {
+      getCollege(ids).then(response => {
         const collage = response.subjects
         for (let i = 0; i < collage.length; i++) {
           // Iterate over numeric indexes from 0 to 5, as everyone expects.
