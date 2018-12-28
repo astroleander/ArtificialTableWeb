@@ -58,6 +58,7 @@ import XLSX from 'xlsx'
 
 import viewmodel from '@/viewmodel/table'
 import titleViewmodel from '@/viewmodel/title'
+import classinfoViewmodel from '@/viewmodel/classinfos'
 
 export default {
   components: {
@@ -94,7 +95,15 @@ export default {
     }
   },
   created() {
+    // 要是想好好写这个代码的话可以考虑回滚到 12 月之前的版本
     this.info = this.$store.getters.course(this.id)
+    if(this.info === undefined) {
+      const class_id = this.id
+      classinfoViewmodel.requestClassInfos({ id: class_id }).then(res => {
+        // console.log(res[0])
+        this.info = res && res[0]
+      })
+    }
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {

@@ -239,7 +239,7 @@ export default {
       this.showExportDialog({})
     },
     onClickRefresh: function() {
-
+      location.reload()
     },
     onClickBackToMainpage: function() {
 
