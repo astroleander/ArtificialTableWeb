@@ -11,11 +11,9 @@ import request from '@/utils/request'
  */
 export function getClassInfos(params) {
   return request({
-    url: '/table/class_info/format',
+    url: '/table/class_info/display',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

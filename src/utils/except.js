@@ -22,6 +22,16 @@ const responseHandler = (response) => {
         duration: 5 * 1000
       })
       reject({ error, code, msg, response })
+    } else if (RegExp('^5').test(response.code)) {
+      const error = new Error('Server Error\ncode:' + response.code + '\nmessage:' + response.message)
+      const code = response.code
+      const msg = response.message
+      Message({
+        message: msg,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      reject({ error, code, msg, response })
     }
     resolve(response)
   })

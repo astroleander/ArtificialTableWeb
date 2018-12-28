@@ -1,21 +1,23 @@
-import { getUsersWithOutPass, getUser, getUsersWithPass,
+import {
+  getUserInfoWithOutPwd, getUser, getUserInfoWithPwd,
   postUser, postUsers,
   putUser, putUsers,
   deleteUser, deleteUsers } from '@/api/user'
 /**
  * date:2018/12/20
- * author:liqian
- * description：用户信息的get put post delete
+ * @author: liqian
+ * @description：user infos viewmodel
  */
 
 /**
- * description:请求用户信息,返回时不会返回密码
- * @param params  （id,tid,name,college_id,email,mobile,is_manager七个可选参数）
+ * description:请求用户信息, 返回时不会返回密码
+ * @param params @see /api/user
+ * @param token 唯一需要手动注入 token 的函数，其实可以通过修改 login 或者 store 里面的逻辑来避免它
  * @returns {Promise<any>}
  */
-const requestUsersWithoutPass = (params) => {
+const requestUsersWithoutPwd = (params, token) => {
   return new Promise((resolve, reject) => {
-    getUsersWithOutPass(params).then(response => {
+    getUserInfoWithOutPwd(params, token).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -28,9 +30,9 @@ const requestUsersWithoutPass = (params) => {
  * @param params  （id,tid,name,college_id,email,mobile,is_manager七个可选参数）
  * @returns {Promise<any>}
  */
-const requestUsersWithPass = (params) => {
+const requestUserInfoWithPwd = (params) => {
   return new Promise((resolve, reject) => {
-    getUsersWithPass(params).then(response => {
+    getUserInfoWithPwd(params).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
@@ -38,12 +40,13 @@ const requestUsersWithPass = (params) => {
     })
   })
 }
+
 /**
  * 通过id查询用户信息
  * @param id
  * @returns {Promise<any>}
  */
-const requestUserById = (id) => {
+const requestUserInfoById = (id) => {
   return new Promise((resolve, reject) => {
     getUser(id).then(response => {
       const dataset = response && response.subjects
@@ -151,8 +154,13 @@ const requestDelUsers = (userIdArray) => {
 }
 
 export default {
-  requestUserById, requestUsersWithoutPass, requestUsersWithPass,
-  requestPutUser, requestPutUsers,
-  requestPostUser, requestPostUsers,
-  requestDelUser, requestDelUsers
+  requestUserInfoById,
+  requestUsersWithoutPwd,
+  requestUserInfoWithPwd,
+  requestPutUser,
+  requestPutUsers,
+  requestPostUser,
+  requestPostUsers,
+  requestDelUser,
+  requestDelUsers
 }

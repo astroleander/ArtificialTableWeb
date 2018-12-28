@@ -27,9 +27,7 @@ export function getTitles(params) {
   return request({
     url: '/title/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

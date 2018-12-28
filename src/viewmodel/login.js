@@ -1,19 +1,22 @@
 import store from '@/store'
 import { login, logout } from '@/api/login'
-import { getUsersWithOutPass } from '@/api/user'
+import { getUserInfoWithOutPwd } from '@/api/user'
 
 const requestLogin = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     login(username, password).then(response => {
-      const data = response // response里有id和token
-      if (data.subjects !== undefined) {
+      const data = response && response.subjects
+      if (data !== undefined) {
         // 获取用户信息
-        getUsersWithOutPass({ id: data.subjects.id })
+        /**
+         * 此处尚未获取 token, 我们需要手动将 token 作为第二个参数传给 viewmodel 接口
+         */
+        getUserInfoWithOutPwd({ id: data.id }, data.token)
           .then(response => {
             if (response.subjects !== undefined) {
               store.dispatch('Login', {
-                id: data.subjects.id,
-                token: data.subjects.token,
+                id: data.id,
+                token: data.token,
                 user: response.subjects[0]
               })
             }
@@ -40,6 +43,7 @@ const requestLogOut = () => {
     })
   })
 }
-export default{
+
+export default {
   requestLogin, requestLogOut
 }

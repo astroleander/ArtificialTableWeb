@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- TODO: need real url -->
-    <img class="avatar" src="https://picsum.photos/300/300/?random"/>
+    <img class="avatar" :src='url'/>
     <p class="at-text-primary">{{this.name}}</p>
     <p class="at-text-secondary">{{this.tid}}</p>
   </div>
@@ -12,7 +12,7 @@ export default {
   name: 'at-avatar',
   data() {
     return {
-      url: 'https://api.xjdog.cn/Get-Image',
+      url: 'https://picsum.photos/300/300/?random',
       name: '孔老师',
       tid: '2018140659'
     }

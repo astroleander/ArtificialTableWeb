@@ -14,9 +14,7 @@ export function getColleges(params) {
   return request({
     url: '/college/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

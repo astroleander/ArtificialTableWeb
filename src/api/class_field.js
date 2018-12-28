@@ -13,9 +13,7 @@ export function getClassFields(params) {
   return request({
     url: '/table/class_field/format',
     method: 'get',
-    params: {
-      params
-    }
+    params: params
   })
 }
 /**

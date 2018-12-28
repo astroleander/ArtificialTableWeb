@@ -63,10 +63,10 @@ export default {
   methods: {
     buildSemester: function(allClass) {
       for (const eachClass of allClass) {
-        if (!this.semeseterDataset[eachClass.year]) {
-          this.$set(this.semeseterDataset, eachClass.year, [eachClass])
+        if (!this.semeseterDataset[eachClass['semester']]) {
+          this.$set(this.semeseterDataset, eachClass['semester'], [eachClass])
         } else {
-          this.semeseterDataset[eachClass.year].push(eachClass)
+          this.semeseterDataset[eachClass[['semester']]].push(eachClass)
         }
       }
       // for (const eachClass of allClass) {
@@ -75,18 +75,21 @@ export default {
       //   } else {
       //   }
       // }
+    },
+    fetchClassInfos: function() {
+      classInfoViewmModel
+        .requestClassInfos({ teacher_id: this.$store.getters.id })
+        .then(responseArray => {
+          try {
+            this.buildSemester(responseArray)
+          } catch (exception) {
+            console.error(exception)
+          }
+        })
     }
   },
   created() {
-    classInfoViewmModel
-      .requestClassInfo(/* this.$store.getters.id */)
-      .then(response => {
-        try {
-          this.buildSemester(response.subjects)
-        } catch (exception) {
-          console.error(exception)
-        }
-      })
+    this.fetchClassInfos()
   }
 }
 </script>

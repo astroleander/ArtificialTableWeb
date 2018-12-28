@@ -13,9 +13,7 @@ export function getMajors(params) {
   return request({
     url: '/major/format',
     method: 'get',
-    params: {
-      params
-    }
+    params
   })
 }
 /**

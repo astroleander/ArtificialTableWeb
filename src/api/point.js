@@ -14,9 +14,7 @@ export function getPoints(params) {
   return request({
     url: '/point/format',
     method: 'get',
-    params: {
-      params
-    }
+    params: params
   })
 }
 /**

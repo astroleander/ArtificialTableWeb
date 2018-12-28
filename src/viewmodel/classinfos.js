@@ -2,15 +2,22 @@ import { getClassInfos, getByTeacherId,
   postClassInfo, postClassInfos,
   putClassInfo, putClassInfos,
   deleteClassInfo, deleteClassInfos } from '@/api/class_info'
-/**
- * date:2018/12/20
- * author:liqian
- * description：课程辅助信息的get put post delete
+
+  /**
+ * date: 2018/12/20
+ * @author liqian
+ * @description 课程辅助信息的get put post delete
  */
 
 /**
  * description:请求课程辅助信息
- * @param params  参数对象 （id，name,cid,teacher_id,semester,week,room 七个可选参数）
+ * @param params.id
+ * @param params.name
+ * @param params.cid
+ * @param params.teacher_id
+ * @param params.semester
+ * @param params.week
+ * @param params.room
  * @returns {Promise<any>}
  */
 const requestClassInfos = (params) => {

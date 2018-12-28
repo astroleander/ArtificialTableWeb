@@ -1,10 +1,10 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" 
-      autoComplete="on" 
-      :model="loginForm" 
-      :rules="loginRules" 
-      ref="loginForm" 
+    <el-form class="login-form"
+      autoComplete="on"
+      :model="loginForm"
+      :rules="loginRules"
+      ref="loginForm"
       label-position="left">
       <h2 class="title">{{AppName}}</h2>
       <el-form-item prop="username">
@@ -32,7 +32,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import { login as ViewModel } from '@/viewmodel/'
+import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
 
 const validateUsername = (rule, value, callback) => {
@@ -56,8 +56,8 @@ export default {
     return {
       AppName: '英语课程成绩管理系统',
       loginForm: {
-        username: '10011',
-        password: 'password'
+        username: '20182018',
+        password: 'password1'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -89,7 +89,7 @@ export default {
           // login.vue ->
           // login view model -> vuex dispatcher -> remote
           ViewModel
-            .login(this.loginForm)
+            .requestLogin(this.loginForm)
             .then(() => {
               this.loading = false
               // console.log('login request success')
@@ -118,7 +118,7 @@ $light_gray:#eee;
 $black: #212121;
 /* reset element-ui css */
 .login-container {
-  background-image: 
+  background-image:
     url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
   background-repeat: no-repeat;
   background-size: cover;

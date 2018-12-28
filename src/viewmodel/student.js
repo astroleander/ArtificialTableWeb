@@ -30,7 +30,7 @@ const requestStudents = (params) => {
  * @param classInfo_id
  * @returns {Promise<any>}
  */
-const requestByClassInfoId = (classInfo_id) => {
+const requestStudentByClassInfoId = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getByClassInfoId(classInfo_id).then(response => {
       const dataset = response && response.subjects
@@ -138,7 +138,7 @@ const requestDelStudents = (studentIdArray) => {
 }
 
 export default {
-  requestByClassInfoId, requestStudents,
+  requestStudentByClassInfoId, requestStudents,
   requestPutStudent, requestPutStudents,
   requestPostStudent, requestPostStudents,
   requestDelStudent, requestDelStudents
