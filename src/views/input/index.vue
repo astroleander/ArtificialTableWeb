@@ -37,10 +37,11 @@
                 active-text="数据包含列名"
                 >
               </el-switch>
-              <el-select v-model="remoteClassInfo" placeholder="请选择要导入到的课程" @change="onSelectedClassInfo">
+              <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson">
                 <el-option
-                  v-for="item in this.remoteClassInfoList"
-                  :value="item.name"
+                  v-for="item in remoteLessonList"
+                  :value="item.id"
+                  :label="item.name"
                   :key="item.id"
                   >
                 </el-option>
@@ -183,9 +184,7 @@ import ImportExcelComponent from '@/components/ImportExcel.vue'
 
 // 引入 viewmodel
 import titleGroupViewModel from '@/viewmodel/titleGroup'
-// 关于为什么是 classinfos 而不是 classInfo 这是一个历史遗留feature(bug)
-// 如果你看到了这行注释就去把它改了吧
-import classInfoViewModel from '@/viewmodel/classinfos'
+import lessonViewModel from '@/viewmodel/lesson'
 
 // 引入常量，全是提示信息字符串
 import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
@@ -394,9 +393,9 @@ export default {
       settingsPageData: {},
       previewPageData: {},
       // request from remote
-      remoteClassInfo: null,
-      remoteClassInfoList: [],
-      remoteTitleGroupList: []
+      remoteLesson: null,
+      remoteLessonList: [],
+      remoteTitleGroupList: [],
     }
   }, // data-end
   computed: {
@@ -664,23 +663,14 @@ export default {
       this.previewPageData = previewFilter(this.settingsPageData)
       // console.log(this.previewPageData)
     },
-    fetchClassInfoList() {
-      const id = this.$store.getters.id
-      classInfoViewModel.requestByTeacherId(id).then(res => {
-        console.log(res)
-        this.remoteClassInfoList = res
-        console.log(this.remoteClassInfoList)
-      }).catch(err => {
-        console.error(err)
-        this.$message({
-          message: err,
-          type: 'error'
-        })
-      })
+    fetchLesson() {
+      lessonViewModel.requestAllLessons().then(res => {
+        this.remoteLessonList = res
+      });
     },
-    fetchTitleGroup() {
-      const classInfo_id = this.remoteClassInfo['id'];
-      titleGroupViewModel.requestTitleGroups({ classInfo_id }).then(list => {
+    fetchTitleGroup(id) {
+      const lesson_id = id;
+      titleGroupViewModel.requestByLessonId(id).then(list => {
         this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)
@@ -698,10 +688,9 @@ export default {
     onTitleTypeClick(title, type) {
       this.handleTitleTypeChange(title, type)
     },
-    onSelectedClassInfo(selected) {
-      console.log(selected)
-      // this.remoteClassInfo =
-      this.fetchTitleGroup()
+    onSelectedLesson(selected) {
+      this.remoteLesson = this.remoteLessonList.find(item => item.id === selected)
+      this.fetchTitleGroup(selected)
     },
     handleTitleTypeChange(title, type) {
       title.type = type
@@ -712,7 +701,7 @@ export default {
   },
   created() {
     this.$store.dispatch('saveImportTable', { table: [] })
-    this.fetchClassInfoList();
+    this.fetchLesson();
   }
 }
 </script>
