@@ -14,7 +14,7 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   const token = getToken()
   if (token) {
-    config.headers.token = getToken()
+    config.headers.token = token
   }
   console.log('[request to Remote]:')
   console.log(config)

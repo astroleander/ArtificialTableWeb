@@ -127,14 +127,13 @@ export const constantRouterMap = [
   },
   {
     path: '/input',
-    redirect: '/input/index/import',
+    redirect: '/input/index/',
     meta: { title: '导入成绩', icon: 'tree' },
     component: Layout,
     hidden: true,
     children: [{
       path: 'index',
       name: 'input',
-      redirect: '/input/index/import',
       meta: { title: '导入成绩', icon: 'tree' },
       component: () => import('@/views/input/index')
     }]
