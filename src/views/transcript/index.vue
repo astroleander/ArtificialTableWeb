@@ -20,14 +20,14 @@ index
 
     <input class="state" @click='switchMode("table")' type="radio" title="tab-one" name="tabs-state" id="tab-one" checked />
     <input class="state" @click='switchMode("stats")' type="radio" title="tab-two" name="tabs-state" id="tab-two" />
-    <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" />
-    <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" />
+    <!-- <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" /> -->
+    <!-- <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" /> -->
 
     <div class="tabs flex-tabs">
       <label for="tab-one" id="tab-one-label" class="tab">成绩表</label>
       <label for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
-      <label for="tab-three" id="tab-three-label" class="tab">班级成员</label>
-      <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label>
+      <!-- <label for="tab-three" id="tab-three-label" class="tab">班级成员</label> -->
+      <!-- <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label> -->
     </div>
 
 
@@ -44,6 +44,7 @@ index
         </transcript-table>
       </transition>
       <transcript-weight v-show='getMode("stats")'></transcript-weight>
+
     </div>
   </div>
 </template>
@@ -53,7 +54,6 @@ import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
 
-import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
 import viewmodel from '@/viewmodel/table'

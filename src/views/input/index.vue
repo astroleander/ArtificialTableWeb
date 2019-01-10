@@ -37,6 +37,14 @@
                 active-text="数据包含列名"
                 >
               </el-switch>
+              <el-select v-model="remoteClassInfo" placeholder="请选择要导入到的课程" @change="onSelectedClassInfo">
+                <el-option
+                  v-for="item in this.remoteClassInfoList"
+                  :value="item.name"
+                  :key="item.id"
+                  >
+                </el-option>
+              </el-select>
               <el-button class="button" type="success" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
             <!-- STEP - 1 - 统计信息 -->
@@ -172,7 +180,14 @@
 import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
+
+// 引入 viewmodel
 import titleGroupViewModel from '@/viewmodel/titleGroup'
+// 关于为什么是 classinfos 而不是 classInfo 这是一个历史遗留feature(bug)
+// 如果你看到了这行注释就去把它改了吧
+import classInfoViewModel from '@/viewmodel/classinfos'
+
+// 引入常量，全是提示信息字符串
 import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
@@ -303,7 +318,9 @@ const previewFilter = (settingsData) => {
     sid
   }
 }
-
+/**
+ * export VUE COMPONENT start here
+ */
 export default {
   components: {
     HotTable, ImportExcelComponent
@@ -377,6 +394,8 @@ export default {
       settingsPageData: {},
       previewPageData: {},
       // request from remote
+      remoteClassInfo: null,
+      remoteClassInfoList: [],
       remoteTitleGroupList: []
     }
   }, // data-end
@@ -583,13 +602,11 @@ export default {
       switch (to) {
         case 1:
           this.activeStep = 0
-          this.$router.push({ path: 'import' })
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
             if (from === 1) this.renderSettingsPage()
             this.activeStep = 1
-            this.$router.push({ path: 'settings' })
             break
           } else {
             this.$message({
@@ -631,7 +648,6 @@ export default {
 
           if (legalRequest) {
             this.activeStep = 2
-            this.$router.push({ path: 'preview' })
             this.renderPreviewPage()
           }
           break
@@ -648,9 +664,23 @@ export default {
       this.previewPageData = previewFilter(this.settingsPageData)
       // console.log(this.previewPageData)
     },
-    fetchTitleGroup: function() {
-      // TODO: Add request params
-      titleGroupViewModel.requestTitleGroups({ classInfo_id: 1 }).then(list => {
+    fetchClassInfoList() {
+      const id = this.$store.getters.id
+      classInfoViewModel.requestByTeacherId(id).then(res => {
+        console.log(res)
+        this.remoteClassInfoList = res
+        console.log(this.remoteClassInfoList)
+      }).catch(err => {
+        console.error(err)
+        this.$message({
+          message: err,
+          type: 'error'
+        })
+      })
+    },
+    fetchTitleGroup() {
+      const classInfo_id = this.remoteClassInfo['id'];
+      titleGroupViewModel.requestTitleGroups({ classInfo_id }).then(list => {
         this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)
@@ -668,6 +698,11 @@ export default {
     onTitleTypeClick(title, type) {
       this.handleTitleTypeChange(title, type)
     },
+    onSelectedClassInfo(selected) {
+      console.log(selected)
+      // this.remoteClassInfo =
+      this.fetchTitleGroup()
+    },
     handleTitleTypeChange(title, type) {
       title.type = type
     },
@@ -677,7 +712,7 @@ export default {
   },
   created() {
     this.$store.dispatch('saveImportTable', { table: [] })
-    this.fetchTitleGroup()
+    this.fetchClassInfoList();
   }
 }
 </script>
