@@ -239,7 +239,7 @@ export default {
       location.reload()
     },
     onClickBackToMainpage: function() {
-
+      this.$router.push({ path: '/' })
     },
     handlePointChanged: function(dialogResult) {
       const item = dialogResult
