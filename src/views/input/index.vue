@@ -34,7 +34,7 @@
                 v-model="importDataHasHead"
                 active-color="#4caf50"
                 inactive-color="#ff4949"
-                active-text="数据包含列名"
+                inactive-text="数据包含列名"
                 >
               </el-switch>
               <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson">
@@ -333,7 +333,7 @@ const previewFilter = (settingsData) => {
  * 2. make title array
  * 3. make point array
  */
-const submitConverter = (previewPageData) => {
+const submitConverter = (previewPageData, lessonId) => {
   const resultContainer = previewPageData
   console.log(previewPageData)
   
@@ -353,20 +353,24 @@ const submitConverter = (previewPageData) => {
       // console.log(item)
       item.pointNumber = point
       item.date = Date.parse(new Date());
-      item['_sid'] = previewPageData.sid[sIdx]
-      item['_titleItem'] = previewPageData.titles[idx]
-      item['_titleIdx'] = idx
+      item['sid'] = previewPageData.sid[sIdx]
+      item['title_name'] = previewPageData.titles[idx]['name']
+      item['titleGroup_id'] = previewPageData.titles[idx]['titleGroup']
+      // item['_titleIdx'] = idx
       newPointItemArray.push(item)
     })
   })
   console.log(newPointItemArray)
   console.log(newTitleItemArrayArray)
+  const sid_list = previewPageData.sid
   const description = "分为两个部分, title 列表和 point 列表, <br/>" +
             "其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>" +
             "其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>"
   return {
     title_list: newTitleItemArrayArray,
     point_list: newPointItemArray,
+    lesson_id: lessonId,
+    sid_list,
     description
   }
 }
@@ -736,7 +740,7 @@ export default {
     },
     // listners
     submit() {
-      const submitDataset = submitConverter(this.previewPageData)
+      const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
       console.log(submitDataset)
       console.log(JSON.stringify(submitDataset))
     },
