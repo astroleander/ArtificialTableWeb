@@ -150,7 +150,7 @@
         >
           <!-- STEP - 3 - 步骤操作菜单 -->
           <el-button class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-          <el-button class="button" type="success" @click="alert('submit')" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          <el-button class="button" type="success" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 
           <!-- STEP - 3 - 预览表格 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
@@ -185,6 +185,12 @@ import ImportExcelComponent from '@/components/ImportExcel.vue'
 // 引入 viewmodel
 import titleGroupViewModel from '@/viewmodel/titleGroup'
 import lessonViewModel from '@/viewmodel/lesson'
+import studentViewModel from '@/viewmodel/student'
+import classViewModel from '@/viewmodel/classfield'
+import classInfoViewModel from '@/viewmodel/classinfos'
+
+import PointMock from '@/mock/point'
+import TitleMock from '@/mock/title'
 
 // 引入常量，全是提示信息字符串
 import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
@@ -302,7 +308,7 @@ const previewFilter = (settingsData) => {
       // 被标记的错误: in 取的是 key, 哪怕目标是数组取的也TM是下标
       // if (String(colIdx) in deprecatedColIdx === false && String(colIdx) !== sidColIdx) {
       if (String(colIdx) !== sidColIdx && !deprecatedColIdx.includes(String(colIdx))) {
-        console.log('\t\tadd ' + cell + '\t' + String(colIdx))
+        // console.log('\t\tadd ' + cell + '\t' + String(colIdx))
         previewRow.push(cell)
       }
     })
@@ -317,6 +323,54 @@ const previewFilter = (settingsData) => {
     sid
   }
 }
+
+/**
+ * @return submitWrapper contains:
+ *         |- titles 
+ *         |- point
+ * @description split into 3 steps
+ * 1. get student by sid
+ * 2. make title array
+ * 3. make point array
+ */
+const submitConverter = (previewPageData) => {
+  const resultContainer = previewPageData
+  console.log(previewPageData)
+  
+  const newTitleItemArrayArray = []
+  previewPageData.titles.forEach(title => {
+    let item = TitleMock.getTitlePrototype()
+    item.name = title.name
+    item.titleGroup_id = title.titleGroup
+    newTitleItemArrayArray.push(item)
+  })
+  const newPointItemArray = []
+  // 第一层循环的 row 表示第 i 行, sIdx 表示当前录到第 i 个学生的成绩
+  previewPageData.dataset.forEach((row, sIdx) => {
+    // console.log(row)
+    row.forEach((point, idx) => {
+      let item = PointMock.getPointPrototype()
+      // console.log(item)
+      item.pointNumber = point
+      item.date = Date.parse(new Date());
+      item['_sid'] = previewPageData.sid[sIdx]
+      item['_titleItem'] = previewPageData.titles[idx]
+      item['_titleIdx'] = idx
+      newPointItemArray.push(item)
+    })
+  })
+  console.log(newPointItemArray)
+  console.log(newTitleItemArrayArray)
+  const description = "分为两个部分, title 列表和 point 列表, <br/>" +
+            "其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>" +
+            "其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>"
+  return {
+    title_list: newTitleItemArrayArray,
+    point_list: newPointItemArray,
+    description
+  }
+}
+
 /**
  * export VUE COMPONENT start here
  */
@@ -393,7 +447,7 @@ export default {
       settingsPageData: {},
       previewPageData: {},
       // request from remote
-      remoteLesson: null,
+      remoteLesson: '',
       remoteLessonList: [],
       remoteTitleGroupList: [],
     }
@@ -681,6 +735,11 @@ export default {
       })
     },
     // listners
+    submit() {
+      const submitDataset = submitConverter(this.previewPageData)
+      console.log(submitDataset)
+      console.log(JSON.stringify(submitDataset))
+    },
     onSelectedLocalExcel(data) {
       // console.log(data.results)
       this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
@@ -689,7 +748,6 @@ export default {
       this.handleTitleTypeChange(title, type)
     },
     onSelectedLesson(selected) {
-      this.remoteLesson = this.remoteLessonList.find(item => item.id === selected)
       this.fetchTitleGroup(selected)
     },
     handleTitleTypeChange(title, type) {
