@@ -119,20 +119,14 @@ export default {
           console.log(cell_upload)
           if (cell_upload.type === "modify") {
             viewmodel.modifyPoint( cell_upload.point ).then(response => {
-              if (response.code === '2005'){
-                const id = response.subject[0]
-                cell_upload.point['id'] = id
-                this.$emit('onPointChanged', cell_upload)
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-              } else {
-                this.$message({
-                  message: '添加失败',
-                  type: 'error'
-                })
-              }
+              console.log(response)
+              const id = response[0]['id']
+              cell_upload.point['id'] = id
+              this.$emit('onPointChanged', cell_upload)
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
               this.onDialogClose()
             }).catch(err => {
               console.log(err)
