@@ -1,11 +1,11 @@
-const pointPrototype = {
-  id: 1,
-  classInfo_id: 0,
-  student_id: 0,
-  title_id: 0,
-  pointNumber: 0,
-  date: null,
-  note: ''
+const PointPrototype = function() {
+  this.id = ''
+  this.classInfo_id = ''
+  this.student_id = ''
+  this.title_id = ''
+  this.pointNumber = 0
+  this.date = null
+  this.note = ''
 }
 
 const pointMap = {
@@ -445,7 +445,8 @@ export default {
     return pointMap.point
   },
   getPointPrototype: () => {
-    return pointPrototype
+    const pointObj = new PointPrototype()
+    return pointObj
   },
   post: config => {
     return { code: '2004', 'message': 'OK, No Response content' }
