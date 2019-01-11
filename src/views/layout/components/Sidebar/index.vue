@@ -10,7 +10,44 @@
       active-text-color="#212121"
       
     >
-      <sidebar-item :routes="routes"></sidebar-item>
+    <sidebar-item :routes="routes"></sidebar-item>
+
+    <el-menu-item v-if="this.is_manager" index="999">
+      <template slot="title">
+        <span style="color:#EEE;">开启管理员模式</span>
+        <el-switch v-model="handler"
+          @change="onSwitchChange"
+          active-color="#000"
+          inactive-color="#000"
+          >
+        </el-switch>
+      </template> 
+    </el-menu-item>
+    <el-menu-item v-if="this.use_manager" index="9991">
+      <template slot="title">
+        <router-link to="/manager/user" >
+          <svg-icon icon-class="domain"></svg-icon>
+          <span>添加用户</span>
+        </router-link>
+      </template>
+    </el-menu-item>
+    <el-menu-item v-if="this.use_manager" index="9992">
+      <template slot="title">
+        <router-link to="/manager/student">
+          <svg-icon icon-class="domain"></svg-icon>
+          <span>添加学生</span>
+        </router-link>
+      </template>
+    </el-menu-item>
+    <el-menu-item v-if="this.use_manager" index="9993">
+      <template slot="title">
+        <router-link to="/manager/lesson">
+          <svg-icon icon-class="domain"></svg-icon>
+          <span>添加课程</span>
+        </router-link>
+      </template>
+    </el-menu-item>
+
     </el-menu>
   </el-scrollbar>
 </template>
@@ -21,9 +58,24 @@ import SidebarItem from './SidebarItem'
 
 export default {
   components: { SidebarItem },
+  data() {
+    return {
+      handler: false
+    }
+  },
+  methods: {
+    onSwitchChange(newValue) {
+      console.log(newValue)
+      console.log(this.routes)
+      this.$store.dispatch('setUseManager', newValue)
+ }
+  },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'use_manager',
+      'is_manager',
+      'user'
     ]),
     routes() {
       return this.$router.options.routes
@@ -31,6 +83,9 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
-  }
+  },
+  created() {
+    this.handler = this.use_manager
+  },
 }
 </script>
