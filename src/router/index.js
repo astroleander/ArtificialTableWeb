@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
 
@@ -148,8 +147,30 @@ export const constantRouterMap = [
       component: () => import('@/views/transcript'),
       meta: { title: '课程信息', icon: 'tree' }
     }]
+  },
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'student',
+      name: 'addstudent',
+      component: () => import('@/views/manager/addStudent.vue'),
+      meta: { title: '添加学生', icon: 'tree' }
+    },
+    {
+      path: 'user',
+      name: 'addmanager',
+      component: () => import('@/views/manager/addUser.vue'),
+      meta: { title: '添加用户', icon: 'tree' }
+    },
+    {
+      path: 'lesson',
+      name: 'addlesson',
+      component: () => import('@/views/manager/addLesson.vue'),
+      meta: { title: '添加课程', icon: 'tree' }
+    }]
   }
-  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
