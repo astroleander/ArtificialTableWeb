@@ -15,10 +15,10 @@ TODO: post 返回需要 ID
 
     <!-- table menu-->
     <el-row class="menu">
-      <el-button @click="onClickAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
-      <el-button @click="onClickExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
-      <el-button @click="onClickRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button>
-      <el-button @click="onClickBackToMainpage()" type="danger" icon="el-icon-back" >返回主页</el-button>
+      <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+      <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
+      <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button>
+      <el-button @click="onClickedUpload()" type="danger" icon="el-icon-upload">保存修改</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
     </el-row>
@@ -44,27 +44,50 @@ TODO: post 返回需要 ID
       v-for="title in titles" :label="title.name" :key="title.id"
       min-width="120px">
       <template slot-scope="scope">
-        <div slot="reference" v-if="getPointNumber(scope, title)"
-          class="item-wrapper with-point-div">
-          <span class="point">{{getPointNumber(scope, title)}}</span>
-          <span class="operator">
-            <label :for='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="pencil" /></label>
-            <input :id='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id' type="button"
-              @click="onModifyClicked({scope, title})" class="operator-button"/>
+        <div class="item-wrapper">
+          <div slot="reference" v-if="getPointItem(scope, title)"
+            class="point-div">
+            <span class="point">
+              <el-form 
+                :model="getPointItem(scope, title)" 
+                :rules="{ type: 'number', message: '分数必须为数字值'}" 
+              >
+                <el-input
+                  type="number"
+                  prop="number"
+                  size="mini" 
+                  v-model.number="getPointItem(scope, title).pointNumber" 
+                  placeholder=""
+                  @change="onItemChanged(getPointItem(scope, title))">              
+                </el-input>
+              </el-form>
+            </span>
+            <!-- <span class="point">
+              {{getPointNumber(scope, title)}}</span> -->
+            
+          </div>
 
-            <label :for='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="trash" /></label>
-            <input :id='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id' type="button"
-              @click="onDeleteClicked({scope, title})" class="operator-button"/>
-          </span>
+          <div v-if="getPointNumber(scope, title)" class="point-div-addons">
+            <span class="operator">
+              <label :for='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="trash" /></label>
+              <input :id='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id' type="button"
+                @click="onDeleteClicked({scope, title})" class="operator-button"/>
+
+              <label :for='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="pencil" /></label>
+              <input :id='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id' type="button"
+                @click="onModifyClicked({scope, title})" class="operator-button"/>
+            </span>
+          </div>
+          <div v-else class="point-div-addons">
+            <span class="operator">
+              <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
+              <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
+                @click="onAddClicked({scope, title})" class="operator-button"/>
+            </span>
+          </div>
+  
         </div>
 
-        <div v-else class="with-out-point-div">
-          <span class="operator">
-            <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
-            <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
-              @click="onAddClicked({scope, title})" class="operator-button"/>
-          </span>
-        </div>
       </template>
     </el-table-column>
   </el-table>
@@ -102,6 +125,7 @@ TODO: post 返回需要 ID
 <script>
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
+import viewmodel from '@/viewmodel/table'
 
 export default {
   name: 'transcriptTable',
@@ -128,7 +152,9 @@ export default {
   data() {
     return {
       viewDataset: [],
-      loading: true,
+      // the array is for saving all modified point item, 
+      // if user click the [upload] button, push all modifies to server  
+      updatedArray: [],
       // point dialog and student dialog use the same one dataset,
       // every time open the dialog will re-set the dataset
       pointDialogVisible: false,
@@ -137,9 +163,11 @@ export default {
       // "add title" dialog and "export" dialog use the same dataset,
       // every time open the dialog will re-set the dataset
       menuAddTitleDialogVisible: false,
-      menuExportDialogVisible: false
+      menuExportDialogVisible: false,
       // 暂时不用携带数据
       // menuDialogDataset: {}
+      // 载入状态
+      loading: true,
     }
   },
   computed: {
@@ -229,17 +257,27 @@ export default {
       // this.showPointDialog(dataset)
       // }
     },
-    onClickAddTitle: function() {
+    onClickedAddTitle: function() {
       this.showAddTitleDialog({})
     },
-    onClickExportTable: function() {
+    onClickedExportTable: function() {
       this.showExportDialog({})
     },
-    onClickRefresh: function() {
+    onClickedRefresh: function() {
       location.reload()
     },
-    onClickBackToMainpage: function() {
-      this.$router.push({ path: '/' })
+    onClickedUpload: function() {
+      console.log(this.updatedArray)
+      viewmodel.modifyPoints( this.updatedArray ).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+          })
+      })
+    },
+    onItemChanged: function(newItem) {
+      // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
+      this.updatedArray.push(newItem)
     },
     handlePointChanged: function(dialogResult) {
       const item = dialogResult
@@ -256,7 +294,6 @@ export default {
               } // end hasOwnProperty if
             } // end for
           } else {
-            console.log('not exist yet, create new one')
             row.point.push(item.point)
           }
         }
@@ -279,8 +316,9 @@ export default {
       try {
         FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
       } catch (e) {
-        if (typeof console !== 'undefined')
+        if (typeof console !== 'undefined') {
           console.log(e, wbout)
+        }
       }
 
       return wbout
@@ -306,12 +344,9 @@ export default {
 .menu {
   margin: 12px 10px;
 }
-.item-wrapper {
-  cursor: pointer;
-  user-select: none;
-}
 
 .operator {
+  height: 14px;
   .svg-icon {
     cursor: pointer;
     fill: #999;
@@ -325,19 +360,21 @@ export default {
   display: none;
 }
 
-.point {
-  margin-right: 8px;
+.item-wrapper {
+  cursor: pointer;
   user-select: none;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: flex-start;
+  // height: 30px;
 }
 
-.with-point-div,
-.with-out-point-div {
-  display: flex;
+.point-div-addons {
   .operator {
-    margin-right: 33%;
+    margin: 8px;
     white-space: nowrap;
-
+    display: inline-flex;
     opacity: 0.3;
     transition: all 0.1s 0.4s ease;
   }
@@ -346,10 +383,16 @@ export default {
     transition: all 0.2s ease;
   }
 }
-.with-out-point-div {
-  justify-content: flex-end;
+</style>
+
+<style lang="scss">
+.point-div {
+  .el-input .el-input--mini {
+    .el-input__inner {
+      padding: 0 0 0 0;
+      margin: 0 0 0 0;
+    }
+  }
 }
-.with-point-div {
-  justify-content: space-between;
-}
+
 </style>

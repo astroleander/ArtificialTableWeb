@@ -60,13 +60,11 @@ export default {
   components: { SidebarItem },
   data() {
     return {
-      handler: false
+      handler: this.use_manager
     }
   },
   methods: {
     onSwitchChange(newValue) {
-      console.log(newValue)
-      console.log(this.routes)
       this.$store.dispatch('setUseManager', newValue)
  }
   },

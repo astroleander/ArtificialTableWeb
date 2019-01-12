@@ -34,6 +34,7 @@
 import { isvalidUsername } from '@/utils/validate'
 import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
+import Vue from 'vue';
 
 const validateUsername = (rule, value, callback) => {
   if (!isvalidUsername(value)) {
@@ -91,9 +92,13 @@ export default {
           ViewModel
             .requestLogin(this.loginForm)
             .then(() => {
-              this.loading = false
-              // console.log('login request success')
-              this.$router.push({ path: '/' })
+              Vue.nextTick(resolve => {
+                console.log('login request success')
+                setTimeout(()=>{
+                  this.$router.push({ path: '/' })
+                  this.loading = false
+                }, 1000)
+              })
             }).catch(err => {
               this.loading = false
               console.error(err)
