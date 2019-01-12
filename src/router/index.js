@@ -38,59 +38,47 @@ export const constantRouterMap = [
       component: () => import('@/views/mainpage/index')
     }]
   },
-  {
-    path: '/manage',
-    component: Layout,
-    redirect: '/manage/table',
-    name: 'Manage',
-    meta: { title: '教学管理', icon: 'example' },
-    children: [
-      {
-        path: 'plist',
-        name: 'Point List',
-        component: () => import('@/views/plist/index'),
-        meta: { title: '分数条目', icon: 'plist' }
-      },
-      {
-        path: 'slist',
-        name: 'Student List',
-        component: () => import('@/views/slist/index'),
-        meta: { title: '学生列表', icon: 'slist' }
-      },
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '成绩表格', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      },
-      {
-        path: 'nostudentpage',
-        name: 'No Student Page',
-        hidden: true,
-        component: () => import('@/views/slist/nostudentpage'),
-        meta: { title: '错误提示', icon: 'slist' }
-      }
-    ]
-  },
+  // {
+  //   path: '/manage',
+  //   component: Layout,
+  //   redirect: '/manage/table',
+  //   name: 'Manage',
+  //   meta: { title: '教学管理', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'plist',
+  //       name: 'Point List',
+  //       component: () => import('@/views/plist/index'),
+  //       meta: { title: '分数条目', icon: 'plist' }
+  //     },
+  //     {
+  //       path: 'slist',
+  //       name: 'Student List',
+  //       component: () => import('@/views/slist/index'),
+  //       meta: { title: '学生列表', icon: 'slist' }
+  //     },
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '成绩表格', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     },
+  //     {
+  //       path: 'nostudentpage',
+  //       name: 'No Student Page',
+  //       hidden: true,
+  //       component: () => import('@/views/slist/nostudentpage'),
+  //       meta: { title: '错误提示', icon: 'slist' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
   {
     path: urls.comparison,
     component: Layout,
