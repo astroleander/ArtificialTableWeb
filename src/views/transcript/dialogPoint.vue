@@ -55,6 +55,7 @@
 <script>
 import { isPointNumber } from '@/utils/validate'
 import viewmodel from '@/viewmodel/table'
+
 console.log(viewmodel)
 const validatePointNumber = (rule, value, callback) => {
   if (isPointNumber(value.pointNumber)) {
@@ -110,24 +111,47 @@ export default {
     },
     handleSubmit: function() {
       this.$refs.form.validate(valid => {
-        console.log(this)
         if (valid) {
           // upload request for modifying
           // and close dialog if success
-          viewmodel.addPoint({ pointItem: this.cell_copy }).then(response => {
-            this.$emit('onPointChanged', this.cell_copy)
-            this.$message({
-              message: '修改成功',
-              type: 'success'
+          const cell_upload = this.cell
+          cell_upload.point = this.cell_copy.point
+          console.log(cell_upload)
+          if (cell_upload.type === "modify") {
+            viewmodel.modifyPoint( cell_upload.point ).then(response => {
+              console.log(response)
+              const id = response[0]['id']
+              cell_upload.point['id'] = id
+              this.$emit('onPointChanged', cell_upload)
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.onDialogClose()
+            }).catch(err => {
+              console.log(err)
+              this.$message({
+                message: '添加失败',
+                type: 'error'
+              })
             })
+          } else {
+            viewmodel.addPoint( cell_upload.point ).then(response => {
+              this.$emit('onPointChanged', cell_upload)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+            })
+
             this.onDialogClose()
           }).catch(err => {
-            console.log(err)
-            this.$message({
-              message: '修改失败',
-              type: 'error'
+              console.log(err)
+              this.$message({
+                message: '修改失败',
+                type: 'error'
+              })
             })
-          })
+          }
         } else {
           return false
         }

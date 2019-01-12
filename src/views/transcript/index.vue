@@ -20,14 +20,14 @@ index
 
     <input class="state" @click='switchMode("table")' type="radio" title="tab-one" name="tabs-state" id="tab-one" checked />
     <input class="state" @click='switchMode("stats")' type="radio" title="tab-two" name="tabs-state" id="tab-two" />
-    <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" />
-    <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" />
+    <!-- <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" /> -->
+    <!-- <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" /> -->
 
     <div class="tabs flex-tabs">
       <label for="tab-one" id="tab-one-label" class="tab">成绩表</label>
       <label for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
-      <label for="tab-three" id="tab-three-label" class="tab">班级成员</label>
-      <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label>
+      <!-- <label for="tab-three" id="tab-three-label" class="tab">班级成员</label> -->
+      <!-- <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label> -->
     </div>
 
 
@@ -61,12 +61,12 @@ import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
 
-import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
 import viewmodel from '@/viewmodel/table'
 import titleViewmodel from '@/viewmodel/title'
 import titleGroupViewModel from '@/viewmodel/titleGroup'
+import classinfoViewmodel from '@/viewmodel/classinfos'
 
 export default {
   components: {
@@ -115,7 +115,16 @@ export default {
     }
   },
   created() {
+    // 要是想好好写这个代码的话可以考虑回滚到 12 月之前的版本
     this.info = this.$store.getters.course(this.id)
+    if(this.info === undefined) {
+      const class_id = this.id
+      classinfoViewmodel.requestClassInfos({ id: class_id }).then(res => {
+        // console.log(res[0])
+        this.info = res && res[0]
+      })
+    }
+    // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
     this.fetchDataset()

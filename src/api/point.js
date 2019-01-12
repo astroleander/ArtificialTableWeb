@@ -129,4 +129,3 @@ export function deletePoints(PointIdArray) {
     }
   })
 }
-

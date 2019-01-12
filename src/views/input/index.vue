@@ -34,9 +34,18 @@
                 v-model="importDataHasHead"
                 active-color="#4caf50"
                 inactive-color="#ff4949"
-                active-text="数据包含列名"
+                inactive-text="数据包含列名"
                 >
               </el-switch>
+              <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson">
+                <el-option
+                  v-for="item in remoteLessonList"
+                  :value="item.id"
+                  :label="item.name"
+                  :key="item.id"
+                  >
+                </el-option>
+              </el-select>
               <el-button class="button" type="success" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
             <!-- STEP - 1 - 统计信息 -->
@@ -141,7 +150,7 @@
         >
           <!-- STEP - 3 - 步骤操作菜单 -->
           <el-button class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-          <el-button class="button" type="success" @click="alert('submit')" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          <el-button class="button" type="success" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 
           <!-- STEP - 3 - 预览表格 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
@@ -172,7 +181,18 @@
 import { HotTable } from '@handsontable/vue'
 import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
+
+// 引入 viewmodel
 import titleGroupViewModel from '@/viewmodel/titleGroup'
+import lessonViewModel from '@/viewmodel/lesson'
+import studentViewModel from '@/viewmodel/student'
+import classViewModel from '@/viewmodel/classfield'
+import classInfoViewModel from '@/viewmodel/classinfos'
+
+import PointMock from '@/mock/point'
+import TitleMock from '@/mock/title'
+
+// 引入常量，全是提示信息字符串
 import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
@@ -288,7 +308,7 @@ const previewFilter = (settingsData) => {
       // 被标记的错误: in 取的是 key, 哪怕目标是数组取的也TM是下标
       // if (String(colIdx) in deprecatedColIdx === false && String(colIdx) !== sidColIdx) {
       if (String(colIdx) !== sidColIdx && !deprecatedColIdx.includes(String(colIdx))) {
-        console.log('\t\tadd ' + cell + '\t' + String(colIdx))
+        // console.log('\t\tadd ' + cell + '\t' + String(colIdx))
         previewRow.push(cell)
       }
     })
@@ -304,6 +324,60 @@ const previewFilter = (settingsData) => {
   }
 }
 
+/**
+ * @return submitWrapper contains:
+ *         |- titles 
+ *         |- point
+ * @description split into 3 steps
+ * 1. get student by sid
+ * 2. make title array
+ * 3. make point array
+ */
+const submitConverter = (previewPageData, lessonId) => {
+  const resultContainer = previewPageData
+  console.log(previewPageData)
+  
+  const newTitleItemArrayArray = []
+  previewPageData.titles.forEach(title => {
+    let item = TitleMock.getTitlePrototype()
+    item.name = title.name
+    item.titleGroup_id = title.titleGroup
+    newTitleItemArrayArray.push(item)
+  })
+  const newPointItemArray = []
+  // 第一层循环的 row 表示第 i 行, sIdx 表示当前录到第 i 个学生的成绩
+  previewPageData.dataset.forEach((row, sIdx) => {
+    // console.log(row)
+    row.forEach((point, idx) => {
+      let item = PointMock.getPointPrototype()
+      // console.log(item)
+      item.pointNumber = point
+      item.date = Date.parse(new Date());
+      item['sid'] = previewPageData.sid[sIdx]
+      item['title_name'] = previewPageData.titles[idx]['name']
+      item['titleGroup_id'] = previewPageData.titles[idx]['titleGroup']
+      // item['_titleIdx'] = idx
+      newPointItemArray.push(item)
+    })
+  })
+  console.log(newPointItemArray)
+  console.log(newTitleItemArrayArray)
+  const sid_list = previewPageData.sid
+  const description = "分为两个部分, title 列表和 point 列表, <br/>" +
+            "其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>" +
+            "其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>"
+  return {
+    title_list: newTitleItemArrayArray,
+    point_list: newPointItemArray,
+    lesson_id: lessonId,
+    sid_list,
+    description
+  }
+}
+
+/**
+ * export VUE COMPONENT start here
+ */
 export default {
   components: {
     HotTable, ImportExcelComponent
@@ -377,7 +451,9 @@ export default {
       settingsPageData: {},
       previewPageData: {},
       // request from remote
-      remoteTitleGroupList: []
+      remoteLesson: '',
+      remoteLessonList: [],
+      remoteTitleGroupList: [],
     }
   }, // data-end
   computed: {
@@ -583,13 +659,11 @@ export default {
       switch (to) {
         case 1:
           this.activeStep = 0
-          this.$router.push({ path: 'import' })
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
             if (from === 1) this.renderSettingsPage()
             this.activeStep = 1
-            this.$router.push({ path: 'settings' })
             break
           } else {
             this.$message({
@@ -631,7 +705,6 @@ export default {
 
           if (legalRequest) {
             this.activeStep = 2
-            this.$router.push({ path: 'preview' })
             this.renderPreviewPage()
           }
           break
@@ -648,9 +721,14 @@ export default {
       this.previewPageData = previewFilter(this.settingsPageData)
       // console.log(this.previewPageData)
     },
-    fetchTitleGroup: function() {
-      // TODO: Add request params
-      titleGroupViewModel.requestTitleGroups({ classInfo_id: 1 }).then(list => {
+    fetchLesson() {
+      lessonViewModel.requestAllLessons().then(res => {
+        this.remoteLessonList = res
+      });
+    },
+    fetchTitleGroup(id) {
+      const lesson_id = id;
+      titleGroupViewModel.requestByLessonId(id).then(list => {
         this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)
@@ -661,12 +739,20 @@ export default {
       })
     },
     // listners
+    submit() {
+      const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
+      console.log(submitDataset)
+      console.log(JSON.stringify(submitDataset))
+    },
     onSelectedLocalExcel(data) {
       // console.log(data.results)
       this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
     },
     onTitleTypeClick(title, type) {
       this.handleTitleTypeChange(title, type)
+    },
+    onSelectedLesson(selected) {
+      this.fetchTitleGroup(selected)
     },
     handleTitleTypeChange(title, type) {
       title.type = type
@@ -677,7 +763,7 @@ export default {
   },
   created() {
     this.$store.dispatch('saveImportTable', { table: [] })
-    this.fetchTitleGroup()
+    this.fetchLesson();
   }
 }
 </script>

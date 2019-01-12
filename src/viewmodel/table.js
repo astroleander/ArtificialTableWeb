@@ -6,8 +6,8 @@ export default {
   requestTitles: Title.requestTitles,
   requestPoints: Point.requestPoints,
   requestStudents: Student.requestStudents,
-  addPoints: Point.requestPutPoints,
-  addPoint: Point.requestPutPoint,
-  modifyPoint: Point.requestPostPoint,
-  modifyPoints: Point.requestPostPoints
+  modifyPoints: Point.requestPutPoints,
+  modifyPoint: Point.requestPutPoint,
+  addPoint: Point.requestPostPoint,
+  addPoints: Point.requestPostPoints
 }

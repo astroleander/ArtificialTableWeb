@@ -73,8 +73,7 @@ TODO: post 返回需要 ID
   <at-point-dialog
     :v-if="this.pointDialogVisible"
     :visible="this.pointDialogVisible"
-    :cell="this.tableDialogDataset"
-
+    :cell="getTableDataset"
     @onDialogClose="onDialogClose()"
     @onPointChanged="handlePointChanged"
   ></at-point-dialog>
@@ -143,7 +142,11 @@ export default {
       // menuDialogDataset: {}
     }
   },
-  computed: {},
+  computed: {
+    getTableDataset(){
+      return this.tableDialogDataset
+    }
+  },
   methods: {
     // shown controller, ensure dataset before
     showPointDialog: function(dataset) {
@@ -196,7 +199,6 @@ export default {
         pointNewItem['title'] = title
         pointNewItem['info'] = this.info
         pointNewItem['type'] = 'add' // declear if item is exist
-
         this.showPointDialog(pointNewItem)
       })
     },
@@ -209,12 +211,7 @@ export default {
       pointExistItem['title'] = title
       pointExistItem['info'] = this.info
       pointExistItem['type'] = 'modify' // declear if item is exist
-      if (pointExistItem) {
-        this.showPointDialog(pointExistItem)
-      } else {
-        console.error(pointExistItem)
-        // this.showPointDialog(dataset)
-      }
+      this.showPointDialog(pointExistItem)
     },
     onDeleteClicked: function({ scope, title }) {
       const point = this.getPointItem(scope, title)
@@ -239,10 +236,10 @@ export default {
       this.showExportDialog({})
     },
     onClickRefresh: function() {
-
+      location.reload()
     },
     onClickBackToMainpage: function() {
-
+      this.$router.push({ path: '/' })
     },
     handlePointChanged: function(dialogResult) {
       const item = dialogResult

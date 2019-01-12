@@ -1,3 +1,10 @@
+const TitlePrototype = function() {
+  this.id = ''
+  this.name = ''
+  this.titleGroup_id = ''
+  this.classInfo_id = ''
+  this.weight = 1
+}
 const titleMap = {
   title: {
     code: '2000',
@@ -108,6 +115,10 @@ const titlegroupMap = {
 export default {
   title: config => {
     return titleMap.title
+  },
+  getTitlePrototype: () => {
+    const newtitle = new TitlePrototype()
+    return newtitle
   },
   group: config => {
     return titlegroupMap.titlegroup
