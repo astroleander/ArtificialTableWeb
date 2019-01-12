@@ -2,7 +2,7 @@
   <el-dialog
     :visible.sync="visible"
     :before-close="onDialogClose">
-    <template slot-scope="title" slot="title">
+    <template slot="title">
         修改分数
     </template>
     <slot>
@@ -56,7 +56,6 @@
 import { isPointNumber } from '@/utils/validate'
 import viewmodel from '@/viewmodel/table'
 
-console.log(viewmodel)
 const validatePointNumber = (rule, value, callback) => {
   if (isPointNumber(value.pointNumber)) {
     callback()
