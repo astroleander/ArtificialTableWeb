@@ -92,10 +92,12 @@ export default {
           ViewModel
             .requestLogin(this.loginForm)
             .then(() => {
-              this.loading = false
               Vue.nextTick(resolve => {
                 console.log('login request success')
-                this.$router.push({ path: '/' })
+                setTimeout(()=>{
+                  this.$router.push({ path: '/' })
+                  this.loading = false
+                }, 1000)
               })
             }).catch(err => {
               this.loading = false
