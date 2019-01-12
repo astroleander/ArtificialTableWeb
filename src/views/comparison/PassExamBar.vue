@@ -1,5 +1,5 @@
 <template>
-  <div :id="'PassDiagram'+DiagramId"  v-if="dataSet" >
+  <div :id="'PassDiagram'+DiagramId" class="box" v-if="dataSet" >
   </div>
 </template>
 

@@ -259,7 +259,6 @@
         const classInfoPromise = this.fetchClassInfo(params)
         const titleGroupPromise = this.fetchTitleGroupInfo({ lesson_id:params.lesson_id })
         Promise.all([classInfoPromise,titleGroupPromise]).then(result => {
-          console.log('result = '+ result)
           if (result[0]&&result[1]){ // (1)成功获取班级信息和大项信息
             this.loading = true
             this.dealClassInfoAndTitleGroupInfo()
