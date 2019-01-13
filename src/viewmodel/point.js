@@ -1,12 +1,31 @@
 import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
   postPoint, postPoints,
   putPoint, putPoints,
-  deletePoint, deletePoints } from '@/api/point'
+  deletePoint, deletePoints, importPoints } from '@/api/point'
 /**
- * date:2018/12/20
- * author:liqian
- * description：分数条目信息的get put post delete
+ * @date 2018/12/20
+ * @author liqian
+ * @description 分数条目信息的get put post delete
  */
+
+/**
+ * @description 用于批量导入页面,数据格式较为复杂,会覆盖已有的 point, 别瞎用
+ * @params
+ *   |- @array lesson_id
+ *   |- @array title_list
+ *   |- @array sid_list
+ *   |- @array point_list
+ * @return not from subjects
+ */
+const requestImportPoints = (subjects) => {
+  return new Promise((resolve, reject) => {
+    importPoints(subjects).then(response => {
+      resolve(response)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 
 /**
  * description:请求分数条目信息
@@ -174,5 +193,6 @@ export default {
   requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
   requestPutPoint, requestPutPoints,
   requestPostPoint, requestPostPoints,
-  requestDelPoint, requestDelPoints
+  requestDelPoint, requestDelPoints,
+  requestImportPoints
 }
