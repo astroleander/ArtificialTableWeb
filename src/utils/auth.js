@@ -7,6 +7,7 @@ const User_KEY = 'User'
 const Use_Manager_KEY = 'Use-Manager'
 const Is_Manager_KEY = 'Is-Manager'
 
+const User_College_KEY = 'College_Id'
 export function getToken() {
   return Cookies.get(TOKEN_KEY)
 }
@@ -64,4 +65,16 @@ export function removeManager() {
   Cookies.remove(Is_Manager_KEY)
   Cookies.remove(Use_Manager_KEY)
   return
+}
+// 2019/1/13
+export function getCollegeId() {
+  return Cookies.get(User_College_KEY)
+}
+
+export function setCollegeId(CollegeId) {
+  return Cookies.set(User_College_KEY, CollegeId)
+}
+
+export function removeCollegeId() {
+  return Cookies.remove(User_College_KEY)
 }

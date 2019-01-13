@@ -105,6 +105,7 @@ export default {
       errorType: 'error',
       currentDataSet: [],
       modifyDisabled: false,
+      avgDisabled: false,
       titleDisabled: [],
       NewTitle: {
         name: '',

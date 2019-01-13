@@ -30,7 +30,7 @@ div(head)
      <p >{{Message}}</p>
    </div>
     <div v-if="!empty">
-      <div v-if="this.user.is_manager">
+      <div v-if="this.use_manager">
         <at-lesson-card
           groupName="权重大项"
           :dataSet="titleGroups"
@@ -83,7 +83,7 @@ div(head)
       },
       // 管理员/教师 大类列表(角色判断)
       buildTitleGroup: function(titlegroups) {
-        if (this.user.is_manager) {
+        if (this.use_manager) {
           this.titleGroups = titlegroups // (管理员)
         } else {
           this.titleGroupsInfo = titlegroups // 教师
@@ -256,7 +256,7 @@ div(head)
       selectedCourse: function(index) {
         this.init()
         console.log(index)
-        if (this.user.is_manager) {
+        if (this.use_manager) {
           console.log('课程组id = ' + this.selectData[index].id)
           this.fetchTitleGroup(this.selectData[index].id) // 当前角色是管理员
           this.empty = false
@@ -265,26 +265,50 @@ div(head)
           this.fetchTitleGroup(this.selectData[index].lesson_id)// 当前角色是教师
           this.fetchTitlesData(this.selectData[index].id) // 当前角色是教师
         }
+      },
+      initWeight() {
+        this.value = ''
+        this.selectData = []
+        this.empty = true
       }
     },
     computed: {
       ...mapGetters([
-        'user',
+        'user_collegeId',
+        'use_manager',
         'id'
       ])
+    },
+    watch: {
+      use_manager: function(val) {
+        this.initWeight()
+        if (this.use_manager) {
+          this.selectText = '请选择课程组'
+          this.Message = '请选择调整的课程组'
+          this.fetchLessonData(this.user_collegeId)
+        } else { // 当前角色是教师
+          this.selectText = '请选择教学班'
+          this.Message = '请选择调整的教学班'
+          this.fetchClassInfoData(this.id)
+        }
+      }
     },
     // (角色判断)
     created() {
       // 当前角色是管理员
-      if (this.user.is_manager) {
-        console.log(this.user.is_manager)
+      console.log('this.use_manager =' + this.use_manager)
+      console.log('this.college_id =' + this.user_collegeId)
+
+      if (this.use_manager) {
+        console.log('1')
         this.selectText = '请选择课程组'
         this.Message = '请选择调整的课程组'
-        this.fetchLessonData(this.user.college_id)
+        this.fetchLessonData(this.user_collegeId)
       } else { // 当前角色是教师
+        console.log('2')
         this.selectText = '请选择教学班'
         this.Message = '请选择调整的教学班'
-        this.fetchClassInfoData(this.user.id)
+        this.fetchClassInfoData(this.id)
       }
     }
   }
