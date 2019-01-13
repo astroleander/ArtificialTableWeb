@@ -23,7 +23,7 @@
         </el-switch>
       </template> 
     </el-menu-item>
-    <el-menu-item v-if="this.use_manager" index="9991">
+    <el-menu-item v-if="this.handler" index="9991">
       <template slot="title">
         <router-link to="/manager/user" >
           <svg-icon icon-class="domain"></svg-icon>
@@ -31,7 +31,7 @@
         </router-link>
       </template>
     </el-menu-item>
-    <el-menu-item v-if="this.use_manager" index="9992">
+    <el-menu-item v-if="this.handler" index="9992">
       <template slot="title">
         <router-link to="/manager/student">
           <svg-icon icon-class="domain"></svg-icon>
@@ -39,7 +39,7 @@
         </router-link>
       </template>
     </el-menu-item>
-    <el-menu-item v-if="this.use_manager" index="9993">
+    <el-menu-item v-if="this.handler" index="9993">
       <template slot="title">
         <router-link to="/manager/lesson">
           <svg-icon icon-class="domain"></svg-icon>
