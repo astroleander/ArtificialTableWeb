@@ -97,7 +97,7 @@ export default {
                 setTimeout(()=>{
                   this.$router.push({ path: '/' })
                   this.loading = false
-                }, 1000)
+                }, 1500)
               })
             }).catch(err => {
               this.loading = false
