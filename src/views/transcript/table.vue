@@ -18,7 +18,7 @@ TODO: post 返回需要 ID
       <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
       <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
       <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button>
-      <el-button @click="onClickedUpload()" type="danger" icon="el-icon-upload">保存修改</el-button>
+      <el-button @click="onClickedUpload()" type="primary" icon="el-icon-upload">保存修改</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
     </el-row>
@@ -47,6 +47,8 @@ TODO: post 返回需要 ID
         <div class="item-wrapper">
           <div slot="reference" v-if="getPointItem(scope, title)"
             class="point-div">
+            <!-- using import to excel -->
+            <span style="display:none">{{getPointNumber(scope, title)}}</span>
             <span class="point">
               <el-form 
                 :model="getPointItem(scope, title)" 

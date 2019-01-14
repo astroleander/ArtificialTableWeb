@@ -74,6 +74,7 @@
                 min-width="150px" width="200px">
                 <!-- 自定义表头，用于选择列的属性 -->
                 <template slot="header" slot-scope="scope" >
+                <!-- <template slot="header"> -->
                   <div class="settings-table-header">
                     <label :for='"el-selector-for-type-col-" + title.idx'
                         class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title)+";"'>
@@ -152,6 +153,52 @@
           <el-button class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
           <el-button class="button" type="success" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
 
+          <!-- CONTAINER 容纳错误信息 -->
+          <el-card v-if="submitErrorMessage.existTitleNameList.length > 0">
+            <el-alert v-for="name in submitErrorMessage.existTitleNameList" :key="name" type="warning"
+              :title="'当前列名 [' + name + '] 已被教师使用, 分数的插入操作将会覆盖之前存在的分数'">
+            </el-alert>
+          </el-card>
+
+          <el-card v-if="submitErrorMessage.errorTitleNameList.length > 0">
+            <el-alert v-for="name in submitErrorMessage.errorTitleNameList" :key="name" type="error"
+              :title="'[' + name + '] 插入失败'">
+            </el-alert>
+          </el-card>
+          
+          <el-card v-if="submitErrorMessage.existPointList.length > 0">
+            <el-alert type="warning"
+              title="下列分数覆盖了原来的值">
+            </el-alert>
+            <el-table :data="submitErrorMessage.existPointList" style="width: 100%">
+              <el-table-column prop="sid" label="学号"></el-table-column>
+              <el-table-column prop="pointNumber" label="分数"></el-table-column>
+              <el-table-column prop="title_name" label="列名"></el-table-column>
+              <el-table-column label="大项">
+                <template slot-scope="scope">
+                  <span>{{ getTitleGroup(scope.row.titleGroup_id) }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          
+          <el-card v-if="submitErrorMessage.errorPointList.length > 0">
+            <el-alert type="error"
+              title="下列分数插入失败">
+            </el-alert>
+            <el-table :data="submitErrorMessage.errorPointList" style="width: 100%">
+              <el-table-column prop="sid" label="学号"></el-table-column>
+              <el-table-column prop="pointNumber" label="分数"></el-table-column>
+              <el-table-column prop="title_name" label="列名"></el-table-column>
+              <el-table-column label="大项">
+                <template slot-scope="scope">
+                  <span>{{ getTitleGroup(scope.row.titleGroup_id).name }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          
+ 
           <!-- STEP - 3 - 预览表格 -->
           <!-- 使用 v-if 重新渲染表格，消耗一定的性能，使得表格强制刷新 -->
           <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable'
@@ -185,9 +232,7 @@ import ImportExcelComponent from '@/components/ImportExcel.vue'
 // 引入 viewmodel
 import titleGroupViewModel from '@/viewmodel/titleGroup'
 import lessonViewModel from '@/viewmodel/lesson'
-import studentViewModel from '@/viewmodel/student'
-import classViewModel from '@/viewmodel/classfield'
-import classInfoViewModel from '@/viewmodel/classinfos'
+import pointViewModel from '@/viewmodel/point'
 
 import PointMock from '@/mock/point'
 import TitleMock from '@/mock/title'
@@ -363,9 +408,11 @@ const submitConverter = (previewPageData, lessonId) => {
   console.log(newPointItemArray)
   console.log(newTitleItemArrayArray)
   const sid_list = previewPageData.sid
-  const description = "分为两个部分, title 列表和 point 列表, <br/>" +
+  const description = "分为四个部分, title 列表和 point 列表, <br/>" +
             "其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>" +
             "其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>"
+            "其中 lesson_id 字段包含所在课程 <br/> " +
+            "其中 sid_list 字段包含学生学号列表 <br/> "
   return {
     title_list: newTitleItemArrayArray,
     point_list: newPointItemArray,
@@ -454,6 +501,13 @@ export default {
       remoteLesson: '',
       remoteLessonList: [],
       remoteTitleGroupList: [],
+      // response after import submit
+      submitErrorMessage: {
+        existTitleNameList: [],
+        errorTitleNameList: [],
+        existPointList: [],
+        errorPointList: []        
+      }
     }
   }, // data-end
   computed: {
@@ -741,8 +795,29 @@ export default {
     // listners
     submit() {
       const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
-      console.log(submitDataset)
-      console.log(JSON.stringify(submitDataset))
+      pointViewModel.requestImportPoints(submitDataset).then(res => {
+        if ((res && String(res.code) === "2011") || (res && String(res.code) === "2001")) {
+          console.log("数据导入成功")
+          this.$message({
+            message: '数据导入成功',
+            type: 'success'
+          })
+        } else if (res && String(res.code) === "2019") {
+          console.log("数据导入失败")
+          this.$message({
+            message: '数据已经导入, 部分数据存在冲突',
+            type: 'warning'
+          })
+          this.handleSubmitFeedback(res)
+        } else {
+          console.log("数据导入失败")
+          this.$message({
+            message: '数据导入失败,请查看错误信息',
+            type: 'error'
+          })
+          this.handleSubmitFeedback(res)
+        }
+      })
     },
     onSelectedLocalExcel(data) {
       // console.log(data.results)
@@ -757,8 +832,26 @@ export default {
     handleTitleTypeChange(title, type) {
       title.type = type
     },
+    handleSubmitFeedback(response) {
+      const errorList = response.subjects
+
+      const title_list = errorList['error_title_names'] || []
+      // deleted duplicated
+      this.submitErrorMessage.errorTitleNameList = Array.from(new Set(title_list))
+      
+      this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
+      
+      this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
+      
+      this.submitErrorMessage.errorPointList = errorList['error_point_message'] || []
+      
+      console.log(this.submitErrorMessage)
+    },
     getStudentNumber(scope) {
       return this.previewPageData.sid[scope.$index]
+    },
+    getTitleGroup(titleGroup_id) {
+      return this.remoteTitleGroupList.find(item => item.id === titleGroup_id)
     }
   },
   created() {

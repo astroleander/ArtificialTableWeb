@@ -157,6 +157,12 @@ export const constantRouterMap = [
       name: 'addlesson',
       component: () => import('@/views/manager/addLesson.vue'),
       meta: { title: '添加课程', icon: 'tree' }
+    },
+    {
+      path: 'class',
+      name: 'addClassInfo',
+      component: () => import('@/views/manager/addClassInfo.vue'),
+      meta: { title: '添加班级', icon: 'tree' }
     }]
   }
 ]

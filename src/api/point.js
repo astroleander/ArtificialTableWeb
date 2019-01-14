@@ -1,13 +1,29 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
- * description：分数条目信息的增删改查
+ * @date 2018.12.18
+ * @author liqian
+ * @description 分数条目信息的增删改查
  */
 
 /**
+ * @description 用于批量导入页面,数据格式较为复杂,会覆盖已有的 point, 别瞎用
+ * @params
+ *   |- @array lesson_id
+ *   |- @array title_list
+ *   |- @array sid_list
+ *   |- @array point_list
+ */
+export function importPoints(subjects) {
+  return request({
+    url: '/import_data',
+    method: 'post',
+    data: subjects
+  })
+}
+
+/**
  * 查找分数条目信息
- * params：参数对象
+ * @params 参数对象
  * （classInfo_id必需，id,student_id,title_id,date,note五个可选参数）
  */
 export function getPoints(params) {
