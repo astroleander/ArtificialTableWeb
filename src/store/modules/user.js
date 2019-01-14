@@ -1,4 +1,4 @@
-import { removeManager, setIsManager, getIsManager, getUseManager, setUseManager, getToken, setToken, removeToken, getId, setId, removeId, getUser, setUser, removeUser } from '@/utils/auth'
+import { removeManager, setIsManager, getIsManager, getUseManager, setUseManager, getToken, setToken, removeToken, getId, setId, removeId, getUser, setUser, removeUser, getCollegeId, removeCollegeId, setCollegeId } from '@/utils/auth'
 
 const user = {
   state: {
@@ -6,7 +6,8 @@ const user = {
     id: getId(),
     user: getUser(),
     is_manager: getIsManager(),
-    use_manager: getUseManager()
+    use_manager: getUseManager(),
+    user_collegeId: getCollegeId()
   },
 
   mutations: {
@@ -25,6 +26,9 @@ const user = {
     },
     SET_USE_MANAGER: (state, is) => {
       state.use_manager = is
+    },
+    SET_COLLEGE_ID: (state, is) => {
+      state.user_collegeId = is
     }
   },
 
@@ -36,10 +40,12 @@ const user = {
       setUser(data.user)
       setIsManager(data.user.is_manager)
       setUseManager(data.user.is_manager)
+      setCollegeId(data.user.college_id)
       commit('SET_TOKEN', data.token)
       commit('SET_ID', data.id)
       commit('SET_USER', data.user)
       commit('SET_MANAGER', data.user.is_manager)
+      commit('SET_COLLEGE_ID', data.user.college_id)
     },
     // 登出
     LogOut({ commit, state }) {
@@ -47,12 +53,14 @@ const user = {
       commit('SET_ID', '')
       commit('SET_USER', null)
       commit('SET_MANAGER', false)
+      commit('SET_COLLEGE_ID', '')
       removeToken()
       removeId()
       removeUser()
       removeManager()
+      removeCollegeId()
     },
-    
+
     // 仅前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
