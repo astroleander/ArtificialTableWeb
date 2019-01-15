@@ -18,7 +18,11 @@ const user = {
       state.id = id
     },
     SET_USER: (state, user) => {
-      state.user = user
+      if (typeof user === 'string') {
+        state.user = JSON.parse(user)
+      } else {
+        state.user = user
+      }
     },
     SET_MANAGER: (state, is) => {
       state.is_manager = is
