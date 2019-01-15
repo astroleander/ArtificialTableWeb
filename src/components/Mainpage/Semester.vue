@@ -1,15 +1,14 @@
 <!-- As container for Class Card Conponent -->
 <template>
   <div>
-    <!-- Semester Title -->
-    <input v-bind:id='"at-collapsible-checkbox-"+this._uid'
-      value="true"
-      v-model="collapsed"
-      class="toggle"
-      type="checkbox">
-    <label v-bind:for='"at-collapsible-checkbox-"+this._uid' class="label-toggle">
-      <slot></slot>
-    </label>
+    <el-select v-model="currentSemester">
+      <el-option
+        v-for="item in dataset"
+        :key="item"
+        :label="item">
+
+      </el-option>
+    </el-select>
     <!-- Card List -->
     <transition name="fade" mode="out-in">
       <div id="at-m-list-container" class="at-collapsible" v-show="collapsed">
@@ -28,12 +27,9 @@ import AtClassCard from '@/components/Mainpage/ClassCard'
 
 export default {
   components: { AtClassCard },
-  props: {
-    dataset: {
-      type: Array,
-      default: () => []
-    }
-  },
+  props: [
+    'dataset'
+  ],
   data() {
     return {
       collapsed: true

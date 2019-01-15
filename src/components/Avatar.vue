@@ -2,14 +2,21 @@
   <div class="container">
     <!-- TODO: need real url -->
     <img class="avatar" :src='url'/>
-    <p class="at-text-primary">{{this.name}}</p>
-    <p class="at-text-secondary">{{this.tid}}</p>
+    <p class="at-text-primary">{{this.user.name}}</p>
+    <p class="at-text-secondary">{{this.user.tid}}</p>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'at-avatar',
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   data() {
     return {
       url: 'https://picsum.photos/300/300/?random',

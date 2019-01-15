@@ -23,21 +23,47 @@ div(mainpage)
           <p><span class="content">{{item.content}}</span></p>
         </div>
       </header>
-    <at-semester
+    <!-- <at-semester
       class="semester"
       v-for="(item, index) in semeseterDataset" :key="index"
       :dataset="item"
       >
         {{index}} 学期
-    </at-semester>
+    </at-semester> -->
+    <div class="frame">
+      <span style="padding-left: 10px;">选择学期：</span>
+      <el-select 
+        @change="getCardBySemester"        
+        v-model="selectedSemester">
+        <el-option
+          v-for="(item, idx) of semeseterDataset"
+          :key="idx"
+          :value="idx"
+          :label="idx">
+        </el-option>
+      </el-select>
+      <el-button @click="restFilter">重置筛选</el-button>
+    </div>
+    <transition name="fade" mode="out-in">
+      <div id="at-m-list-container" class="at-collapsible" v-show="shown">
+        <at-class-card
+          :key="item.id"
+          v-for="item in this.shownFilterBySemester"
+          :dataset="item">
+          </at-class-card>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import AtSemester from '@/components/Mainpage/Semester'
 import AtAvatar from '@/components/Avatar'
+import AtClassCard from '@/components/Mainpage/ClassCard'
+
 
 import classInfoViewmModel from '@/viewmodel/classinfos'
+import { mapGetters } from 'vuex';
 
 // const indigo = ''
 const cyan = '#00BCD4'
@@ -48,19 +74,48 @@ const green = '#4CAF50'
 export default {
   components: {
     'AtSemester': AtSemester,
+    'AtClassCard': AtClassCard ,
     'AtAvatar': AtAvatar
+  },
+  computed: {
+    ...mapGetters([
+      'user',
+      'id',
+      'is_manager'
+    ]),
+    getUniName() {
+      return this.user.university_message.name
+    },
+    getSchName() {
+      return this.user.college_message.name
+    },
+    getManager() {
+      return this.is_manager ? '管理员' : '教师'
+    },
   },
   data() {
     return {
+      user_info: this.user,
+      shown: false,
       infos_arrays: [
-        { icon: 'domain', color: cyan, hint: '学校 / 机构', content: '北京交通大学' },
-        { icon: 'school', color: blue, hint: '院系', content: '语言与传播学院' },
-        { icon: 'user', color: green, hint: '认证', content: '教师' }
+        { icon: 'domain', color: cyan, hint: '学校 / 机构', content: null },
+        { icon: 'school', color: blue, hint: '院系', content: null },
+        { icon: 'user', color: green, hint: '认证', content: null }
       ],
-      semeseterDataset: {} // A dictionary, integrate class by year
+      selectedSemester: null,
+      shownFilterBySemester: [],
+      semeseterDataset: {} // A dictionary, integrate class by semester
     }
   },
   methods: {
+    restFilter: function() {
+      this.selectedSemester = null
+      const ll = []
+      Object.keys(this.semeseterDataset).forEach((semester, idx) => {
+        ll.push(...this.semeseterDataset[semester])
+      })
+      this.shownFilterBySemester = ll
+    },
     buildSemester: function(allClass) {
       for (const eachClass of allClass) {
         if (!this.semeseterDataset[eachClass['semester']]) {
@@ -69,16 +124,24 @@ export default {
           this.semeseterDataset[eachClass[['semester']]].push(eachClass)
         }
       }
-      // for (const eachClass of allClass) {
-      //   if (!this.semeseterDataset[eachClass.year+'test']) {
-      //     this.$set(this.semeseterDataset, eachClass.year+'test', [eachClass])
-      //   } else {
-      //   }
-      // }
+      this.getCardBySemester()
     },
+    getCardBySemester() {
+      this.shown = false
+      if (this.selectedSemester && this.selectedSemester.length > 0) {
+        this.shownFilterBySemester = this.semeseterDataset[this.selectedSemester]
+      } else {
+        const ll = []
+        Object.keys(this.semeseterDataset).forEach((semester, idx) => {
+          ll.push(...this.semeseterDataset[semester])
+        })
+        this.shownFilterBySemester = ll
+      }
+      this.shown = true
+    }, 
     fetchClassInfos: function() {
       classInfoViewmModel
-        .requestClassInfos({ teacher_id: this.$store.getters.id })
+        .requestClassInfos({ teacher_id: this.id })
         .then(responseArray => {
           try {
             this.buildSemester(responseArray)
@@ -90,7 +153,12 @@ export default {
   },
   created() {
     this.fetchClassInfos()
-  }
+  },
+  mounted() {
+    this.$set(this.infos_arrays, 0, { icon: 'domain', color: cyan, hint: '学校 / 机构', content: this.getUniName })
+    this.$set(this.infos_arrays, 1, { icon: 'school', color: blue, hint: '院系', content: this.getSchName })
+    this.$set(this.infos_arrays, 2, {icon: 'user', color: green, hint: '认证', content: this.getManager })
+  },
 }
 </script>
 
@@ -172,7 +240,13 @@ $white: #FFF;
 }
 
 .semester{
-    margin: 2rem;
+  margin-top: 1rem;
+  margin: 2rem;
 }
 
+.frame {
+  padding: 0.3rem;
+  background: #FFF;
+  border-top: #EEE solid 5px;
+}
 </style>

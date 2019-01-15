@@ -34,7 +34,12 @@ export function removeId() {
 
 // 2018/12/15
 export function getUser() {
-  return Cookies.get(User_KEY)
+  const sth = Cookies.get(User_KEY)
+  if (typeof sth === 'string') {
+    return JSON.parse(sth)
+  } else {
+    return sth
+  }
 }
 export function setUser(user) {
   return Cookies.set(User_KEY, user)
