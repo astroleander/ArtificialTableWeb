@@ -18,7 +18,7 @@ import request from '@/utils/request'
  */
 export function getUserInfoWithOutPwd(params, token) {
   return request({
-    url: '/user/info/format',
+    url: '/user/info/display',
     method: 'get',
     // params = params : params, 同名参数可以简写
     params,
