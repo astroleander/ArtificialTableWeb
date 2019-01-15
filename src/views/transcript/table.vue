@@ -397,4 +397,9 @@ export default {
   }
 }
 
+#transcript-table .el-input__inner {
+  padding: 0 0 0 4px;
+  border: none;
+}
+
 </style>
