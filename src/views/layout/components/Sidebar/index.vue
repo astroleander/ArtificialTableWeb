@@ -13,49 +13,46 @@
     <sidebar-item :routes="routes"></sidebar-item>
 
     <el-menu-item v-if="this.is_manager" index="999">
+      <svg-icon icon-class="domain"></svg-icon>
       <template slot="title">
-        <span style="color:#EEE;">开启管理员模式</span>
+        <span style="color:#EEE;">管理员模式</span>
         <el-switch v-model="handler"
           @change="onSwitchChange"
           active-color="#000"
           inactive-color="#000"
           >
         </el-switch>
-      </template> 
-    </el-menu-item>
-    <el-menu-item v-if="this.handler" index="9991">
-      <template slot="title">
-        <router-link to="/manager/user" >
-          <svg-icon icon-class="domain"></svg-icon>
-          <span>添加用户</span>
-        </router-link>
       </template>
     </el-menu-item>
-    <el-menu-item v-if="this.handler" index="9992">
-      <template slot="title">
-        <router-link to="/manager/student">
+    <router-link to="/manager/user" >
+      <el-menu-item v-if="this.handler" index="9991">
           <svg-icon icon-class="domain"></svg-icon>
-          <span>添加学生</span>
-        </router-link>
-      </template>
-    </el-menu-item>
-    <el-menu-item v-if="this.handler" index="9993">
-      <template slot="title">
-        <router-link to="/manager/lesson">
-          <svg-icon icon-class="domain"></svg-icon>
-          <span>添加课程</span>
-        </router-link>
-      </template>
-    </el-menu-item>
+          <span slot="title">添加用户</span>
+      </el-menu-item>
+    </router-link>
+
+    <router-link to="/manager/student">
+      <el-menu-item v-if="this.handler" index="9992">
+        <svg-icon icon-class="domain"></svg-icon>
+        <span slot="title">添加学生</span>
+      </el-menu-item>
+    </router-link>
+
+    <router-link to="/manager/lesson">
+      <el-menu-item v-if="this.handler" index="9993">
+        <svg-icon icon-class="domain"></svg-icon>
+        <span slot="title">添加课程</span>
+      </el-menu-item>
+    </router-link>
+
+    <router-link to="/manager/class">
     <el-menu-item v-if="this.handler" index="9995">
-      <template slot="title">
-        <router-link to="/manager/class">
-          <svg-icon icon-class="domain"></svg-icon>
-          <span>添加班级</span>
-        </router-link>
-      </template>
+        <svg-icon icon-class="domain"></svg-icon>
+        <span slot="title">添加班级</span>
     </el-menu-item>
-    <el-submenu v-if="this.handler" index="9995">
+    </router-link>
+
+    <el-submenu v-if="this.handler" index="9990">
       <template slot="title">
           <svg-icon icon-class="domain"></svg-icon>
           <span>管理班级信息</span>
