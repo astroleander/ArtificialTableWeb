@@ -55,6 +55,28 @@
         </router-link>
       </template>
     </el-menu-item>
+    <el-submenu v-if="this.handler" index="9995">
+      <template slot="title">
+          <svg-icon icon-class="domain"></svg-icon>
+          <span>管理班级信息</span>
+      </template>
+      <el-menu-item>
+        <template slot="title">
+          <router-link to="/manager/class/list">
+            <svg-icon icon-class="domain"></svg-icon>
+            <span>班级列表</span>
+          </router-link>
+        </template>
+      </el-menu-item>
+      <el-menu-item>
+        <template slot="title">
+          <router-link to="/manager/class/add">
+            <svg-icon icon-class="domain"></svg-icon>
+            <span>添加班级</span>
+          </router-link>
+        </template>
+      </el-menu-item>
+    </el-submenu>
     </el-menu>
   </el-scrollbar>
 </template>

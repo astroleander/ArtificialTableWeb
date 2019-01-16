@@ -122,6 +122,18 @@ export const constantRouterMap = [
       name: 'addClassInfo',
       component: () => import('@/views/manager/addClassInfo.vue'),
       meta: { title: '添加班级', icon: 'tree' }
+    },
+    {
+      path: 'class/list',
+      name: 'classList',
+      component: () => import('@/views/manager/classfield/index.vue'),
+      meta: { title: '班级信息列表', icon: 'tree' }
+    },
+    {
+      path: 'class/add',
+      name: 'addClassField',
+      component: () => import('@/views/manager/classfield/form.vue'),
+      meta: { title: '添加和修改班级', icon: 'tree' }
     }]
   }
 ]
