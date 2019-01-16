@@ -327,6 +327,11 @@ export default {
     },
   },
   created() {},
+  mounted() {
+    setTimeout(()=> {
+      if(this.loading) this.loading = false
+    }, 10000)
+  },
   watch: {
     view: function(newView) {
       this.viewDataset = newView

@@ -78,7 +78,6 @@ export default {
   },
   data() {
     return {
-      id: this.$router.currentRoute.params.id,
       info: this.getInfo,
       shownTab: 'table',
       loading: true,
@@ -116,6 +115,9 @@ export default {
     },
     getInfo: function() {
       return this.$store.getters.course(this.id)
+    },
+    id: function() {
+      return this.$router.currentRoute.params.id
     }
   },
   created() {
@@ -131,7 +133,8 @@ export default {
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
-    this.fetchDataset()
+    console.log(this.$router.currentRoute.params.id)
+    this.fetchDataset()    
   },
   methods: {
     getMode: function(code) {
@@ -196,7 +199,7 @@ export default {
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
         viewmodel.requestStudents({ classInfo_id: this.id }),
-        titleGroupViewModel.requestTitleGroups({ lesson_id: this.getInfo.lesson_id })
+        titleGroupViewModel.requestTitleGroups({ lesson_id: this.id })
       ])
         .then(result => {
           // 获取小项数据
@@ -219,6 +222,7 @@ export default {
         }).catch(err => {
         // TODO: show error page
           console.log(err)
+          this.table = []
         })
     },
     init() {
