@@ -13,7 +13,7 @@ import request from '@/utils/request'
  */
 export function getStudents(params) {
   return request({
-    url: '/student/format',
+    url: '/student/display',
     method: 'get',
     params
   })
@@ -23,7 +23,7 @@ export function getStudents(params) {
  */
 export function getByClassInfoId(classInfo_id) {
   return request({
-    url: '/student/format',
+    url: '/student/display',
     method: 'get',
     params: {
       classInfo_id: classInfo_id
