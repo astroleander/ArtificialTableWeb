@@ -54,7 +54,7 @@
 import LessonViewModel from '@/viewmodel/lesson'
 import ClassInfoViewModel from '@/viewmodel/classinfos'
 
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'class',
@@ -66,7 +66,7 @@ export default {
        *      |- ...lesson
        *             |- dataset
        *             |- name
-       *             |- college_id              
+       *             |- college_id
        **/
       lesson_list: [],
       titles: [
@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     fetchLessonList() {
-      LessonViewModel.requestLessons({ college_id: this.user_collegeId}).then(res => {
+      LessonViewModel.requestLessons({ college_id: this.user_collegeId }).then(res => {
         this.lesson_list = res
       })
     },
@@ -104,9 +104,9 @@ export default {
           const class_array = res
           this.lesson_list.forEach((lesson, idx) => {
             if (lesson.id === id) {
-              this.$set(this.lesson_list, 
-                        this.lesson_list.findIndex((lesson, idx) => lesson.id === id),
-                        Object.assign(this.lesson_list[idx], { dataset: class_array })
+              this.$set(this.lesson_list,
+                this.lesson_list.findIndex((lesson, idx) => lesson.id === id),
+                Object.assign(this.lesson_list[idx], { dataset: class_array })
               )
             }
           })
@@ -124,20 +124,19 @@ export default {
         '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！', '请确认删除操作', {
           confrimButtonText: '确定',
           cancelButtonText: '取消',
-          inputPattern: /确认/,
+          inputPattern: /确认/
           // type: 'warning',
-      }).then(() => {
-        loopLesson:ClassInfoViewModel.requestDelClassInfo(row.id).then(res => {
-          loopClassInfo:this.lesson_list.forEach(orilesson => {
-            if (orilesson.id === lesson.id) {
-              const idx = orilesson.dataset.findIndex(classinfo => classinfo.id === row.id)
-              orilesson.dataset.splice(idx, 1)
-              // break loopLesson; 
-            }
-          })
+        }).then(() => {
+        ClassInfoViewModel.requestDelClassInfo(row.id).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功'
+          })
+          this.lesson_list.forEach(orilesson => {
+            if (orilesson.id === lesson.id) {
+              const idx = orilesson.dataset.findIndex(classinfo => classinfo.id === row.id)
+              orilesson.dataset.splice(idx, 1)
+            }
           })
         })
       })
@@ -158,7 +157,7 @@ export default {
   },
   mounted() {
     this.fetchLessonList()
-  },
+  }
 }
 </script>
 

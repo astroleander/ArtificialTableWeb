@@ -9,7 +9,7 @@ supplement:
         <span class="rowframe title">添加班级</span>
       </div>
       <div v-if="!visible">
-        <el-alert v-for="error in errorList" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
+        <el-alert v-for="(error, idx) in errorList" :key="idx" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
       </div>
       <el-form :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="100px">
         <el-form-item label="班级名称" prop="name">
@@ -38,10 +38,10 @@ supplement:
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="开课年份 " prop="variableYear">
+        <el-form-item label="开课年份" prop="variableYear">
           <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required></el-date-picker>
         </el-form-item>
-        <el-form-item label="开课学期 "prop="variableSemester">
+        <el-form-item label="开课学期" prop="variableSemester">
           <el-select v-model="form.variableSemester" placeholder="请选择学期">
             <el-option
               v-for="item in semesters"
@@ -51,10 +51,10 @@ supplement:
             </el-option>
           </el-select>
         </el-form-item>
-          <el-form-item label="开课时间 " prop="week" >
+          <el-form-item label="开课时间" prop="week" >
           <el-input v-model="form.week" placeholder="请输入上课时间"></el-input>
         </el-form-item>
-        <el-form-item label="上课地点 " prop="room" >
+        <el-form-item label="上课地点" prop="room" >
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
         </el-form-item>
         <el-form-item>

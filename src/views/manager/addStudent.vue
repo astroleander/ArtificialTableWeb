@@ -139,17 +139,18 @@ const eltableAdapter = (array) => {
   array.forEach(row => {
     let flagEmpty = true
     for (let index = 0; index < row.length; index++) {
-      const element = row[index];
-      if (element && element !== null  
-        && element !== undefined
-        && element !== '' 
-        && element.trim() !== ''
+      const element = row[index]
+      if (element &&
+        element !== null &&
+        element !== undefined &&
+        element !== '' &&
+        element.trim() !== ''
       ) {
         flagEmpty = false
       }
     }
     array_flag.push(flagEmpty)
-  });
+  })
   array.forEach((row, idx) => {
     if (!array_flag[idx]) {
       results_array.push(row)
@@ -159,7 +160,7 @@ const eltableAdapter = (array) => {
 }
 
 export default {
-  name:"addstupid",
+  name: 'addstupid',
   components: {
     ImportExcelComponent
   },
@@ -191,19 +192,19 @@ export default {
   computed: {
     ...mapGetters([
       'user'
-    ]),
+    ])
   },
   methods: {
     onSelectedLocalExcel(data) {
       let array = data.results
-      this.$confirm('导入的文件是否有列名?(若有则会被删除)', '提示',{
+      this.$confirm('导入的文件是否有列名?(若有则会被删除)', '提示', {
         confirmButtonText: '包含',
-        cancelButtonText: '不包含',
+        cancelButtonText: '不包含'
       }).then(() => {
         array = array.slice(1)
-        this.importStudentList = eltableAdapter(array) 
+        this.importStudentList = eltableAdapter(array)
       }).catch(() => {
-        this.importStudentList = eltableAdapter(array) 
+        this.importStudentList = eltableAdapter(array)
       })
     },
     onSubmitClicked() {
@@ -211,40 +212,40 @@ export default {
       const name_idx = this.nameCheckedList.findIndex(item => item === true)
       if (sid_idx === undefined || name_idx === undefined) {
         this.$message({
-          type: "error",
-          message: "请先导入数据并选择学生列"
+          type: 'error',
+          message: '请先导入数据并选择学生列'
         })
-        return;
+        return
       }
       if (sid_idx === name_idx) {
         this.$message({
-          type: "error",
-          message: "学号和姓名不能是同一列"
+          type: 'error',
+          message: '学号和姓名不能是同一列'
         })
-        return;
+        return
       }
       if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
         this.$message({
-          type: "error",
-          message: "尚未选择学生的入学年份"
+          type: 'error',
+          message: '尚未选择学生的入学年份'
         })
-        return;
+        return
       }
       if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
         this.$message({
-          type: "error",
-          message: "尚未选择学生的归属信息"
+          type: 'error',
+          message: '尚未选择学生的归属信息'
         })
-        return;
+        return
       }
       // generate student objs list
       const studentList = []
-      const Student = () => { 
+      const Student = () => {
         return {
           sid: null,
           name: null,
           year: this.seletedSemester.year,
-          major_id: this.selectedMajorId,
+          major_id: this.selectedMajorId
         }
       }
       this.importStudentList.forEach(row => {
@@ -260,17 +261,16 @@ export default {
     },
     submitStudentList(list) {
       StudentViewModel.requestPostStudents(list).then(res => {
-          this.$message({
-          type: "success",
-          message: "添加成功"
+        this.$message({
+          type: 'success',
+          message: '添加成功'
         })
       })
     },
     onNameChecked(idx) {
       if (idx !== false) {
         idx = idx - 1
-        this.nameCheckedList.forEach((item, idx) => 
-                  this.$set(this.nameCheckedList, idx, false))
+        this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
         this.$set(this.nameCheckedList, idx, true)
         console.log(this.nameCheckedList)
       }
@@ -278,8 +278,8 @@ export default {
     onSidChecked(idx) {
       if (idx !== false) {
         idx = idx - 1
-        this.sidCheckedList.forEach((item, idx) => 
-                  this.$set(this.sidCheckedList, idx, false))
+        this.sidCheckedList.forEach((item, idx) =>
+          this.$set(this.sidCheckedList, idx, false))
         this.$set(this.sidCheckedList, idx, true)
         console.log(this.sidCheckedList)
       }
@@ -296,25 +296,25 @@ export default {
         const university_id = user.university_message.id
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
-        this.remoteCollegeList = res
-        this.collegeLoading = false
-        this.majorLoading = true
-      })
+          this.remoteCollegeList = res
+          this.collegeLoading = false
+          this.majorLoading = true
+        })
       } else {
         const user = this.user
         const university_id = user.university_message.id
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
-        this.remoteCollegeList = res
-        this.collegeLoading = false
-        this.majorLoading = true
-      })
+          this.remoteCollegeList = res
+          this.collegeLoading = false
+          this.majorLoading = true
+        })
       }
     },
     fetchMajorList() {
-      console.log("fetchMajorList")
+      console.log('fetchMajorList')
       MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
-        console.log("fetchMajorList success")
+        console.log('fetchMajorList success')
         this.remoteMajorList = res
         this.majorLoading = false
       })
@@ -324,7 +324,7 @@ export default {
     this.fetchCollegeList()
   },
   watch: {
-  },
+  }
 }
 </script>
 

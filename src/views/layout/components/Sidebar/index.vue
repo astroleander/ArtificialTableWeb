@@ -92,7 +92,7 @@ export default {
   methods: {
     onSwitchChange(newValue) {
       this.$store.dispatch('setUseManager', newValue)
- }
+    }
   },
   computed: {
     ...mapGetters([
@@ -110,6 +110,6 @@ export default {
   },
   created() {
     this.handler = this.use_manager
-  },
+  }
 }
 </script>

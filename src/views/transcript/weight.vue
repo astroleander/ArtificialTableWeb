@@ -41,15 +41,15 @@ table
 <script>
 import AtRadar from './radar'
 import AtBar from './Bar'
-import viewmodel from '@/viewmodel/table'
-import titleGroupViewModel from '@/viewmodel/titleGroup'
+// import viewmodel from '@/viewmodel/table'
+// import titleGroupViewModel from '@/viewmodel/titlegroups'
 
 export default {
   name: 'transcriptWeight',
   components: { AtBar, AtRadar },
   props: {
     // 是否显示提示卡片
-    flag:{
+    flag: {
       type: Boolean,
       default: false
     },
@@ -61,42 +61,42 @@ export default {
     // 班级平均分
     avg: {
       type: Number,
-      default:0
+      default: 0
     },
     // 班级总人数
-    total:{
+    total: {
       type: Number,
-      default:0
+      default: 0
     },
     // 班级有效成绩
-    valid:{
+    valid: {
       type: Number,
-      default:0
+      default: 0
     },
     // 及格率
-    rate:{
+    rate: {
       type: Number,
-      default:0
+      default: 0
     },
     // 小项的信息，包含name，max
-    titles:{
-      type:Array,
-      default: () =>[]
+    titles: {
+      type: Array,
+      default: () => []
     },
     // 小项平均分
-    titleAverage:{
-      type:Array,
-      default: () =>[]
+    titleAverage: {
+      type: Array,
+      default: () => []
     },
-    //成绩分组
-    gradeSection:{
-      type:Array,
-      default: () =>[]
+    // 成绩分组
+    gradeSection: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      message: '数据不全，请完善数据后分析成绩',
+      message: '数据不全，请完善数据后分析成绩'
     }
   }
 }
