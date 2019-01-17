@@ -9,8 +9,7 @@ supplement:
         <span class="rowframe title">添加班级</span>
       </div>
       <div v-if="!visible">
-        <el-alert :title="lessonMsg" type="error"  v-if="lessonFlag" closable="false"  show-icon></el-alert>
-        <el-alert :title="teacherMsg" type="error" v-if="teacherFlag" closable="false"  show-icon></el-alert>
+        <el-alert v-for="error in errorList" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
       </div>
       <el-form :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="100px">
         <el-form-item label="班级名称" prop="name">
@@ -39,10 +38,20 @@ supplement:
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="开课学期" prop="semester" >
-          <el-input v-model="form.semester" placeholder="请输入开课学期" ></el-input>
+        <el-form-item label="开课年份 " prop="variableYear">
+          <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required></el-date-picker>
         </el-form-item>
-        <el-form-item label="开课时间 " prop="week" >
+        <el-form-item label="开课学期 "prop="variableSemester">
+          <el-select v-model="form.variableSemester" placeholder="请选择学期">
+            <el-option
+              v-for="item in semesters"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+          <el-form-item label="开课时间 " prop="week" >
           <el-input v-model="form.week" placeholder="请输入上课时间"></el-input>
         </el-form-item>
         <el-form-item label="上课地点 " prop="room" >
@@ -74,22 +83,41 @@ export default {
     }
     return {
       visible: false, // 表单是否可见
-      lessonFlag: false,
-      teacherFlag: false,
-      lessonMsg: '',
-      teacherMsg: '',
+      errorList: [],
       teachers: [],
       lessons: [],
       message: '',
       description: '',
+      variableYear: '',
+      variableSemester: '',
+      semesters: [{
+        value: '春季',
+        label: '春季'
+      }, {
+        value: '秋季',
+        label: '秋季'
+      }, {
+        value: '夏季小学期',
+        label: '夏季小学期'
+      }, {
+        value: '春季小学期',
+        label: '春季小学期'
+      }, {
+        value: '秋季小学期',
+        label: '秋季小学期'
+      }, {
+        value: '其他',
+        label: '其他'
+      }],
       form: {
         name: '',
         cid: '',
         teacher_id: '',
         lesson_id: '',
-        semester: '',
         room: '',
-        week: ''
+        week: '',
+        variableSemester: '',
+        variableYear: ''
       },
       rules: {
         lesson_id: [
@@ -106,6 +134,12 @@ export default {
         ],
         semester: [
           { required: true, message: '请输入学期', trigger: 'blur' }
+        ],
+        variableYear: [
+          { required: true, message: '请选择年份', trigger: 'change' }
+        ],
+        variableSemester: [
+          { required: true, message: '请选择学期', trigger: 'change' }
         ]
         // room: [
         //   { required: true, message: '请输入上课地点', trigger: 'blur' }
@@ -135,20 +169,27 @@ export default {
           this.visible = true
         }
         if (result[0] === undefined) {
-          this.teacherFlag = true
-          this.teacherMsg = '该院系无教师信息，请导入教师信息后重新添加教学班'
+          this.errorList.push({
+            id: this.user_collegeId,
+            errorMsg: '该院系无教师信息，请导入教师信息后重新添加教学班'
+          })
         }
         if (result[1] === undefined) {
-          this.lessonFlag = true
-          this.lessonMsg = '该院系无课程信息，请导入课程信息后重新添加教学班'
+          this.errorList.push({
+            id: this.user_collegeId,
+            errorMsg: '该院系无课程信息，请导入课程信息后重新添加教学班'
+          })
         }
       })
     },
     // 添加班级
     submitForm: function(formName) {
+      const semester = this.form.variableYear + '年' + this.form.variableSemester
+      const classInfo = { ...this.form, semester: semester }
+      // console.log('semester = ' + semester)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          classViewModel.requestPostClassInfo(this.form).then(response => {
+          classViewModel.requestPostClassInfo(classInfo).then(response => {
             if (response !== undefined) {
               this.$message({
                 message: '添加教学班成功',

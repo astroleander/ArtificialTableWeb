@@ -134,7 +134,7 @@ export default {
   },
   mounted() {
     console.log(this.$router.currentRoute.params.id)
-    this.fetchDataset()    
+    this.fetchDataset()
   },
   methods: {
     getMode: function(code) {
