@@ -7,9 +7,9 @@
       >
         <section slot="title">
           <!-- general card -->
-          <div>
+          <span class="lesson-name"> <i class="el-icon-minus"/>
             {{lesson.name}}
-          </div>
+          </span>
         </section>
           <!-- lesson has class inside -->
           <template v-if="lesson.dataset">
@@ -118,6 +118,11 @@ export default {
     onModifyClicked(lesson, row) {
       console.log(row)
       // jump to modify pabe
+      this.$router.push({
+        name: 'addClassField',
+        params: { id: row.id, type: 'modify' },
+        query: { id: row.id }
+      })
     },
     onDeleteClicked(lesson, row) {
       this.$prompt(
@@ -142,13 +147,31 @@ export default {
       })
     },
     onAddToLessonClicked(lesson) {
-
+      this.$router.push({
+        name: 'addClassInfo',
+        params: { lesson_id: lesson.id }
+      })
     },
     onTransferLessonClicked(lesson) {
 
     },
     onDeleteLessonClicked(lesson) {
-
+      this.$prompt(
+        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该课程, 所有该课程下的班级信息都将丢失！', '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+          // type: 'warning',
+        }).then(() => {
+        LessonViewModel.requestDelLesson(lesson.id).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          const idx = this.lesson_list.findIndex(orilesson => orilesson.id === lesson.id)
+          this.lesson_list.splice(idx, 1)
+        })
+      })
     },
     showByIdx(row, idx) {
       console.log(row)
@@ -165,6 +188,10 @@ export default {
 .lesson_card {
   display: flex;
   flex-direction: column;
+}
+.lesson-name {
+  margin: 0 0 0 20px;
+  font-size: 1.5em;
 }
 </style>
                        

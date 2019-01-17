@@ -45,19 +45,12 @@
       </el-menu-item>
     </router-link>
 
-    <router-link to="/manager/class">
-    <el-menu-item v-if="this.handler" index="9995">
-        <svg-icon icon-class="domain"></svg-icon>
-        <span slot="title">添加班级</span>
-    </el-menu-item>
-    </router-link>
-
     <el-submenu v-if="this.handler" index="9990">
       <template slot="title">
           <svg-icon icon-class="domain"></svg-icon>
           <span>管理班级信息</span>
       </template>
-      <el-menu-item>
+      <el-menu-item index="9998">
         <template slot="title">
           <router-link to="/manager/class/list">
             <svg-icon icon-class="domain"></svg-icon>
@@ -65,14 +58,21 @@
           </router-link>
         </template>
       </el-menu-item>
-      <el-menu-item>
+      <!-- <el-menu-item index="9999">
         <template slot="title">
           <router-link to="/manager/class/add">
             <svg-icon icon-class="domain"></svg-icon>
             <span>添加班级</span>
           </router-link>
         </template>
-      </el-menu-item>
+      </el-menu-item> -->
+      <router-link :to="{ name: 'addClassInfo', params: { type:'add' }}">
+        <el-menu-item index="9995">
+          <svg-icon icon-class="domain"></svg-icon>
+          <span slot="title">添加班级</span>
+        </el-menu-item>
+      </router-link>
+
     </el-submenu>
     </el-menu>
   </el-scrollbar>

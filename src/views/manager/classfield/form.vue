@@ -6,7 +6,10 @@
 
 <script>
 export default {
-
+  created() {
+    console.log(this.$router.params)
+    console.log(this.$router.currentRoute.query)
+  }
 }
 </script>
 

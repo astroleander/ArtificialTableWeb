@@ -195,6 +195,12 @@ export default {
                 message: '添加教学班成功',
                 type: 'success'
               })
+              const class_id = response[0].id
+              this.$router.push({
+                name: 'addClassField',
+                params: { id: class_id, type: 'add' },
+                query: { id: class_id }
+              })
             }
           })
         } else {
@@ -209,6 +215,10 @@ export default {
   },
   created() {
     this.fetchData()
+    console.log(this.$router)
+    if (this.$router.currentRoute.params) {
+      this.form.lesson_id = this.$router.currentRoute.params.lesson_id
+    }
   }
 }
 </script>
