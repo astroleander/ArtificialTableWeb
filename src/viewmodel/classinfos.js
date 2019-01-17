@@ -6,11 +6,11 @@ import { getClassInfos, getByTeacherId,
   /**
  * date: 2018/12/20
  * @author liqian
- * @description 课程辅助信息的get put post delete
+ * @description 课程信息的get put post delete
  */
 
 /**
- * description:请求课程辅助信息
+ * description:请求课程信息
  * @param params.id
  * @param params.name
  * @param params.cid
@@ -48,7 +48,7 @@ const requestByTeacherId = (teacher_id) => {
 }
 
 /**
- * 请求修改一条课程辅助信息
+ * 请求修改一条课程信息
  * @param classInfoItem
  * @returns {Promise<any>}
  */
@@ -64,7 +64,7 @@ const requestPutClassInfo = (classInfoItem) => {
 }
 
 /**
- * 请求修改多条课程辅助信息
+ * 请求修改多条课程信息
  * @param classInfoArray
  * @returns {Promise<any>}
  */
@@ -80,7 +80,7 @@ const requestPutClassInfos = (classInfoArray) => {
 }
 
 /**
- * 请求添加一条课程辅助信息
+ * 请求添加一条课程信息
  * @param classInfoItem
  * @returns {Promise<any>}
  */
@@ -96,7 +96,7 @@ const requestPostClassInfo = (classInfoItem) => {
 }
 
 /**
- * 请求添加多条课程辅助信息
+ * 请求添加多条课程信息
  * @param classInfoArray
  * @returns {Promise<any>}
  */
@@ -112,7 +112,7 @@ const requestPostClassInfos = (classInfoArray) => {
 }
 
 /**
- * 请求删除单条课程辅助信息
+ * 请求删除单条课程信息
  * @param classInfoId
  * @returns {Promise<any>}
  */
@@ -128,7 +128,7 @@ const requestDelClassInfo = (classInfoId) => {
 }
 
 /**
- * 请求删除多条课程辅助信息
+ * 请求删除多条课程信息
  * @param classInfoIdArray
  * @returns {Promise<any>}
  */
