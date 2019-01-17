@@ -323,7 +323,6 @@ export default {
     // 根据classInfo_id获取学生信息
     fetchTableStudentInfo() {
       this.tableStudents = []
-
       classFieldViewModel.requestClassFields({ classInfo_id: this.classInfo_id })
         .then(classfields => {
           studentViewModel.requestStudents({ classInfo_id: this.classInfo_id })
