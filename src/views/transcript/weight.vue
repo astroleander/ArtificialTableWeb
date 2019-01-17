@@ -118,9 +118,6 @@ export default {
   display: flex;
   flex-direction: row;
 }
-.text{
-
-}
 .row-box{
   display: flex;
   width: 50%;
