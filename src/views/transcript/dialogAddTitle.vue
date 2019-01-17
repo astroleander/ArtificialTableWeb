@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import titleGroupViewModel from '@/viewmodel/titlegroup'
+import titleGroupViewModel from '@/viewmodel/titlegroups'
 
 const titlePrototype = {
   name: '',

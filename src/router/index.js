@@ -118,9 +118,9 @@ export const constantRouterMap = [
       meta: { title: '添加课程', icon: 'tree' }
     },
     {
-      path: 'class',
+      path: 'class/add',
       name: 'addClassInfo',
-      component: () => import('@/views/manager/addClassInfo.vue'),
+      component: () => import('@/views/manager/classfield/add.vue'),
       meta: { title: '添加班级', icon: 'tree' }
     },
     {
@@ -130,7 +130,7 @@ export const constantRouterMap = [
       meta: { title: '班级信息列表', icon: 'tree' }
     },
     {
-      path: 'class/add',
+      path: 'class/classfield',
       name: 'addClassField',
       component: () => import('@/views/manager/classfield/form.vue'),
       meta: { title: '添加和修改班级', icon: 'tree' }

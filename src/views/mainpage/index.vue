@@ -61,9 +61,8 @@ import AtSemester from '@/components/Mainpage/Semester'
 import AtAvatar from '@/components/Avatar'
 import AtClassCard from '@/components/Mainpage/ClassCard'
 
-
 import classInfoViewmModel from '@/viewmodel/classinfos'
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 // const indigo = ''
 const cyan = '#00BCD4'
@@ -74,7 +73,7 @@ const green = '#4CAF50'
 export default {
   components: {
     'AtSemester': AtSemester,
-    'AtClassCard': AtClassCard ,
+    'AtClassCard': AtClassCard,
     'AtAvatar': AtAvatar
   },
   computed: {
@@ -91,7 +90,7 @@ export default {
     },
     getManager() {
       return this.is_manager ? '管理员' : '教师'
-    },
+    }
   },
   data() {
     return {
@@ -138,7 +137,7 @@ export default {
         this.shownFilterBySemester = ll
       }
       this.shown = true
-    }, 
+    },
     fetchClassInfos: function() {
       classInfoViewmModel
         .requestClassInfos({ teacher_id: this.id })
@@ -157,8 +156,8 @@ export default {
   mounted() {
     this.$set(this.infos_arrays, 0, { icon: 'domain', color: cyan, hint: '学校 / 机构', content: this.getUniName })
     this.$set(this.infos_arrays, 1, { icon: 'school', color: blue, hint: '院系', content: this.getSchName })
-    this.$set(this.infos_arrays, 2, {icon: 'user', color: green, hint: '认证', content: this.getManager })
-  },
+    this.$set(this.infos_arrays, 2, { icon: 'user', color: green, hint: '认证', content: this.getManager })
+  }
 }
 </script>
 

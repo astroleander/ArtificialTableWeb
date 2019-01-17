@@ -63,11 +63,11 @@ import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
 
-import XLSX from 'xlsx'
+// import XLSX from 'xlsx'
 
 import viewmodel from '@/viewmodel/table'
 import titleViewmodel from '@/viewmodel/title'
-import titleGroupViewModel from '@/viewmodel/titleGroup'
+import titleGroupViewModel from '@/viewmodel/titlegroups'
 import classinfoViewmodel from '@/viewmodel/classinfos'
 
 export default {

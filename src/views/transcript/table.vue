@@ -154,8 +154,8 @@ export default {
   data() {
     return {
       viewDataset: [],
-      // the array is for saving all modified point item, 
-      // if user click the [upload] button, push all modifies to server  
+      // the array is for saving all modified point item,
+      // if user click the [upload] button, push all modifies to server
       updatedArray: [],
       // point dialog and student dialog use the same one dataset,
       // every time open the dialog will re-set the dataset
@@ -169,11 +169,11 @@ export default {
       // 暂时不用携带数据
       // menuDialogDataset: {}
       // 载入状态
-      loading: true,
+      loading: true
     }
   },
   computed: {
-    getTableDataset(){
+    getTableDataset() {
       return this.tableDialogDataset
     }
   },
@@ -270,11 +270,11 @@ export default {
     },
     onClickedUpload: function() {
       console.log(this.updatedArray)
-      viewmodel.modifyPoints( this.updatedArray ).then(response => {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-          })
+      viewmodel.modifyPoints(this.updatedArray).then(response => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        })
       })
     },
     onItemChanged: function(newItem) {
@@ -307,14 +307,14 @@ export default {
     handleExport: function(dialogResult) {
       // this.$emit('onExportTable', dialogResult)
       /* generate workbook object from table */
-      let wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
-      let size = wb.Sheets[wb.SheetNames[0]]['!ref']
-      let number = size.match(/\d+$/)
-      let newNumber = parseInt(number[0]) / 2
-      let newSize = size.slice(0, number.index) + newNumber
+      const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
+      const size = wb.Sheets[wb.SheetNames[0]]['!ref']
+      const number = size.match(/\d+$/)
+      const newNumber = parseInt(number[0]) / 2
+      const newSize = size.slice(0, number.index) + newNumber
       wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
       /* get binary string as output */
-      let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
       try {
         FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
       } catch (e) {
@@ -322,14 +322,13 @@ export default {
           console.log(e, wbout)
         }
       }
-
       return wbout
-    },
+    }
   },
   created() {},
   mounted() {
-    setTimeout(()=> {
-      if(this.loading) this.loading = false
+    setTimeout(() => {
+      if (this.loading) this.loading = false
     }, 10000)
   },
   watch: {

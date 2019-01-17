@@ -1,5 +1,5 @@
 import {
-  getUserInfoWithOutPwd, getUser, getUserInfoWithPwd,
+  getUserInfoWithOutPwd, getUserInfo, getUserInfoWithPwd,
   postUser, postUsers,
   putUser, putUsers,
   deleteUser, deleteUsers } from '@/api/user'
@@ -48,7 +48,7 @@ const requestUserInfoWithPwd = (params) => {
  */
 const requestUserInfoById = (id) => {
   return new Promise((resolve, reject) => {
-    getUser(id).then(response => {
+    getUserInfo(id).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {

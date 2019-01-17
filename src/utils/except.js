@@ -12,7 +12,16 @@ const responseHandler = (response) => {
   console.log(response)
   return new Promise((resolve, reject) => {
     // TODO: refactor error code
-    if (RegExp('^4').test(response.code)) {
+    if (RegExp('4037').test(response.code)) {
+      console.log('Insert nothing, may all resource have exists')
+      // Message({
+      //   message: '资源已存在！',
+      //   type: 'warning',
+      //   duration: 5 * 1000
+      // })
+    } else if (RegExp('4036').test(response.code)) {
+      console.log('Query nothing, no exists')
+    } else if (RegExp('^4').test(response.code)) {
       const error = new Error('Customary Error on response!\ncode:' + response.code + '\nmessage:' + response.message)
       const code = response.code
       const msg = response.message

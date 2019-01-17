@@ -230,7 +230,7 @@ import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 
 // 引入 viewmodel
-import titleGroupViewModel from '@/viewmodel/titleGroup'
+import titleGroupViewModel from '@/viewmodel/titlegroups'
 import lessonViewModel from '@/viewmodel/lesson'
 import pointViewModel from '@/viewmodel/point'
 
@@ -371,7 +371,7 @@ const previewFilter = (settingsData) => {
 
 /**
  * @return submitWrapper contains:
- *         |- titles 
+ *         |- titles
  *         |- point
  * @description split into 3 steps
  * 1. get student by sid
@@ -379,12 +379,10 @@ const previewFilter = (settingsData) => {
  * 3. make point array
  */
 const submitConverter = (previewPageData, lessonId) => {
-  const resultContainer = previewPageData
   console.log(previewPageData)
-  
   const newTitleItemArrayArray = []
   previewPageData.titles.forEach(title => {
-    let item = TitleMock.getTitlePrototype()
+    const item = TitleMock.getTitlePrototype()
     item.name = title.name
     item.titleGroup_id = title.titleGroup
     newTitleItemArrayArray.push(item)
@@ -394,10 +392,10 @@ const submitConverter = (previewPageData, lessonId) => {
   previewPageData.dataset.forEach((row, sIdx) => {
     // console.log(row)
     row.forEach((point, idx) => {
-      let item = PointMock.getPointPrototype()
+      const item = PointMock.getPointPrototype()
       // console.log(item)
       item.pointNumber = point
-      item.date = Date.parse(new Date());
+      item.date = Date.parse(new Date())
       item['sid'] = previewPageData.sid[sIdx]
       item['title_name'] = previewPageData.titles[idx]['name']
       item['titleGroup_id'] = previewPageData.titles[idx]['titleGroup']
@@ -408,11 +406,11 @@ const submitConverter = (previewPageData, lessonId) => {
   console.log(newPointItemArray)
   console.log(newTitleItemArrayArray)
   const sid_list = previewPageData.sid
-  const description = "分为四个部分, title 列表和 point 列表, <br/>" +
-            "其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>" +
-            "其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>"
-            "其中 lesson_id 字段包含所在课程 <br/> " +
-            "其中 sid_list 字段包含学生学号列表 <br/> "
+  const description = '分为四个部分, title 列表和 point 列表, <br/>' +
+    '其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>' +
+    '其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>' +
+    '其中 lesson_id 字段包含所在课程 <br/> ' +
+    '其中 sid_list 字段包含学生学号列表 <br/> '
   return {
     title_list: newTitleItemArrayArray,
     point_list: newPointItemArray,
@@ -506,7 +504,7 @@ export default {
         existTitleNameList: [],
         errorTitleNameList: [],
         existPointList: [],
-        errorPointList: []        
+        errorPointList: []
       }
     }
   }, // data-end
@@ -778,10 +776,9 @@ export default {
     fetchLesson() {
       lessonViewModel.requestAllLessons().then(res => {
         this.remoteLessonList = res
-      });
+      })
     },
     fetchTitleGroup(id) {
-      const lesson_id = id;
       titleGroupViewModel.requestByLessonId(id).then(list => {
         this.remoteTitleGroupList = list
       }).catch(err => {
@@ -796,21 +793,21 @@ export default {
     submit() {
       const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
       pointViewModel.requestImportPoints(submitDataset).then(res => {
-        if ((res && String(res.code) === "2011") || (res && String(res.code) === "2001")) {
-          console.log("数据导入成功")
+        if ((res && String(res.code) === '2011') || (res && String(res.code) === '2001')) {
+          console.log('数据导入成功')
           this.$message({
             message: '数据导入成功',
             type: 'success'
           })
-        } else if (res && String(res.code) === "2019") {
-          console.log("数据导入失败")
+        } else if (res && String(res.code) === '2019') {
+          console.log('数据导入失败')
           this.$message({
             message: '数据已经导入, 部分数据存在冲突',
             type: 'warning'
           })
           this.handleSubmitFeedback(res)
         } else {
-          console.log("数据导入失败")
+          console.log('数据导入失败')
           this.$message({
             message: '数据导入失败,请查看错误信息',
             type: 'error'
@@ -838,13 +835,9 @@ export default {
       const title_list = errorList['error_title_names'] || []
       // deleted duplicated
       this.submitErrorMessage.errorTitleNameList = Array.from(new Set(title_list))
-      
       this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
-      
       this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
-      
       this.submitErrorMessage.errorPointList = errorList['error_point_message'] || []
-      
       console.log(this.submitErrorMessage)
     },
     getStudentNumber(scope) {
@@ -856,7 +849,7 @@ export default {
   },
   created() {
     this.$store.dispatch('saveImportTable', { table: [] })
-    this.fetchLesson();
+    this.fetchLesson()
   }
 }
 </script>
