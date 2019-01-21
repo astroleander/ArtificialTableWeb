@@ -15,10 +15,10 @@ TODO: post 返回需要 ID
 
     <!-- table menu-->
     <el-row class="menu">
-      <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+      <el-button @click="onClickedAddTitle()" type="success" icon="el-icon-d-arrow-right">添加新列</el-button>
       <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
       <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
-      <el-button @click="onClickedUpload()" type="primary" icon="el-icon-upload">保存修改</el-button>
+      <el-button @click="onClickedUpload()" type="success" icon="el-icon-upload">保存修改</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
     </el-row>
