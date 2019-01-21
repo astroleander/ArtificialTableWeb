@@ -105,19 +105,6 @@ export default {
     }
   },
   watch: {
-    id: function(newValue) {
-      // console.log('view changed')
-      // console.log(newValue)
-    },
-    info: function(classInfo) {
-      titleGroupViewModel.requestTitleGroups({ lesson_id: classInfo.lesson_id }).then(res => {
-        // 获取大项数据
-        res.forEach(element => {
-          this.model.titleGroupMap.set(element.id, element)
-        })
-        this.buildWeight()
-      })
-    }
   },
   computed: {
     isShown: function() {
@@ -200,7 +187,8 @@ export default {
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
-        viewmodel.requestStudents({ classInfo_id: this.id })
+        viewmodel.requestStudents({ classInfo_id: this.id }),
+        classinfoViewmodel.requestClassInfos({ id: this.id })
       ])
         .then(result => {
           console.log(result)
@@ -214,6 +202,15 @@ export default {
           // 获取学生信息
           result[2].forEach(element => {
             this.model.studentMap.set(element.id, element)
+          })
+          
+          this.info = result && result[3] && result[3][0]
+          titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
+            // 获取大项数据
+            res.forEach(element => {
+              this.model.titleGroupMap.set(element.id, element)
+            })
+            this.buildWeight()
           })
           this.buildTable()
         }).catch(err => {
