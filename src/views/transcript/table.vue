@@ -263,11 +263,13 @@ export default {
     onDeleteColClicked: function(scope, title) {
       // console.log(title)
       this.$prompt(
-        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！', '请确认删除操作', {
-        confrimButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /确认/
-      }).then(() => {
+        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+        }
+      ).then(() => {
         viewmodel.deleteTitle(title.id).then(res => {
           this.$message({
             type: 'success',
@@ -276,8 +278,6 @@ export default {
           this.$emit('onDeletedTitle', title)
         })
       })
-
-      
     },
     onCellClicked: function(row, column, cell, event) {
       if (RegExp('^student.').test(column.property)) {

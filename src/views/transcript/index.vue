@@ -200,7 +200,7 @@ export default {
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
-        viewmodel.requestStudents({ classInfo_id: this.id }),
+        viewmodel.requestStudents({ classInfo_id: this.id })
       ])
         .then(result => {
           console.log(result)
