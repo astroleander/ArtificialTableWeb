@@ -11,12 +11,12 @@ index
 <!---->
 <template>
   <div class="transcript-wrapper">
-    <transcript-head
+    <!-- <transcript-head
       :info='this.info'
       :table='this.table'
       :titles='this.model.titles'
     >
-    </transcript-head>
+    </transcript-head> -->
 
     <input class="state" @click='switchMode("table")' type="radio" title="tab-one" name="tabs-state" id="tab-one" checked />
     <input class="state" @click='switchMode("stats")' type="radio" title="tab-two" name="tabs-state" id="tab-two" />
