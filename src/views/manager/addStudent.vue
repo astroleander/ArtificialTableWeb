@@ -74,12 +74,12 @@
       </el-row>
 
       <el-row>
-        <el-col :span=10>.</el-col>
-        <el-col :span=4>
+        <el-col :span='8'>.</el-col>
+        <el-col :span='8' style="display:flex; content-justify:center; align-content:center;">
           <el-button @click="onResetClicked">重置界面</el-button>
           <el-button type="success" @click="onSubmitClicked">上传学生</el-button>
         </el-col>
-        <el-col :span=10>.</el-col>
+        <el-col :span='8'>.</el-col>
       </el-row>
       <el-table v-if="importStudentList !== null" 
           :data="importStudentList"

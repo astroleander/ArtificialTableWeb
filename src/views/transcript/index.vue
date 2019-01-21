@@ -40,6 +40,7 @@ index
         :info='this.info'
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
+        @onDeletedTitle="handleDeletedTitle"
         >
         </transcript-table>
       </transition>
@@ -107,6 +108,15 @@ export default {
     id: function(newValue) {
       // console.log('view changed')
       // console.log(newValue)
+    },
+    info: function(classInfo) {
+      titleGroupViewModel.requestTitleGroups({ lesson_id: classInfo.lesson_id }).then(res => {
+        // 获取大项数据
+        res.forEach(element => {
+          this.model.titleGroupMap.set(element.id, element)
+        })
+        this.buildWeight()
+      })
     }
   },
   computed: {
@@ -180,28 +190,20 @@ export default {
       })
     },
     handleExportTable: function(dialogResult) {
-      // /* generate workbook object from table */
-      // console.log(this.table)
-      // let wb = XLSX.utils.json_to_sheet(generateOutput(this.table))
-      // /* get binary string as output */
-      // console.log(wb)
-      // let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-      // try {
-      //   FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
-      // } catch (e) {
-      //   if (typeof console !== 'undefined')
-      //     console.log(e, wbout)
-      // }
-      // return wbout
+    },
+    handleDeletedTitle: function(title) {
+      const idx = this.model.titles.findIndex(item => item.id === title.id)
+      this.model.titles.splice(idx, 1)
     },
     fetchDataset: function() {
+      // const lesson_id = this.info.lesson_id
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
         viewmodel.requestStudents({ classInfo_id: this.id }),
-        titleGroupViewModel.requestTitleGroups({ lesson_id: this.id })
       ])
         .then(result => {
+          console.log(result)
           // 获取小项数据
           result[0].forEach(element => {
             this.model.titles.push({ ...element, max: 100 })
@@ -213,12 +215,7 @@ export default {
           result[2].forEach(element => {
             this.model.studentMap.set(element.id, element)
           })
-          // 获取大项项数据
-          result[3].forEach(element => {
-            this.model.titleGroupMap.set(element.id, element)
-          })
           this.buildTable()
-          this.buildWeight()
         }).catch(err => {
         // TODO: show error page
           console.log(err)
