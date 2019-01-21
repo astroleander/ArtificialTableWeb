@@ -14,7 +14,7 @@ supplement:
       <el-input v-model="form.name"  placeholder="请输入教师姓名"></el-input>
       </el-form-item>
       <el-form-item label="教师编号" prop="tid" required>
-        <el-input v-model="form.tid" placeholder="请输入教师编号"></el-input>
+        <el-input v-model="form.tid" placeholder="请输入教师编号(至少四位数字)"></el-input>
       </el-form-item>
       <el-form-item label="输入密码 " prop="password" required>
         <el-input v-model="form.password" type="password" placeholder="请以字母开头，长度在6~18之间"></el-input>
@@ -50,6 +50,13 @@ export default {
         callback(new Error('请输入教师编号'))
       } else if (!Number.isInteger(+value)) {
         callback(new Error('请输入数字值'))
+      } else {
+        const tidReg = /^\d{4,}$/
+        if (tidReg.test(value)) {
+          callback()
+        } else {
+          callback(new Error('教师编号至少四位'))
+        }
       }
       callback()
     }

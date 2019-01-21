@@ -16,7 +16,7 @@
         <el-col :span="6">
           <el-card>
             <span class="span">院系</span>
-            <el-select v-model="selectedCollegeId" 
+            <el-select v-model="selectedCollegeId"
               filterable
               remote
               size="mini"
@@ -37,10 +37,10 @@
         <el-col :span="6">
           <el-card>
             <span class="span">专业</span>
-            <el-select v-model="selectedMajorId" 
+            <el-select v-model="selectedMajorId"
               filterable
               size="mini"
-              remote   
+              remote
               placeholder="哪个专业的"
               :loading="majorLoading"
               >
@@ -51,7 +51,7 @@
                 :value="item.id"
                 >
               </el-option>
-            </el-select>            
+            </el-select>
           </el-card>
         </el-col>
         <el-col :span="6">
@@ -81,10 +81,10 @@
         </el-col>
         <el-col :span=10>.</el-col>
       </el-row>
-      <el-table v-if="importStudentList !== null" 
+      <el-table v-if="importStudentList !== null"
           :data="importStudentList"
           >
-        <el-table-column v-for="(item, idx) in [...importStudentList[0]]" 
+        <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
           :key="idx"
           align="center"
           >
@@ -94,7 +94,7 @@
                 v-model="nameCheckedList[idx]"
                 :true-label="scope.$index + 1"
                 @change="onNameChecked">姓名列</el-checkbox>
-              <el-checkbox 
+              <el-checkbox
                 v-model="sidCheckedList[idx]"
                 :true-label="scope.$index + 1"
                 @change="onSidChecked">学号列</el-checkbox>
@@ -108,11 +108,11 @@
         </el-table-column>
       </el-table>
       <div v-else>
-        <el-alert 
+        <el-alert
           title="请保证导入的数据包含学号列和姓名列" type="info"
           style="margin: 4px 12px 4px 12px;"
         ></el-alert>
-        <el-alert 
+        <el-alert
           title="一次只能导入同一个教学班的学生" type="info"
           style="margin: 4px 12px 4px 12px;"
         ></el-alert>
@@ -121,7 +121,38 @@
         <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
       </div>
     </el-tab-pane>
-    <el-tab-pane label="添加单个学生">      
+    <el-tab-pane label="添加单个学生">
+      <el-card class="form-box">
+        <div slot="header">
+          <span class="rowframe title">添加学生</span>
+        </div>
+        <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
+          <el-form-item label="学生姓名" prop="name">
+            <el-input v-model="form.name"  placeholder="请输入学生姓名"></el-input>
+          </el-form-item>
+          <el-form-item label="学生编号" prop="sid" required>
+            <el-input v-model="form.sid" placeholder="请输入学生编号(至少6位数字)"></el-input>
+          </el-form-item>
+          <el-form-item label="入学年份" prop="year" required>
+            <el-date-picker v-model="form.year" type="year" format='yyyy' value-format="yyyy">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="学生专业" prop="major_id" >
+            <el-select v-model="form.major_id" placeholder="请选择专业">
+              <el-option
+                v-for="(item,index) in remoteMajorList"
+                :key="index"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+            <el-button @click="onReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -186,7 +217,14 @@ export default {
       remoteMajorList: [],
       remoteCollegeList: [],
       // import data
-      importStudentList: null
+      importStudentList: null,
+      // 表单数据
+      form: {
+        name: '',
+        sid: '',
+        year: '',
+        major_id: ''
+      }
     }
   },
   computed: {
