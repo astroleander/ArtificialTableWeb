@@ -42,6 +42,7 @@ div(mainpage)
           :label="idx">
         </el-option>
       </el-select>
+      <el-button @click="currentFilter" style='margin-left:10px;'>当前学期</el-button>
       <el-button @click="restFilter">重置筛选</el-button>
     </div>
     <transition name="fade" mode="out-in">
@@ -114,6 +115,25 @@ export default {
         ll.push(...this.semeseterDataset[semester])
       })
       this.shownFilterBySemester = ll
+    },
+    currentFilter: function() {
+      for (const idx in this.semeseterDataset) {
+        const item = this.semeseterDataset[idx]
+        if (item && item[0]) {
+          this.selectedSemester = item[0]['current_semester']
+          console.log(item)
+          break
+        }
+      }
+      if (this.selectedSemester && this.selectedSemester.length > 0) {
+        this.shownFilterBySemester = this.semeseterDataset[this.selectedSemester]
+      } else {
+        const ll = []
+        Object.keys(this.semeseterDataset).forEach((semester, idx) => {
+          ll.push(...this.semeseterDataset[semester])
+        })
+        this.shownFilterBySemester = ll
+      }
     },
     buildSemester: function(allClass) {
       for (const eachClass of allClass) {
