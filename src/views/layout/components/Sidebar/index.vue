@@ -12,7 +12,7 @@
     >
     <sidebar-item :routes="routes"></sidebar-item>
 
-    <el-menu-item v-if="this.is_manager" index="999">
+    <el-menu-item v-if="this.is_manager" index="999" disabled class="switch">
       <svg-icon icon-class="domain"></svg-icon>
       <template slot="title">
         <span style="color:#EEE;">管理员模式</span>
@@ -24,7 +24,7 @@
         </el-switch>
       </template>
     </el-menu-item>
-        <el-submenu v-if="this.handler" index="9990">
+    <el-submenu v-if="this.handler" index="9990">
       <template slot="title">
           <svg-icon icon-class="domain"></svg-icon>
           <span>管理教师信息</span>
@@ -119,3 +119,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.switch {
+  opacity: 1;
+  cursor: default;
+}
+</style>
