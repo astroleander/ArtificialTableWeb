@@ -106,10 +106,16 @@ export const constantRouterMap = [
       meta: { title: '添加学生', icon: 'tree' }
     },
     {
-      path: 'user',
+      path: 'user/add',
       name: 'addmanager',
-      component: () => import('@/views/manager/addUser.vue'),
-      meta: { title: '添加用户', icon: 'tree' }
+      component: () => import('@/views/manager/user/add.vue'),
+      meta: { title: '添加教师', icon: 'tree' }
+    },
+    {
+      path: 'user/list',
+      name: 'showmanager',
+      component: () => import('@/views/manager/user/list.vue'),
+      meta: { title: '教师列表', icon: 'tree' }
     },
     {
       path: 'lesson',

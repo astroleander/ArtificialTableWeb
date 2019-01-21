@@ -9,5 +9,7 @@ export default {
   modifyPoints: Point.requestPutPoints,
   modifyPoint: Point.requestPutPoint,
   addPoint: Point.requestPostPoint,
-  addPoints: Point.requestPostPoints
+  addPoints: Point.requestPostPoints,
+  deletePoint: Point.requestDelPoint,
+  deleteTitle: Title.requestDelTitle
 }

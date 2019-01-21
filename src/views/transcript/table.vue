@@ -15,10 +15,10 @@ TODO: post 返回需要 ID
 
     <!-- table menu-->
     <el-row class="menu">
-      <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+      <el-button @click="onClickedAddTitle()" type="success" icon="el-icon-d-arrow-right">添加新列</el-button>
       <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
-      <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button>
-      <el-button @click="onClickedUpload()" type="primary" icon="el-icon-upload">保存修改</el-button>
+      <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
+      <el-button @click="onClickedUpload()" type="success" icon="el-icon-upload">保存修改</el-button>
       <!-- <el-button icon="el-icon-search"></el-button> -->
       <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
     </el-row>
@@ -29,7 +29,7 @@ TODO: post 返回需要 ID
       v-loading.body="loading"
       ref="table" id="transcript-table"
       element-loading-text="Loading"
-      height="calc(100vh - 316px)"
+      height="calc(100vh - 168px)"
       class="table">
 
     <el-table-column label="学生姓名" prop="student.name"
@@ -41,8 +41,14 @@ TODO: post 返回需要 ID
     </el-table-column>
 
     <el-table-column
-      v-for="title in titles" :label="title.name" :key="title.id"
+      v-for="title in titles" :key="title.id"
       min-width="120px">
+      <template slot="header" slot-scope="head">
+        <div class="line-container">
+          <span>{{title.name}}</span>
+          <div @click='onDeleteColClicked(head, title)' class="delete">+</div>
+        </div>
+      </template>
       <template slot-scope="scope">
         <div class="item-wrapper">
           <div slot="reference" v-if="getPointItem(scope, title)"
@@ -69,15 +75,15 @@ TODO: post 返回需要 ID
             
           </div>
 
-          <div v-if="getPointNumber(scope, title)" class="point-div-addons">
+          <div v-if="getPointItem(scope, title)" class="point-div-addons">
             <span class="operator">
-              <label :for='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="trash" /></label>
+              <!-- <label :for='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="trash" /></label>
               <input :id='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id' type="button"
                 @click="onDeleteClicked({scope, title})" class="operator-button"/>
 
               <label :for='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="pencil" /></label>
               <input :id='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id' type="button"
-                @click="onModifyClicked({scope, title})" class="operator-button"/>
+                @click="onModifyClicked({scope, title})" class="operator-button"/> -->
             </span>
           </div>
           <div v-else class="point-div-addons">
@@ -243,11 +249,35 @@ export default {
       pointExistItem['type'] = 'modify' // declear if item is exist
       this.showPointDialog(pointExistItem)
     },
-    onDeleteClicked: function({ scope, title }) {
-      const point = this.getPointItem(scope, title)
-      if (point) {
-        console.log(point)
-      }
+    // onDeleteClicked: function({ scope, title }) {
+    //   const point = this.getPointItem(scope, title)
+    //   if (point) {
+    //     viewmodel.deletePoint(point.id).then(res => {
+    //       this.$message({
+    //         type: 'warning',
+    //         message: '您已经成功删除该条分数记录'
+    //       })
+    //     })
+    //   }
+    // },
+    onDeleteColClicked: function(scope, title) {
+      // console.log(title)
+      this.$prompt(
+        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+        }
+      ).then(() => {
+        viewmodel.deleteTitle(title.id).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.$emit('onDeletedTitle', title)
+        })
+      })
     },
     onCellClicked: function(row, column, cell, event) {
       if (RegExp('^student.').test(column.property)) {
@@ -279,6 +309,9 @@ export default {
     },
     onItemChanged: function(newItem) {
       // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
+      if (newItem.pointNumber === '') {
+        newItem.pointNumber = 0
+      }
       this.updatedArray.push(newItem)
     },
     handlePointChanged: function(dialogResult) {
@@ -329,7 +362,7 @@ export default {
   mounted() {
     setTimeout(() => {
       if (this.loading) this.loading = false
-    }, 10000)
+    }, 5000)
   },
   watch: {
     view: function(newView) {
@@ -388,6 +421,37 @@ export default {
     opacity: 1;
     transition: all 0.2s ease;
   }
+}
+
+.delete {
+  padding: 0px;
+  box-shadow: 2px 2px 3px #999;
+  text-align: center;
+  line-height: 20px;
+  color: white;
+  margin: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #DE3316;
+  transform: rotate(45deg);
+  opacity: 0.35;
+  transition: 0.15s ease-in all;
+  &:hover {
+    opacity: 1;
+    transition: 0.15s ease-in all;
+  }
+  &:active {
+    background: #333;
+  }
+}
+
+.line-container {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 0px;
 }
 </style>
 
