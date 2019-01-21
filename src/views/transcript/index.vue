@@ -203,7 +203,6 @@ export default {
           result[2].forEach(element => {
             this.model.studentMap.set(element.id, element)
           })
-          
           this.info = result && result[3] && result[3][0]
           titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
             // 获取大项数据
