@@ -14,7 +14,7 @@
           <!--<el-button @click="dealLeft" :disabled="avgDisabled">一键分配</el-button>-->
           <el-button @click="dealAvg"  :disabled="avgDisabled">一键平均</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
-          <el-button @click="addTitlegroupItem()">添加小项</el-button>
+          <el-button @click="addTitleItem()">添加小项</el-button>
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
         </div>
       </div>
@@ -47,6 +47,7 @@
                               @input="handleInput(title.weight,index)"/>
             </div>
             <div class="lock-box" :class="{'active':titleDisabled[index]}" @click="changeLock(index)" >锁定</div>
+            <el-button size="mini" type="danger" plain @click="delTitleItem(title.id)">删除</el-button>
           </div>
         </div>
       <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
@@ -185,10 +186,14 @@ export default {
         }
       }
     },
-    // 打开添加页
-    addTitlegroupItem: function() {
-      console.log(this)
-      console.log(this.$refs)
+    // 删除小项
+    delTitleItem: function(title_id) {
+      this.$emit('notifyDel', title_id)
+    },
+    // 添加小项
+    addTitleItem: function() {
+      // console.log(this)
+      // console.log(this.$refs)
       this.dialogFormVisible = true
       this.$refs['ruleForm'].resetFields()
     },

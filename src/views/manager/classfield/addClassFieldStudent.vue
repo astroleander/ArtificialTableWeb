@@ -2,15 +2,7 @@
   <el-tabs class="container" id="add-student-page">
     <el-tab-pane label="添加一群学生">
         <el-form class="top-box">
-          <el-card>
-            <span class="span">学校</span>
-            <el-input style="width:200px"
-              v-model="remoteUniversity.name"
-              :disabled="true"
-              size="mini"
-            ></el-input>
-          </el-card>
-          <el-card>
+          <el-card class="card-box">
             <span class="span">院系</span>
             <el-select v-model="selectedCollegeId"
               filterable
@@ -29,7 +21,7 @@
               </el-option>
             </el-select>
           </el-card>
-          <el-card>
+          <el-card class="card-box">
             <span class="span">专业</span>
             <el-select v-model="selectedMajorId"
               filterable
@@ -48,7 +40,7 @@
             </el-select>
           </el-card>
           <!-- <el-card id="select-input-semester"> -->
-          <el-card>
+          <el-card class="card-box">
             <span class="span" style="width:80px">学年</span>
             <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
               size="mini" type="year" format='yyyy' value-format="yyyy">
@@ -109,56 +101,9 @@
        <el-row>
         <div class="row" style="padding:10px;">
           <el-button @click="onResetClicked">重置界面</el-button>
-          <el-button type="success" @click="onSubmitClicked">上传学生</el-button>
+          <el-button type="success" @click="onSubmitClicked">添加学生</el-button>
         </div>
       </el-row>
-    </el-tab-pane>
-    <el-tab-pane label="添加单个学生">
-      <el-card class="form-box">
-        <div slot="header">
-          <span class="rowframe title">添加学生</span>
-        </div>
-        <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
-          <el-form-item label="学生姓名" prop="name">
-            <el-input v-model="form.name"  placeholder="请输入学生姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="学生编号" prop="sid" required>
-            <el-input v-model="form.sid" placeholder="请输入学生编号(至少6位数字)"></el-input>
-          </el-form-item>
-          <el-form-item label="入学年份" prop="year">
-            <el-date-picker v-model="form.year" placeholder="请选择入学年份" type="year" format='yyyy' value-format="yyyy">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="所属院系" prop="college_id">
-            <el-select v-model="form.college_id"
-                       placeholder="请选择学生所在院系"
-                       @change="fetchFormMajorList"
-            >
-              <el-option
-                v-for="item in formCollegeList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="所属专业" prop="major_id" >
-            <el-select v-model="form.major_id"
-                       :placeholder="majorMessage">
-              <el-option
-                v-for="(item,index) in formMajorList"
-                :key="index"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
-            <el-button @click="onReset">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -167,6 +112,7 @@
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import CollegeViewModel from '@/viewmodel/college'
 import MajorViewModel from '@/viewmodel/major'
+import classFieldViewModel from '@/viewmodel/classfield'
 import StudentViewModel from '@/viewmodel/student'
 import { mapGetters } from 'vuex'
 
@@ -197,26 +143,17 @@ const eltableAdapter = (array) => {
 }
 
 export default {
-  name: 'addstupid',
+  name: 'addClassStudent',
   components: {
     ImportExcelComponent
   },
-  data: function() {
-    var validateStudentId = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入学生编号'))
-      } else if (!Number.isInteger(+value)) {
-        callback(new Error('请输入数字值'))
-      } else {
-        const tidReg = /^\d{6,}$/
-        if (tidReg.test(value)) {
-          callback()
-        } else {
-          callback(new Error('学生编号至少6位'))
-        }
-      }
-      callback()
+  props: {
+    classInfo_id: {
+      type: [String, Number],
+      default: 0
     }
+  },
+  data: function() {
     return {
       // selected college
       selectedCollegeId: null,
@@ -238,36 +175,7 @@ export default {
       remoteMajorList: [],
       remoteCollegeList: [],
       // import data
-      importStudentList: null,
-      // 表单数据
-      form: {
-        name: '',
-        sid: '',
-        year: '',
-        major_id: '',
-        college_id: ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' }
-        ],
-        sid: [
-          { validator: validateStudentId, trigger: 'blur' }
-        ],
-        year: [
-          { required: true, message: '请选择年份', trigger: 'change' }
-        ],
-        college_id: [
-          { required: true, message: '请选择所属院系', trigger: 'change' }
-        ],
-        major_id: [
-          { required: true, message: '请选择所属专业', trigger: 'change' }
-        ]
-      },
-      // 表单需要的院系信息以及专业信息
-      formCollegeList: [],
-      formMajorList: [],
-      majorMessage: '请先选择院系'
+      importStudentList: null
     }
   },
   computed: {
@@ -349,34 +257,30 @@ export default {
     },
     submitStudentList(list) {
       StudentViewModel.requestPostStudents(list).then(res => {
-        const unsucceed = list.length - res.succeed_ids.length
-        const message = res.succeed_ids.length + '条学生数据成功导入，' + unsucceed + '条未导入'
-        this.$message({
-          type: 'info',
-          message: message
-        })
+        const succeed_ids = res.succeed_ids
+        const repeated_ids = res.repeated_ids
+        const failed_sids = res.failed_sids
+        console.log('succeed_ids = ' + succeed_ids)
+        console.log('repeated_ids = ' + repeated_ids)
+        console.log('failed_sids = ' + failed_sids)
+        const classFieldList = []
+        if (succeed_ids.length + repeated_ids.length > 0) {
+          succeed_ids.forEach(item => {
+            classFieldList.push({
+              student_id: item.id,
+              classInfo_id: this.classInfo_id
+            })
+          })
+          repeated_ids.forEach(item => {
+            classFieldList.push({
+              student_id: item.id,
+              classInfo_id: this.classInfo_id
+            })
+          })
+          this.addClassFields(classFieldList)
+        }
       }).catch(reject => {
         console.log('reject = ' + reject)
-      })
-    },
-    submitFormStudent(list) {
-      StudentViewModel.requestPostStudents(list).then(res => {
-        if (res.succeed_ids.length > 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
-          })
-        } else if (res.repeated_ids.length > 0) {
-          this.$message({
-            type: 'error',
-            message: '该学号已占用'
-          })
-        } else {
-          this.$message({
-            type: 'error',
-            message: '添加失败'
-          })
-        }
       })
     },
     onNameChecked(idx) {
@@ -409,7 +313,6 @@ export default {
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
           this.remoteCollegeList = res
-          this.formCollegeList = res
           this.collegeLoading = false
           this.majorLoading = true
         })
@@ -419,7 +322,6 @@ export default {
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
           this.remoteCollegeList = res
-          this.formCollegeList = res
           this.collegeLoading = false
           this.majorLoading = true
         })
@@ -433,29 +335,24 @@ export default {
         this.majorLoading = false
       })
     },
-    fetchFormMajorList(value) {
-      if (value === '') {
-        this.majorMessage = '请先选择院系'
-      } else {
-        MajorViewModel.requestByCollegeId(value).then(res => {
-          this.formMajorList = res
-          this.majorMessage = '请选择学生所属专业'
+    addClassFields(params) {
+      classFieldViewModel.requestPostClassFields(params)
+        .then(response => {
+          if (response) {
+            // const unsucceed = params.length - response.length
+            const message = response.length + '条学生数据添加到班级中'
+            this.$message({
+              type: 'success',
+              message: message
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: '添加失败!'
+            })
+          }
+          this.$emit('addEnd')
         })
-      }
-    },
-    // 添加学生
-    submitForm: function(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.submitFormStudent([this.form])
-        } else {
-          return false
-        }
-      })
-    },
-    // 重置表单
-    onReset() {
-      this.$refs['ruleForm'].resetFields()
     }
   },
   created() {
@@ -484,6 +381,9 @@ export default {
 .span {
   padding: 8px;
   font-weight: bold;
+}
+.card-box{
+  margin: 5px;
 }
 .row {
   display:flex;
