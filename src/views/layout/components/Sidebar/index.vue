@@ -23,8 +23,8 @@
         <span style="color:#EEE;">管理员模式</span>
         <el-switch v-model="handler"
           @change="onSwitchChange"
-          active-color="#000"
-          inactive-color="#000"
+          active-color="#8bc34a"
+          inactive-color="#455a64"
           >
         </el-switch>
       </template>
