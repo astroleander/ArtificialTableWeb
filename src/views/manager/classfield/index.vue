@@ -7,7 +7,8 @@
       >
         <section slot="title">
           <!-- general card -->
-          <span class="lesson-name"> <i class="el-icon-minus"/>
+          <span class="lesson-name">
+            <i :class="['el-icon-caret-right', {rotate: lesson.id === lesson_current_selected}]"/>
             {{lesson.name}}
           </span>
         </section>
@@ -191,7 +192,11 @@ export default {
 }
 .lesson-name {
   margin: 0 0 0 20px;
-  font-size: 1.5em;
+  font-size: 1.2em;
+}
+
+.rotate {
+  transform: rotate(90deg)
 }
 </style>
                        

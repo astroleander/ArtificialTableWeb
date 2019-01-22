@@ -9,7 +9,13 @@ export function isPointNumber(str) {
 
 export function isvalidUsername(str) {
   // const valid_map = ['10011', '10012']
-  return validateNumber(str)
+  return validate3Number(str)
+}
+
+/* 三位以上数字*/
+export function validate3Number(str) {
+  const urlregex = /^([0-9]){3,}$/
+  return urlregex.test(str)
 }
 
 /* 五位以上数字*/

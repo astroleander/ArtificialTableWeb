@@ -12,19 +12,24 @@
     >
     <sidebar-item :routes="routes"></sidebar-item>
 
-    <el-menu-item v-if="this.is_manager" index="999">
+    <el-menu-item v-if="this.is_manager" index="999" disabled divided id="divided">
+      <template slot="title">
+      </template>
+    </el-menu-item>
+
+    <el-menu-item v-if="this.is_manager" index="999" disabled class="switch">
       <svg-icon icon-class="domain"></svg-icon>
       <template slot="title">
         <span style="color:#EEE;">管理员模式</span>
         <el-switch v-model="handler"
           @change="onSwitchChange"
-          active-color="#000"
-          inactive-color="#000"
+          active-color="#8bc34a"
+          inactive-color="#455a64"
           >
         </el-switch>
       </template>
     </el-menu-item>
-        <el-submenu v-if="this.handler" index="9990">
+    <el-submenu v-if="this.handler" index="9990">
       <template slot="title">
           <svg-icon icon-class="domain"></svg-icon>
           <span>管理教师信息</span>
@@ -119,3 +124,19 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.switch {
+  opacity: 1;
+  cursor: default;
+}
+</style>
+
+<style lang="scss">
+#divided {
+  height: 2px;
+  background-color: #FFF !important;
+  cursor: default;
+}
+</style>
+
