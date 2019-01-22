@@ -51,7 +51,7 @@ index
                          :rate="weightData.rate"
                          :flag="weightData.flag"
                          :titles="model.titles"
-                         :valid="weightData.studentScore.length-weightData.invalidScore"
+                         :valid="weightData.studentScore.size-weightData.invalidScore"
                          :grade-section="weightData.gradeSection"
                          :title-average="weightData.titleAverage">
       </transcript-weight>
@@ -87,6 +87,7 @@ export default {
         studentMap: new Map(),
         titles: [],
         titleMap: new Map(),
+        titleSumMap: new Map(),
         titleGroupMap: new Map()
       },
       weightData: {
@@ -98,7 +99,7 @@ export default {
         description: '', // 若不能合法显示的提示信息
         gradeSection: [], // 分数段//  gradeSection[0] 0-60 gradeSection[1] 60-70 gradeSection[2] 70-80 gradeSection[3] 80-90 gradeSection[4] 90-100
         titleAverage: [], // 小项平均分（只计算有成绩的列）
-        studentScore: [], // 学生成绩统计
+        studentScore: new Map(), // 学生成绩统计
         titlePoint: [] // 按照小项分别统计成绩
       },
       table: []
@@ -196,6 +197,14 @@ export default {
           result[0].forEach(element => {
             this.model.titles.push({ ...element, max: 100 })
             this.model.titleMap.set(element.id, element)
+            // console.log('title' + element.id + ' : ' + element.weight + ' titleGroupId = '+ element.titleGroup_id )
+            if (this.model.titleSumMap.get(element.titleGroup_id)) {
+              const temp = this.model.titleSumMap.get(element.titleGroup_id) + element.weight
+              this.model.titleSumMap.set(element.titleGroup_id, temp)
+            } else {
+              this.model.titleSumMap.set(element.titleGroup_id, element.weight)
+            }
+            // console.log('titleGroup' + element.titleGroup_id + ' : ' + this.model.titleSumMap.get(element.titleGroup_id))
           })
           // 获取分数数据
           this.model.points = result[1]
@@ -205,10 +214,13 @@ export default {
           })
           this.info = result && result[3] && result[3][0]
           titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
+            let titleGroupSum = 0
             // 获取大项数据
             res.forEach(element => {
               this.model.titleGroupMap.set(element.id, element)
+              titleGroupSum += element.weight
             })
+            this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
             this.buildWeight()
           })
           this.buildTable()
@@ -226,7 +238,7 @@ export default {
       this.weightData.flag = false // 班级总人数
       this.weightData.gradeSection = [] // 分数段
       this.weightData.titleAverage = [] // 小项平均分
-      this.weightData.studentScore = [] // 学生成绩统计
+      this.weightData.studentScore = new Map() // 学生成绩统计
       this.weightData.titlePoint = [] // 小项成绩统计
       for (let i = 0; i < 5; i++) {
         this.weightData.gradeSection.push(0)
@@ -256,42 +268,40 @@ export default {
       return flag
     },
     buildStudentScore() {
-      let flag = true // 判断是否计算出所有学生的成绩
+      let flag = false // 判断是否计算出所有学生的成绩
       let total = 0
       let num = 0
-      this.model.studentMap.forEach(element => {
-        const studentInfo = { id: element.id, name: element.name, sum: 0 }
-        try {
-          this.model.points.forEach(pointItem => {
-            if (pointItem.student_id === element.id) {
-              const temp = this.countPoint(pointItem)
-              if (temp[0]) {
-                // 该分数条目计算成功
-                studentInfo[pointItem.title_id] = temp[1]
-                studentInfo.sum += temp[1]
-              } else {
-                // 该分数条目因为数据不全计算失败，通过抛出异常结束这个学生的成绩计算
-                // 若有数据不全情况，则暂不显示雷达图，显示错误提示信息
-                throw new Error('missing data')
-              }
+      this.model.points.forEach(pointItem => {
+        // 只计算当前在此班级的学生的分数条目
+        if (this.model.studentMap.get(pointItem.student_id)) {
+          const temp = this.countPoint(pointItem)
+          // console.log('currentPoint ' + pointItem.id + '= ' + temp[0])
+          // console.log('currentPoint ' + pointItem.id + '= ' + temp[1])
+          // console.log('currentPoint ' + pointItem.id + '= ' + pointItem.student_id)
+          if (temp[0]) {
+            // 该分数条目计算成功
+            if (this.weightData.studentScore.get(pointItem.student_id)) {
+              const studentScore = this.weightData.studentScore.get(pointItem.student_id) + temp[1]
+              this.weightData.studentScore.set(pointItem.student_id, studentScore)
+              // console.log(' console.log(this.weightData.studentScore.get(pointItem.student_id=' + pointItem.student_id + ')) = ' +
+              //   this.weightData.studentScore.get(pointItem.student_id))
+            } else {
+              // console.log(' console.log(this.weightData.studentScore.get(pointItem.student_id=' + pointItem.student_id + ')) = ' + temp[1])
+              this.weightData.studentScore.set(pointItem.student_id, temp[1])
+              num++
             }
-          })
-        } catch (e) {
-          if (e.message === 'missing data') {
-            // 结束这个学生的成绩计算
-            flag = false
-            return false
+            total += temp[1]
           }
         }
-        // console.log('studentInfo.id =' + element.id)
-        // console.log('studentInfo.sum =' + studentInfo.sum)
-        this.judgeSum(studentInfo.sum)
-        this.weightData.studentScore.push(studentInfo)
-        total += studentInfo.sum
-        num++
       })
+      flag = true
       this.weightData.avg = Math.round(total / num)
       return flag
+    },
+    buildBarData() {
+      this.weightData.studentScore.forEach(score => {
+        this.judgeSum(score)
+      })
     },
     buildTitleAverage() {
       this.model.titles.forEach(element => {
@@ -312,7 +322,7 @@ export default {
     },
     // 获取及格率
     getPassExamRate: function() {
-      const validScore = this.weightData.studentScore.length
+      const validScore = this.weightData.studentScore.size
       return Math.round((validScore - this.weightData.gradeSection[0]) * 100 / validScore)
     },
     // 判断分数区间
@@ -346,7 +356,10 @@ export default {
           const titleGroup = this.model.titleGroupMap.get(titleGroup_id)
           const titleGroupWeight = titleGroup.weight
           // 分值*大项权重数值*小项权重数值/10000
-          score = pointItem.pointNumber * titleWeight * titleGroupWeight / 10000
+          const titleSum = this.model.titleSumMap.get(titleGroup_id)
+          const titleGroupSum = this.model.titleGroupMap.get('TitleGroupSum')
+          const sum = titleSum * titleGroupSum
+          score = pointItem.pointNumber * titleWeight * titleGroupWeight / sum
           flag = true
           // console.log('point.id = ' + pointItem.id)
           // console.log('title_id = ' + title_id)
@@ -372,12 +385,12 @@ export default {
       this.init()
       // 判断是否可以继续成绩分析
       if (this.judgeLegal()) {
-        if (this.buildStudentScore()) {
-          // 若全部学生的成绩都可以计算出，计算小项平均值
-          this.buildTitleAverage()
-          // 若小项平均值计算完成,可显示雷达图显示小项信息
-          this.weightData.flag = true
-        }
+        this.buildStudentScore()
+        this.buildBarData()
+        // 若全部学生的成绩都计算出，计算小项平均值
+        this.buildTitleAverage()
+        // 若小项平均值计算完成,可显示雷达图显示小项信息
+        this.weightData.flag = true
         this.weightData.rate = this.getPassExamRate()
       }
     }

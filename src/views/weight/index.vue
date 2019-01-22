@@ -35,7 +35,8 @@ div(head)
           groupName="权重大项"
           :dataSet="titleGroups"
           @notifyChanged="handleBigChanged"
-          @notifyAdd="handleAddTitleGroup">
+          @notifyAdd="handleAddTitleGroup"
+          @notifyDel="handleDelTitleGroup">
         </at-lesson-card>
       </div>
 
@@ -47,7 +48,8 @@ div(head)
           :dataSet="titles[item.id]"
           :groupId="item.id"
           @notifyChanged="handleTitleChanged"
-          @notifyAdd="handleAddTitle">
+          @notifyAdd="handleAddTitle"
+          @notifyDel="handelDelTitle">
         </at-titlegroup-card>
       </div>
     </div>
@@ -97,7 +99,6 @@ div(head)
             this.empty = false
           }
         }
-        console.log(titlegroups)
       },
       // 教师某一教学班的所有小项（按照titleGroup_id分类）
       buildTitles: function(titles) {
@@ -110,7 +111,6 @@ div(head)
             this.titles[title.titleGroup_id].push(title)
           }
         }
-        console.log(this.titles)
       },
       // 小项数据修改(教师)
       handleTitleChanged: function(idx, newDataSet) {
@@ -137,7 +137,6 @@ div(head)
       },
       // 添加一条大项记录（管理员）
       handleAddTitleGroup: function(NewTitleGroup) {
-        console.log('NewTitle' + NewTitleGroup.name + ' ' + NewTitleGroup.weight)
         const TitleGroup = {
           name: NewTitleGroup.name,
           lesson_id: this.selectData[this.value].id,
@@ -158,10 +157,34 @@ div(head)
             })
           })
       },
+      // 删除一条大项记录 （管理员）
+      handleDelTitleGroup: function(titleGroup_id) {
+        titleViewModel.requestTitles({ titleGroup_id: titleGroup_id })
+          .then(titles => {
+            if (titles) {
+            // 若该大项下有小项，不能删除
+              this.$message({
+                message: '该大项下有小项信息，无法删除',
+                type: 'warning'
+              })
+            } else {
+              titleGroupViewModel.requestDelTitleGroup(titleGroup_id)
+                .then(reponse => {
+                  this.getTitleGroup()
+                  this.$message({
+                    message: '删除大项成功',
+                    type: 'success'
+                  })
+                })
+            }
+          }).catch(reject => {
+            console.log(reject)
+          })
+      },
       // 添加一条小项记录（教师）
       handleAddTitle: function(NewTitle, titleGroup_id) {
-        console.log('NewTitle' + NewTitle.name + ' ' + NewTitle.weight)
-        console.log('titleGroup_id' + titleGroup_id)
+        // console.log('NewTitle' + NewTitle.name + ' ' + NewTitle.weight)
+        // console.log('titleGroup_id' + titleGroup_id)
         const Title = {
           name: NewTitle.name,
           weight: NewTitle.weight,
@@ -183,6 +206,19 @@ div(head)
             })
           })
       },
+      // 删除小项
+      handelDelTitle(title_id) {
+        titleViewModel.requestDelTitle(title_id)
+          .then(reponse => {
+            this.getTitle()
+            this.$message({
+              message: '删除小项成功',
+              type: 'success'
+            })
+          }).catch(reject => {
+            console.log(reject)
+          })
+      },
       // 根据college_id获取该学校课程组信息Lesson（管理员）
       fetchLessonData(college_id) {
         lessonViewModel
@@ -201,7 +237,7 @@ div(head)
       },
       // 根据lesson_id获取该课程组的大项信息titleGroup（管理员）
       fetchTitleGroup(data_id) {
-        console.log('lesson_id = ' + data_id)
+        // console.log('lesson_id = ' + data_id)
         titleGroupViewModel
           .requestByLessonId(data_id)
           .then(response => {
@@ -255,13 +291,13 @@ div(head)
       // 列表选中值改变时  (角色判断)
       selectedCourse: function(index) {
         this.init()
-        console.log(index)
+        // console.log(index)
         if (this.use_manager) {
-          console.log('课程组id = ' + this.selectData[index].id)
+          // console.log('课程组id = ' + this.selectData[index].id)
           this.fetchTitleGroup(this.selectData[index].id) // 当前角色是管理员
           this.empty = false
         } else {
-          console.log('班级id = ' + this.selectData[index].id)
+          // console.log('班级id = ' + this.selectData[index].id)
           this.fetchTitleGroup(this.selectData[index].lesson_id)// 当前角色是教师
           this.fetchTitlesData(this.selectData[index].id) // 当前角色是教师
         }
@@ -296,16 +332,11 @@ div(head)
     // (角色判断)
     created() {
       // 当前角色是管理员
-      console.log('this.use_manager =' + this.use_manager)
-      console.log('this.college_id =' + this.user_collegeId)
-
       if (this.use_manager) {
-        console.log('1')
         this.selectText = '请选择课程组'
         this.Message = '请选择调整的课程组'
         this.fetchLessonData(this.user_collegeId)
       } else { // 当前角色是教师
-        console.log('2')
         this.selectText = '请选择教学班'
         this.Message = '请选择调整的教学班'
         this.fetchClassInfoData(this.id)

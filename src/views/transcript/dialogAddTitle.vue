@@ -1,10 +1,10 @@
 <template>
   <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
-  <el-form :model="titleForm" ref="form">
-    <el-form-item label="新列名称">
+  <el-form :rules="rules":model="titleForm" ref="form">
+    <el-form-item label="新列名称" prop="name" >
       <el-input v-model="titleForm.name" autoComplete="off"></el-input>
     </el-form-item>
-    <el-form-item label="所属类别">
+    <el-form-item label="所属类别" prop="titleGroup_id">
       <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别">
         <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
           :label='titleGroup.name' :value='titleGroup.id'>
@@ -14,7 +14,7 @@
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="onDialogClose">取 消</el-button>
-    <el-button type="primary" @click="onAddNewTitle">确 定</el-button>
+    <el-button type="primary" @click="onAddNewTitle('form')">确 定</el-button>
   </div>
 </el-dialog>
 </template>
@@ -34,7 +34,15 @@ export default {
   data() {
     return {
       titleForm: titlePrototype,
-      titleGroupList: []
+      titleGroupList: [],
+      rules: {
+        name: [
+          { required: true, message: '请输入学生姓名', trigger: 'blur' }
+        ],
+        titleGroup_id: [
+          { required: true, message: '请选择小项所属的分数类别', trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
@@ -43,10 +51,16 @@ export default {
       this.$refs.form.resetFields()
       this.$emit('onDialogClose', false)
     },
-    onAddNewTitle: function() {
-      this.titleForm['classInfo_id'] = this.classInfo.id
-      this.$emit('onAddNewTitle', JSON.parse(JSON.stringify(this.titleForm)))
-      this.onDialogClose()
+    onAddNewTitle: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.titleForm['classInfo_id'] = this.classInfo.id
+          this.$emit('onAddNewTitle', JSON.parse(JSON.stringify(this.titleForm)))
+          this.onDialogClose()
+        } else {
+          return false
+        }
+      })
     },
     fetchTitleGroupList: function() {
       // TODO: Add request params

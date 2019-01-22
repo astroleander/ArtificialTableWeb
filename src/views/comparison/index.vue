@@ -180,6 +180,7 @@ export default {
     // 学期列表值改变时
     selectedSemester(semester_name) {
       this.initClassInfos()
+      this.empty = true
       if (this.use_manager) {
         this.buildClassPointInfos({
           semester: semester_name,
@@ -263,7 +264,8 @@ export default {
         points: null,
         studentMap: new Map(),
         titleMap: new Map(),
-        titleGroupMap: new Map()
+        titleGroupMap: new Map(),
+        titleSumMap: new Map()
       }
       const dataSet = {
         id: classInfo_id,
@@ -273,7 +275,8 @@ export default {
         passExamNum: 0,
         noPassExamNum: 0,
         avgScore: 0,
-        passExamRate: 0
+        passExamRate: 0,
+        studentScore : new Map()
       }
       return Promise.all([
         this.fetchTitleInfo({ classInfo_id: classInfo_id }),
@@ -289,6 +292,12 @@ export default {
             // (1)获取小项数据
             result[0].forEach(element => {
               model.titleMap.set(element.id, element)
+              if (model.titleSumMap.get(element.titleGroup_id)) {
+                const temp = model.titleSumMap.get(element.titleGroup_id) + element.weight
+                model.titleSumMap.set(element.titleGroup_id, temp)
+              } else {
+                model.titleSumMap.set(element.titleGroup_id, element.weight)
+              }
             })
             // (2)获取分数数据
             model.points = result[1]
@@ -296,10 +305,14 @@ export default {
             result[2].forEach(element => {
               model.studentMap.set(element.id, element)
             })
+            dataSet.total =  model.studentMap.size
             // (4)获取大项项数据
+            let titleGroupSum = 0
             result[3].forEach(element => {
               model.titleGroupMap.set(element.id, element)
+              titleGroupSum += element.weight
             })
+            model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
             // console.log('classinfo_id = ' + classInfo_id)
             // 处理一个班级数据
             // 将处理好的数据存储
@@ -347,7 +360,11 @@ export default {
     fetchTitleGroupInfo(params) {
       return titleGroupViewModel.requestTitleGroups(params)
         .then(response => {
-          return Promise.resolve(response)
+          if(response) {
+            return Promise.resolve(response)
+          } else {
+            return Promise.resolve(false)
+          }
         }).catch(reject => {
           return Promise.resolve(false)
         })
@@ -356,7 +373,11 @@ export default {
     fetchTitleInfo(params) {
       return titleViewModel.requestTitles(params)
         .then(response => {
-          return Promise.resolve(response)
+          if(response) {
+            return Promise.resolve(response)
+          } else {
+            return Promise.resolve(false)
+          }
         }).catch(reject => {
           return Promise.resolve(false)
         })
@@ -365,7 +386,11 @@ export default {
     fetchPointInfo(params) {
       return pointViewModel.requestPoints(params)
         .then(response => {
-          return Promise.resolve(response)
+          if(response) {
+            return Promise.resolve(response)
+          } else {
+            return Promise.resolve(false)
+          }
         }).catch(reject => {
           return Promise.resolve(false)
         })
@@ -374,56 +399,47 @@ export default {
     fetchStudentInfo(params) {
       return studentViewModel.requestStudents(params)
         .then(response => {
-          return Promise.resolve(response)
+          if(response) {
+            return Promise.resolve(response)
+          } else {
+            return Promise.resolve(false)
+          }
         }).catch(reject => {
           return Promise.resolve(false)
         })
     },
     // 根据一个班级的数据进行统计分析
     buildClassScore(model, dataSet) {
-      model.studentMap.forEach(element => {
-        dataSet.total++
-        let sum = 0 // 计算一个学生成绩的总分
-        let flag = true // 判断一个学生成绩是否有效
-        try {
-          model.points.forEach(pointItem => {
-            if (pointItem.student_id === element.id) {
-              const temp = this.countPoint(model, pointItem, { classInfo_id: dataSet.id, name: dataSet.name })
-              if (temp[0]) {
-                // 该分数条目计算成功
-                sum += temp[1]
-              } else {
-                // 该分数条目因为数据不全计算失败，通过抛出异常结束这个学生的成绩计算
-                // 若有数据不全情况，则暂不显示雷达图，显示错误提示信息
-                throw new Error('missing data')
-              }
+      let sum = 0
+      model.points.forEach(pointItem => {
+        // 只计算当前在此班级的学生的分数条目
+        if(model.studentMap.get(pointItem.student_id)){
+          const temp = this.countPoint(model, pointItem,{ classInfo_id: dataSet.id, name: dataSet.name } )
+          if (temp[0]) {
+            // 该分数条目计算成功
+            if (dataSet.studentScore.get(pointItem.student_id)) {
+              const studentScore = dataSet.studentScore.get(pointItem.student_id) + temp[1]
+              dataSet.studentScore.set(pointItem.student_id, studentScore)
+            } else {
+              dataSet.studentScore.set(pointItem.student_id, temp[1])
             }
-          })
-        } catch (e) {
-          if (e.message === 'missing data') {
-            // 结束这个学生的成绩计算
-            flag = false
-            return false // 结束本次循环
-          }
-        }
-        // console.log('flag = '+ flag)
-        if (flag) {
-          // console.log('sum = ' + sum)
-          if (sum >= 0 && sum < 60) {
-            dataSet.noPassExamNum++
-            dataSet.validScoreNum++
-            dataSet.avgScore += sum
-          } else if (sum >= 60 && sum <= 100) {
-            dataSet.passExamNum++
-            dataSet.validScoreNum++
-            dataSet.avgScore += sum
+            sum += temp[1]
           }
         }
       })
+      dataSet.studentScore.forEach(score =>{
+        if (score >= 0 && score < 60) {
+          dataSet.noPassExamNum++
+          dataSet.validScoreNum++
+        } else if (score >= 60 && score <= 100) {
+          dataSet.passExamNum++
+          dataSet.validScoreNum++
+        }
+      })
       // 有效成绩人数不为0
-      if (dataSet.validScoreNum !== 0) {
+      if (dataSet.validScoreNum) {
         // 计算该班级的平均分，及格率
-        dataSet.avgScore = Math.round(dataSet.avgScore / dataSet.validScoreNum)
+        dataSet.avgScore = Math.round(sum / dataSet.validScoreNum)
         dataSet.passExamRate = Math.round(dataSet.passExamNum * 100 / dataSet.validScoreNum)
       }
       return dataSet
@@ -442,8 +458,11 @@ export default {
         if (model.titleGroupMap.get(titleGroup_id)) {
           const titleGroup = model.titleGroupMap.get(titleGroup_id)
           const titleGroupWeight = titleGroup.weight
+          const titleSum = model.titleSumMap.get(titleGroup_id)
+          const titleGroupSum = model.titleGroupMap.get('TitleGroupSum')
+          const sum = titleSum * titleGroupSum
           // 分值*大项权重数值*小项权重数值/10000
-          score = pointItem.pointNumber * titleWeight * titleGroupWeight / 10000
+          score = pointItem.pointNumber * titleWeight * titleGroupWeight / sum
           flag = true
           // console.log('point.id = ' + pointItem.id)
           // console.log('title_id = ' + title_id)
@@ -508,6 +527,8 @@ export default {
             this.buildSemesterList(response)
             this.changeMessage('请选择学期')
             this.classInfos = response
+          } else {
+            this.changeMessage('当前课程组无教学班信息')
           }
         }).catch(reject => {
           this.changeMessage('当前课程组无教学班信息')
