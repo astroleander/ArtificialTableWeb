@@ -57,8 +57,8 @@ export default {
     return {
       AppName: '英语课程成绩管理系统',
       loginForm: {
-        username: '20182018',
-        password: 'password1'
+        username: null,
+        password: null
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
