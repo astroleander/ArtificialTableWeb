@@ -19,7 +19,7 @@
 -->
 <template>
   <div class="app-container">
-    <el-card class="form-box">
+    <el-card>
       <div slot="header">
         <span class="rowframe title">班级管理</span>
       </div>
@@ -34,8 +34,9 @@
         <el-table-column prop="sid" label="学号" minwidth="150"></el-table-column>
         <el-table-column prop="name" label="姓名"  minwidth="150"></el-table-column>
         <el-table-column prop="major" label="专业"  minwidth="150"></el-table-column>
-        <el-table-column label="操作" width="250">
+        <el-table-column label="操作" width="350">
           <template slot="header" slot-scope="scope">
+            <el-button type="primary" size="medium"  @click="openImportDialog" >批量导入</el-button>
             <el-button type="primary" size="medium"  @click="openAddDialog" >添加学生</el-button>
             <el-button type="danger" size="medium" @click="confirmDeleteClassFields">删除选中</el-button>
           </template>
@@ -44,6 +45,11 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog title="添加学生" :center="true"  width="70%" :visible.sync="ImportDialogVisible">
+        <add-class-student :class-info_id="this.$router.currentRoute.params.id"
+                           @addEnd="handleAddEnd"
+        ></add-class-student>
+      </el-dialog>
       <!-- 添加学生的对话框-->
       <el-dialog title="选择要添加的学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
           <el-select class="majorBox" v-model="selectedMajor" @change="handleMajorChange" placeholder="按专业筛选左侧学生列表" :clearable="true">
@@ -111,7 +117,9 @@ import classFieldViewModel from '@/viewmodel/classfield'
 import studentViewModel from '@/viewmodel/student'
 import majorViewModel from '@/viewmodel/major'
 import { mapGetters } from 'vuex'
+import AddClassStudent from './addClassFieldStudent'
 export default {
+  components: { AddClassStudent },
   data() {
     return {
       // 选择列表相关信息
@@ -151,7 +159,9 @@ export default {
       //  确认dialog对话框相关数据
       confirmDialogVisible: false,
       // 准备提交的数据
-      confirmTableStudents: []
+      confirmTableStudents: [],
+      // 批量导入dialog对话框相关数据
+      ImportDialogVisible: false
     }
   },
   computed: {
@@ -165,6 +175,10 @@ export default {
     }
   },
   methods: {
+    handleAddEnd() {
+      this.ImportDialogVisible = false
+      this.fetchTableStudentInfo()
+    },
     delChange(val) {
       // console.log(val)
       this.delList = val
@@ -406,6 +420,16 @@ export default {
       if (this.classInfo_id) {
         this.AddDialogVisible = true
         this.buildTransfer()
+      } else {
+        this.$message({
+          type: 'error',
+          message: '缺少班级参数!'
+        })
+      }
+    },
+    openImportDialog() {
+      if (this.classInfo_id) {
+        this.ImportDialogVisible = true
       } else {
         this.$message({
           type: 'error',
