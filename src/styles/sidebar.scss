@@ -8,6 +8,12 @@
   }
   // 侧边栏
   .sidebar-container {
+    .is-active {
+      background-color: $menuHover !important;
+      span {
+        color: #FFF !important;
+      }
+    }
     transition: width 0.28s;
     width: 180px !important;
     height: 100%;
@@ -58,6 +64,9 @@
       .el-tooltip {
         padding: 0 10px !important;
       }
+      &.is-active {
+        background-color: $menuHover !important;
+      }
     }
     .el-submenu {
       overflow: hidden;
@@ -69,6 +78,7 @@
       }
     }
     .el-menu-item {
+      
       .el-tooltip {
         padding-left: 10px !important;
       }
@@ -93,6 +103,12 @@
     background-color: $subMenuBg !important;
     &:hover {
       background-color: $menuHover !important;
+    }
+    &.is-active {
+      background-color: $menuHover !important;
+      span {
+        color: #FFF !important;
+      }
     }
   }
   .el-menu--collapse .el-menu .el-submenu {

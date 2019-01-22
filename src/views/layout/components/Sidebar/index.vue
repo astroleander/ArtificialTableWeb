@@ -18,7 +18,7 @@
     </el-menu-item>
 
     <el-menu-item v-if="this.is_manager" index="999" disabled class="switch">
-      <svg-icon icon-class="domain"></svg-icon>
+      <svg-icon icon-class="lock"></svg-icon>
       <template slot="title">
         <span style="color:#EEE;">管理员模式</span>
         <el-switch v-model="handler"
@@ -31,20 +31,20 @@
     </el-menu-item>
     <el-submenu v-if="this.handler" index="9990">
       <template slot="title">
-          <svg-icon icon-class="domain"></svg-icon>
+          <svg-icon icon-class="user"></svg-icon>
           <span>管理教师信息</span>
       </template>
       <el-menu-item index="9998">
         <template slot="title">
           <router-link to="/manager/user/list">
-            <svg-icon icon-class="domain"></svg-icon>
+            <svg-icon icon-class="userList"></svg-icon>
             <span>教师列表</span>
           </router-link>
         </template>
       </el-menu-item>
       <router-link :to="{ name: 'addmanager', params: { type:'add' }}">
         <el-menu-item index="9995">
-          <svg-icon icon-class="domain"></svg-icon>
+          <svg-icon icon-class="addUser"></svg-icon>
           <span slot="title">添加教师</span>
         </el-menu-item>
       </router-link>
@@ -59,14 +59,14 @@
       <el-menu-item index="2131">
         <template slot="title">
           <router-link to="/manager/class/list">
-            <svg-icon icon-class="domain"></svg-icon>
+            <svg-icon icon-class="list"></svg-icon>
             <span>班级列表</span>
           </router-link>
         </template>
       </el-menu-item>
       <router-link :to="{ name: 'addClassInfo', params: { type:'add' }}">
         <el-menu-item index="21412">
-          <svg-icon icon-class="domain"></svg-icon>
+          <svg-icon icon-class="addClass"></svg-icon>
           <span slot="title">添加班级</span>
         </el-menu-item>
       </router-link>
@@ -74,14 +74,14 @@
 
     <router-link to="/manager/student">
       <el-menu-item v-if="this.handler" index="9992">
-        <svg-icon icon-class="domain"></svg-icon>
+        <svg-icon icon-class="addStudent"></svg-icon>
         <span slot="title">添加学生</span>
       </el-menu-item>
     </router-link>
 
     <router-link to="/manager/lesson">
       <el-menu-item v-if="this.handler" index="9993">
-        <svg-icon icon-class="domain"></svg-icon>
+        <svg-icon icon-class="addCourse"></svg-icon>
         <span slot="title">添加课程</span>
       </el-menu-item>
     </router-link>

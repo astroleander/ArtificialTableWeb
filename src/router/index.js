@@ -33,7 +33,7 @@ export const constantRouterMap = [
     redirect: 'index',
     name: 'mainpage',
     children: [{
-      meta: { title: '主界面', icon: 'tree' },
+      meta: { title: '主界面', icon: 'list' },
       path: 'index',
       component: () => import('@/views/mainpage/index')
     }]
@@ -45,7 +45,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'comparison',
       component: () => import('@/views/comparison/index'),
-      meta: { title: '成绩比较', icon: 'tree' }
+      meta: { title: '成绩比较', icon: 'dash' }
     }]
   },
   {
@@ -55,7 +55,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'weight',
       component: () => import('@/views/weight/index'),
-      meta: { title: '权重调整', icon: 'tree' }
+      meta: { title: '权重调整', icon: 'weight' }
     }]
   },
   /**
@@ -68,19 +68,19 @@ export const constantRouterMap = [
       path: 'index',
       name: 'input-wrapper',
       redirect: '/input',
-      meta: { title: '导入成绩', icon: 'tree' }
+      meta: { title: '导入成绩', icon: 'upload' }
     }]
   },
   {
     path: '/input',
     redirect: '/input/index/',
-    meta: { title: '导入成绩', icon: 'tree' },
+    meta: { title: '导入成绩', icon: 'upload' },
     component: Layout,
     hidden: true,
     children: [{
       path: 'index',
       name: 'input',
-      meta: { title: '导入成绩', icon: 'tree' },
+      meta: { title: '导入成绩', icon: 'upload' },
       component: () => import('@/views/input/index')
     }]
   },
