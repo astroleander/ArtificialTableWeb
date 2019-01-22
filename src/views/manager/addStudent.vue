@@ -73,14 +73,6 @@
         </el-form>
       </el-row>
 
-      <el-row>
-        <el-col :span='8'>.</el-col>
-        <el-col :span='8' style="display:flex; content-justify:center; align-content:center;">
-          <el-button @click="onResetClicked">重置界面</el-button>
-          <el-button type="success" @click="onSubmitClicked">上传学生</el-button>
-        </el-col>
-        <el-col :span='8'>.</el-col>
-      </el-row>
       <el-table v-if="importStudentList !== null" 
           :data="importStudentList"
           >
@@ -89,15 +81,19 @@
           align="center"
           >
           <template slot="header" slot-scope="scope" >
-            <div>
-              <el-checkbox
-                v-model="nameCheckedList[idx]"
-                :true-label="scope.$index + 1"
-                @change="onNameChecked">姓名列</el-checkbox>
-              <el-checkbox 
-                v-model="sidCheckedList[idx]"
-                :true-label="scope.$index + 1"
-                @change="onSidChecked">学号列</el-checkbox>
+            <div class="header">
+              <span>
+                <el-checkbox
+                  v-model="nameCheckedList[idx]"
+                  :true-label="scope.$index + 1"
+                  @change="onNameChecked">姓名列</el-checkbox>
+              </span>
+              <span>
+                <el-checkbox 
+                  v-model="sidCheckedList[idx]"
+                  :true-label="scope.$index + 1"
+                  @change="onSidChecked">学号列</el-checkbox>
+              </span>
             </div>
           </template>
           <template slot-scope="scope">
@@ -120,6 +116,12 @@
       <div>
         <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
       </div>
+       <el-row>
+        <div class="row" style="padding:10px;">
+          <el-button @click="onResetClicked">重置界面</el-button>
+          <el-button type="success" @click="onSubmitClicked">上传学生</el-button>
+        </div>
+      </el-row>
     </el-tab-pane>
     <el-tab-pane label="添加单个学生">      
     </el-tab-pane>
@@ -217,10 +219,10 @@ export default {
         })
         return
       }
-      if (sid_idx === name_idx) {
+      if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
         this.$message({
           type: 'error',
-          message: '学号和姓名不能是同一列'
+          message: '尚未选择学生的归属信息'
         })
         return
       }
@@ -231,13 +233,14 @@ export default {
         })
         return
       }
-      if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
+      if (sid_idx === name_idx) {
         this.$message({
           type: 'error',
-          message: '尚未选择学生的归属信息'
+          message: '学号和姓名不能是同一列'
         })
         return
       }
+
       // generate student objs list
       const studentList = []
       const Student = () => {
@@ -329,6 +332,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header {
+  display:flex; 
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-content: center;
+}
 .container {
   background: #FFF;
   padding-bottom: 10px;
@@ -339,6 +349,12 @@ export default {
 .span {
   padding: 8px;
   font-weight: bold;
+}
+.row {
+  display:flex; 
+  justify-content:center; 
+  align-content:center; 
+  flex-direction:row;
 }
 </style>
 
