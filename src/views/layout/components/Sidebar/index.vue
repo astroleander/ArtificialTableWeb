@@ -72,12 +72,29 @@
       </router-link>
     </el-submenu>
 
-    <router-link to="/manager/student">
-      <el-menu-item v-if="this.handler" index="9992">
-        <svg-icon icon-class="addStudent"></svg-icon>
-        <span slot="title">添加学生</span>
+    <el-submenu v-if="this.handler" index="9993">
+      <template slot="title">
+          <svg-icon icon-class="userList"></svg-icon>
+          <span>管理学生信息</span>
+      </template>
+      <el-menu-item index="213133">
+        <template slot="title">
+          <router-link to="/manager/student/list">
+            <svg-icon icon-class="list"></svg-icon>
+            <span>学生列表</span>
+          </router-link>
+        </template>
       </el-menu-item>
-    </router-link>
+      <el-menu-item v-if="this.handler" index="99925">
+        <template slot="title">
+          <router-link to="/manager/student/add">
+            <svg-icon icon-class="addUser"></svg-icon>
+            <span>添加学生</span>
+          </router-link>
+        </template>
+      </el-menu-item>
+    </el-submenu>
+
 
     <router-link to="/manager/lesson">
       <el-menu-item v-if="this.handler" index="9993">

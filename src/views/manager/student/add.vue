@@ -401,8 +401,6 @@ export default {
       return this.nameCheckedList[scope.$index] || false
     },
     fetchCollegeList() {
-      console.log(this.user)
-      console.log(typeof this.user)
       if (typeof this.user === 'string') {
         const user = JSON.parse(this.user)
         const university_id = user.university_message.id
@@ -475,7 +473,8 @@ export default {
   align-content: center;
 }
 .container {
-  background: #FFF;
+  min-height: 100vh;
+  background: #FDFDFD;
   padding-bottom: 10px;
 }
 .select-menu {
@@ -494,7 +493,11 @@ export default {
 .top-box{
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: flex-start;
+  padding: 5px;
+  div {
+    margin: 5px;
+  }
 }
 .form-box{
   margin-left: 25%;

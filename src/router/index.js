@@ -100,10 +100,16 @@ export const constantRouterMap = [
     component: Layout,
     hidden: true,
     children: [{
-      path: 'student',
+      path: 'student/add',
       name: 'addstudent',
-      component: () => import('@/views/manager/addStudent.vue'),
+      component: () => import('@/views/manager/student/add.vue'),
       meta: { title: '添加学生', icon: 'tree' }
+    },
+    {
+      path: 'student/list',
+      name: 'liststudent',
+      component: () => import('@/views/manager/student/list.vue'),
+      meta: { title: '学生列表', icon: 'tree' }
     },
     {
       path: 'user/add',
