@@ -13,7 +13,7 @@
         <div class="button-group">
           <el-button @click="dealAvg"  :disabled="btnDisabled">一键平均</el-button>
           <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
-          <el-button @click="addLessonItem">添加大项</el-button>
+          <el-button @click="addTitleGroupItem">添加大项</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
         </div>
@@ -47,6 +47,7 @@
                            @input="handleInput(title.weight,index)"/>
           </div>
           <div class="lock-box" :class="{'active':titleDisabled[index]}" @click="changeLock(index)" >锁定</div>
+          <el-button size="mini" type="danger" plain @click="delTitleGroupItem(title.id)">删除</el-button>
         </div>
       </div>
       <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
@@ -142,9 +143,13 @@
     },
     methods: {
       // 打开添加页
-      addLessonItem: function() {
+      addTitleGroupItem: function() {
         this.dialogFormVisible = true
         this.$refs['ruleForm'].resetFields()
+      },
+      // 删除大项
+      delTitleGroupItem: function(titleGroup_id) {
+        this.$emit('notifyDel', titleGroup_id)
       },
       // 计算权重总和
       weightSum: function() {
