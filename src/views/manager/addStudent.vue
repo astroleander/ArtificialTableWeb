@@ -260,7 +260,13 @@ export default {
       this.submitStudentList(studentList)
     },
     onResetClicked() {
-
+      this.selectedCollegeId = null
+      this.selectedMajorId = null
+      this.seletedSemester = {
+        year: null,
+        semester: null
+      }
+      this.importStudentList = null
     },
     submitStudentList(list) {
       StudentViewModel.requestPostStudents(list).then(res => {
