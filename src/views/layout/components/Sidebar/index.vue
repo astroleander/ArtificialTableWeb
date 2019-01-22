@@ -12,6 +12,11 @@
     >
     <sidebar-item :routes="routes"></sidebar-item>
 
+    <el-menu-item v-if="this.is_manager" index="999" disabled divided id="divided">
+      <template slot="title">
+      </template>
+    </el-menu-item>
+
     <el-menu-item v-if="this.is_manager" index="999" disabled class="switch">
       <svg-icon icon-class="domain"></svg-icon>
       <template slot="title">
@@ -126,3 +131,12 @@ export default {
   cursor: default;
 }
 </style>
+
+<style lang="scss">
+#divided {
+  height: 2px;
+  background-color: #FFF !important;
+  cursor: default;
+}
+</style>
+
