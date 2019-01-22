@@ -1,9 +1,7 @@
 <template>
   <el-tabs class="container" id="add-student-page">
     <el-tab-pane label="添加一群学生">
-      <el-row :gutter="12" class="select-menu">
-        <el-form>
-        <el-col :span="6">
+        <el-form class="top-box">
           <el-card>
             <span class="span">学校</span>
             <el-input style="width:200px"
@@ -12,15 +10,13 @@
               size="mini"
             ></el-input>
           </el-card>
-        </el-col>
-        <el-col :span="6">
           <el-card>
             <span class="span">院系</span>
             <el-select v-model="selectedCollegeId"
               filterable
               remote
               size="mini"
-              placeholder="哪个院的"
+              placeholder="请选择所属院系"
               @change="fetchMajorList"
               :loading="collegeLoading"
               >
@@ -33,15 +29,13 @@
               </el-option>
             </el-select>
           </el-card>
-        </el-col>
-        <el-col :span="6">
           <el-card>
             <span class="span">专业</span>
             <el-select v-model="selectedMajorId"
               filterable
               size="mini"
               remote
-              placeholder="哪个专业的"
+              placeholder="请选择所属专业"
               :loading="majorLoading"
               >
               <el-option
@@ -53,12 +47,10 @@
               </el-option>
             </el-select>
           </el-card>
-        </el-col>
-        <el-col :span="6">
           <!-- <el-card id="select-input-semester"> -->
           <el-card>
             <span class="span" style="width:80px">学年</span>
-            <el-date-picker v-model="seletedSemester.year"
+            <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
               size="mini" type="year" format='yyyy' value-format="yyyy">
             </el-date-picker>
             <!-- <el-select size="mini" v-model="seletedSemester.season" placeholder="学期">
@@ -69,9 +61,7 @@
                 <el-option value="春季小学期"></el-option>
               </el-select> -->
           </el-card>
-        </el-col>
         </el-form>
-      </el-row>
 
       <el-table v-if="importStudentList !== null"
           :data="importStudentList"
@@ -135,14 +125,28 @@
           <el-form-item label="学生编号" prop="sid" required>
             <el-input v-model="form.sid" placeholder="请输入学生编号(至少6位数字)"></el-input>
           </el-form-item>
-          <el-form-item label="入学年份" prop="year" required>
-            <el-date-picker v-model="form.year" type="year" format='yyyy' value-format="yyyy">
+          <el-form-item label="入学年份" prop="year">
+            <el-date-picker v-model="form.year" placeholder="请选择入学年份" type="year" format='yyyy' value-format="yyyy">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="学生专业" prop="major_id" >
-            <el-select v-model="form.major_id" placeholder="请选择专业">
+          <el-form-item label="所属院系" prop="college_id">
+            <el-select v-model="form.college_id"
+                       placeholder="请选择学生所在院系"
+                       @change="fetchFormMajorList"
+            >
               <el-option
-                v-for="(item,index) in remoteMajorList"
+                v-for="item in formCollegeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属专业" prop="major_id" >
+            <el-select v-model="form.major_id"
+                       :placeholder="majorMessage">
+              <el-option
+                v-for="(item,index) in formMajorList"
                 :key="index"
                 :label="item.name"
                 :value="item.id">
@@ -198,6 +202,21 @@ export default {
     ImportExcelComponent
   },
   data: function() {
+    var validateStudentId = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入学生编号'))
+      } else if (!Number.isInteger(+value)) {
+        callback(new Error('请输入数字值'))
+      } else {
+        const tidReg = /^\d{6,}$/
+        if (tidReg.test(value)) {
+          callback()
+        } else {
+          callback(new Error('学生编号至少6位'))
+        }
+      }
+      callback()
+    }
     return {
       // selected college
       selectedCollegeId: null,
@@ -225,8 +244,30 @@ export default {
         name: '',
         sid: '',
         year: '',
-        major_id: ''
-      }
+        major_id: '',
+        college_id: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入学生姓名', trigger: 'blur' }
+        ],
+        sid: [
+          { validator: validateStudentId, trigger: 'blur' }
+        ],
+        year: [
+          { required: true, message: '请选择年份', trigger: 'change' }
+        ],
+        college_id: [
+          { required: true, message: '请选择所属院系', trigger: 'change' }
+        ],
+        major_id: [
+          { required: true, message: '请选择所属专业', trigger: 'change' }
+        ]
+      },
+      // 表单需要的院系信息以及专业信息
+      formCollegeList: [],
+      formMajorList: [],
+      majorMessage: '请先选择院系'
     }
   },
   computed: {
@@ -308,10 +349,34 @@ export default {
     },
     submitStudentList(list) {
       StudentViewModel.requestPostStudents(list).then(res => {
+        const unsucceed = list.length - res.succeed_ids.length
+        const message = res.succeed_ids.length + '条学生数据成功导入，' + unsucceed + '条未导入'
         this.$message({
-          type: 'success',
-          message: '添加成功'
+          type: 'info',
+          message: message
         })
+      }).catch(reject => {
+        console.log('reject = ' + reject)
+      })
+    },
+    submitFormStudent(list) {
+      StudentViewModel.requestPostStudents(list).then(res => {
+        if (res.succeed_ids.length > 0) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+        } else if (res.repeated_ids.length > 0) {
+          this.$message({
+            type: 'error',
+            message: '该学号已占用'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '添加失败'
+          })
+        }
       })
     },
     onNameChecked(idx) {
@@ -344,6 +409,7 @@ export default {
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
           this.remoteCollegeList = res
+          this.formCollegeList = res
           this.collegeLoading = false
           this.majorLoading = true
         })
@@ -353,6 +419,7 @@ export default {
         this.remoteUniversity = user.university_message
         CollegeViewModel.requestByUniversityId(university_id).then(res => {
           this.remoteCollegeList = res
+          this.formCollegeList = res
           this.collegeLoading = false
           this.majorLoading = true
         })
@@ -365,6 +432,30 @@ export default {
         this.remoteMajorList = res
         this.majorLoading = false
       })
+    },
+    fetchFormMajorList(value) {
+      if (value === '') {
+        this.majorMessage = '请先选择院系'
+      } else {
+        MajorViewModel.requestByCollegeId(value).then(res => {
+          this.formMajorList = res
+          this.majorMessage = '请选择学生所属专业'
+        })
+      }
+    },
+    // 添加学生
+    submitForm: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submitFormStudent([this.form])
+        } else {
+          return false
+        }
+      })
+    },
+    // 重置表单
+    onReset() {
+      this.$refs['ruleForm'].resetFields()
     }
   },
   created() {
@@ -399,6 +490,23 @@ export default {
   justify-content:center;
   align-content:center;
   flex-direction:row;
+}
+.top-box{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.form-box{
+  margin-left: 25%;
+  width: 50%;
+  min-width: 500px;
+  padding: 20px;
+  /*border: 1px solid #999999;*/
+}
+.rowframe{
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
 }
 </style>
 
