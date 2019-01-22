@@ -31,10 +31,10 @@
             {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column prop="sid" label="学号" minwidth="150"></el-table-column>
-      <el-table-column prop="name" label="姓名"  minwidth="150"></el-table-column>
-      <el-table-column prop="major_message.name" label="专业"  minwidth="150"></el-table-column>
-      <el-table-column prop="year" label="入学年份"  minwidth="150"></el-table-column>
+      <el-table-column prop="sid" label="学号" minWidth="150"></el-table-column>
+      <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
+      <el-table-column prop="major_message.name" label="专业"  minWidth="150"></el-table-column>
+      <el-table-column prop="year" label="入学年份"  minWidth="150"></el-table-column>
       <!-- <el-table-column label="操作" width="350">
         <template slot="header" slot-scope="scope">
           <el-button type="danger" size="mini" @click="confirmDeleteClassFields">删除选中</el-button>
@@ -45,7 +45,7 @@
       </el-table-column> -->
     </el-table>
     <el-card v-else style="height: 70vh; line-height: 50vh; text-align: center;">
-      请选择筛选项
+      无数据, 请选择筛选项
     </el-card>
   </div>
 </template>
@@ -80,7 +80,7 @@ export default {
       }
     }
   },
-    computed: {
+  computed: {
     ...mapGetters([
       'user'
     ])
@@ -94,7 +94,7 @@ export default {
     },
     onYearChanged: function(year) {
       this.selectedYear
-      fetchStudentList()
+      this.fetchStudentList()
     },
     selectedCollegeChanged(college_id) {
       this.fetchMajorListByCollegeId(college_id[0]).then(res => {
@@ -131,22 +131,34 @@ export default {
       if (this.selectedYear && this.selectedMajor) {
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
-            this.remoteStudentDataset = students
+            if (students) {
+              this.remoteStudentDataset = students
+            } else {
+              this.remoteStudentDataset = []
+            }
           })
       } else if (this.selectedYear && !this.selectedMajor) {
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
-            this.remoteStudentDataset = students
+            if (students) {
+              this.remoteStudentDataset = students
+            } else {
+              this.remoteStudentDataset = []
+            }
           })
       } else if (this.selectedMajor && !this.selectedYear) {
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
-            this.remoteStudentDataset = students
+            if (students) {
+              this.remoteStudentDataset = students
+            } else {
+              this.remoteStudentDataset = []
+            }
           })
       } else {
         this.remoteStudentDataset = []
       }
-    },
+    }
   //   confirmDeleteClassFields() {
   //     this.$confirm('此操作将选中学生从班级中删除, 是否继续?', '提示', {
   //       confirmButtonText: '确定',
@@ -178,7 +190,7 @@ export default {
   },
   created() {
     this.fetchCollegeList()
-  },
+  }
 }
 </script>
 

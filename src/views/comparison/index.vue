@@ -276,7 +276,7 @@ export default {
         noPassExamNum: 0,
         avgScore: 0,
         passExamRate: 0,
-        studentScore : new Map()
+        studentScore: new Map()
       }
       return Promise.all([
         this.fetchTitleInfo({ classInfo_id: classInfo_id }),
@@ -305,7 +305,7 @@ export default {
             result[2].forEach(element => {
               model.studentMap.set(element.id, element)
             })
-            dataSet.total =  model.studentMap.size
+            dataSet.total = model.studentMap.size
             // (4)获取大项项数据
             let titleGroupSum = 0
             result[3].forEach(element => {
@@ -360,7 +360,7 @@ export default {
     fetchTitleGroupInfo(params) {
       return titleGroupViewModel.requestTitleGroups(params)
         .then(response => {
-          if(response) {
+          if (response) {
             return Promise.resolve(response)
           } else {
             return Promise.resolve(false)
@@ -373,7 +373,7 @@ export default {
     fetchTitleInfo(params) {
       return titleViewModel.requestTitles(params)
         .then(response => {
-          if(response) {
+          if (response) {
             return Promise.resolve(response)
           } else {
             return Promise.resolve(false)
@@ -386,7 +386,7 @@ export default {
     fetchPointInfo(params) {
       return pointViewModel.requestPoints(params)
         .then(response => {
-          if(response) {
+          if (response) {
             return Promise.resolve(response)
           } else {
             return Promise.resolve(false)
@@ -399,7 +399,7 @@ export default {
     fetchStudentInfo(params) {
       return studentViewModel.requestStudents(params)
         .then(response => {
-          if(response) {
+          if (response) {
             return Promise.resolve(response)
           } else {
             return Promise.resolve(false)
@@ -413,8 +413,8 @@ export default {
       let sum = 0
       model.points.forEach(pointItem => {
         // 只计算当前在此班级的学生的分数条目
-        if(model.studentMap.get(pointItem.student_id)){
-          const temp = this.countPoint(model, pointItem,{ classInfo_id: dataSet.id, name: dataSet.name } )
+        if (model.studentMap.get(pointItem.student_id)) {
+          const temp = this.countPoint(model, pointItem, { classInfo_id: dataSet.id, name: dataSet.name })
           if (temp[0]) {
             // 该分数条目计算成功
             if (dataSet.studentScore.get(pointItem.student_id)) {
@@ -427,7 +427,7 @@ export default {
           }
         }
       })
-      dataSet.studentScore.forEach(score =>{
+      dataSet.studentScore.forEach(score => {
         if (score >= 0 && score < 60) {
           dataSet.noPassExamNum++
           dataSet.validScoreNum++
