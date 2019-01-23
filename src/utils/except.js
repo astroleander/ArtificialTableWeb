@@ -19,6 +19,8 @@ const responseHandler = (response) => {
       //   type: 'warning',
       //   duration: 5 * 1000
       // })
+    } else if (RegExp('4038').test(response.code)) {
+      console.log('Invailed insert request')
     } else if (RegExp('4036').test(response.code)) {
       console.log('Query nothing, no exists')
     } else if (RegExp('4021').test(response.code)) {

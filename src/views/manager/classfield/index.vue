@@ -19,7 +19,7 @@
             >
               <el-table-column label="">
                 <template slot-scope="scope">
-                  <el-button icon="el-icon-edit" @click="onModifyClicked(lesson, scope.row)">修改信息</el-button>
+                  <el-button icon="el-icon-edit" @click="onModifyClicked(lesson, scope.row)">学生信息</el-button>
                   <el-button icon="el-icon-delete" @click="onDeleteClicked(lesson, scope.row)"></el-button>
                 </template>
               </el-table-column>

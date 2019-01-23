@@ -91,14 +91,28 @@
                     </el-select>
                     <!-- 如果 type === title，渲染选择框 -->
                     <template v-if="title.type === 'title'">
-                      <el-input type="text" v-model="title.name"
-                        placeholder="列名" size="mini" class="title-name"/>
-                      <el-select v-model="title.titleGroup" placeholder="类别"
-                      size="mini" class="title-name">
-                        <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
-                          :label='titleGroup.name' :value='titleGroup.id'>
-                        </el-option>
-                      </el-select>
+                      <div class="select-container">
+                        <span class="span-title ">
+                        <span>列名: </span>
+                        <el-input type="text" v-model="title.name"
+                          placeholder="列名" size="mini" class="title-name"/>
+                        </span>
+                        <!-- <span class="span-title "> -->
+                        <!-- <span>满分: </span> -->
+                        <!-- <el-input v-model.number="title.total"  -->
+                          <!-- type="number" prop="number"  -->
+                          <!-- placeholder="总分" size="mini" class="title-text"/> -->
+                        <!-- </span> -->
+                        <span class="span-title ">
+                        <span>类别: </span>
+                        <el-select v-model="title.titleGroup" placeholder="类别"
+                        size="mini" class="title-name">
+                          <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
+                            :label='titleGroup.name' :value='titleGroup.id'>
+                          </el-option>
+                        </el-select>
+                        </span>
+                      </div>
                     </template>
                     <!-- 如果 type === sid，渲染学号框 -->
                     <template v-else-if="title.type === 'sid'">
@@ -152,6 +166,7 @@
           <!-- STEP - 3 - 步骤操作菜单 -->
           <el-button class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
           <el-button class="button" type="success" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          <el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)" size="mini">继续上传</el-button>
 
           <!-- CONTAINER 容纳错误信息 -->
           <el-card v-if="submitErrorMessage.existTitleNameList.length > 0">
@@ -238,7 +253,7 @@ import PointMock from '@/mock/point'
 import TitleMock from '@/mock/title'
 
 // 引入常量，全是提示信息字符串
-import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE } from '@/utils/alerts'
+import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE, NO_TITLE_GROUP } from '@/utils/alerts'
 
 const COLOR_SID = '#1976D2'
 const COLOR_UNFINISHED = '#FFCC33'
@@ -253,9 +268,19 @@ const calHeight = () => {
   return window.innerHeight - 200
 }
 
-/** xlsx 的输出模式被制定为 header:1, 与 handsontable 兼容， 不需要转换
+/** // xlsx 的输出模式被制定为 header:1, 与 handsontable 兼容， 不需要转换
+ * trim here
  */
 const xlsxToHotAdapter = (xlsxData) => {
+  // console.log(xlsxData)
+  xlsxData.forEach(row => {
+    row.forEach(element => {
+      if (element.trim() === '') {
+        element = null
+      }
+    })
+  })
+  // console.log(xlsxData)
   return xlsxData
 }
 
@@ -284,7 +309,7 @@ const hotToElementAdapter = (hotData, withHeader) => {
       if (rowArray[colIdx] !== null && rowArray[colIdx] !== '' && rowArray[colIdx] !== undefined) {
         // 初始化 title 项
         if (!titleMap.get(colIdx)) {
-          const newTitle = { idx: colIdx, type: 'default', name: colNameList[colIdx], titleGroup: undefined }
+          const newTitle = { idx: colIdx, type: 'default', name: colNameList[colIdx], titleGroup: undefined, total: 100 }
           // 如果包含项名，则自动设置 title.type
           if (withHeader && !(hotData[0][colIdx] === undefined || hotData[0][colIdx] === null || hotData[0][colIdx] === '')) {
             // console.log(hotData[0][colIdx])
@@ -299,7 +324,11 @@ const hotToElementAdapter = (hotData, withHeader) => {
   // 输出数据集结果
   hotData.forEach((rowArray, rowIdx) => {
     resDataSet[rowIdx] = [];
-    [...titleMap.keys()].forEach(colIdx => (resDataSet[rowIdx][colIdx] = rowArray[colIdx]))
+    [...titleMap.keys()].forEach(colIdx => {
+      if (rowArray[colIdx] && rowArray[colIdx].trim() !== '') {
+        resDataSet[rowIdx][colIdx] = rowArray[colIdx].trim()
+      }
+    })
   })
 
   // 如果是包含项名的输入，则将第一列删除
@@ -483,7 +512,7 @@ export default {
           // 返回不是全空的行
           importDataset = importDataset.filter((row, rowIndex, arr) => {
             return !row.every(cell => {
-              return cell === null || cell === '' || cell === undefined
+              return cell === null || cell.trim() === '' || cell === undefined
             })
           })
           const env = this.rootElement.__vue__
@@ -504,7 +533,8 @@ export default {
         existTitleNameList: [],
         errorTitleNameList: [],
         existPointList: [],
-        errorPointList: []
+        errorPointList: [],
+        responsed: false
       }
     }
   }, // data-end
@@ -659,9 +689,9 @@ export default {
 
         return [
           // { id: 1, title: '学生数', content: '24' },
-          { id: 2, title: '导入的小项数', content: titleCount },
+          { id: 2, title: '导入的成绩小项数', content: titleCount },
           // { id: 3, title: '学生数', content: '24' },
-          { id: 4, title: '将有' + (uselessCount + defaultCount) + '列被废弃' }
+          { id: 4, title: '目前将有' + (uselessCount + defaultCount) + '列被废弃' }
         ]
       }
     }
@@ -710,7 +740,10 @@ export default {
     toStep(from, to) {
       switch (to) {
         case 1:
-          this.activeStep = 0
+          if (from === 3) {
+            this.$router.push('/redirector/index')
+          }
+          // this.activeStep = 0
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
@@ -780,6 +813,12 @@ export default {
     },
     fetchTitleGroup(id) {
       titleGroupViewModel.requestByLessonId(id).then(list => {
+        if (list === undefined) {
+          // this.importAlertList.push(NO_TITLE_GROUP)
+          this.addAlert(NO_TITLE_GROUP, this.importAlertList)
+        } else {
+          this.importAlertList = this.closeAlert(this.importAlertList, NO_TITLE_GROUP)
+        }
         this.remoteTitleGroupList = list
       }).catch(err => {
         console.error(err)
@@ -793,6 +832,7 @@ export default {
     submit() {
       const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
       pointViewModel.requestImportPoints(submitDataset).then(res => {
+        this.activeStep = 3
         if ((res && String(res.code) === '2011') || (res && String(res.code) === '2001')) {
           console.log('数据导入成功')
           this.$message({
@@ -817,7 +857,6 @@ export default {
       })
     },
     onSelectedLocalExcel(data) {
-      // console.log(data.results)
       this.$refs.hotTable.hotInstance.loadData(xlsxToHotAdapter(data.results))
     },
     onTitleTypeClick(title, type) {
@@ -834,6 +873,7 @@ export default {
 
       const title_list = errorList['error_title_names'] || []
       // deleted duplicated
+      this.submitErrorMessage.responsed = true
       this.submitErrorMessage.errorTitleNameList = Array.from(new Set(title_list))
       this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
       this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
@@ -859,6 +899,21 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+.select-container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.span-title {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
 .flex-half {
   float: left;
   width: 50%;
@@ -921,7 +976,7 @@ export default {
   justify-content: start;
   align-items: center;
   min-height: 50px;
-  max-height: 100px;
+  // max-height: 100px;
 }
 
 .hidden-selector {
@@ -974,13 +1029,18 @@ export default {
   display: none;
 }
 
-.title-name .el-input__inner {
+.title-name .el-input__inner, .title-name .el-input {
   min-width: 40px;
   padding: 0 0 0 4px ;
 }
 
-.title-name .el-input {
+.title-text .el-input__inner, .title-text .el-input {
   min-width: 40px;
+  padding: 0 0 0 4px ;
+}
+
+.title-select .el-input__inner, .title-select .el-input {
+  min-width: 60px;
   padding: 0 0 0 4px ;
 }
 

@@ -72,6 +72,17 @@ export const constantRouterMap = [
     }]
   },
   {
+    path: '/redirector',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'input-wrapper-redirector',
+      component: () => import('@/views/redirector'),
+      meta: { title: '导入成绩', icon: 'upload' }
+    }]
+  },
+  {
     path: '/input',
     redirect: '/input/index/',
     meta: { title: '导入成绩', icon: 'upload' },

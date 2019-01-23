@@ -135,7 +135,7 @@ export default {
             })
           } else {
             viewmodel.addPoint(cell_upload.point).then(response => {
-              const id = response[0]['id']
+              const id = response['succeed_ids'][0]['id']
               cell_upload.point['id'] = id
               this.$emit('onPointChanged', cell_upload)
               this.$message({

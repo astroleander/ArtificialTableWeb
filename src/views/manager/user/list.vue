@@ -27,12 +27,31 @@
             {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column prop="tid" label="教职工号" minWidth="120"></el-table-column>
-      <el-table-column prop="name" label="姓名"  minWidth="100"></el-table-column>
-      <el-table-column prop="college_message.name" label="院系"  minWidth="150"></el-table-column>
+      <el-table-column prop="tid" label="教职工号" minWidth="80"></el-table-column>
+      <el-table-column prop="name" label="姓名"  minWidth="80"></el-table-column>
+      <el-table-column prop="college_id" label="院系"  minWidth="100"></el-table-column>
+      <el-table-column prop="email" label="邮箱"  minWidth="80"></el-table-column>
+      <el-table-column prop="mobile" label="电话"  minWidth="80"></el-table-column>
+
       <el-table-column label="管理员"  minWidth="80">
         <template slot-scope="scope">
           {{scope.row.is_manager? '管理员' : '教师'}}
+        </template>
+      </el-table-column>
+      <el-table-column minWidth="80">
+        <template slot="header" slot-scope="head">
+          <div>
+          <el-checkbox v-model="showPwd" size="mini" class="pwd-switch"
+              >显示密码</el-checkbox> 
+          </div>
+        </template>
+        <template slot-scope="scope">
+          <template v-if="showPwd">
+            {{scope.row.password}}
+          </template>
+          <template v-else>
+            ******
+          </template>
         </template>
       </el-table-column>
       <el-table-column>
@@ -63,7 +82,9 @@ export default {
         name: null
       },
       remoteCollegeList: [],
-      remoteUserList: []
+      remoteUserList: [],
+
+      showPwd: false
     }
   },
   computed: {
@@ -109,7 +130,7 @@ export default {
       })
     },
     fetchUserList() {
-      UserViewModel.requestUsersWithoutPwd({ college_id: this.selectedCollege })
+      UserViewModel.requestUserInfoWithPwd({ college_id: this.selectedCollege })
         .then(users => {
           if (users) {
             this.remoteUserList = users
@@ -161,5 +182,10 @@ export default {
 }
 .span ~ *{
   margin-right: 10px;
+}
+</style>
+
+<style>
+.pwd-switch .el-switch{
 }
 </style>

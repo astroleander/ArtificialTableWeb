@@ -1,17 +1,17 @@
 export const CLIP_BOARD_ALERT = {
-  id: '0',
+  id: '021312312dsadas',
   title: '请使用 「Ctrl+V」 进行粘贴',
   description: '出于安全因素的考虑，现代浏览器不允许网页自动从您的剪切板中获取数据。'
 }
 
 export const REQUIRE_STUDENT_COLUMN = {
-  id: '1',
+  id: 'fasfasfa1',
   title: '您可能缺少学号列',
   description: ''
 }
 
 export const REQUIRE_STUDENT_COLUMN_LEFT = {
-  id: '2',
+  id: '2asfasfasdasdqwrfvxzbdhth',
   title: '您的最左侧的列不是最长的列, 您的最左列不是学号吗?',
   description: '您的拥有最大行数的列未放置在最左侧, 这不会导致系统导入的问题, 但是您最好确认所有学生的学号已经导入'
 }
@@ -44,5 +44,12 @@ export const REQUIRED_TITLEGROUP = {
 export const REQUIRED_TITLE = {
   id: 'FHAOIFOI',
   title: '您尚有未命名的小项。点击列头的「列名」框来为小项输入一个名字。',
+  type: 'error'
+}
+
+export const NO_TITLE_GROUP = {
+  id: 'fIOSHFoiahsf',
+  title: '需要添加分数类别 (大项)',
+  description: '您当前选择的课程无分数组大项信息，将无法完成导入流程，请到左侧 「权重调整」 页面中添加大项, 若您是教师, 请联系管理员',
   type: 'error'
 }

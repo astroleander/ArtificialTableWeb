@@ -46,7 +46,7 @@ TODO: post 返回需要 ID
       <template slot="header" slot-scope="head">
         <div class="line-container">
           <span>{{title.name}}</span>
-          <div @click='onDeleteColClicked(head, title)' class="delete">+</div>
+          <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
         </div>
       </template>
       <template slot-scope="scope">
@@ -342,9 +342,9 @@ export default {
       /* generate workbook object from table */
       const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
       const size = wb.Sheets[wb.SheetNames[0]]['!ref']
-      const number = size.match(/\d+$/)
-      const newNumber = parseInt(number[0]) / 2
-      const newSize = size.slice(0, number.index) + newNumber
+      const endNumber = size.match(/\d+$/)
+      const newNumber = parseInt(endNumber[0]) / 2
+      const newSize = size.slice(0, endNumber.index) + newNumber
       wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
       /* get binary string as output */
       const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })

@@ -1,16 +1,24 @@
 <template>
   <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
-  <el-form :rules="rules":model="titleForm" ref="form">
-    <el-form-item label="新列名称" prop="name" >
-      <el-input v-model="titleForm.name" autoComplete="off"></el-input>
+  <el-form :rules="rules" :model="titleForm" ref="form">
+    <el-form-item label="新列名称" prop="name">
+      <el-input v-model="titleForm.name" autoComplete="off" size="small" style="width:150px"></el-input>
     </el-form-item>
     <el-form-item label="所属类别" prop="titleGroup_id">
-      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别">
+      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small"> 
         <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
           :label='titleGroup.name' :value='titleGroup.id'>
         </el-option>
       </el-select>
     </el-form-item>
+    <!-- <el-form-item label="小项的总分" prop="titleGroup_id">
+      <el-input v-model.number="titleForm.total" style="width:100px"
+        type="number" prop="number" 
+        placeholder="总分" size="small" class="title-text"/>
+    </el-form-item>
+    <el-form-item label="默认权重" prop="weight">
+      <span>{{titleForm.weight}}</span>
+    </el-form-item> -->
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="onDialogClose">取 消</el-button>
@@ -26,7 +34,8 @@ const titlePrototype = {
   name: '',
   titleGroup_id: null,
   classInfo_id: null,
-  weight: 0
+  weight: 10,
+  total: 100
 }
 
 export default {
@@ -37,7 +46,7 @@ export default {
       titleGroupList: [],
       rules: {
         name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' }
+          { required: true, message: '请输入小项名称', trigger: 'blur' }
         ],
         titleGroup_id: [
           { required: true, message: '请选择小项所属的分数类别', trigger: 'change' }

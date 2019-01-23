@@ -54,6 +54,7 @@ supplement:添加管理员所在本院系的课程
                     message: '添加课程组成功',
                     type: 'success'
                   })
+                  this.$router.push('/manager/class/list')
                 }
               })
           } else {
