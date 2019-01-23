@@ -21,6 +21,12 @@ const responseHandler = (response) => {
       // })
     } else if (RegExp('4036').test(response.code)) {
       console.log('Query nothing, no exists')
+    } else if (RegExp('4021').test(response.code)) {
+      Message({
+        message: '用户或密码名错误，请校验',
+        type: 'error',
+        duration: 5 * 1000
+      })
     } else if (RegExp('^4').test(response.code)) {
       const error = new Error('Customary Error on response!\ncode:' + response.code + '\nmessage:' + response.message)
       const code = response.code

@@ -88,9 +88,9 @@ export default {
           })
         } else {
           this.$confirm('该用户还有正在教授的班级，无法删除！您可以到班级列表中进行确认。', '无法删除', {
-              type: 'warning',
-              confirmButtonText: '确定',
-              cancelButtonText: '关闭'
+            type: 'warning',
+            confirmButtonText: '确定',
+            cancelButtonText: '关闭'
           })
         }
       })
