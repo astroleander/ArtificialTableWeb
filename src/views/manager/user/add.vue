@@ -7,7 +7,7 @@ supplement:
   <div class="app-container rowframe">
     <el-card class="form-box">
     <div slot="header">
-      <span class="rowframe title">添加用户</span>
+      <span class="rowframe title">添加教师</span>
     </div>
     <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
       <el-form-item label="教师姓名" prop="name">
