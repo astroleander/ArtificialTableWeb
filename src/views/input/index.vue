@@ -590,7 +590,7 @@ export default {
     getActiveStep: {
       get() {
         if (this.activeStep === 3) {
-        return "2"
+          return '2'
         }
         return String(this.activeStep)
       },
@@ -788,8 +788,9 @@ export default {
         case 1:
           if (from === 3) {
             this.$router.push('/redirector/index')
+          } else {
+            this.activeStep = 0
           }
-          else this.activeStep = 0
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
