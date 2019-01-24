@@ -81,7 +81,9 @@ export default {
     ...mapGetters([
       'user',
       'id',
-      'is_manager'
+      'is_manager',
+      'use_manager',
+      'token'
     ]),
     getUniName() {
       return this.user.university_message.name
@@ -136,11 +138,14 @@ export default {
       }
     },
     buildSemester: function(allClass) {
+      this.semeseterDataset = {}
       for (const eachClass of allClass) {
         if (!this.semeseterDataset[eachClass['semester']]) {
           this.$set(this.semeseterDataset, eachClass['semester'], [eachClass])
         } else {
-          this.semeseterDataset[eachClass[['semester']]].push(eachClass)
+          if (this.semeseterDataset[eachClass['semester']].every(classItem => classItem.id !== eachClass.id)) {
+            this.semeseterDataset[eachClass['semester']].push(eachClass)
+          }
         }
       }
       this.getCardBySemester()
@@ -158,20 +163,41 @@ export default {
       }
       this.shown = true
     },
-    fetchClassInfos: function() {
-      classInfoViewmModel
-        .requestClassInfos({ teacher_id: this.id })
-        .then(responseArray => {
-          try {
-            this.buildSemester(responseArray)
-          } catch (exception) {
-            console.error(exception)
-          }
-        })
+    fetchClassInfos: function(use_manager) {
+      if (use_manager) {
+        classInfoViewmModel
+          .requestAll(this.token)
+          .then(responseArray => {
+            try {
+              this.buildSemester(responseArray)
+            } catch (exception) {
+              console.error(exception)
+            }
+          })
+      } else {
+        classInfoViewmModel
+          .requestClassInfos({ teacher_id: this.id })
+          .then(responseArray => {
+            try {
+              this.buildSemester(responseArray)
+            } catch (exception) {
+              console.error(exception)
+            }
+          })
+      }
+    }
+  },
+  watch: {
+    use_manager() {
+      console.log('mainpage watch use_manager')
+      console.log(this.use_manager)
+      this.fetchClassInfos(this.use_manager)
     }
   },
   created() {
-    this.fetchClassInfos()
+    console.log('mainpage create use_manager')
+    console.log(this.use_manager)
+    this.fetchClassInfos(this.use_manager)
   },
   mounted() {
     this.$set(this.infos_arrays, 0, { icon: 'domain', color: cyan, hint: '学校 / 机构', content: this.getUniName })

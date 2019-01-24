@@ -5,6 +5,14 @@ import request from '@/utils/request'
  * description：课程辅助信息的增删改查
  */
 
+export function getAllClassInfo(token) {
+  return request({
+    url: '/table/class_info/display/all',
+    // params: { token },
+    method: 'get'
+  })
+}
+
 /**
  * 查找课程的全部辅助信息
  * params：参数对象（id，name,cid,teacher_id,semester,week,room 七个可选参数）

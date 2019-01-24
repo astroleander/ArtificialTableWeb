@@ -137,7 +137,17 @@ export default {
     }
   },
   created() {
-    this.handler = this.use_manager
+    // console.log('sizebar create use_manager')
+    // console.log(this.use_manager)
+    // this.handler = this.use_manager
+    this.handler = true
+  },
+  watch: {
+    use_manager() {
+      // console.log('sizebar watch use_manager')
+      // console.log(this.use_manager)
+      this.handler = this.use_manager
+    }
   }
 }
 </script>

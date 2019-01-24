@@ -156,6 +156,30 @@
             </div>
             <el-button class="button" type="success" @click="toStep(2, 1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
             <el-button class="button" type="success" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            <div>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample"
+                :style='"background: #1976D2"'></label>学号列，用于标记学生，学号列只能有一列</span>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample"
+                :style='"background: #FFCC33"'/>未填写任何必要信息的小项</span>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample"
+                :style="'background: linear-gradient(90deg, #4caf50 0px, #4caf50 50%, #FFCC33 50%, #FFCC33 100%);'"/>
+                只填写了小项名称，没有选择所属类型大项的小项</span>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample"
+                :style="'background: linear-gradient(90deg, #FFCC33 0px, #FFCC33 50%, #4caf50 50%, #4caf50 100%);'"/>
+                只选择了所属类型大项，没有填写名字的小项</span>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample" 
+                :style="'background:' + headTypeList[0].color +';'"/>
+                没有选择类别的一列，这一列的内容将会被舍弃</span>
+              <span class="span-title inline-display-block">
+              <label class="selector-for-hidden-selector sample" 
+                :style="'background:' + headTypeList[3].color +';'"/>  
+                选择类别为“无用”的一列，这一列的内容将会被舍弃</span>
+            </div>
           </section>
         </div>
       </el-tab-pane><!-- step 2 end, and step 3 start -->
@@ -180,7 +204,24 @@
               :title="'[' + name + '] 插入失败'">
             </el-alert>
           </el-card>
-          
+
+          <el-card v-if="submitErrorMessage.successPointList.length > 0">
+            <el-alert type="success"
+              title="下列分数添加成功">
+            </el-alert>
+            <el-table :data="submitErrorMessage.successPointList" style="width: 100%">
+              <el-table-column prop="student_message.sid" label="学号"></el-table-column>
+              <el-table-column prop="student_message.name" label="姓名"></el-table-column>
+              <el-table-column prop="pointNumber" label="分数"></el-table-column>
+              <el-table-column prop="title_message.name" label="列名"></el-table-column>
+              <el-table-column label="大项">
+                <template slot-scope="scope">
+                  <span>{{ getTitleGroup(scope.row.title_message.titleGroup).name }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+
           <el-card v-if="submitErrorMessage.existPointList.length > 0">
             <el-alert type="warning"
               title="下列分数覆盖了原来的值">
@@ -191,7 +232,7 @@
               <el-table-column prop="title_name" label="列名"></el-table-column>
               <el-table-column label="大项">
                 <template slot-scope="scope">
-                  <span>{{ getTitleGroup(scope.row.titleGroup_id) }}</span>
+                  <span>{{ getTitleGroup(scope.row.titleGroup_id).name }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -534,6 +575,8 @@ export default {
         errorTitleNameList: [],
         existPointList: [],
         errorPointList: [],
+        successPointList: [],
+        successTitleList: [],
         responsed: false
       }
     }
@@ -546,6 +589,9 @@ export default {
     },
     getActiveStep: {
       get() {
+        if (this.activeStep === 3) {
+        return "2"
+        }
         return String(this.activeStep)
       },
       set(step) {
@@ -743,7 +789,7 @@ export default {
           if (from === 3) {
             this.$router.push('/redirector/index')
           }
-          // this.activeStep = 0
+          else this.activeStep = 0
           break
         case 2: {
           if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
@@ -869,16 +915,20 @@ export default {
       title.type = type
     },
     handleSubmitFeedback(response) {
-      const errorList = response.subjects
-
-      const title_list = errorList['error_title_names'] || []
-      // deleted duplicated
-      this.submitErrorMessage.responsed = true
-      this.submitErrorMessage.errorTitleNameList = Array.from(new Set(title_list))
-      this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
-      this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
-      this.submitErrorMessage.errorPointList = errorList['error_point_message'] || []
-      console.log(this.submitErrorMessage)
+      if (response.code === '4037') {
+        console.log(response)
+      } else {
+        const errorList = response.subjects
+        // deleted duplicated
+        this.submitErrorMessage.responsed = true
+        this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
+        this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
+        this.submitErrorMessage.errorPointList = errorList['error_point_message'] || []
+        this.submitErrorMessage.errorTitleNameList = errorList['error_title_message'] || []
+        this.submitErrorMessage.successTitleList = errorList['succeed_title_message'] || []
+        this.submitErrorMessage.successPointList = errorList['succeed_point_message'] || []
+        console.log(this.submitErrorMessage)
+      }
     },
     getStudentNumber(scope) {
       return this.previewPageData.sid[scope.$index]
@@ -912,6 +962,16 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-content: center;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.inline-display-block {
+  padding: 5px;
+  label {
+    padding: 5px;
+  }
 }
 
 .flex-half {
@@ -1003,7 +1063,11 @@ export default {
     box-shadow: 1px 1px 2px 2px rgba(0,0,0,.5);
     transition: 0.4s ease-in;
   }
-
+  &.sample {
+    width: 24px;
+    border: 1px solid #FFF;
+    box-shadow: 2px 2px 5px #666;
+  }
   // & div {
   //   border-radius: 999px;
   //   width: 24px;

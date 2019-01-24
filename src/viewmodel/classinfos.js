@@ -1,7 +1,7 @@
 import { getClassInfos, getByTeacherId,
   postClassInfo, postClassInfos,
   putClassInfo, putClassInfos,
-  deleteClassInfo, deleteClassInfos } from '@/api/class_info'
+  deleteClassInfo, deleteClassInfos, getAllClassInfo } from '@/api/class_info'
 
   /**
  * date: 2018/12/20
@@ -9,6 +9,16 @@ import { getClassInfos, getByTeacherId,
  * @description 课程信息的get put post delete
  */
 
+const requestAll = (token) => {
+  return new Promise((resolve, reject) => {
+    getAllClassInfo(token).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 /**
  * description:请求课程信息
  * @param params.id
@@ -147,5 +157,6 @@ export default {
   requestByTeacherId, requestClassInfos,
   requestPutClassInfo, requestPutClassInfos,
   requestPostClassInfo, requestPostClassInfos,
-  requestDelClassInfo, requestDelClassInfos
+  requestDelClassInfo, requestDelClassInfos,
+  requestAll
 }
