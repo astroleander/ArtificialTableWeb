@@ -1,3 +1,4 @@
+// 常量 大学信息
 const collegeMap = {
   college: {
     code: '1031',
@@ -13,6 +14,7 @@ const collegeMap = {
     count: 6
   }
 }
+// 向外输出 collegeMap中college常量信息
 export default {
   info: config => {
     return collegeMap.college

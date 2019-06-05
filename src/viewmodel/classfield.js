@@ -14,11 +14,14 @@ import {
  * @returns {Promise<any>}
  */
 const requestClassFields = (params) => {
+  // 返回一个promise对象 在对象中进行 axios请求
   return new Promise((resolve, reject) => {
     getClassFields(params).then(response => {
       const dataset = response && response.subjects
+      // resolve完成对动作成功进行解析
       resolve(dataset)
     }).catch(error => {
+      // reject会捕获这个动作的异常
       reject(error)
     })
   })

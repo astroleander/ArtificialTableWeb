@@ -15,7 +15,7 @@ const store = new Vuex.Store({
     course,
     table
   },
-  getters
+  getters // 将getters暴露出去
 })
 
 export default store

@@ -1,3 +1,4 @@
+<!-- 右上角用于返回主页和退出登录模版 可直接套用 -->
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
@@ -5,18 +6,31 @@
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
-        <span>欢迎您，{{user.name}}老师</span>
+        <span>欢迎您，{{user.name}}{{role}}</span>
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
+
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
             返回主页
           </el-dropdown-item>
         </router-link>
+
+        <router-link  class="inlineBlock" to="/user/info/">
+          <el-dropdown-item>
+            个人信息
+          </el-dropdown-item>
+        </router-link>
+
+         <el-dropdown-item v-if="this.is_manager">
+           <span @click="onSwitchChange" style="display:block;">切换身份</span>
+         </el-dropdown-item>
+
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">退出登陆</span>
         </el-dropdown-item>
+
       </el-dropdown-menu>
     </el-dropdown>
   </el-menu>
@@ -35,17 +49,63 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'user'
+      'user',
+      'is_manager',
+      'use_manager'
     ])
+  },
+  data() {
+    return {
+      role: ''
+    }
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
     },
+    init() {
+      if (this.use_manager) {
+        return '年级组长'
+      } else {
+        return '普通教师'
+      }
+    },
+    onSwitchChange() {
+      this.$router.replace({ path: '/' })
+      if (this.use_manager) {
+        this.$store.dispatch('setUseManager', false)
+        this.role = '普通教师'
+        this.$message({
+          message: '已开启教师身份',
+          type: 'success'
+        })
+      } else {
+        this.$store.dispatch('setUseManager', true)
+        this.role = '年级组长'
+        this.$message({
+          message: '已开启年级组长身份',
+          type: 'success'
+        })
+      }
+      location.reload()
+    },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
+    }
+  },
+  watch: {
+    use_manager: function() {
+      this.init()
+    }
+
+  },
+  created() {
+    if (this.use_manager) {
+      this.role = '年级组长'
+    } else {
+      this.role = '普通教师'
     }
   }
 }

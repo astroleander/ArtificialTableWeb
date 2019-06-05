@@ -1,3 +1,4 @@
+// 用于引用svg图片配置文件 可直接套用
 import Vue from 'vue'
 import SvgIcon from '@/components/SvgIcon'// svg组件
 

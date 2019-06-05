@@ -69,6 +69,7 @@
         <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
           :key="idx"
           align="center"
+          style="min-width: 150px"
           >
           <template slot="header" slot-scope="scope" >
             <div class="header">
@@ -87,7 +88,7 @@
             </div>
           </template>
           <template slot-scope="scope">
-            <div>
+            <div style="min-width: 100px">
               {{scope.row[idx]}}
             </div>
           </template>
@@ -471,6 +472,7 @@ export default {
   flex-wrap: nowrap;
   justify-content: center;
   align-content: center;
+  width: 100px;
 }
 .container {
   min-height: 100vh;

@@ -2,13 +2,21 @@
 <!--
 index
   |- div
-    |- TODO: head (固定头部)
-    |- TODO: radio tag card
-    |- TODO: route
-      |- TODO: transcript table
-      |- TODO: check weight & analysis
+    |- DONE: head (固定头部)
+    |- DONE: radio tag card
+    |- DONE: route
+      |- DONE: transcript table
+      |- DONE: check weight & analysis
 -->
-<!---->
+<!-- 点击任课班级卡片后跳转页面 -->
+<!-- 1、此界面由两部分构成，此时注意状态标志shownTab 有两种状态table/states -->
+<!-- 2、ID为tabs flex-tabs的其中两个label标签分别为两个按钮服务 switchMode进行转化shownTab状态，从而进行分别显示-->
+<!-- 3、v-show判断此刻如果上方标签选择表格table 成绩表，否则显示states 成绩分析-->
+<!-- （1）成绩表利用自定义组件 transcript-table 显示表格，来源于'./table'-->
+<!-- （2）成绩分析利用自定义组件 transcript-weight 显示分析图表，来源于'./weight'-->
+<!-- 4、fetchDataset()函数执行用于向后台请求数据信息，装载到info与model中-->
+<!-- 5、buildTable加载成绩表，buildWeight加载成绩分析-->
+<!-- 点击任课班级卡片后跳转页面 -->
 <template>
   <div class="transcript-wrapper">
     <!-- <transcript-head
@@ -17,15 +25,18 @@ index
       :titles='this.model.titles'
     >
     </transcript-head> -->
-
+    <!-- 上方的成绩表与成绩分析标签分别点击用于转换两种不同状态模式  type="radio"定义单选按钮 执行操作-->
     <input class="state" @click='switchMode("table")' type="radio" title="tab-one" name="tabs-state" id="tab-one" checked />
     <input class="state" @click='switchMode("stats")' type="radio" title="tab-two" name="tabs-state" id="tab-two" />
+    <input class="state" @click='switchMode("predict")' type="radio" title="tab-three" name="tabs-state" id="tab-three" />
     <!-- <input class="state" @click='switchMode("students")' type="radio" title="tab-three" name="tabs-state" id="tab-three" /> -->
     <!-- <input class="state" @click='switchMode("logs")' type="radio" title="tab-four" name="tabs-state" id="tab-four" /> -->
 
+    <!-- 上方的成绩表与成绩分析标签 label中的for用于响应上方的ID值-->
     <div class="tabs flex-tabs">
-      <label for="tab-one" id="tab-one-label" class="tab">成绩表</label>
-      <label for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
+      <label  for="tab-one" id="tab-one-label" class="tab">成绩表</label>
+      <label  for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
+      <label  for="tab-three" id="tab-three-label" class="tab">成绩预测</label>
       <!-- <label for="tab-three" id="tab-three-label" class="tab">班级成员</label> -->
       <!-- <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label> -->
     </div>
@@ -33,6 +44,7 @@ index
 
     <div id="transcript-container">
       <transition>
+        <!-- v-show判断此刻如果上方标签选择表格table 显示table-->
         <transcript-table
         v-show='this.getMode("table")'
         :view='this.table'
@@ -44,6 +56,13 @@ index
         >
         </transcript-table>
       </transition>
+      <transcript-predict
+        v-show='this.getMode("predict")'
+        :view='this.table'
+        :info='this.info'
+      >
+      </transcript-predict>
+      <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
       <transcript-weight v-show='getMode("stats")'
                          :avg="weightData.avg"
                          :description="weightData.description"
@@ -63,6 +82,7 @@ index
 import transcriptHead from './head'
 import transcriptTable from './table'
 import transcriptWeight from './weight'
+import transcriptPredict from './predict'
 
 // import XLSX from 'xlsx'
 
@@ -72,10 +92,12 @@ import titleGroupViewModel from '@/viewmodel/titlegroups'
 import classinfoViewmodel from '@/viewmodel/classinfos'
 
 export default {
+  // 页面子模版 由三部分组成 1、表头选择（成绩表、成绩分析）2、成绩表 3、成绩分析
   components: {
     transcriptHead,
     transcriptTable,
-    transcriptWeight
+    transcriptWeight,
+    transcriptPredict
   },
   data() {
     return {
@@ -111,65 +133,101 @@ export default {
     isShown: function() {
       return !this.loading
     },
+    // 传入任课卡片ID 获取班级信息
     getInfo: function() {
       return this.$store.getters.course(this.id)
     },
+    // 返回当前路径中transcript/：后的ID值 即跳转页面前选择的任课班级卡片的id
     id: function() {
       return this.$router.currentRoute.params.id
     }
   },
+  // 页面加载后的生命周期函数，加载当前任课班级数据
   created() {
     // 要是想好好写这个代码的话可以考虑回滚到 12 月之前的版本
     this.info = this.$store.getters.course(this.id)
+    console.log(' 班级信息')
+    console.log(this.info)
+    // 当前ID在数据仓库中未找到
     if (this.info === undefined) {
+      console.log('没找到')
       const class_id = this.id
+      // 向后台请求数据
       classinfoViewmodel.requestClassInfos({ id: class_id }).then(res => {
         // console.log(res[0])
+        // 加载数据到info中
         this.info = res && res[0]
+        console.log(' 班级信息')
+        console.log(this.info)
       })
     }
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
     console.log(this.$router.currentRoute.params.id)
+    // 加载成绩表
     this.fetchDataset()
   },
   methods: {
+    // 获取当前模式（table/state）
     getMode: function(code) {
       if (code === this.shownTab) return true
       else false
     },
+    // 转换模式 table 与 state
     switchMode: function(code) {
       this.shownTab = code
     },
+    // 创建成绩表
     buildTable: function() {
       // build table cell
       // each student map to a row on table
+      console.log(' 学生信息')
       this.model.studentMap.forEach(element => {
         const row = {
           // add student info (first two column line of the table)
           student: element,
           point: []
         }
+        console.log(row)
         // add student's point
-        this.model.points.forEach(pointItem => {
+        console.log(' 成绩信息')
+        if (this.model.points) {
+          this.model.points.forEach(pointItem => {
+            console.log(' 1111111')
+            if (pointItem.student_id === element.id) {
+              console.log(' 2222222')
+              row.point.push(pointItem)
+              // row[pointItem.title_id] = pointItem
+            }
+          })
+        }
+        // ?
+        /* this.model.points.forEach(pointItem => {
+          console.log(' 1111111')
           if (pointItem.student_id === element.id) {
+            console.log(' 2222222')
             row.point.push(pointItem)
             // row[pointItem.title_id] = pointItem
           }
-        })
+        }) */
+        console.log(' llllllll')
+        console.log(this.table)
         this.table.push(row)
       })
       // build title
     },
+    // 由id返回学生信息
     findStudentById(student_id) {
       return this.model.studentMap.get(student_id)
     },
+    // 由ID返回返回标头
     findTitleById(title_id) {
       return this.model.titles.find(title => {
         return title.id === title_id
       })
     },
+    // 增加小项
     handleTitleChanged(title) {
       console.log(this.model.titles)
       titleViewmodel.requestPostTitle(title).then(res => {
@@ -177,12 +235,15 @@ export default {
         this.model.titles.push(title)
       })
     },
+    // 导出表格
     handleExportTable: function(dialogResult) {
     },
+    // 删除小项
     handleDeletedTitle: function(title) {
       const idx = this.model.titles.findIndex(item => item.id === title.id)
       this.model.titles.splice(idx, 1)
     },
+    // 加载成绩表信息
     fetchDataset: function() {
       // const lesson_id = this.info.lesson_id
       Promise.all([
@@ -194,23 +255,29 @@ export default {
         .then(result => {
           console.log(result)
           // 获取小项数据
-          result[0].forEach(element => {
-            this.model.titles.push({ ...element, max: 100 })
-            this.model.titleMap.set(element.id, element)
-            // console.log('title' + element.id + ' : ' + element.weight + ' titleGroupId = '+ element.titleGroup_id )
-            if (this.model.titleSumMap.get(element.titleGroup_id)) {
-              const temp = this.model.titleSumMap.get(element.titleGroup_id) + element.weight
-              this.model.titleSumMap.set(element.titleGroup_id, temp)
-            } else {
-              this.model.titleSumMap.set(element.titleGroup_id, element.weight)
-            }
-            // console.log('titleGroup' + element.titleGroup_id + ' : ' + this.model.titleSumMap.get(element.titleGroup_id))
-          })
+          if (result && result[0]) {
+            result[0].forEach(element => {
+              this.model.titles.push({ ...element, max: 100 })
+              this.model.titleMap.set(element.id, element)
+              // console.log('title' + element.id + ' : ' + element.weight + ' titleGroupId = '+ element.titleGroup_id )
+              if (this.model.titleSumMap.get(element.titleGroup_id)) {
+                const temp = this.model.titleSumMap.get(element.titleGroup_id) + element.weight
+                this.model.titleSumMap.set(element.titleGroup_id, temp)
+              } else {
+                this.model.titleSumMap.set(element.titleGroup_id, element.weight)
+              }
+              // console.log('titleGroup' + element.titleGroup_id + ' : ' + this.model.titleSumMap.get(element.titleGroup_id))
+            })
+          }
           // 获取分数数据
           this.model.points = result[1]
+          console.log(this.model.points)
           // 获取学生信息
+          console.log('显示学生信息')
           result[2].forEach(element => {
+            console.log(' 匹配学生信息')
             this.model.studentMap.set(element.id, element)
+            console.log(this.model.studentMap)
           })
           this.info = result && result[3] && result[3][0]
           titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
@@ -221,15 +288,18 @@ export default {
               titleGroupSum += element.weight
             })
             this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
+            // 加载成绩分析数据
             this.buildWeight()
           })
+          // 加载成绩表
           this.buildTable()
         }).catch(err => {
-        // TODO: show error page
+        // DONE: show error page
           console.log(err)
           this.table = []
         })
     },
+    // 初始化信息为空 不加载
     init() {
       this.weightData.avg = 0 // 班级平均分
       this.weightData.rate = 0 // 班级及格率
@@ -244,8 +314,9 @@ export default {
         this.weightData.gradeSection.push(0)
       }
     },
+    // 检验当前数据是否合法
     judgeLegal() {
-      let flag = false
+      let flag = false // 数据为空 暂不加载雷达图
       const studentLength = this.model.studentMap.size
       const titleLength = this.model.titleMap.size
       const titleGroupLength = this.model.titleGroupMap.size
@@ -267,8 +338,9 @@ export default {
       }
       return flag
     },
+    // 获取学生成绩信息
     buildStudentScore() {
-      let flag = false // 判断是否计算出所有学生的成绩
+      let flag = false // 判断是否计算出所有学生的成绩，数据为空 暂不加载雷达图
       let total = 0
       let num = 0
       this.model.points.forEach(pointItem => {
@@ -298,11 +370,13 @@ export default {
       this.weightData.avg = Math.round(total / num)
       return flag
     },
+    // 建立条状图，判断分区
     buildBarData() {
       this.weightData.studentScore.forEach(score => {
         this.judgeSum(score)
       })
     },
+    // 计算小项平均分
     buildTitleAverage() {
       this.model.titles.forEach(element => {
         const titleInfo = { id: element.id, name: element.name, sum: 0, avg: 0, num: 0 }
@@ -380,12 +454,15 @@ export default {
     print(lable, msg) {
       console.log(lable + ' = ' + msg)
     },
+    // 加载成绩分析数据
     buildWeight: function() {
       // 初始化
       this.init()
       // 判断是否可以继续成绩分析
       if (this.judgeLegal()) {
+        // 加载学生成绩
         this.buildStudentScore()
+        // 加载条形图
         this.buildBarData()
         // 若全部学生的成绩都计算出，计算小项平均值
         this.buildTitleAverage()
@@ -409,7 +486,6 @@ export default {
 }
 
 .flex-tabs{
-  margin-top: 10px;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -425,8 +501,8 @@ export default {
 
 .tab {
   display: inline-block;
-  padding: 10px;
   vertical-align: top;
+  padding: 10px;
   cursor: hand;
   cursor: pointer;
   border-bottom: 4px solid #fff;

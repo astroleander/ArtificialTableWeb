@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 /**
- * @date 2018.12.18
- * @author liqian
  * @description 分数条目信息的增删改查
  */
 
@@ -15,7 +13,7 @@ import request from '@/utils/request'
  */
 export function importPoints(subjects) {
   return request({
-    url: '/import_data',
+    url: '/point/import_data',
     method: 'post',
     data: subjects
   })

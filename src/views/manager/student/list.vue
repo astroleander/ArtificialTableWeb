@@ -1,10 +1,9 @@
 <template>
   <div>
     <div class="frame">
-      <span class="span">学校</span>
-      <el-input style="width:200px" v-model="remoteUniversity.name"
+      <span>学校：</span>
+        <el-input style="width:200px" v-model="remoteUniversity.name"
         :disabled="true" size="mini"></el-input>
-
       <span style="padding-left: 10px;">专业：</span>
       <el-cascader
         size="small"
@@ -15,16 +14,16 @@
         @change="onMajorChanged"
         >
       </el-cascader>
-      
-      <span class="span" style="padding-left: 10px;">学年: </span>
-      <el-date-picker 
+
+      <span class="span" style="padding-left: 10px;">学年：</span>
+      <el-date-picker
         v-model="selectedYear" @change="onYearChanged"
         placeholder="请选择学生入学年份" clearable
         size="small" type="year" format='yyyy' value-format="yyyy">
       </el-date-picker>
     </div>
 
-    <el-table v-if="remoteStudentDataset.length > 0" :data="remoteStudentDataset" @selection-change="delChange">
+    <el-table v-if="remoteStudentDataset.length > 0" :data="remoteStudentDataset" @selection-change="delChange" style="margin-top: 10px">
       <!-- <el-table-column type="selection" width="50"></el-table-column> -->
       <el-table-column label="序号" width="60">
         <template slot-scope="scope">
@@ -35,6 +34,11 @@
       <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
       <el-table-column prop="major_message.name" label="专业"  minWidth="150"></el-table-column>
       <el-table-column prop="year" label="入学年份"  minWidth="150"></el-table-column>
+      <el-table-column minWidth="150">
+        <template slot-scope="scope">
+          <el-button @click="deleteStudent(scope.row)" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="操作" width="350">
         <template slot="header" slot-scope="scope">
           <el-button type="danger" size="mini" @click="confirmDeleteClassFields">删除选中</el-button>
@@ -44,7 +48,7 @@
         </template>
       </el-table-column> -->
     </el-table>
-    <el-card v-else style="height: 70vh; line-height: 50vh; text-align: center;">
+    <el-card v-else style="height: 70vh; line-height: 50vh; text-align: center; margin-top: 10px">
       无数据, 请选择筛选项
     </el-card>
   </div>
@@ -86,6 +90,14 @@ export default {
     ])
   },
   methods: {
+    deleteStudent(student) {
+      StudentViewModel.requestDelStudent(student.id).then(res => {
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        })
+      })
+    },
     onMajorChanged: function(collegemajor) {
       if (collegemajor[1]) {
         this.selectedMajor = collegemajor[1]
@@ -196,8 +208,13 @@ export default {
 
 <style lang="scss" scoped>
 .frame {
-  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  padding-left: 10px;
   background: #FFF;
   border-top: #EEE solid 1px;
+  height: 30px;
 }
 </style>

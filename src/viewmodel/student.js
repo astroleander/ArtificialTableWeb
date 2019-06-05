@@ -1,7 +1,7 @@
 import { getStudents, getByClassInfoId,
   postStudent, postStudents,
   putStudent, putStudents,
-  deleteStudent, deleteStudents } from '@/api/student'
+  deleteStudent, deleteStudents, getPredict } from '@/api/student'
 /**
  * date:2018/12/20
  * author:liqian
@@ -136,10 +136,23 @@ const requestDelStudents = (studentIdArray) => {
     })
   })
 }
+const requestPredict = (studentIdArray) => {
+  // 返回一个promise对象 在对象中进行 axios请求
+  return new Promise((resolve, reject) => {
+    getPredict(studentIdArray).then(response => {
+      const dataset = response && response.subjects
+      // resolve完成对动作成功进行解析
+      resolve(dataset)
+    }).catch(error => {
+      // reject会捕获这个动作的异常
+      reject(error)
+    })
+  })
+}
 
 export default {
   requestStudentByClassInfoId, requestStudents,
   requestPutStudent, requestPutStudents,
   requestPostStudent, requestPostStudents,
-  requestDelStudent, requestDelStudents
+  requestDelStudent, requestDelStudents, requestPredict
 }

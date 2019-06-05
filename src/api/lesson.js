@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
  * description：课程组信息的增删改查
  */
 
@@ -114,6 +112,21 @@ export function deleteLessons(lessonIdArray) {
     method: 'delete',
     data: {
       subjects: lessonIdArray
+    }
+  })
+}
+
+/**
+ *
+ * @param lessonSemester
+ */
+export function lessonAnalyse(lessonSemester) {
+  return request({
+    url: '/analysis/class',
+    method: 'post',
+    data: {
+      // subjects: lessonSemester
+      semester: lessonSemester
     }
   })
 }

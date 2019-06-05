@@ -1,3 +1,4 @@
+<!-- 成绩管理系统中svg图片引用文件 可直接套用 -->
 <template>
   <svg :class="svgClass" aria-hidden="true">
     <use :xlink:href="iconName"></use>

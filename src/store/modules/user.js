@@ -7,10 +7,14 @@ const user = {
     user: getUser(),
     is_manager: getIsManager(),
     use_manager: getUseManager(),
-    user_collegeId: getCollegeId()
+    user_collegeId: getCollegeId(),
+    userInfo: {}
   },
 
   mutations: {
+    SAVE_USER_INFO: (state, { user }) => {
+      state.user_info = user
+    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -58,6 +62,7 @@ const user = {
       commit('SET_USER', null)
       commit('SET_MANAGER', false)
       commit('SET_COLLEGE_ID', '')
+      commit('SET_USE_MANAGER', false)
       removeToken()
       removeId()
       removeUser()
@@ -79,6 +84,12 @@ const user = {
       return new Promise(resolve => {
         commit('SET_USE_MANAGER', newValue)
         setUseManager(newValue)
+      })
+    },
+    saveUserInfo({ commit }, user) {
+      return new Promise(resolve => {
+        commit('SAVE_USER_INFO', user)
+        resolve()
       })
     }
   }

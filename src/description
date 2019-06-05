@@ -1,0 +1,66 @@
+|-- src主要应用文件夹
+     |-- router 文件夹下只有一个index.js文件，用于根据path路径找到响应页面vue
+     |-- view文件夹包含所有对外显示模版
+         |-- comparision ：成绩比较 => index.vue 主页面
+                |--PassExamBar：成绩比较界面的柱状图绘制
+         |-- input : 导入成绩 => index.vue 页面主要用于导入Excel表格，最为复杂，建议仔细观看页面最上方的讲解注释（此处代码建议最后观看）
+         |-- login : 登录 => index.vue （注：此处有关于整个程序进行的流程讲解，建议初始观看代码优先观看此处注释）
+         |-- mainpage : 主页面 => index.vue ( 此处是登录之后首个跳转页面，也是自定义组件第一次使用）
+                      |-- 自定义组件：通过在外侧建立vue文件，之后可以在主页面通过components:{} 加以调用，便可以在其他页面加载自创模版
+                                    在观看template框架时可以优先查看script中的components找到自定义组件
+                |-- transcript : 主页面中选择任课班级后的跳转 => index.vue 主页面，其他文件夹下的均为自定义组件模版，可查看index中的注释加以了解
+                      |--head
+                      |--table：成绩表展示
+                             |--dialogAddTitle: 增加成绩项
+                             |--dialogExport： 导出成绩表
+                             |--dialogPoint：
+                             |--dialogstudent：
+                      |--weight：成绩分析展示：包括 柱状图：Bar 、雷达图：radar
+                      |--predict：成绩预测 跳转预测结果界面  predictResult
+         |-- weight : 设置权重 => index.vue (注意此处有两种不同设置：首先是管理员设置大项：听力、写作、期末权重，在有了大项之后普通教师才可以设置小项权重）
+         |-- layout : 外部菜单框架组件 => layout.vue
+                    |-- Siderbar文件夹：左侧菜单中管理员权限设置，可在此处添加管理员功能
+                              |-- index 主要添加功能模版
+                              |-- SiderbarIterm 左侧菜单栏中子菜单伸缩功能
+                    |-- Navbar: 最上方的导航栏 此处有添加用户返回主页、进入个人信息、退出登
+         |-- manager文件夹：管理员管理功能
+                |--classfield 班级管理
+                |--lesson 课程管理
+                    |--addLesson 增加课程
+                    |--analyse 课程分析（此处主要是预测后的课程分析的展示模块）
+                              |--bar 课程分析中的柱状图
+                |--student 学生管理
+                    |-- add 增加学生
+                    |-- list 学生列表
+                |--user 用户管理（教师管理）
+                    |--add 增加教师
+                    |--list 教师列表
+                    |--change 更改个人信息列表（此处普通教师可更改个人信息）
+     |-- utils文件夹
+          |-- alerts.js 警告文件
+          |-- auth.js  长时间存储后台传输的用户登录数据js-cookie
+          |-- except.js 统一异常处理（此处联系axios前后端交互，可以与api公共阅读）
+          |-- request.js 创建axios实例 统一请求、返回拦截器
+          |-- validate.js 判断是否合法
+     |-- api文件夹
+          |-- 根据文件名称可以对应到相应的viewmodel文件 API中主要包含各个向后台发送的请求接口
+     |-- viewmodel文件夹
+          |-- 根据名称可以匹配到响应view中文件以及api中文件，主要用于view与api交互的连接
+     |-- store文件夹
+          |-- 用于全局维护数据，创建一个store实例，可以在各个页面中使用
+             |-- state 全局状态
+             |-- mutation 更改state状态 同步处理，利用state.commit来实现调用
+             |-- action 更改mutation 异步处理，利用state.dispath 实现调用
+     |-- icons 图片文件
+     |-- components 存放view需要辅助自定义组件文件，可以依据名称自行查找
+     |-- style 方式样式文件
+     |-- mock ：当后端未编写成功，此时可以用mock来虚拟测试前段接口，在main.js中打开import mock 即可使用mock中的测试数据进行接口测试
+     |-- config 配置文件：需要查看dev.env.js文件 BASE_API为服务器地址
+
+
+
+
+
+
+
+

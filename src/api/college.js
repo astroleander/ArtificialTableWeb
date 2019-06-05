@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
  * description：院系信息的增删改查
  */
 

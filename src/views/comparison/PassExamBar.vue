@@ -1,3 +1,4 @@
+<!--绘制成绩比较条形图-->
 <template>
   <div :id="'PassDiagram'+DiagramId"  v-if="dataSet" >
   </div>

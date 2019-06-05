@@ -31,13 +31,14 @@
               {{scope.$index+1}}
           </template>
         </el-table-column>
-        <el-table-column prop="sid" label="学号" minWidth="150"></el-table-column>
+        <el-table-column prop="sid" label="学号" minWidth="150" sortable></el-table-column>
         <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
         <el-table-column prop="major" label="专业"  minWidth="150"></el-table-column>
+
         <el-table-column label="操作" width="350">
           <template slot="header" slot-scope="scope">
-            <el-button type="primary" size="medium"  @click="openImportDialog" >批量导入</el-button>
-            <el-button type="primary" size="medium"  @click="openAddDialog" >添加学生</el-button>
+            <el-button type="success" size="medium"  @click="openImportDialog">批量导入</el-button>
+            <el-button type="success" size="medium"  @click="openAddDialog">添加学生</el-button>
             <el-button type="danger" size="medium" @click="confirmDeleteClassFields">删除选中</el-button>
           </template>
           <template slot-scope="scope">
@@ -45,11 +46,13 @@
           </template>
         </el-table-column>
       </el-table>
+
       <el-dialog title="添加学生" :center="true"  width="70%" :visible.sync="ImportDialogVisible">
         <add-class-student :class-info_id="this.$router.currentRoute.params.id"
                            @addEnd="handleAddEnd"
         ></add-class-student>
       </el-dialog>
+
       <!-- 添加学生的对话框-->
       <el-dialog title="选择要添加的学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
           <el-select class="majorBox" v-model="selectedMajor" @change="handleMajorChange" placeholder="按专业筛选左侧学生列表" :clearable="true">
@@ -72,9 +75,10 @@
             </el-transfer>
         <div slot="footer" class="dialog-footer">
           <el-button @click="cancelAddStudent">取 消</el-button>
-          <el-button type="primary" @click="confirmAddStudents">下一步</el-button>
+          <el-button type="success" @click="confirmAddStudents">下一步</el-button>
         </div>
       </el-dialog>
+
       <!-- 确认学生的界面-->
       <el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
         <el-table :data="confirmTableStudents" >
@@ -89,7 +93,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="backLastDialog">上一步</el-button>
-          <el-button type="primary" @click="handleAddClassFields">添加学生</el-button>
+          <el-button type="success" @click="handleAddClassFields">添加学生</el-button>
         </div>
       </el-dialog>
       <!--<div class="rowframe">-->
@@ -209,9 +213,13 @@ export default {
       // 准备提交的数据
       this.confirmTableStudents = []
     },
+    // 构建穿梭
     buildTransfer() {
+      // 初始化
       this.initTransfer()
+      // 获取所有专业
       this.fetchMajorInfo()
+      //
       this.fetchTransferStudentInfo({ college_id: this.user_collegeId })
     },
     cancelAddStudent() {
@@ -357,23 +365,27 @@ export default {
           console.log(error)
         })
     },
-    // 根据classInfo_id获取学生信息
+    // 根据classInfo_id获取学生信息,放入studentMap
     fetchTransferStudentInfo(params) {
       this.transferData = []
       studentViewModel.requestStudents(params)
         .then(response => {
+          console.log('我又开始了')
           this.transferData = response
+          console.log(this.transferData)
           if (params.college_id !== undefined) {
             this.studentMap = new Map()
             this.transferData.forEach(student => {
               this.studentMap.set(student.id, student)
             })
           }
+          console.log(this.studentMap)
           this.dealTransferData()
         }).catch(error => {
           console.log(error)
         })
     },
+    // ?
     dealTransferData() {
       for (let i = 0; i < this.transferData.length; i++) {
         const temp = this.tableStudents.findIndex((item, index, arr) => {
@@ -385,7 +397,9 @@ export default {
         }
       }
       this.transferData = this.transferData.filter(item => !item.disabled)
+      console.log(this.transferData)
     },
+
     addClassFields(params) {
       classFieldViewModel.requestPostClassFields(params)
         .then(response => {
@@ -415,6 +429,7 @@ export default {
       console.log('value[0] = ' + value[0])
       console.log('value[1] = ' + value[1])
     },
+    // 开始添加学生 获取班级ID
     openAddDialog() {
       console.log('this.classInfo_id =' + this.classInfo_id)
       if (this.classInfo_id) {

@@ -1,3 +1,6 @@
+<!--at-pie 自定义组件，图形化显示当前各个大项占比-->
+<!-- 绘制图表 -->
+
 <template>
   <div :id="'chartPie'+groupId"  v-show="dataSet">
   </div>

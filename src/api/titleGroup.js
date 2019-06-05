@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
  * description：大项条目信息的增删改查
  */
 
@@ -10,7 +8,7 @@ import request from '@/utils/request'
  */
 export function getTitleGroups(lesson_id) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'get',
     params: {
       lesson_id: lesson_id
@@ -24,7 +22,7 @@ export function getTitleGroups(lesson_id) {
  */
 export function getTitleGroup(params) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'get',
     params: params
   })
@@ -34,7 +32,7 @@ export function getTitleGroup(params) {
  */
 export function postTitleGroup(TitleGroupItem) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'post',
     data: {
       subjects: [TitleGroupItem]
@@ -46,7 +44,7 @@ export function postTitleGroup(TitleGroupItem) {
  */
 export function postTitleGroups(TitleGroupArray) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'post',
     data: {
       subjects: TitleGroupArray
@@ -58,7 +56,7 @@ export function postTitleGroups(TitleGroupArray) {
  */
 export function putTitleGroup(TitleGroupItem) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'put',
     data: {
       subjects: [TitleGroupItem]
@@ -70,7 +68,7 @@ export function putTitleGroup(TitleGroupItem) {
  */
 export function putTitleGroups(TitleGroupArray) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'put',
     data: {
       subjects: TitleGroupArray
@@ -82,7 +80,7 @@ export function putTitleGroups(TitleGroupArray) {
  */
 export function deleteTitleGroup(TitleGroup_id) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'delete',
     data: {
       subjects: [
@@ -96,7 +94,7 @@ export function deleteTitleGroup(TitleGroup_id) {
  */
 export function deleteTitleGroups(TitleGroupIdArray) {
   return request({
-    url: '/titleGroup/format',
+    url: '/title_group/format',
     method: 'delete',
     data: {
       subjects: TitleGroupIdArray

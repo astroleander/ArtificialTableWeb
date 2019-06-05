@@ -1,3 +1,4 @@
+<!-- 显示学生信息模版 -->
 <template>
   <el-dialog
     id="student-card"

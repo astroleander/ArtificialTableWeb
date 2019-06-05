@@ -1,13 +1,11 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
  * description：课程辅助信息的增删改查
  */
 
 export function getAllClassInfo(token) {
   return request({
-    url: '/table/class_info/display/all',
+    url: '/table/class_info/detail/all',
     // params: { token },
     method: 'get'
   })
@@ -19,7 +17,7 @@ export function getAllClassInfo(token) {
  */
 export function getClassInfos(params) {
   return request({
-    url: '/table/class_info/display',
+    url: '/table/class_info/detail/some',
     method: 'get',
     params
   })

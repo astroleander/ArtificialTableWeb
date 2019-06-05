@@ -1,35 +1,45 @@
+<!-- 左侧菜单栏中管理员增加的权限显示 此处可添加管理员权限功能 -->
 <template>
-  <el-scrollbar wrapClass="scrollbar-wrapper">
+  <el-scrollbar  wrapClass="scrollbar-wrapper">
     <el-menu
       mode="vertical"
       :show-timeout="200"
       :default-active="$route.path"
       :collapse="isCollapse"
-      background-color="#4caf50"
+      :background-color="this.color"
       text-color="#DDD"
       active-text-color="#212121"
-      
     >
     <sidebar-item :routes="routes"></sidebar-item>
 
-    <el-menu-item v-if="this.is_manager" index="999" disabled divided id="divided">
+    <el-menu-item v-if="this.use_manager" index="999" disabled divided id="divided">
       <template slot="title">
       </template>
     </el-menu-item>
 
-    <el-menu-item v-if="this.is_manager" index="999" disabled class="switch">
+    <el-menu-item v-if="this.use_manager" index="999" disabled class="switch">
       <svg-icon icon-class="lock"></svg-icon>
       <template slot="title">
         <span style="color:#EEE;">管理员模式</span>
-        <el-switch v-model="handler"
-          @change="onSwitchChange"
-          active-color="#8bc34a"
-          inactive-color="#455a64"
-          >
-        </el-switch>
       </template>
     </el-menu-item>
-    <el-submenu v-if="this.handler" index="9990">
+
+      <el-submenu v-if="this.use_manager" index="9992">
+        <template slot="title">
+          <svg-icon icon-class="lessonManage"></svg-icon>
+          <span>管理课程信息</span>
+        </template>
+        <el-menu-item index="99921">
+          <template slot="title">
+            <router-link to="/manager/lesson/addLesson">
+              <svg-icon icon-class="addCourse"></svg-icon>
+              <span>添加课程</span>
+            </router-link>
+          </template>
+        </el-menu-item>
+      </el-submenu>
+
+    <el-submenu v-if="this.use_manager" index="9990">
       <template slot="title">
           <svg-icon icon-class="user"></svg-icon>
           <span>管理教师信息</span>
@@ -51,7 +61,7 @@
     </el-submenu>
 
 
-    <el-submenu v-if="this.handler" index="9991">
+    <el-submenu v-if="this.use_manager" index="9991">
       <template slot="title">
           <svg-icon icon-class="domain"></svg-icon>
           <span>管理教学班信息</span>
@@ -72,7 +82,7 @@
       </router-link>
     </el-submenu>
 
-    <el-submenu v-if="this.handler" index="9993">
+    <el-submenu v-if="this.use_manager" index="9993">
       <template slot="title">
           <svg-icon icon-class="userList"></svg-icon>
           <span>管理学生信息</span>
@@ -85,7 +95,7 @@
           </router-link>
         </template>
       </el-menu-item>
-      <el-menu-item v-if="this.handler" index="99925">
+      <el-menu-item v-if="this.use_manager" index="99925">
         <template slot="title">
           <router-link to="/manager/student/add">
             <svg-icon icon-class="addUser"></svg-icon>
@@ -94,14 +104,6 @@
         </template>
       </el-menu-item>
     </el-submenu>
-
-
-    <router-link to="/manager/lesson">
-      <el-menu-item v-if="this.handler" index="9993">
-        <svg-icon icon-class="addCourse"></svg-icon>
-        <span slot="title">添加课程</span>
-      </el-menu-item>
-    </router-link>
     </el-menu>
   </el-scrollbar>
 </template>
@@ -109,17 +111,28 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
-
+const cyan = '#4CAF50'
+const green = '#00BCD4'
 export default {
   components: { SidebarItem },
   data() {
     return {
-      handler: this.use_manager
+      color: null
     }
   },
   methods: {
     onSwitchChange(newValue) {
       this.$store.dispatch('setUseManager', newValue)
+    },
+    init() {
+      console.log('1234567')
+      console.log(this.is_manager)
+      console.log(this.use_manager)
+      if (this.use_manager) {
+        return cyan
+      } else {
+        return green
+      }
     }
   },
   computed: {
@@ -140,13 +153,17 @@ export default {
     // console.log('sizebar create use_manager')
     // console.log(this.use_manager)
     // this.handler = this.use_manager
-    this.handler = true
+    if (this.use_manager) {
+      this.color = cyan
+    } else {
+      this.color = green
+    }
   },
   watch: {
     use_manager() {
       // console.log('sizebar watch use_manager')
       // console.log(this.use_manager)
-      this.handler = this.use_manager
+      this.color = this.init()
     }
   }
 }

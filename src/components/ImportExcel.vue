@@ -1,3 +1,5 @@
+   <!-- 导入成绩中的直接导入Excel文件-->
+
 <template>
   <div>
     <input id="excel-upload-input"
@@ -30,6 +32,7 @@ export default {
       this.excelData.results = results
       this.$emit('on-selected-file', this.excelData)
     },
+    // 松开鼠标后进行数据处理
     handleDrop(e) {
       e.stopPropagation()
       e.preventDefault()
@@ -43,14 +46,17 @@ export default {
       e.stopPropagation()
       e.preventDefault()
     },
+    // 鼠标拖入时监听
     handleDragover(e) {
       e.stopPropagation()
       e.preventDefault()
       e.dataTransfer.dropEffect = 'copy'
     },
+    // 点击上传读取本地数据，调用input组件功能
     handleUpload() {
       document.getElementById('excel-upload-input').click()
     },
+    // 点击上传
     handleFileChange(e) {
       const files = e.target.files
       const itemFile = files[0] // only use files[0]
@@ -58,6 +64,7 @@ export default {
       this.readerData(itemFile)
       this.$refs['excel-upload-input'].value = null // fix can't select the same excel
     },
+    // 读取上传数据文件
     readerData(itemFile) {
       const reader = new FileReader()
       reader.onload = e => {

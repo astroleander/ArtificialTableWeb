@@ -1,3 +1,4 @@
+<!-- 左侧菜单栏中点击一个主菜单显示下方子菜单列表-->
 <template>
   <div class="menu-wrapper">
     <!-- for each routes item, if not hidden or its not a child -->
@@ -10,7 +11,7 @@
         <el-menu-item :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
           <!-- read route item's .meta.icon -->
           <svg-icon v-if="item.children[0].meta&&item.children[0].meta.icon" :icon-class="item.children[0].meta.icon"></svg-icon>
-          <!-- read route item's .meta.title -->          
+          <!-- read route item's .meta.title -->
           <span v-if="item.children[0].meta&&item.children[0].meta.title" slot="title">{{item.children[0].meta.title}}</span>
         </el-menu-item>
       </router-link>

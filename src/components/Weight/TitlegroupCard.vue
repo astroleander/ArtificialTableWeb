@@ -1,3 +1,20 @@
+<!-- 教师通过选择班级从而设置班级成绩权重-->
+
+<!--  1、groupName：小项名称
+      2、一键平均按钮：dealAvg
+      3、添加小项按钮：addTitleItem 函数将 dialogFormVisible 变为true；
+      4、修改按钮：   openDialog -->
+
+<!--  1、v-for各个小项   title.name
+      2、输入权重  绑定title.weight handleInput函数进行权重更改
+      3、vue-slide-bar 组件图形化显示权重 handleInput函数进行权重更改
+      4、锁定 changeLock 此时无法更改权重数值
+      5、删除按钮 删除小项 delTitleItem函数
+      6、at-pie 自定义组件，图形化显示当前各个小项占比，来源于 AtPie from '@/components/Weight/Pie'
+      7、dialogFormVisible 为true 显示 添加小项组件
+         输入名称、权重，点击确认此时触发submitForm函数提交
+-->
+
 <template>
   <el-card class="box-card" shadow="hover">
     <div slot="header" >
@@ -15,7 +32,10 @@
           <el-button @click="dealAvg"  :disabled="avgDisabled">一键平均</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
           <el-button @click="addTitleItem()">添加小项</el-button>
-          <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
+
+          <el-button type="success" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
+
+
         </div>
       </div>
     </div>
@@ -415,7 +435,7 @@ export default {
   .box-card {
     width: 100%;
     min-width: 800px;
-    margin: 10px 0;
+    margin: 5px 0;
   }
 
   .title-box{
@@ -454,7 +474,7 @@ export default {
     /*border: 1px solid #CCCCCC;*/
   }
   .groupName{
-    width: 100px;
+    width: 200px;
     padding: 5px;
     font-size: larger;
   }
