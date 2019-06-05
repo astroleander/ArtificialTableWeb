@@ -1,12 +1,15 @@
+/*  用于前后端进行交互  可直接使用 */
+
 import axios from 'axios'
-// import { MessageBox } from 'element-ui'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
+// 统一错误处理
 import exceptHandler from '@/utils/except'
 
 // 创建 axios 实例
+//  `baseURL` 将自动加在 `url` 前面
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
+  baseURL: process.env.BASE_API, // api的base_url 请求前往的url
   timeout: 15000 // 请求超时时间
 })
 

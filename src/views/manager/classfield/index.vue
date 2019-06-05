@@ -1,6 +1,9 @@
+<!--管理员查看班级信息
+
+-->
 <template>
   <article>
-    <el-collapse v-model="lesson_current_selected" accordion 
+    <el-collapse v-model="lesson_current_selected" accordion
       @change="onSelectedLessonChanged">
       <el-collapse-item v-for="lesson in lesson_list"
         :key="lesson.id" :title="lesson.name" :name="lesson.id"
@@ -13,41 +16,68 @@
           </span>
         </section>
           <!-- lesson has class inside -->
-          <template v-if="lesson.dataset">
-            <el-table
-              :data="lesson.dataset"
-            >
+          <template>
+            <el-table v-if="lesson.dataset"
+              :data="lesson.dataset">
+              <el-table-column
+                v-for="(title, idx) in titles"
+                :key="idx"
+                :label="title.label"
+                :prop="title.prop">
+              </el-table-column>
+
               <el-table-column label="">
                 <template slot-scope="scope">
-                  <el-button icon="el-icon-edit" @click="onModifyClicked(lesson, scope.row)">学生信息</el-button>
-                  <el-button icon="el-icon-delete" @click="onDeleteClicked(lesson, scope.row)"></el-button>
+                  <el-button @click="onModifyClicked(lesson, scope.row)" type="success">学生信息</el-button>
                 </template>
               </el-table-column>
 
-              <el-table-column 
-                v-for="(title, idx) in titles" 
-                :key="idx"
-                :label="title.label"
-                :prop="title.prop"
-              >
-                <!-- <template slot-scope="scope">
-                  <div>
-                    {{scope.row[title.prop]}}
-                     {{showByIdx(scope.row, idx)}} --> 
-                  <!-- </div> -->
-                <!-- </template> -->
+              <el-table-column label="">
+                <template slot-scope="scope">
+                  <el-button @click="showClass(scope.row)" type="success">修改信息</el-button>
+                </template>
               </el-table-column>
 
+              <el-table-column label="">
+                <template slot-scope="scope">
+                  <el-button @click="onDeleteClicked(lesson, scope.row)" type="danger">删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
-          </template>
-          <!-- lesson without class inside -->
-          <template>
-            <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;">添加新的班级</el-button>
-            <el-button @click="onTransferLessonClicked(lesson)" style="margin: 20px 0 0 20px;" disabled>转移课程班级</el-button>
-            <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程</el-button>
+
+            <template>
+              <el-row>
+              <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;" type="success">添加新的班级</el-button>
+              <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程</el-button>
+              </el-row>
+            </template>
           </template>
       </el-collapse-item>
     </el-collapse>
+    <el-dialog title="修改班级信息" class="ClassInfo" :visible.sync="show" :before-close="onDialogClose">
+      <el-form :model="InfoForm" ref="infoform">
+        <el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
+          <el-input  v-model="InfoForm.cid"></el-input>
+        </el-form-item>
+        <el-form-item label="班级名：" prop="name" style="max-height: 60px">
+          <el-input  v-model="InfoForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="教师：" prop="teacher_message_name" style="max-height: 60px">
+          <el-input  v-model="InfoForm.teacher_message_name"></el-input>
+        </el-form-item>
+        <el-form-item label="学期：" prop="semester" style="max-height: 60px">
+          <el-input  v-model="InfoForm.semester"></el-input>
+        </el-form-item>
+        <el-form-item label="教室：" prop="room" style="max-height: 60px">
+          <el-input  v-model="InfoForm.room"></el-input>
+        </el-form-item>
+        <el-form-item label="上课时间：" prop="week" style="max-height: 60px">
+          <el-input  v-model="InfoForm.week"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-button @click="submitChange('infoform')" style="margin-top: 10px" type="primary" plain>提交</el-button>
+      <el-button @click="onDialogClose" style="margin-top: 10px" type="primary" plain>取消</el-button>
+    </el-dialog>
   </article>
 </template>
 
@@ -71,15 +101,28 @@ export default {
        **/
       lesson_list: [],
       titles: [
-        // TODO: teacher name
-        { prop: 'name', label: '班级名' },
+        // DONE: teacher name
         { prop: 'cid', label: '班级编号' },
+        { prop: 'name', label: '班级名' },
         { prop: 'teacher_message.name', label: '教师' },
         { prop: 'semester', label: '学期' },
         { prop: 'student_count', label: '学生数' },
         { prop: 'room', label: '教室' },
         { prop: 'week', label: '上课时间' }
-      ]
+      ],
+      show: false,
+      InfoForm: {
+        lesson_id: '',
+        id: '',
+        cid: '',
+        name: '',
+        teacher_id: '',
+        teacher_message_name: '',
+        semester: '',
+        room: '',
+        week: ''
+      },
+      showDisable: false
     }
   },
   computed: {
@@ -177,6 +220,54 @@ export default {
     showByIdx(row, idx) {
       console.log(row)
       console.log(idx)
+    },
+    showClass(row) {
+      console.log('1234567890')
+      console.log(row)
+      this.InfoForm.lesson_id = row.lesson_id
+      this.InfoForm.teacher_id = row.teacher_id
+      this.InfoForm.id = row.id
+      this.InfoForm.cid = row.cid
+      this.InfoForm.name = row.name
+      this.InfoForm.teacher_message_name = row.teacher_message.name
+      this.InfoForm.semester = row.semester
+      this.InfoForm.week = row.week
+      this.InfoForm.room = row.room
+      this.show = true
+    },
+    onDialogClose() {
+      this.show = false
+    },
+    submitChange(infoForm) {
+      this.$refs[infoForm].validate((valid) => {
+        if (valid) {
+          ClassInfoViewModel.requestPutClassInfo(this.InfoForm)
+            .then(response => {
+              if (response !== undefined) {
+                this.$message({
+                  message: '修改教学班成功',
+                  type: 'success'
+                })
+              }
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        }
+      })
+    },
+    showDisabled() {
+      const button = document.getElementById('deleteButton')
+      if (!button.disabled) {
+        this.showDisable = true
+      }
+    },
+    getData(row, title) {
+      Object.keys(row).forEach(prop => {
+        if (prop === title.prop) {
+
+        }
+      })
     }
   },
   mounted() {
@@ -199,4 +290,3 @@ export default {
   transform: rotate(90deg)
 }
 </style>
-                       

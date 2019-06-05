@@ -1,3 +1,4 @@
+// 过滤计算，将store中的状态以属性的形式允许其他模版直接调用
 const getters = {
   // app status
   sidebar: state => state.app.sidebar,

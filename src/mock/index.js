@@ -20,6 +20,7 @@ Mock.mock(/\/table\/class_info\/format/, 'get', courseMock.classInfo)
 
 // lesson mock
 Mock.mock(/\/table\/lesson\/format/, 'get', lessonMock.info)
+Mock.mock(/\/point\/predictScore/, 'post', lessonMock.analyse)
 
 // login mock
 Mock.mock(/\/user\/login/, 'post', loginMock.login)
@@ -31,6 +32,7 @@ Mock.mock(/\/point\/format/, 'get', pointMock.info)
 // student mock
 Mock.mock(/\/student\/format/, 'get', studentMock.info)
 Mock.mock(/\/student\/display/, 'get', studentMock.info)
+Mock.mock(/\/student\/predict/, 'post', studentMock.info)
 // title mock
 Mock.mock(/\/title\/format/, 'get', titleMock.title)
 Mock.mock(/\/title\/format/, 'put', titleMock.title)
@@ -43,3 +45,7 @@ Mock.mock(/\/titleGroup\/format/, 'post', titleGroupMock.group)
 Mock.mock(/\/university\/format/, 'get', universityMock.info)
 // user mock
 Mock.mock(/\/user\/info\/format/, 'get', userMock.info)
+Mock.mock(/\/user\/info\//, 'post', userMock.info)
+Mock.mock(/\/user\/info\/manage/, 'put', userMock.info)
+Mock.mock(/\/user\/info\/format/, 'put', userMock.info)
+

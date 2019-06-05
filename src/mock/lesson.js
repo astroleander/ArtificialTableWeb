@@ -16,10 +16,29 @@ const lessonMap = {
     ],
     'count': 2,
     'all': 'true'
+  },
+  Lessonanalyse: {
+    code: '2000',
+    message: 'OK, with Response',
+    subjects:
+      {
+        'vocabulary': 0.18,
+        'hearing': 0.34,
+        'translate': 0.42,
+        'writing': 0.64,
+        'details': 0.32,
+        'subjective_qz': 0.53,
+        'objective_qm': 0.12,
+        'subjective_qm': 0.43
+      }
   }
+
 }
 export default {
   info: config => {
     return lessonMap.lessons
+  },
+  analyse: config => {
+    return lessonMap.Lessonanalyse
   }
 }

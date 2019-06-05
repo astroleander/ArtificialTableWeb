@@ -2,7 +2,9 @@ const table = {
   state: {
     importTable: [],
     settingsTable: {},
-    previewTable: {}
+    previewTable: {},
+    predictTable: {},
+    studentInfo: {}
   },
   mutations: {
     SAVE_IMPORT_TABLE: (state, { table }) => {
@@ -10,6 +12,12 @@ const table = {
     },
     SAVE_SETTINGS_TABLE: (state, { table }) => {
       state.settingsTable = table
+    },
+    SAVE_PREDICT_TABLE: (state, { table }) => {
+      state.predictTable = table
+    },
+    SAVE_STUDENT_INFO: (state, { table }) => {
+      state.studentInfo = table
     },
     SAVE_PREVIEW_TABLE: (state, { table }) => {
       state.previewTable = table
@@ -29,6 +37,18 @@ const table = {
     saveImportTable({ commit, state }, { table }) {
       return new Promise((resolve, reject) => {
         commit('SAVE_IMPORT_TABLE', { table })
+        resolve()
+      })
+    },
+    savePredictTable({ commit, state }, { table }) {
+      return new Promise((resolve, reject) => {
+        commit('SAVE_PREDICT_TABLE', { table })
+        resolve()
+      })
+    },
+    saveStudentInfoTable({ commit, state }, { table }) {
+      return new Promise((resolve, reject) => {
+        commit('SAVE_STUDENT_INFO', { table })
         resolve()
       })
     },

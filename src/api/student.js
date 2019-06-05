@@ -1,8 +1,6 @@
 import request from '@/utils/request'
 
 /**
- * date：2018.12.18
- * author:liqian
  * description：学生信息的增删改查
  */
 
@@ -101,6 +99,19 @@ export function deleteStudents(studentIdArray) {
     method: 'delete',
     data: {
       subjects: studentIdArray
+    }
+  })
+}
+/*
+   获取预测成绩信息
+ */
+export function getPredict(studentIdArray) {
+  // 此时request 为一个 axios实例，发送请求
+  return request({
+    url: '/analysis/pass',
+    method: 'post',
+    data: {
+      sidList: studentIdArray
     }
   })
 }

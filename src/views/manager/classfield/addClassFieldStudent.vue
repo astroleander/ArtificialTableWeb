@@ -1,3 +1,4 @@
+<!-- 为班级导入学生模版-->
 <template>
   <el-tabs class="container" id="add-student-page">
     <el-tab-pane label="添加一群学生">
@@ -61,6 +62,7 @@
         <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
           :key="idx"
           align="center"
+          style="min-width: 200px"
           >
           <template slot="header" slot-scope="scope" >
             <div class="header">

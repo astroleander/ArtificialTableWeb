@@ -7,6 +7,7 @@ export function isPointNumber(str) {
   return RegExp(/^\d{1,}(.\d{1,2})?$/, 'g').test(str)
 }
 
+/*  是否为有效的用户名  */
 export function isvalidUsername(str) {
   // const valid_map = ['10011', '10012']
   return validate3Number(str)

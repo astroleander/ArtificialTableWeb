@@ -11,7 +11,7 @@ const responseHandler = (response) => {
   console.log('[response from Remote]:')
   console.log(response)
   return new Promise((resolve, reject) => {
-    // TODO: refactor error code
+    // DONE: refactor error code
     if (RegExp('4037').test(response.code)) {
       console.log('Insert nothing, may all resource have exists')
       // Message({

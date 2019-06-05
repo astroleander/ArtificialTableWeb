@@ -1,3 +1,4 @@
+<!-- 成绩分析雷达图 -->
 <template>
   <div :id="'radar' + radarId" class="box" >
   </div>
@@ -29,12 +30,16 @@ export default {
   },
   methods: {
     drawRadar() {
+      // 初始化图表
       this.chartRadar = echarts.init(document.getElementById('radar' + this.radarId))
+      // 绘制
       this.chartRadar.setOption({
+        // 标题
         title: {
           text: '小项平均分'
         },
         tooltip: {},
+        // 雷达图
         radar: {
           // shape: 'circle',
           name: {
@@ -45,8 +50,10 @@ export default {
               padding: [3, 5]
             }
           },
+          // 加载数据
           indicator: this.titleData
         },
+        // 各个小项加载
         series: [{
           name: '班级小项平均分',
           type: 'radar',

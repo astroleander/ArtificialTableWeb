@@ -1,3 +1,4 @@
+<!--新增列项组件模版-->
 <template>
   <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
   <el-form :rules="rules" :model="titleForm" ref="form">
@@ -5,7 +6,7 @@
       <el-input v-model="titleForm.name" autoComplete="off" size="small" style="width:150px"></el-input>
     </el-form-item>
     <el-form-item label="所属类别" prop="titleGroup_id">
-      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small"> 
+      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small">
         <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
           :label='titleGroup.name' :value='titleGroup.id'>
         </el-option>
@@ -13,7 +14,7 @@
     </el-form-item>
     <!-- <el-form-item label="小项的总分" prop="titleGroup_id">
       <el-input v-model.number="titleForm.total" style="width:100px"
-        type="number" prop="number" 
+        type="number" prop="number"
         placeholder="总分" size="small" class="title-text"/>
     </el-form-item>
     <el-form-item label="默认权重" prop="weight">
@@ -22,7 +23,7 @@
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="onDialogClose">取 消</el-button>
-    <el-button type="primary" @click="onAddNewTitle('form')">确 定</el-button>
+    <el-button type="success" @click="onAddNewTitle('form')">确 定</el-button>
   </div>
 </el-dialog>
 </template>
@@ -72,7 +73,7 @@ export default {
       })
     },
     fetchTitleGroupList: function() {
-      // TODO: Add request params
+      // DONE: Add request params
       const lessonId = this.classInfo && this.classInfo.lesson_id || 1
       console.log(this.classInfo)
       titleGroupViewModel.requestTitleGroups({ lesson_id: lessonId }).then(list => {

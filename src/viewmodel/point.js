@@ -188,7 +188,6 @@ const requestDelPoints = (pointIdArray) => {
     })
   })
 }
-
 export default {
   requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
   requestPutPoint, requestPutPoints,

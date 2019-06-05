@@ -1,24 +1,50 @@
+<!-- 管理员通过选择课程组从而设置课程权重-->
+
+<!--  1、groupName：权重大项
+      2、一键平均按钮：dealAvg
+      3、添加大项按钮：addTitleGroupItem 函数将 dialogFormVisible 变为true；
+      4、修改按钮：   openDialog -->
+
+<!--  1、v-for各个大项   title.name
+      2、输入权重  绑定title.weight handleInput函数进行权重更改
+      3、vue-slide-bar 组件图形化显示权重 handleInput函数进行权重更改
+      4、锁定 changeLock 此时无法更改权重数值
+      5、删除按钮 删除大项 delTitleGroupItem函数
+      6、at-pie 自定义组件，图形化显示当前各个大项占比，来源于 AtPie from '@/components/Weight/Pie'
+      7、dialogFormVisible 为true 显示 添加大项组件
+         输入名称、权重，点击确认此时触发submitForm函数提交
+-->
+
 <template>
+
   <el-card class="box-card" shadow="hover"  v-if="dataSet">
     <div slot="header" >
       <div class="row-frame1">
+
         <div class="groupName">
           {{groupName}}
         </div>
+
         <div class="error-box">
           <el-alert v-show="isError"
                     :title="errorMsg" :type="errorType" :closable="false" show-icon>
           </el-alert>
         </div>
+
         <div class="button-group">
           <el-button @click="dealAvg"  :disabled="btnDisabled">一键平均</el-button>
           <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
           <el-button @click="addTitleGroupItem">添加大项</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
-          <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">修改</el-button>
+
+          <el-button type="success" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
+
+
         </div>
+
       </div>
     </div>
+
     <div class="row-frame2">
       <div  class="titles">
         <div  class="title-box"
@@ -37,6 +63,7 @@
                     :maxlength="3"
                     :disabled="titleDisabled[index]"
                     @change="handleInput(title.weight,index)"/>
+
           <div  class="slider-box">
             <vue-slide-bar v-model="title.weight"
                            :lineHeight="10"
@@ -46,11 +73,14 @@
                            :is-disabled="titleDisabled[index]"
                            @input="handleInput(title.weight,index)"/>
           </div>
+
           <div class="lock-box" :class="{'active':titleDisabled[index]}" @click="changeLock(index)" >锁定</div>
           <el-button size="mini" type="danger" plain @click="delTitleGroupItem(title.id)">删除</el-button>
         </div>
       </div>
+
       <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
+
       <el-dialog title="添加大项" :visible.sync="dialogFormVisible">
         <el-form :model="NewTitleGroup" status-icon :rules="rules" ref="ruleForm">
           <el-form-item label="名称" prop="name" :label-width="formLabelWidth">
@@ -75,6 +105,7 @@
   export default {
     name: 'LessonCard',
     data() {
+      // 权重数据规范
       var checkWeight = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('权重不能为空'))
@@ -89,6 +120,7 @@
           }
         }
       }
+      // 名称规范
       var checkName = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('大项名称不能为空'))
@@ -129,6 +161,7 @@
       'VueSlideBar': VueSlideBar
       // npm install vue-slide-bar --save
     },
+    // 自定义模版定义属性
     props: {
       // 名称
       groupName: {
@@ -415,7 +448,7 @@
   .box-card {
     width: 100%;
     min-width: 800px;
-    margin: 10px 0;
+    margin: 5px 0;
   }
 
   .title-box{

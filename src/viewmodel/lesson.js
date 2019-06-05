@@ -1,7 +1,8 @@
+
 import { getLessons, getAllLessons, getByCollegeId,
   postLesson, postLessons,
   putLesson, putLessons,
-  deleteLesson, deleteLessons } from '@/api/lesson'
+  deleteLesson, deleteLessons, lessonAnalyse } from '@/api/lesson'
 /**
  * date:2018/12/20
  * author:liqian
@@ -151,10 +152,24 @@ const requestDelLessons = (lessonIdArray) => {
     })
   })
 }
-
+/**
+ * 请求课程分析
+ * @param lessonSemester
+ * @returns {Promise<any>}
+ */
+const requestAnalyseLessons = (lessonSemester) => {
+  return new Promise((resolve, reject) => {
+    lessonAnalyse(lessonSemester).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 export default{
   requestAllLessons, requestByCollegeId, requestLessons,
   requestPostLesson, requestPostLessons,
   requestPutLesson, requestPutLessons,
-  requestDelLesson, requestDelLessons
+  requestDelLesson, requestDelLessons, requestAnalyseLessons
 }

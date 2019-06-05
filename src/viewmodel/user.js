@@ -2,7 +2,7 @@ import {
   getUserInfoWithOutPwd, getUserInfo, getUserInfoWithPwd,
   postUser, postUsers,
   putUser, putUsers,
-  deleteUser, deleteUsers } from '@/api/user'
+  deleteUser, deleteUsers, changeOwnInfo, OwnInfo } from '@/api/user'
 /**
  * date:2018/12/20
  * @author: liqian
@@ -65,7 +65,7 @@ const requestUserInfoById = (id) => {
 const requestPutUser = (userItem) => {
   return new Promise((resolve, reject) => {
     putUser(userItem).then(response => {
-      const dataset = response && response.subjects
+      const dataset = response
       resolve(dataset)
     }).catch(error => {
       reject(error)
@@ -152,6 +152,36 @@ const requestDelUsers = (userIdArray) => {
     })
   })
 }
+/**
+ * 请求修改一条个人信息
+ * @param userItem
+ * @returns {Promise<any>}
+ */
+const requestChangeOwnInfo = (userItem) => {
+  return new Promise((resolve, reject) => {
+    changeOwnInfo(userItem).then(response => {
+      const dataset = response
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+/**
+ * 请求获取一条个人信息
+ * @param userItem
+ * @returns {Promise<any>}
+ */
+const requestOwnInfo = (user_id) => {
+  return new Promise((resolve, reject) => {
+    OwnInfo(user_id).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
 
 export default {
   requestUserInfoById,
@@ -162,5 +192,7 @@ export default {
   requestPostUser,
   requestPostUsers,
   requestDelUser,
-  requestDelUsers
+  requestDelUsers,
+  requestChangeOwnInfo,
+  requestOwnInfo
 }

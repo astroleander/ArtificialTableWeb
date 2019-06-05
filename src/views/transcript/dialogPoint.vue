@@ -1,3 +1,4 @@
+<!-- 修改成绩模版-->
 <template>
   <el-dialog
     :visible.sync="visible"
@@ -22,7 +23,7 @@
         </p>
         <div class="text-editor">
           <el-form-item prop="point">
-            <!-- TODO: 更加交互性的提示 -->
+            <!-- DONE: 更加交互性的提示 -->
             <el-input type="number"
               v-model.number="cell_copy.point.pointNumber"
             ></el-input>

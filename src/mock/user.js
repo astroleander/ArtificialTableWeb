@@ -6,11 +6,12 @@ const userMap = {
       {
         id: 1,
         tid: '10011',
-        name: '\u65b9\u4e16\u73891\u53f7',
+        name: 'lalala',
+        password: '12345',
         college_id: 3,
         isManager: false,
-        email: '2@1.com',
-        mobile: '1313131'
+        email: '12345',
+        mobile: '12345'
       }
     ],
     count: 1

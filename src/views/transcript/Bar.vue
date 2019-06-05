@@ -1,3 +1,4 @@
+<!-- 主页面点击任课班级卡片信息后跳转页面中的成绩分析模块的条状图 -->
 <template>
   <div :id="'Diagram'+DiagramId"  class="bar">
   </div>
@@ -19,10 +20,17 @@ export default {
     }
   },
   methods: {
+    // 绘制条状图
     drawBar() {
+      // 初始化图表
       this.chartBar = echarts.init(document.getElementById('Diagram' + this.DiagramId))
+      // 绘制
       this.chartBar.setOption({
+        // 图表颜色
         color: ['#3398FB'],
+        title: {
+          text: '分数分布'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -35,6 +43,7 @@ export default {
           bottom: '3%',
           containLabel: true
         },
+        // 横坐标
         xAxis: [
           {
             type: 'category',
@@ -42,12 +51,14 @@ export default {
             data: ['0-60', '60-70', '70-80', '80-90', '90-100']
           }
         ],
+        // 纵坐标
         yAxis: [
           {
             type: 'value',
             name: '人数'
           }
         ],
+        // 加载数据
         series: [
           {
             name: '人数',

@@ -1,8 +1,5 @@
 import request from '@/utils/request'
 /**
- * 2018.12.18
- * - 2018.12.25 v1 modify by Astroleander
- * @author liqian
  * @description 用户信息的增删改查
 */
 
@@ -123,6 +120,29 @@ export function deleteUsers(UserIdArray) {
     data: {
       subjects: UserIdArray
     }
+  })
+}
+/**
+ * 修改个人信息
+ */
+export function changeOwnInfo(UserItem) {
+  return request({
+    url: '/user/info/format',
+    method: 'put',
+    data: {
+      subjects: [UserItem]
+    }
+  })
+}
+/**
+ * 请求个人信息
+ */
+export function OwnInfo(user_id) {
+  return request({
+    url: '/user/info/format',
+    method: 'get',
+    params: {
+      id: user_id }
   })
 }
 

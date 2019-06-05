@@ -1,3 +1,4 @@
+<!-- 课程管理系统外侧模版 可直接套用-->
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name:{{name}}</div>

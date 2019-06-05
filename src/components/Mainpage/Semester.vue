@@ -1,4 +1,5 @@
 <!-- As container for Class Card Conponent -->
+<!--用于存储课程信息卡片的容器-->
 <template>
   <div>
     <el-select v-model="currentSemester">
@@ -10,6 +11,8 @@
       </el-option>
     </el-select>
     <!-- Card List -->
+    <!-- 课程卡片列表-->
+    <!-- transition 过渡转换 mode为转换形式 out-in现消失，再出现 -->
     <transition name="fade" mode="out-in">
       <div id="at-m-list-container" class="at-collapsible" v-show="collapsed">
         <at-class-card
@@ -27,6 +30,7 @@ import AtClassCard from '@/components/Mainpage/ClassCard'
 
 export default {
   components: { AtClassCard },
+  // ？
   props: [
     'dataset'
   ],

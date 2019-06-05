@@ -3,6 +3,7 @@ supplement:
 （1）院系id使用当前管理员的college_id
 （2）权限默认是无管理权限
 -->
+<!-- 管理员添加教师信息 -->
 <template>
   <div class="app-container rowframe">
     <el-card class="form-box">
@@ -17,7 +18,7 @@ supplement:
         <el-input v-model="form.tid" placeholder="请输入教师编号(至少四位数字)"></el-input>
       </el-form-item>
       <el-form-item label="输入密码 " prop="password" required>
-        <el-input v-model="form.password" type="password" placeholder="随便输"></el-input>
+        <el-input v-model="form.password" type="password" placeholder="输入密码"></el-input>
       </el-form-item>
       <el-form-item label="确认密码 " prop="repassword" required>
         <el-input v-model="form.repassword" type="password" placeholder="请确认密码"></el-input>
@@ -32,7 +33,7 @@ supplement:
         <el-input v-model="form.mobile" placeholder="请输入电话"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+        <el-button type="success" @click="submitForm('ruleForm')">添加</el-button>
         <el-button @click="onReset">重置</el-button>
       </el-form-item>
     </el-form>

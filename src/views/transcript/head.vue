@@ -1,12 +1,12 @@
 <!-- Head Tree structure  -->
 <!--
 div(head)
-    |- TODO: cardtitle
-    |- TODO: content
-        |- TODO: infos dashboard
-        |- TODO: analysis
+    |- DONE: cardtitle
+    |- DONE: content
+        |- DONE: infos dashboard
+        |- DONE: analysis
 -->
-
+<!-- 任课卡片信息 -->
 <template>
   <header class="at-card at-card-shadow header">
     <section class="row-frame">
@@ -40,6 +40,7 @@ export default {
   props: ['info', 'titles', 'table'],
   data() {
     return {
+      // 任课班级卡片所有显示信息
       loading: true,
       head_titles: {
         title: '课程名称',

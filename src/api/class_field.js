@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 /**
- * date：2018.12.18
- * author:liqian
  * description：教学班组织信息的增删改查
  */
 
@@ -10,6 +8,7 @@ import request from '@/utils/request'
  * params：参数对象（id，classInfo_id,student_id 三个可选参数）
  */
 export function getClassFields(params) {
+  // 此时request 为一个 axios实例，发送请求
   return request({
     url: '/table/class_field/format',
     method: 'get',

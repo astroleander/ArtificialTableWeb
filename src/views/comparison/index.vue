@@ -1,7 +1,7 @@
 <!-- Tree structure of comparison -->
 <!--
     div
-    TODO: demand analysis
+    DONE: demand analysis
 -->
 <!-- 管理员-->
 <!-- 1.获取当前学校的课程组lessonInfo-->
@@ -44,8 +44,10 @@
 <!--                        diagramPointInfo[4]:各教学班不及格人数 例：[10,8]-->
 <!--                        diagramPointInfo[5]:各教学班平均分     例：[70,76]-->
 <!--suppress ALL -->
+<!-- 成绩比较模版 -->
 <template>
-  <div class="app-container">  <!--选择-->
+  <div class="comparison">  <!--选择-->
+   <!-- 管理员权限，需要选择课程组-->
     <div class="select-box" v-if="this.use_manager">
       <el-select class="courseSelect" v-model="value" :placeholder="placeText" @change="selectedChange">
         <el-option
@@ -55,6 +57,7 @@
           :value="item.id">
         </el-option>
       </el-select>
+      <!--选择学期 -->
       <el-select v-model="semester" v-if="semesterList.length >0" placeholder="请选择学期" @change="selectedSemester">
         <el-option
           v-for="item in semesterList"
@@ -63,6 +66,7 @@
         </el-option>
       </el-select>
     </div>
+    <!--普通教师权限，只选择学期即可-->
     <div v-else class="select-box" >
       <el-select v-model="semester" v-if="semesterList.length >0" placeholder="请选择学期" @change="selectedSemester">
         <el-option
@@ -72,12 +76,14 @@
         </el-option>
       </el-select>
     </div>
-    <div  v-if="empty"  class="loading-box" v-loading="loading">
+     <!-- 数据为空，警告信息-->
+    <div  v-if="empty"  class="loading-box" v-loading="loading" style="margin-top: 1px">
       <el-card class="alert-box">
         <div slot="header">
           <span class="row title">信息提示</span>
         </div>
         <p class="row">{{Message}}</p>
+
         <el-table  class="errortable" v-if="errorList.length> 0" :data="errorList">
           <el-table-column prop="name" label="班级名称" align="center" width="150"></el-table-column>
           <el-table-column  label="错误信息" align="center" width="200">
@@ -88,39 +94,60 @@
         </el-table>
       </el-card>
     </div>
-    <div class="rowframe" v-if="!empty" >
-      <el-card class="barCard" shadow="hover">
-        <pass-exam-bar class="barClass" :dataSet="diagramPointInfo"></pass-exam-bar>
-      </el-card>
-      <el-card class="tableCard" shadow="hover">
-        <el-table :data="classPointInfos" stripe >
-          <el-table-column prop="name"  label="教学班名称" align="center" width="150"/>
-          <el-table-column prop="total" label="总人数" align="center" width="80"/>
-          <el-table-column prop="validScoreNum" label="有效成绩" align="center" width="80"/>
-          <el-table-column prop="noPassExamNum" label="不及格人数" align="center" width="100"/>
-          <el-table-column label="及格率" align="center" width="80">
+    <div class="rowframe" v-if="!empty" style="margin-top: 1px">
+      <!--表格显示具体数据信息-->
+      <div>
+        <el-alert v-if="showNone" title="尚未选中任何班级进行比较查看" type="warning" style="align-items: center"></el-alert>
+      </div>
+      <div class="tableCard">
+        <el-table :data="classPointInfos" stripe
+                  ref="table" @selection-change="handleSome">
+          <el-table-column width="80" type="selection"/>
+          <el-table-column prop="name"  label="教学班名称" align="center"/>
+          <el-table-column prop="total" label="总人数" align="center"/>
+          <el-table-column prop="validScoreNum" label="有效成绩" align="center"/>
+          <el-table-column prop="noPassExamNum" label="不及格人数" align="center"/>
+          <el-table-column label="及格率" align="center">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.passExamRate }}%</span>
             </template>
           </el-table-column>
-          <el-table-column prop="avgScore" label="平均分" align="center" width="100"/>
+          <el-table-column prop="avgScore" label="平均分" align="center"/>
+          <el-table-column align="center">
+            <template slot="header" slot-scope="scope">
+              <el-button type="success" @click="submitHandle">批量查看</el-button>
+            </template>
+            <template slot-scope="scope">
+            <el-button @click="handleOne(scope.row)" type="success">查看信息</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-      </el-card>
+      </div>
+     <!--自定义绘制条形图-->
+      <el-dialog :visible.sync="showDialogSome" title="各班级情况对比图">
+        <pass-exam-bar class="barClass" :dataSet="diagramPointInfo"></pass-exam-bar>
+      </el-dialog>
     </div>
+    <el-dialog :visible.sync="showDialogOne" title="班级具体情况">
+      <at-pie class="pie" :dataSet="Score"></at-pie>
+    </el-dialog>
   </div>
 </template>
+
 <script>
 import PassExamBar from './PassExamBar'
+import AtPie from '@/components/Pie'
 import lessonViewModel from '@/viewmodel/lesson'
 import classInfosViewModel from '@/viewmodel/classinfos'
 import titleGroupViewModel from '@/viewmodel/titlegroups'
 import titleViewModel from '@/viewmodel/title'
 import pointViewModel from '@/viewmodel/point'
 import studentViewModel from '@/viewmodel/student'
+
 // import classFieldViewModel from '@/viewmodel/classfield'
 import { mapGetters } from 'vuex'
 export default {
-  components: { PassExamBar },
+  components: { PassExamBar,AtPie },
   props: [],
   data() {
     return {
@@ -135,8 +162,15 @@ export default {
       classInfos: [], // 根据课程组id（lesson_id）查询到的各教学班信息
       classPointInfos: [], // 存储多个班级的处理后的成绩信息
       diagramPointInfo: {}, // 处理classPointInfos里数据便于图表显示
-      errorList: [] // 处理错误信息
+      errorList: [],// 处理错误信息
       // error{ classInfo_id,classInfo_name,errorMsg}
+      Score: [],  //学生成绩汇总
+      showDialogOne: false, // 是否显示单一班级成绩
+      multipleSelection: [],
+
+      showDialogSome: false,
+      showNone: false
+
     }
   },
   methods: {
@@ -222,7 +256,7 @@ export default {
         // console.log('dealresult = '+ dealResult)
         if (this.isExistTrue(dealResult)) { // 如果有一个班的成绩统计成功
           this.loading = false
-          this.buildDiagramData()
+          // this.buildDiagramData()
           this.empty = false
         } else {
           this.loading = false
@@ -231,20 +265,24 @@ export default {
         }
       })
     },
-    buildDiagramData() {
-      this.classPointInfos.forEach(classPointItem => {
-        this.buildObject(this.diagramPointInfo, 1, classPointItem.id)
-        this.buildObject(this.diagramPointInfo, 2, classPointItem.name)
-        this.buildObject(this.diagramPointInfo, 3, classPointItem.passExamNum)
-        this.buildObject(this.diagramPointInfo, 4, classPointItem.noPassExamNum)
-        this.buildObject(this.diagramPointInfo, 5, classPointItem.avgScore)
-        this.buildObject(this.diagramPointInfo, 6, classPointItem.passExamRate)
-      })
+    buildDiagramData(classPointInfos) {
+        this.diagramPointInfo = {}
+        classPointInfos.forEach(classPointItem => {
+          this.buildObject(this.diagramPointInfo, 1, classPointItem.id)
+          this.buildObject(this.diagramPointInfo, 2, classPointItem.name)
+          this.buildObject(this.diagramPointInfo, 3, classPointItem.passExamNum)
+          this.buildObject(this.diagramPointInfo, 4, classPointItem.noPassExamNum)
+          this.buildObject(this.diagramPointInfo, 5, classPointItem.avgScore)
+          this.buildObject(this.diagramPointInfo, 6, classPointItem.passExamRate)
+        })
+        console.log(this.diagramPointInfo)
+        this.showDialogSome = true
     },
     buildObject(object, key, value) {
-      if (!object[key]) {
+      if (!object[key])
+      {
         this.$set(object, key, [value])
-      } else {
+      }else {
         object[key].push(value)
       }
     },
@@ -284,10 +322,10 @@ export default {
         this.fetchStudentInfo({ classInfo_id: classInfo_id }),
         this.fetchTitleGroupInfo({ lesson_id: lesson_id })])
         .then(result => {
-          // console.log('result[0] = ' + result[0])
-          // console.log('result[1] = ' + result[1])
-          // console.log('result[2] = ' + result[2])
-          // console.log('result[3] = ' + result[3])
+           console.log('result[0] = ' + result[0])
+           console.log('result[1] = ' + result[1])
+           console.log('result[2] = ' + result[2])
+           console.log('result[3] = ' + result[3])
           if (result[0] && result[1] && result[2] && result[3]) {
             // (1)获取小项数据
             result[0].forEach(element => {
@@ -534,6 +572,75 @@ export default {
           this.changeMessage('当前课程组无教学班信息')
         })
     },
+    handleSome(val) {
+      this.multipleSelection = val
+    },
+    handleOne(row) {
+      this.Score = []
+      console.log(row)
+      var x1 = 0
+      var x2 = 0
+      var x3 = 0
+      var x4 = 0
+      var x5 = 0
+      const studentScore = row.studentScore
+      console.log(studentScore)
+      for(let key in studentScore) {
+        console.log('123456789')
+        console.log(studentScore[key])
+        const map = studentScore[key]
+        console.log(map)
+        map.forEach(score => {
+          console.log('987654321')
+          console.log(score)
+          if(score>0 && score<60)
+          {
+            x1++
+          }else if(score>=60 && score<70){
+            x2++
+          }else if(score>=70 && score<80){
+            x3++
+          }else if(score>=80 && score<90){
+            x4++
+          }else if(score>=90 && score<=100){
+            x5++
+          }
+        })
+      }
+      this.Score.push({
+        value: x1,
+        name: '<60'
+      })
+      this.Score.push({
+        value: x2,
+        name: '60~70'
+      })
+      this.Score.push({
+        value: x3,
+        name: '70~80'
+      })
+      this.Score.push({
+        value: x4,
+        name: '80~90'
+      })
+      this.Score.push({
+        value: x5,
+        name: '90~100'
+      })
+      console.log(this.Score)
+      this.showDialogOne = true
+    },
+    submitHandle() {
+      console.log('asdfghjk')
+      console.log(this.multipleSelection)
+
+      if (this.multipleSelection === undefined || this.multipleSelection.length === 0)
+      {
+        this.showNone = true
+      }else {
+        this.buildDiagramData(this.multipleSelection)
+      }
+    },
     // 改变消息提示
     changeMessage(Message) {
       this.$message({
@@ -548,12 +655,12 @@ export default {
       if (this.use_manager) {
         // 获取课程组信息，按照课程组进行成绩分析
         this.placeText = '请选择课程组'
-        this.Message = '请选择要进行成绩分析的课程组'
+        this.Message = '请选择要进行成绩比较的课程组'
         this.fetchLessonInfo(this.user_collegeId)
       } else {
         // 教师权限
         // 获取这个老师的所有教学班，按照学期进行成绩分析
-        this.Message = '请选择要进行成绩分析的学期'
+        this.Message = '请选择要进行成绩比较的学期'
         this.fetchclassInfosByTeacherId({ teacher_id: this.id })
       }
     }
@@ -565,12 +672,18 @@ export default {
       'id'
     ])
   },
-  watch: {
-    use_manager: function(val) {
-      this.initSelectList()
-      this.initPage()
-    }
-  },
+    watch: {
+        use_manager: function() {
+            if (this.use_manager) {
+                this.placeText = '请选择课程组'
+                this.Message = '请选择要进行成绩比较的课程组'
+                this.fetchLessonInfo(this.user_collegeId)
+            } else {
+                this.Message = '请选择要进行成绩比较的学期'
+                this.fetchclassInfosByTeacherId({ teacher_id: this.id })
+            }
+        }
+    },
   created() {
     this.initPage()
   }
@@ -578,6 +691,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .comparison{
+    display: flex;
+    flex-direction: column;
+  }
   .row{
     display: flex;
     flex-direction: row;
@@ -598,24 +715,23 @@ export default {
   .barCard{
     width: 40%;
     height: 80%;
-    min-width: 400px;
-    min-height: 400px;
+    // min-width: 400px;
+    // min-height: 400px;
   }
   .tableCard{
-    width: 55%;
+    width: auto;
   }
   .rowframe{
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 20px;
+    flex-direction: column;
+    margin-top: 10px;
   }
   $grey: #999;
   $black: #212121;
   $white: #FFF;
   .select-box{
     display: flex;
-    padding-left: 40px;
+    padding-left: 10px;
     align-items: center;
     background: white;
     height: 60px;
@@ -633,7 +749,7 @@ export default {
     display: flex;
     height: 400px;
     background: white;
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 20px;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     color: #409EFF;

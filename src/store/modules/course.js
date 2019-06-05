@@ -2,11 +2,14 @@ const course = {
   state: {
     course_list: []
   },
+  // 通过commit调用函数 同步事务
   mutations: {
     ADD_COURSE: (state, { course }) => {
       state.course_list.push(course)
     }
   },
+  // 异步处理 Action 提交commit的是 mutation
+  // Action 通过 store.dispatch 方法触发：
   actions: {
     addCourse({ commit, state }, { course }) {
       return new Promise((resolve, reject) => {
