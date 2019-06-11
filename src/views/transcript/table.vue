@@ -318,7 +318,11 @@ DONE: post 返回需要 ID
           this.showAddTitleDialog({})
         },
         onClickedExportTable: function() {
-          this.showExportDialog({})
+          if (this.$store.state.table.changed) {
+            this.$alert('当前有未保存的分数修改，请保存后再导出')
+          } else {
+            this.showExportDialog({})
+          }
         },
         onClickedRefresh: function() {
           location.reload()
@@ -330,16 +334,12 @@ DONE: post 返回需要 ID
               message: '修改成功',
               type: 'success'
             })
-            console.log(this.$store.state.table.changed)
             this.$store.state.table.changed = false
-            console.log(this.$store.state.table.changed)
           })
         },
         onItemChanged: function(newItem) {
-            console.log(this.$store.state.table.changed)
           this.$store.state.table.changed = true
           console.log(this.$store)
-          console.log(this.$store.state.table.changed)
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
           if (newItem.pointNumber === '') {
             newItem.pointNumber = 0
