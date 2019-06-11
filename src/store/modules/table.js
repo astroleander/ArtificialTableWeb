@@ -4,7 +4,8 @@ const table = {
     settingsTable: {},
     previewTable: {},
     predictTable: {},
-    studentInfo: {}
+    studentInfo: {},
+    changed: false
   },
   mutations: {
     SAVE_IMPORT_TABLE: (state, { table }) => {

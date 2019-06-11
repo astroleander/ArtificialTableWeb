@@ -25,7 +25,8 @@ DONE: post 返回需要 ID
             <el-button @click="onClickedAddTitle()" type="success" icon="el-icon-d-arrow-right">添加新列</el-button>
             <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
-            <el-button @click="onClickedUpload()" type="success" icon="el-icon-upload">保存修改</el-button>
+            <el-button @click="onClickedUpload()"
+              :type="this.$store.state.table.changed? 'warning' : 'success'" icon="el-icon-upload">保存修改</el-button>
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
         </el-row>
@@ -323,9 +324,16 @@ DONE: post 返回需要 ID
               message: '修改成功',
               type: 'success'
             })
+            console.log(this.$store.state.table.changed)
+            this.$store.state.table.changed = false
+            console.log(this.$store.state.table.changed)
           })
         },
         onItemChanged: function(newItem) {
+            console.log(this.$store.state.table.changed)
+          this.$store.state.table.changed = true
+          console.log(this.$store)
+          console.log(this.$store.state.table.changed)
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
           if (newItem.pointNumber === '') {
             newItem.pointNumber = 0

@@ -2,11 +2,19 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth' // 验权
 
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
+  if (from.path.match(/\/transcript\//)) {
+    if (store.state.table.changed === true) {
+      MessageBox.alert('当前页面还有数据未保存，请点击保存数据按钮', '数据未保存', {
+        confirmButtonText: '确定'
+      })
+      return
+    }
+  }
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
