@@ -191,6 +191,12 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        beforeunloadHandler(event) {
+          if(this.$store.state.table.changed) {
+            event.preventDefault()
+            event.returnValue = `直接离开会失去尚未保存修改的分数`;
+          }
+        },
         proving1(e, scope, title) {
           const boolean = new RegExp('^[1-9][0-9]*$').test(e.target.value)
           if (!boolean) {
@@ -384,11 +390,17 @@ DONE: post 返回需要 ID
           return wbout
         }
       },
-      created() {},
+      created() {
+      },
       mounted() {
+        window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+
         setTimeout(() => {
           if (this.loading) this.loading = false
         }, 5000)
+      },
+      beforeDestroy() {
+        window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
       },
       watch: {
         view: function(newView) {
