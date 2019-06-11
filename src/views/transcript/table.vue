@@ -391,6 +391,7 @@ DONE: post 返回需要 ID
         }
       },
       created() {
+        this.$store.state.table.changed = false
       },
       mounted() {
         window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
