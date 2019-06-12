@@ -261,13 +261,6 @@ export default {
       if (!button.disabled) {
         this.showDisable = true
       }
-    },
-    getData(row, title) {
-      Object.keys(row).forEach(prop => {
-        if (prop === title.prop) {
-
-        }
-      })
     }
   },
   mounted() {

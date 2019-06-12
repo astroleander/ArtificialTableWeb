@@ -65,16 +65,19 @@ DONE: post 返回需要 ID
                             <span class="point">
               <el-form
                       :model="getPointItem(scope, title)"
-                      :rules="[
-                      { type: 'number', message: '分数必须为数字值'}]"
+                      :rules="[{
+                      type:'number', trigger: 'blur', message:'分数必须是数值'
+                      }]"
               >
                 <el-input
                         type="number"
                         prop="number"
                         size="mini"
+                        @focus="getNumber(getPointItem(scope, title).pointNumber)"
+                        @blur="proving1($event, getPointItem(scope, title).pointNumber)"
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
-                        @change="onItemChanged(getPointItem(scope, title))">
+                        @change="onItemChanged(getPointItem(scope, title), title)">
                 </el-input>
               </el-form>
             </span>
@@ -163,7 +166,7 @@ DONE: post 返回需要 ID
           require: false
         }
       },
-      data() {
+      data: function() {
         return {
           viewDataset: [],
           // the array is for saving all modified point item,
@@ -181,7 +184,8 @@ DONE: post 返回需要 ID
           // 暂时不用携带数据
           // menuDialogDataset: {}
           // 载入状态
-          loading: true
+          loading: true,
+          Number: 0
         }
       },
       computed: {
@@ -190,16 +194,10 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
-        proving1(e, scope, title) {
-          const boolean = new RegExp('^[1-9][0-9]*$').test(e.target.value)
-          if (!boolean) {
-            this.$message.warning(scope.name + '的' + title + '处禁止输入小数及负数')
-            e.target.value = 0
-          }
-          if (e.target.value > 100) {
-            this.$message.warning('禁止输入超过100满分数')
-            e.target.value = 0
-            e.target.color = 'red'
+        getNumber(number) {
+          if (number >= 0 && number <= 100) {
+            const value = number
+            this.Number = value
           }
         },
         // shown controller, ensure dataset before
@@ -325,10 +323,28 @@ DONE: post 返回需要 ID
             })
           })
         },
-        onItemChanged: function(newItem) {
+        onItemChanged: function(newItem, title) {
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
+          console.log(newItem)
+          const sid = newItem.student_id
+          var name
+          console.log(this.viewDataset)
+          this.viewDataset.forEach(studentItem => {
+            if (studentItem.student.id === sid) {
+              name = studentItem.student.name
+            }
+          })
           if (newItem.pointNumber === '') {
-            newItem.pointNumber = 0
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，请及时查看',
+              type: 'warning',
+              duration: 8000 })
+          }
+          if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
+              type: 'warning',
+              duration: 8000 })
           }
           this.updatedArray.push(newItem)
         },
