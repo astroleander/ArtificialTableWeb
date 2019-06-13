@@ -92,29 +92,24 @@
 <script>
 import VueSlideBar from 'vue-slide-bar'
 import AtPie from '@/components/Weight/Pie'
-
 export default {
   name: 'TitlegroupCard',
   data() {
     var checkWeight = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('权重不能为空'))
-      }
-      if (!Number.isInteger(value)) {
+      } else if (!Number.isInteger(value)) {
         callback(new Error('请输入数字值'))
+      } else if (value > 100 || value < 0) {
+        callback(new Error('请输入0-100之间的数字'))
       } else {
-        if (value > 100 || value < 0) {
-          callback(new Error('请输入0-100之间的数字'))
-        } else {
-          callback()
-        }
+        callback()
       }
     }
     var checkName = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('小项名称不能为空'))
-      }
-      if (this.IsExistName(this.NewTitle.name)) {
+      if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+        callback(new Error('小项不可为空'))
+      } else if (this.IsExistName(this.NewTitle.name)) {
         callback(new Error('小项名称已存在'))
       } else {
         callback()
@@ -135,7 +130,7 @@ export default {
       dialogFormVisible: false,
       rules: {
         name: [
-          { validator: checkName, trigger: 'blur' }
+          { trigger: 'blur', validator: checkName }
         ],
         weight: [
           { validator: checkWeight, trigger: 'blur' }
@@ -208,7 +203,16 @@ export default {
     },
     // 删除小项
     delTitleItem: function(title_id) {
-      this.$emit('notifyDel', title_id)
+      this.$prompt(
+        '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的成绩测试项及其权重！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+        }
+      ).then(() => {
+        this.$emit('notifyDel', title_id)
+      })
     },
     // 添加小项
     addTitleItem: function() {
@@ -315,7 +319,7 @@ export default {
       }
       return false
     },
-    // 添加大项
+    // 添加小项
     submitForm: function(formName) {
       console.log(this.NewTitle.name)
       console.log(this.NewTitle.weight)

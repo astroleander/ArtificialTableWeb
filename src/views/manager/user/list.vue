@@ -224,24 +224,33 @@ export default {
     selectChange() {
       this.fetchUserList()
     },
-    deleteUser(user) {
-      ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
-        if (res === undefined) {
-          UserViewModel.requestDelUser(user.id).then(res => {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            })
-            const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
-            this.remoteUserList.splice(idx, 1)
-          })
-        } else {
-          this.$confirm('该用户还有正在教授的班级，无法删除！您可以到班级列表中进行确认。', '无法删除', {
-            type: 'warning',
-            confirmButtonText: '确定',
-            cancelButtonText: '关闭'
-          })
+    deleteUser: function(user) {
+      this.$prompt(
+        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该教师！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
         }
+      ).then(() => {
+        ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
+          if (res === undefined) {
+            UserViewModel.requestDelUser(user.id).then(res => {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
+              this.remoteUserList.splice(idx, 1)
+            })
+          } else {
+            this.$confirm('该用户还有正在教授的班级，无法删除！您可以到班级列表中进行确认。', '无法删除', {
+              type: 'warning',
+              confirmButtonText: '确定',
+              cancelButtonText: '关闭'
+            })
+          }
+        })
       })
     },
     fetchCollegeList() {
@@ -291,6 +300,7 @@ export default {
                 message: '修改教师信息成功,请刷新',
                 type: 'success'
               })
+              location.reload()
             }
           })
         } else {

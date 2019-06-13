@@ -175,7 +175,7 @@ export default {
       ])
     },
     methods: {
-    // 添加用户
+    // 修改用户信息
       submitForm: function(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

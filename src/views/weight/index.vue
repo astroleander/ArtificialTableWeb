@@ -180,10 +180,12 @@ div(head)
         const TitleGroup = {
           name: NewTitleGroup.name,
           lesson_id: this.selectData[this.value].id,
-          weight: NewTitleGroup.weight
+          weight: NewTitleGroup.weight,
+          override_tag: 0
         }
         titleGroupViewModel
           .requestPostTitleGroup(TitleGroup).then(response => {
+            console.log(response)
             this.getTitleGroup()
             // TitleGroup.id = response[0].id
             // if (!this.titleGroups) { // 若该大项数组下没有大项

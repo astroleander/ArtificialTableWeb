@@ -122,11 +122,10 @@
       }
       // 名称规范
       var checkName = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('大项名称不能为空'))
-        }
-        if (this.IsExistName(this.NewTitleGroup.name)) {
-          callback(new Error('大项名称已存在'))
+        if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+          callback(new Error('成绩类别名称不可为空'))
+        } else if (this.IsExistName(this.NewTitleGroup.name)) {
+          callback(new Error('成绩类别名称已存在'))
         } else {
           callback()
         }
@@ -147,7 +146,7 @@
         },
         rules: {
           name: [
-            { validator: checkName, trigger: 'blur' }
+            { trigger: 'blur', validator: checkName }
           ],
           weight: [
             { validator: checkWeight, trigger: 'blur' }
@@ -182,7 +181,16 @@
       },
       // 删除大项
       delTitleGroupItem: function(titleGroup_id) {
-        this.$emit('notifyDel', titleGroup_id)
+        this.$prompt(
+          '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的成绩类别项及其权重！',
+          '请确认删除操作', {
+            confrimButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /确认/
+          }
+        ).then(() => {
+          this.$emit('notifyDel', titleGroup_id)
+        })
       },
       // 计算权重总和
       weightSum: function() {

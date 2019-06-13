@@ -44,6 +44,13 @@ supplement:
 <script>
 import { mapGetters } from 'vuex'
 import userViewModel from '@/viewmodel/user'
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('教师名称不可为空'))
+  } else {
+    callback()
+  }
+}
 export default {
   data() {
     var validateTeacherId = (rule, value, callback) => {
@@ -126,7 +133,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入教师姓名', trigger: 'blur' }
+          { required: true, message: '请输入教师姓名', trigger: 'blur' },
+          { required: true, trigger: 'blur', validator: validateName }
         ],
         tid: [
           { validator: validateTeacherId, trigger: 'blur' }

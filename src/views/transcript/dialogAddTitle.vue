@@ -38,7 +38,13 @@ const titlePrototype = {
   weight: 10,
   total: 100
 }
-
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('小项名称不可为空'))
+  } else {
+    callback()
+  }
+}
 export default {
   props: ['visible', 'classInfo'],
   data() {
@@ -47,7 +53,8 @@ export default {
       titleGroupList: [],
       rules: {
         name: [
-          { required: true, message: '请输入小项名称', trigger: 'blur' }
+          { required: true, message: '请输入小项名称', trigger: 'blur' },
+          { required: true, trigger: 'blur', validator: validateName }
         ],
         titleGroup_id: [
           { required: true, message: '请选择小项所属的分数类别', trigger: 'change' }
@@ -65,6 +72,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.titleForm['classInfo_id'] = this.classInfo.id
+          this.titleForm['override_tag'] = 0
           this.$emit('onAddNewTitle', JSON.parse(JSON.stringify(this.titleForm)))
           this.onDialogClose()
         } else {

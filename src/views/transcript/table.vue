@@ -65,9 +65,6 @@ DONE: post 返回需要 ID
                             <span class="point">
               <el-form
                       :model="getPointItem(scope, title)"
-                      :rules="[{
-                      type:'number', trigger: 'blur', message:'分数必须是数值'
-                      }]"
               >
                 <el-input
                         type="number"
@@ -194,12 +191,6 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
-        getNumber(number) {
-          if (number >= 0 && number <= 100) {
-            const value = number
-            this.Number = value
-          }
-        },
         // shown controller, ensure dataset before
         showPointDialog: function(dataset) {
           this.tableDialogDataset = dataset
@@ -413,6 +404,7 @@ DONE: post 返回需要 ID
     }
     .table-wrapper {
         height: 100%;
+        // height: 200px;
     }
     .menu {
         margin: 12px 10px;

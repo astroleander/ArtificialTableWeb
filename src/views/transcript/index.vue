@@ -231,20 +231,36 @@ export default {
     handleTitleChanged(title) {
       console.log(this.model.titles)
       titleViewmodel.requestPostTitle(title).then(res => {
-        title.id = res[0].id
+        title.id = res.succeed_ids[0].id
         this.model.titles.push(title)
+      }).catch(error => {
+        console.log(error)
+        this.$prompt(
+          '数据库中已存在此项测试，如果需要进行覆盖, 请在文本框内输入\"确认\"\n此操作将删除数据库中存在的测试项, 此项分数信息都将丢失！',
+          '请确认覆盖操作', {
+            confrimButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /确认/
+          }
+        ).then(() => {
+          title.override_tag = 1
+          titleViewmodel.requestPostTitle(title).then(res => {
+            title.id = res.succeed_ids[0].id
+            this.model.titles.push(title)
+          })
+        })
       })
     },
     // 导出表格
-    handleExportTable: function(dialogResult) {
+    handleExportTable(dialogResult) {
     },
     // 删除小项
-    handleDeletedTitle: function(title) {
+    handleDeletedTitle(title) {
       const idx = this.model.titles.findIndex(item => item.id === title.id)
       this.model.titles.splice(idx, 1)
     },
     // 加载成绩表信息
-    fetchDataset: function() {
+    fetchDataset() {
       // const lesson_id = this.info.lesson_id
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),

@@ -196,7 +196,13 @@ const eltableAdapter = (array) => {
   })
   return results_array
 }
-
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('学生名称不可为空'))
+  } else {
+    callback()
+  }
+}
 export default {
   name: 'addstupid',
   components: {
@@ -250,7 +256,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' }
+          { required: true, message: '请输入学生姓名', trigger: 'blur' },
+          { required: true, trigger: 'blur', validator: validateName }
         ],
         sid: [
           { validator: validateStudentId, trigger: 'blur' }
