@@ -74,7 +74,7 @@
       <el-dialog title="添加小项" :visible.sync="dialogFormVisible">
         <el-form :model="NewTitle" status-icon :rules="rules" ref="ruleForm">
           <el-form-item label="名称" prop="name" :label-width="formLabelWidth">
-            <el-input v-model="NewTitle.name"    placeholder="请输入名称" autocomplete="off"></el-input>
+            <el-input v-model="NewTitle.name"    placeholder="请输入名称" autocomplete="off" maxlength="10" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="权重" prop="weight" :label-width="formLabelWidth">
             <el-input  v-model.number="NewTitle.weight"   placeholder="请输入权重值（0-100之间）" ></el-input>
@@ -236,11 +236,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$emit('notifyChanged', this.groupId, this.currentDataSet)
-        this.$message({
-          type: 'success',
-          message: '修改成功!'
+        let error = 0
+        this.currentDataSet.forEach(title => {
+          if (title.weight === 0) {
+            this.$message({
+              type: 'error',
+              message: '权重值不可为0'
+            })
+            error++
+          }
         })
+        if (error === 0) {
+          this.$emit('notifyChanged', this.groupId, this.currentDataSet)
+          this.$message({
+            type: 'success',
+            message: '修改权重成功'
+          })
+        }
       }).catch(() => {
         this.dealCancel()
         this.$message({

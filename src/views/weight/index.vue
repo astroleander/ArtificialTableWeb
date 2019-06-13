@@ -231,7 +231,8 @@ div(head)
           name: NewTitle.name,
           weight: NewTitle.weight,
           titleGroup_id: titleGroup_id,
-          classInfo_id: this.selectData[this.value].id
+          classInfo_id: this.selectData[this.value].id,
+          override_tag: 0
         }
         titleViewModel
           .requestPostTitle(Title).then(response => {

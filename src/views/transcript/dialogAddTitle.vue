@@ -3,7 +3,7 @@
   <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
   <el-form :rules="rules" :model="titleForm" ref="form">
     <el-form-item label="新列名称" prop="name">
-      <el-input v-model="titleForm.name" autoComplete="off" size="small" style="width:150px"></el-input>
+      <el-input v-model="titleForm.name" autoComplete="off" size="small" style="width:150px" maxlength="10" show-word-limit></el-input>
     </el-form-item>
     <el-form-item label="所属类别" prop="titleGroup_id">
       <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small">

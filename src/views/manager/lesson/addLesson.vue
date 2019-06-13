@@ -9,7 +9,7 @@ supplement:添加管理员所在本院系的课程
       </div>
       <el-form :rules="rules"  status-icon ref="ruleForm" :model="form" label-width="100px">
         <el-form-item label="课程名称 " prop="name" >
-          <el-input v-model="form.name"  placeholder="请输入课程组名称"></el-input>
+          <el-input v-model="form.name"  placeholder="请输入课程组名称" maxlength="10" show-word-limit></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="submitForm('ruleForm')">添加</el-button>

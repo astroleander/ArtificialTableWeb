@@ -84,7 +84,7 @@
       <el-dialog title="添加大项" :visible.sync="dialogFormVisible">
         <el-form :model="NewTitleGroup" status-icon :rules="rules" ref="ruleForm">
           <el-form-item label="名称" prop="name" :label-width="formLabelWidth">
-            <el-input v-model="NewTitleGroup.name"    placeholder="请输入名称" autocomplete="off"></el-input>
+            <el-input v-model="NewTitleGroup.name"    placeholder="请输入名称" autocomplete="off" maxlength="10" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="权重" prop="weight" :label-width="formLabelWidth">
             <el-input  v-model.number="NewTitleGroup.weight"   placeholder="请输入权重值（0-100之间）" ></el-input>
@@ -232,7 +232,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$emit('notifyChanged', this.currentDataSet)
+          let error = 0
+          this.currentDataSet.forEach(titleGroup => {
+            if (titleGroup.weight === 0) {
+              this.$message({
+                type: 'error',
+                message: '权重值不可为0'
+              })
+              error++
+            }
+          })
+          if (error === 0) {
+            this.$emit('notifyChanged', this.currentDataSet)
+          }
         }).catch(() => {
           this.dealCancel()
           this.$message({

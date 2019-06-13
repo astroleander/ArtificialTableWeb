@@ -57,16 +57,20 @@
     <el-dialog title="修改班级信息" class="ClassInfo" :visible.sync="show" :before-close="onDialogClose">
       <el-form :model="InfoForm" ref="infoform">
         <el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
-          <el-input  v-model="InfoForm.cid"></el-input>
+          <span>{{InfoForm.cid}}</span>
         </el-form-item>
         <el-form-item label="班级名：" prop="name" style="max-height: 60px">
-          <el-input  v-model="InfoForm.name"></el-input>
+          <span>{{InfoForm.name}}</span>
         </el-form-item>
-        <el-form-item label="教师：" prop="teacher_message_name" style="max-height: 60px">
-          <el-input  v-model="InfoForm.teacher_message_name"></el-input>
-        </el-form-item>
-        <el-form-item label="学期：" prop="semester" style="max-height: 60px">
-          <el-input  v-model="InfoForm.semester"></el-input>
+        <el-form-item label="教师：" prop="teacher_id" style="max-height: 60px">
+            <el-select v-model="InfoForm.teacher_id" placeholder="请选择学期">
+                <el-option
+                        v-for="(item,index) in teachers"
+                        :key="index"
+                        :label="item.name"
+                        :value="item.id">
+                </el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="教室：" prop="room" style="max-height: 60px">
           <el-input  v-model="InfoForm.room"></el-input>
@@ -84,7 +88,7 @@
 <script>
 import LessonViewModel from '@/viewmodel/lesson'
 import ClassInfoViewModel from '@/viewmodel/classinfos'
-
+import UserViewModel from '@/viewmodel/user'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -117,17 +121,18 @@ export default {
         cid: '',
         name: '',
         teacher_id: '',
-        teacher_message_name: '',
         semester: '',
         room: '',
         week: ''
       },
-      showDisable: false
+      showDisable: false,
+      teachers: []
     }
   },
   computed: {
     ...mapGetters([
-      'user_collegeId'
+      'user_collegeId',
+      'token'
     ])
   },
   methods: {
@@ -224,12 +229,16 @@ export default {
     showClass(row) {
       console.log('1234567890')
       console.log(row)
+      UserViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token)
+        .then(res => {
+          this.teachers = res
+        })
       this.InfoForm.lesson_id = row.lesson_id
       this.InfoForm.teacher_id = row.teacher_id
       this.InfoForm.id = row.id
       this.InfoForm.cid = row.cid
       this.InfoForm.name = row.name
-      this.InfoForm.teacher_message_name = row.teacher_message.name
+      this.InfoForm.teacher_id = row.teacher_id
       this.InfoForm.semester = row.semester
       this.InfoForm.week = row.week
       this.InfoForm.room = row.room
@@ -248,6 +257,7 @@ export default {
                   message: '修改教学班成功',
                   type: 'success'
                 })
+                location.reload()
               }
             })
             .catch(err => {

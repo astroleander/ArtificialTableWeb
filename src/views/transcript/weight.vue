@@ -16,14 +16,14 @@ table
 <template>
   <div>
   <div class="frame" style="margin-top: 1px">
-    <div class="col">
+    <div class="col" v-if="flag">
       <el-progress type="circle" :width="100"  :percentage="0" status="text" style="margin-right: 70px; margin-left: 50px">总人数<br>{{total}}</el-progress>
       <el-progress type="circle" :width="100"  :percentage="100"  status="text"style="margin-right: 70px">有效成绩<br>{{valid}}</el-progress>
       <el-progress type="circle" :width="100"  :percentage="rate"  color="#13ce66" status="text"style="margin-right: 70px">及格率<br>{{rate}}%</el-progress>
       <el-progress type="circle" :width="100"  :percentage="100" color="#FFA07A" status="text"style="margin-right: 70px">平均分<br/>{{avg}}</el-progress>
     </div>
     <div style="background-color: #e2e1e0;height: 1px"></div>
-    <div class="row-box">
+    <div class="row-box" v-if="flag">
      <!-- 条状图 -->
     <at-bar class="bar-box" :data-set="gradeSection"></at-bar>
       <!--雷达图-->
