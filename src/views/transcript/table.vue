@@ -70,8 +70,6 @@ DONE: post 返回需要 ID
                         type="number"
                         prop="number"
                         size="mini"
-                        @focus="getNumber(getPointItem(scope, title).pointNumber)"
-                        @blur="proving1($event, getPointItem(scope, title).pointNumber)"
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
                         @change="onItemChanged(getPointItem(scope, title), title)">
@@ -181,8 +179,7 @@ DONE: post 返回需要 ID
           // 暂时不用携带数据
           // menuDialogDataset: {}
           // 载入状态
-          loading: true,
-          Number: 0
+          loading: true
         }
       },
       computed: {
