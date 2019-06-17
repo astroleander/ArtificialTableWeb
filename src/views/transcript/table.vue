@@ -25,7 +25,8 @@ DONE: post 返回需要 ID
             <el-button @click="onClickedAddTitle()" type="success" icon="el-icon-d-arrow-right">添加新列</el-button>
             <el-button @click="onClickedExportTable()" type="success" icon="el-icon-download">导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
-            <el-button @click="onClickedUpload()" type="success" icon="el-icon-upload">保存修改</el-button>
+            <el-button @click="onClickedUpload()"
+              :type="this.$store.state.table.changed? 'warning' : 'success'" icon="el-icon-upload">保存修改</el-button>
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
         </el-row>
@@ -189,6 +190,24 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        beforeunloadHandler(event) {
+          if(this.$store.state.table.changed) {
+            event.preventDefault()
+            event.returnValue = `直接离开会失去尚未保存修改的分数`;
+          }
+        },
+        proving1(e, scope, title) {
+          const boolean = new RegExp('^[1-9][0-9]*$').test(e.target.value)
+          if (!boolean) {
+            this.$message.warning(scope.name + '的' + title + '处禁止输入小数及负数')
+            e.target.value = 0
+          }
+          if (e.target.value > 100) {
+            this.$message.warning('禁止输入超过100满分数')
+            e.target.value = 0
+            e.target.color = 'red'
+          }
+        },
         // shown controller, ensure dataset before
         showPointDialog: function(dataset) {
           this.tableDialogDataset = dataset
@@ -298,7 +317,11 @@ DONE: post 返回需要 ID
           this.showAddTitleDialog({})
         },
         onClickedExportTable: function() {
-          this.showExportDialog({})
+          if (this.$store.state.table.changed) {
+            this.$alert('当前有未保存的分数修改，请保存后再导出')
+          } else {
+            this.showExportDialog({})
+          }
         },
         onClickedRefresh: function() {
           location.reload()
@@ -310,9 +333,12 @@ DONE: post 返回需要 ID
               message: '修改成功',
               type: 'success'
             })
+            this.$store.state.table.changed = false
           })
         },
         onItemChanged: function(newItem, title) {
+          this.$store.state.table.changed = true
+          console.log(this.$store)
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
           console.log(newItem)
           const sid = newItem.student_id
@@ -381,11 +407,18 @@ DONE: post 返回需要 ID
           return wbout
         }
       },
-      created() {},
+      created() {
+        this.$store.state.table.changed = false
+      },
       mounted() {
+        window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+
         setTimeout(() => {
           if (this.loading) this.loading = false
         }, 5000)
+      },
+      beforeDestroy() {
+        window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
       },
       watch: {
         view: function(newView) {

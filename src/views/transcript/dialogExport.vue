@@ -26,8 +26,12 @@ export default {
     },
     onExport: function() {
       const filename = this.filename
-      this.$emit('onExport', { filename })
-      this.onDialogClose()
+      if (filename === '') {
+        this.$alert('导出文件名不能为空！')
+      } else {
+        this.$emit('onExport', { filename })
+        this.onDialogClose()
+      }
     }
   }
 }

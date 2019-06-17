@@ -7,6 +7,16 @@ import { getToken } from '@/utils/auth' // 验权
 
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
+  if (from.path.match(/\/transcript\//)) {
+    if (store.state.table.changed === true) {
+      confirm('当前页面还有数据未保存，请点击 "保存修改" 按钮')
+      console.log(router)
+      console.log(from)
+      console.log(to)
+      window.history.pushState(null, null, '#' + from.fullPath)
+      return
+    }
+  }
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
