@@ -182,7 +182,7 @@ const exist = (element) => {
 }
 
 const eltableAdapter = (array) => {
-  console.log(array)
+  // console.log(array)
   const array_flag = []
   const results_array = []
   let max = 0
@@ -202,7 +202,7 @@ const eltableAdapter = (array) => {
       results_array.push(row)
     }
   })
-  console.log(results_array)
+  // console.log(results_array)
   return { results_array, max }
 }
 const validateName = (rule, value, callback) => {
@@ -297,8 +297,8 @@ export default {
     computedColumn(colIdx) {
       let legal = true
       for (let index = 0; index < this.importStudentList.length; index++) {
-        console.log(index, colIdx)
-        console.log(this.importStudentList[index][colIdx])
+        // console.log(index, colIdx)
+        // console.log(this.importStudentList[index][colIdx])
         if(!exist(this.importStudentList[index][colIdx])) legal = false
       }
       return !legal
@@ -459,7 +459,7 @@ export default {
     fetchMajorList() {
       console.log('fetchMajorList')
       MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
-        console.log('fetchMajorList success')
+        // console.log('fetchMajorList success')
         this.remoteMajorList = res
         this.majorLoading = false
       })
