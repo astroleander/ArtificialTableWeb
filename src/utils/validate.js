@@ -4,7 +4,7 @@
 
 /* 至多保留两位小数*/
 export function isPointNumber(str) {
-  return RegExp(/^\d{1,}(.\d{1,2})?$/, 'g').test(str)
+  return RegExp(/^-?\d{1,}(.\d{1,2})?$/, 'g').test(str)
 }
 
 /*  是否为有效的用户名  */

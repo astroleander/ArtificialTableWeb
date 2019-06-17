@@ -72,6 +72,7 @@ DONE: post 返回需要 ID
                         prop="number"
                         size="mini"
                         ref="input"
+                        step=0.1
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
                         @change="onItemChanged(getPointItem(scope, title), title)">
@@ -287,7 +288,7 @@ DONE: post 返回需要 ID
         onDeleteColClicked: function(scope, title) {
           // console.log(title)
           this.$prompt(
-            '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！',
+            '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该列, 所有分数信息都将丢失！',
             '请确认删除操作', {
               confrimButtonText: '确定',
               cancelButtonText: '取消',

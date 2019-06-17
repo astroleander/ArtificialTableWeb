@@ -61,7 +61,7 @@ const validatePointNumber = (rule, value, callback) => {
   if (isPointNumber(value.pointNumber)) {
     callback()
   } else {
-    callback(new Error('分数至多保留两位小数点'))
+    callback(new Error('请确认您输入的分数是合理的数字，且最多保留两位小数点'))
   }
 }
 
