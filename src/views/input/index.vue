@@ -272,7 +272,7 @@
 
           <div v-if="submitErrorMessage.existPointList.length > 0">
             <el-alert type="warning"
-                      title="下列分数与数据库存在冲突，如果需要进行成绩覆盖，请优先删除需要覆盖掉的成绩项">
+                      title="下列分数与数据库存在冲突后进行成绩覆盖">
             </el-alert>
             <el-table :data="submitErrorMessage.existPointList" style="width: 100%">
               <el-table-column prop="sid" label="学号"></el-table-column>
@@ -863,6 +863,17 @@
           return CELL_COLOR_USELESS
         }
       },
+      IsDuplication(titles) {
+        console.log(titles)
+        for (let i = 0; i < titles.length; i++) {
+          for (let j = i + 1; j < titles.length; j++) {
+            if (titles[i].name === titles[j].name && titles[i].titleGroup === titles[j].titleGroup) {
+              return true
+            }
+          }
+        }
+        return false
+      },
       // 不同步骤直接的跳转
       toStep(from, to) {
         switch (to) {
@@ -876,8 +887,16 @@
           case 2: {
             if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
               // 将从step1中数据进行存储以及处理 跳转到step2
-              if (from === 1) this.renderSettingsPage()
-              this.activeStep = 1
+              if (from === 1 && this.importAlertList.length === 0) {
+                if (this.renderSettingsPage()) {
+                  this.activeStep = 1
+                }
+              } else {
+                this.$message({
+                  message: '请确认您已经排除了所有错误项！',
+                  type: 'error'
+                })
+              }
               break
             } else {
               this.$message({
@@ -896,8 +915,19 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '您需要在第一步先引入数据',
+                    message: '您需要在第一步先引入数据！',
                     type: 'warning'
+                  })
+                }
+              },
+              {
+                validator: !this.IsDuplication(this.settingsPageData.titles),
+                action: () => {},
+                reject: () => {
+                  legalRequest = false
+                  this.$message({
+                    message: '相同的成绩类别中填写相同的测试名称产生冲突，请检查啊更改！',
+                    type: 'error'
                   })
                 }
               },
@@ -907,7 +937,7 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '请确认您已经排除了所有错误项',
+                    message: '请确认您已经排除了所有错误项！',
                     type: 'error'
                   })
                 }
@@ -927,9 +957,18 @@
       },
       // 进入第二页，将第一页中的标题和数据分开存储到settingsPageData中
       renderSettingsPage() {
-        Object.assign(this.$data.settingsPageData, {})
-        // 将step1中导入step2 table变换形式
-        this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+        if (this.remoteLesson === '') {
+          this.$message({
+            message: '尚未选择课程组',
+            type: 'warning'
+          })
+          return false
+        } else {
+          Object.assign(this.$data.settingsPageData, {})
+          // 将step1中导入step2 table变换形式
+          this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+          return true
+        }
       },
       // 进入第三页，将第二页中的标题和数据分开存储到settingsPageData中
       renderPreviewPage() {

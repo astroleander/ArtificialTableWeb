@@ -18,10 +18,10 @@ supplement:
         <el-input v-model="form.tid" placeholder="请输入教师编号(至少四位数字)"></el-input>
       </el-form-item>
       <el-form-item label="输入密码 " prop="password" required>
-        <el-input v-model="form.password" type="password" placeholder="输入密码"></el-input>
+        <el-input v-model="form.password" type="password" placeholder="输入密码" maxlength="18"></el-input>
       </el-form-item>
       <el-form-item label="确认密码 " prop="repassword" required>
-        <el-input v-model="form.repassword" type="password" placeholder="请确认密码"></el-input>
+        <el-input v-model="form.repassword" type="password" placeholder="请确认密码" maxlength="18"></el-input>
       </el-form-item>
       <!--<el-form-item label="管理员权限" prop="is_manager">-->
         <!--<el-switch v-model="form.is_manager"></el-switch>-->
@@ -72,12 +72,13 @@ export default {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        // 以字母开头，长度在6~18之间，只能 包含字母、数字和下划线
-        const passReg = /\w{4,20}/
+        // 以字母开头，长度在6~18之间，只能包含字母、数字和下划线
+        // const passReg = /\w{4,20}/
+        const passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/
         if (passReg.test(value)) {
           callback()
         } else {
-          callback(new Error('请以字母开头，长度在6~18之间'))
+          callback(new Error('密码长度在6~18之间，且需要同时存在字母，和数字'))
         }
         callback()
       }
