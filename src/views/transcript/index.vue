@@ -231,20 +231,36 @@ export default {
     handleTitleChanged(title) {
       console.log(this.model.titles)
       titleViewmodel.requestPostTitle(title).then(res => {
-        title.id = res[0].id
+        title.id = res.succeed_ids[0].id
         this.model.titles.push(title)
+      }).catch(error => {
+        console.log(error)
+        this.$prompt(
+          '数据库中已存在此项测试，如果需要进行覆盖, 请在文本框内输入\"确认\"\n此操作将删除数据库中存在的测试项, 此项分数信息都将丢失！',
+          '请确认覆盖操作', {
+            confrimButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPattern: /确认/
+          }
+        ).then(() => {
+          title.override_tag = 1
+          titleViewmodel.requestPostTitle(title).then(res => {
+            title.id = res.succeed_ids[0].id
+            this.model.titles.push(title)
+          })
+        })
       })
     },
     // 导出表格
-    handleExportTable: function(dialogResult) {
+    handleExportTable(dialogResult) {
     },
     // 删除小项
-    handleDeletedTitle: function(title) {
+    handleDeletedTitle(title) {
       const idx = this.model.titles.findIndex(item => item.id === title.id)
       this.model.titles.splice(idx, 1)
     },
     // 加载成绩表信息
-    fetchDataset: function() {
+    fetchDataset() {
       // const lesson_id = this.info.lesson_id
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
@@ -274,19 +290,23 @@ export default {
           console.log(this.model.points)
           // 获取学生信息
           console.log('显示学生信息')
-          result[2].forEach(element => {
-            console.log(' 匹配学生信息')
-            this.model.studentMap.set(element.id, element)
-            console.log(this.model.studentMap)
-          })
+          if (result[2]) {
+            result[2].forEach(element => {
+              console.log(' 匹配学生信息')
+              this.model.studentMap.set(element.id, element)
+              console.log(this.model.studentMap)
+            })
+          }
           this.info = result && result[3] && result[3][0]
           titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
             let titleGroupSum = 0
             // 获取大项数据
-            res.forEach(element => {
-              this.model.titleGroupMap.set(element.id, element)
-              titleGroupSum += element.weight
-            })
+            if (res) {
+              res.forEach(element => {
+                this.model.titleGroupMap.set(element.id, element)
+                titleGroupSum += element.weight
+              })
+            }
             this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
             // 加载成绩分析数据
             this.buildWeight()
@@ -305,7 +325,7 @@ export default {
       this.weightData.rate = 0 // 班级及格率
       this.weightData.total = 0 // 班级总人数
       this.weightData.invalidScore = 0 // 不合法成绩
-      this.weightData.flag = false // 班级总人数
+      this.weightData.flag = false // 是否缺少数据
       this.weightData.gradeSection = [] // 分数段
       this.weightData.titleAverage = [] // 小项平均分
       this.weightData.studentScore = new Map() // 学生成绩统计
@@ -317,10 +337,17 @@ export default {
     // 检验当前数据是否合法
     judgeLegal() {
       let flag = false // 数据为空 暂不加载雷达图
+      console.log(this.model)
+      console.log('1234567')
       const studentLength = this.model.studentMap.size
       const titleLength = this.model.titleMap.size
       const titleGroupLength = this.model.titleGroupMap.size
-      const pointLength = this.model.points.length
+      var pointLength
+      if (this.model.points === undefined) {
+        pointLength = 0
+      } else {
+        pointLength = this.model.points.length
+      }
       this.weightData.total = studentLength
       if (studentLength > 0 && titleLength > 0 && titleGroupLength > 0 && pointLength > 0) {
         flag = true
@@ -328,12 +355,12 @@ export default {
         flag = false
         if (studentLength === 0) {
           this.weightData.description = '当前班级无学生信息'
+        } else if (titleGroupLength === 0) {
+          this.weightData.description = '请检查成绩类别数据是否全部添加，如若没有，请联系年级组长'
         } else if (pointLength === 0) {
           this.weightData.description = '请检查成绩数据是否全部导入'
         } else if (titleLength === 0) {
           this.weightData.description = '请检查小项数据是否全部导入'
-        } else if (titleGroupLength === 0) {
-          this.weightData.description = '请检查大项数据是否全部导入'
         }
       }
       return flag

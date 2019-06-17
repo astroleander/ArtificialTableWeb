@@ -1,6 +1,5 @@
 <!--
 supplement: 为课程添加班级form
-
 -->
 <template>
   <div class="app-container rowframe">
@@ -71,16 +70,32 @@ import { mapGetters } from 'vuex'
 import userViewModel from '@/viewmodel/user'
 import lessonViewModel from '@/viewmodel/lesson'
 import classViewModel from '@/viewmodel/classinfos'
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('班级名称不可为空'))
+  } else {
+    callback()
+  }
+}
+const validateClassId = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入班级编号'))
+  } else if (!Number.isInteger(+value)) {
+    callback(new Error('输入数字值'))
+  } else if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('班级编号不可为空'))
+  }
+  callback()
+}
+const validateYear = (rule, value, callback) => {
+  var date = new Date().getFullYear()
+  if (value < date) {
+    callback(new Error('新班级开课时间不可为过去时间'))
+  }
+  callback()
+}
 export default {
   data() {
-    var validateClassId = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入班级编号'))
-      } else if (!Number.isInteger(+value)) {
-        callback(new Error('输入数字值'))
-      }
-      callback()
-    }
     return {
       visible: false, // 表单是否可见
       errorList: [],
@@ -124,10 +139,11 @@ export default {
           { required: true, message: '请选择教学班所属课程组', trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '请输入班级名称', trigger: 'blur' }
+          { required: true, message: '请输入班级名称', trigger: 'blur' },
+          { required: true, trigger: 'blur', validator: validateName }
         ],
         cid: [
-          { validator: validateClassId, trigger: 'blur' }
+          { required: true, validator: validateClassId, trigger: 'blur' }
         ],
         teacher_id: [
           { required: true, message: '请选择任课教师', trigger: 'blur' }
@@ -136,7 +152,8 @@ export default {
           { required: true, message: '请输入学期', trigger: 'blur' }
         ],
         variableYear: [
-          { required: true, message: '请选择年份', trigger: 'change' }
+          { required: true, message: '请选择年份', trigger: 'change' },
+          { trigger: 'change', validator: validateYear }
         ],
         variableSemester: [
           { required: true, message: '请选择学期', trigger: 'change' }
@@ -189,17 +206,24 @@ export default {
       // console.log('semester = ' + semester)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          classInfo['override_tag'] = 0
           classViewModel.requestPostClassInfo(classInfo).then(response => {
-            if (response !== undefined) {
+            if (response.repeated_message.length === 0) {
               this.$message({
                 message: '添加教学班成功',
                 type: 'success'
               })
-              const class_id = response[0].id
+              const class_id = response.succeed_ids[0].id
               this.$router.push({
                 name: 'addClassField',
                 params: { id: class_id, type: 'add' },
                 query: { id: class_id }
+              })
+            } else {
+              this.$message({
+                message: '插入新班级项已存在，无法重复添加',
+                type: 'error',
+                duration: 3000
               })
             }
           })

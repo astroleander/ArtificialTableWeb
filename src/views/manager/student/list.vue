@@ -91,10 +91,19 @@ export default {
   },
   methods: {
     deleteStudent(student) {
-      StudentViewModel.requestDelStudent(student.id).then(res => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+      this.$prompt(
+        '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的学生！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+        }
+      ).then(() => {
+        StudentViewModel.requestDelStudent(student.id).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
         })
       })
     },

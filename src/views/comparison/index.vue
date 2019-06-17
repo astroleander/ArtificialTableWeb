@@ -147,7 +147,7 @@ import studentViewModel from '@/viewmodel/student'
 // import classFieldViewModel from '@/viewmodel/classfield'
 import { mapGetters } from 'vuex'
 export default {
-  components: { PassExamBar,AtPie },
+  components: { PassExamBar, AtPie },
   props: [],
   data() {
     return {
@@ -162,9 +162,9 @@ export default {
       classInfos: [], // 根据课程组id（lesson_id）查询到的各教学班信息
       classPointInfos: [], // 存储多个班级的处理后的成绩信息
       diagramPointInfo: {}, // 处理classPointInfos里数据便于图表显示
-      errorList: [],// 处理错误信息
+      errorList: [], // 处理错误信息
       // error{ classInfo_id,classInfo_name,errorMsg}
-      Score: [],  //学生成绩汇总
+      Score: [], // 学生成绩汇总
       showDialogOne: false, // 是否显示单一班级成绩
       multipleSelection: [],
 
@@ -266,23 +266,22 @@ export default {
       })
     },
     buildDiagramData(classPointInfos) {
-        this.diagramPointInfo = {}
-        classPointInfos.forEach(classPointItem => {
-          this.buildObject(this.diagramPointInfo, 1, classPointItem.id)
-          this.buildObject(this.diagramPointInfo, 2, classPointItem.name)
-          this.buildObject(this.diagramPointInfo, 3, classPointItem.passExamNum)
-          this.buildObject(this.diagramPointInfo, 4, classPointItem.noPassExamNum)
-          this.buildObject(this.diagramPointInfo, 5, classPointItem.avgScore)
-          this.buildObject(this.diagramPointInfo, 6, classPointItem.passExamRate)
-        })
-        console.log(this.diagramPointInfo)
-        this.showDialogSome = true
+      this.diagramPointInfo = {}
+      classPointInfos.forEach(classPointItem => {
+        this.buildObject(this.diagramPointInfo, 1, classPointItem.id)
+        this.buildObject(this.diagramPointInfo, 2, classPointItem.name)
+        this.buildObject(this.diagramPointInfo, 3, classPointItem.passExamNum)
+        this.buildObject(this.diagramPointInfo, 4, classPointItem.noPassExamNum)
+        this.buildObject(this.diagramPointInfo, 5, classPointItem.avgScore)
+        this.buildObject(this.diagramPointInfo, 6, classPointItem.passExamRate)
+      })
+      console.log(this.diagramPointInfo)
+      this.showDialogSome = true
     },
     buildObject(object, key, value) {
-      if (!object[key])
-      {
+      if (!object[key]) {
         this.$set(object, key, [value])
-      }else {
+      } else {
         object[key].push(value)
       }
     },
@@ -322,10 +321,6 @@ export default {
         this.fetchStudentInfo({ classInfo_id: classInfo_id }),
         this.fetchTitleGroupInfo({ lesson_id: lesson_id })])
         .then(result => {
-           console.log('result[0] = ' + result[0])
-           console.log('result[1] = ' + result[1])
-           console.log('result[2] = ' + result[2])
-           console.log('result[3] = ' + result[3])
           if (result[0] && result[1] && result[2] && result[3]) {
             // (1)获取小项数据
             result[0].forEach(element => {
@@ -585,7 +580,7 @@ export default {
       var x5 = 0
       const studentScore = row.studentScore
       console.log(studentScore)
-      for(let key in studentScore) {
+      for (const key in studentScore) {
         console.log('123456789')
         console.log(studentScore[key])
         const map = studentScore[key]
@@ -593,16 +588,15 @@ export default {
         map.forEach(score => {
           console.log('987654321')
           console.log(score)
-          if(score>0 && score<60)
-          {
+          if (score > 0 && score < 60) {
             x1++
-          }else if(score>=60 && score<70){
+          } else if (score >= 60 && score < 70) {
             x2++
-          }else if(score>=70 && score<80){
+          } else if (score >= 70 && score < 80) {
             x3++
-          }else if(score>=80 && score<90){
+          } else if (score >= 80 && score < 90) {
             x4++
-          }else if(score>=90 && score<=100){
+          } else if (score >= 90 && score <= 100) {
             x5++
           }
         })
@@ -634,10 +628,9 @@ export default {
       console.log('asdfghjk')
       console.log(this.multipleSelection)
 
-      if (this.multipleSelection === undefined || this.multipleSelection.length === 0)
-      {
+      if (this.multipleSelection === undefined || this.multipleSelection.length === 0) {
         this.showNone = true
-      }else {
+      } else {
         this.buildDiagramData(this.multipleSelection)
       }
     },
@@ -672,18 +665,18 @@ export default {
       'id'
     ])
   },
-    watch: {
-        use_manager: function() {
-            if (this.use_manager) {
-                this.placeText = '请选择课程组'
-                this.Message = '请选择要进行成绩比较的课程组'
-                this.fetchLessonInfo(this.user_collegeId)
-            } else {
-                this.Message = '请选择要进行成绩比较的学期'
-                this.fetchclassInfosByTeacherId({ teacher_id: this.id })
-            }
-        }
-    },
+  watch: {
+    use_manager: function() {
+      if (this.use_manager) {
+        this.placeText = '请选择课程组'
+        this.Message = '请选择要进行成绩比较的课程组'
+        this.fetchLessonInfo(this.user_collegeId)
+      } else {
+        this.Message = '请选择要进行成绩比较的学期'
+        this.fetchclassInfosByTeacherId({ teacher_id: this.id })
+      }
+    }
+  },
   created() {
     this.initPage()
   }

@@ -66,16 +66,15 @@ DONE: post 返回需要 ID
                             <span class="point">
               <el-form
                       :model="getPointItem(scope, title)"
-                      :rules="[
-                      { type: 'number', message: '分数必须为数字值'}]"
               >
                 <el-input
                         type="number"
                         prop="number"
                         size="mini"
+                        ref="input"
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
-                        @change="onItemChanged(getPointItem(scope, title))">
+                        @change="onItemChanged(getPointItem(scope, title), title)">
                 </el-input>
               </el-form>
             </span>
@@ -164,7 +163,7 @@ DONE: post 返回需要 ID
           require: false
         }
       },
-      data() {
+      data: function() {
         return {
           viewDataset: [],
           // the array is for saving all modified point item,
@@ -337,12 +336,30 @@ DONE: post 返回需要 ID
             this.$store.state.table.changed = false
           })
         },
-        onItemChanged: function(newItem) {
+        onItemChanged: function(newItem, title) {
           this.$store.state.table.changed = true
           console.log(this.$store)
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
+          console.log(newItem)
+          const sid = newItem.student_id
+          var name
+          console.log(this.viewDataset)
+          this.viewDataset.forEach(studentItem => {
+            if (studentItem.student.id === sid) {
+              name = studentItem.student.name
+            }
+          })
           if (newItem.pointNumber === '') {
-            newItem.pointNumber = 0
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，请及时查看',
+              type: 'warning',
+              duration: 8000 })
+          }
+          if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
+              type: 'warning',
+              duration: 8000 })
           }
           this.updatedArray.push(newItem)
         },
@@ -418,6 +435,7 @@ DONE: post 返回需要 ID
     }
     .table-wrapper {
         height: 100%;
+        // height: 200px;
     }
     .menu {
         margin: 12px 10px;

@@ -87,7 +87,7 @@
               </p>
             </div>
             <div id="step-import" class="content-wrapper">
-              <!-- STEP - 1 - 左边的导入表格 -->
+              <!-- STEP - 1 - 下方的导入表格 -->
               <section class="table-wrapper">
                 <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
               </section>
@@ -156,8 +156,13 @@
             <el-button style="max-height: 30px"class="button" type="success" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
           </div>
-          <el-table v-if="activeStep === 1" id='settings-table' ref='settingsTable' :data="settingsPageData.dataset" height="calc(100vh - 200px)" border
-              >
+          <el-table
+                  v-if="activeStep === 1"
+                  id='settings-table'
+                  ref='settingsTable'
+                  :data="settingsPageData.dataset"
+                  height="calc(100vh - 302px)"
+                  border>
                 <el-table-column
                   v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
                   min-width="150px" width="200px">
@@ -255,7 +260,6 @@
             </el-alert>
             <el-table :data="submitErrorMessage.successPointList" style="width: 100%">
               <el-table-column prop="student_message.sid" label="学号"></el-table-column>
-              <el-table-column prop="student_message.name" label="姓名"></el-table-column>
               <el-table-column prop="pointNumber" label="分数"></el-table-column>
               <el-table-column prop="title_message.name" label="列名"></el-table-column>
               <el-table-column label="大项">
@@ -268,7 +272,7 @@
 
           <div v-if="submitErrorMessage.existPointList.length > 0">
             <el-alert type="warning"
-                      title="下列分数覆盖了原来的值">
+                      title="下列分数与数据库存在冲突后进行成绩覆盖">
             </el-alert>
             <el-table :data="submitErrorMessage.existPointList" style="width: 100%">
               <el-table-column prop="sid" label="学号"></el-table-column>
@@ -343,7 +347,7 @@
   const COLOR_LEFT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_TITLE + ', ' + COLOR_TITLE + ' 50% ,' + COLOR_UNFINISHED + ' 50%, ' + COLOR_UNFINISHED + ' 100%)'
   const COLOR_RIGHT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 50% ,' + COLOR_TITLE + ' 50%, ' + COLOR_TITLE + ' 100%)'
   const calHeight = () => {
-    return window.innerHeight - 200
+    return window.innerHeight - 350
   }
   /** // xlsx 的输出模式被制定为 header:1, 与 handsontable 兼容， 不需要转换
    * trim here
@@ -614,7 +618,7 @@
             console.log('我好像输入了上面这个')
           }
         }, // hotSettings-end
-        importDataHasHead: null,
+        importDataHasHead: true,
         DataHasHead: [
           {
             id: 1,
@@ -859,6 +863,17 @@
           return CELL_COLOR_USELESS
         }
       },
+      IsDuplication(titles) {
+        console.log(titles)
+        for (let i = 0; i < titles.length; i++) {
+          for (let j = i + 1; j < titles.length; j++) {
+            if (titles[i].name === titles[j].name && titles[i].titleGroup === titles[j].titleGroup) {
+              return true
+            }
+          }
+        }
+        return false
+      },
       // 不同步骤直接的跳转
       toStep(from, to) {
         switch (to) {
@@ -872,8 +887,16 @@
           case 2: {
             if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
               // 将从step1中数据进行存储以及处理 跳转到step2
-              if (from === 1) this.renderSettingsPage()
-              this.activeStep = 1
+              if (from === 1 && this.importAlertList.length === 0) {
+                if (this.renderSettingsPage()) {
+                  this.activeStep = 1
+                }
+              } else {
+                this.$message({
+                  message: '请确认您已经排除了所有错误项！',
+                  type: 'error'
+                })
+              }
               break
             } else {
               this.$message({
@@ -892,8 +915,19 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '您需要在第一步先引入数据',
+                    message: '您需要在第一步先引入数据！',
                     type: 'warning'
+                  })
+                }
+              },
+              {
+                validator: !this.IsDuplication(this.settingsPageData.titles),
+                action: () => {},
+                reject: () => {
+                  legalRequest = false
+                  this.$message({
+                    message: '相同的成绩类别中填写相同的测试名称产生冲突，请检查啊更改！',
+                    type: 'error'
                   })
                 }
               },
@@ -903,7 +937,7 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '请确认您已经排除了所有错误项',
+                    message: '请确认您已经排除了所有错误项！',
                     type: 'error'
                   })
                 }
@@ -923,9 +957,18 @@
       },
       // 进入第二页，将第一页中的标题和数据分开存储到settingsPageData中
       renderSettingsPage() {
-        Object.assign(this.$data.settingsPageData, {})
-        // 将step1中导入step2 table变换形式
-        this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+        if (this.remoteLesson === '') {
+          this.$message({
+            message: '尚未选择课程组',
+            type: 'warning'
+          })
+          return false
+        } else {
+          Object.assign(this.$data.settingsPageData, {})
+          // 将step1中导入step2 table变换形式
+          this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+          return true
+        }
       },
       // 进入第三页，将第二页中的标题和数据分开存储到settingsPageData中
       renderPreviewPage() {
@@ -964,7 +1007,6 @@
         const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
         pointViewModel.requestImportPoints(submitDataset).then(res => {
           this.activeStep = 3
-          console.log(3)
           // 4037
           console.log(res && String(res.code))
           if ((res && String(res.code) === '2011') || (res && String(res.code) === '2001')) {
@@ -1017,7 +1059,7 @@
           const errorList = response.subjects
           // deleted duplicated
           this.submitErrorMessage.responsed = true
-          this.submitErrorMessage.existTitleNameListt = errorList['exists_title_names'] || []
+          this.submitErrorMessage.existTitleNameList = errorList['exists_title_names'] || []
           this.submitErrorMessage.existPointList = errorList['exists_point_message'] || []
           this.submitErrorMessage.errorPointList = errorList['error_point_message'] || []
           this.submitErrorMessage.errorTitleNameList = errorList['error_title_message'] || []
@@ -1089,6 +1131,7 @@
   .tab{
     background-color: white;
     width: auto;
+    height: calc(100vh - 50px);
   }
   .input{
     background-color: white;
@@ -1134,7 +1177,7 @@
     background: white;
     padding: 1em;
     box-sizing: border-box;
-    height: 950px;
+    height: calc(100vh - 50px);
     justify-content: center;
     margin-right: 1px;
     //border: 20px solid #CCCCCC;

@@ -1,7 +1,7 @@
 <!--成绩导出模版-->
 <template>
 <el-dialog title="导出成绩" :visible.sync="visible" :before-close="onDialogClose">
-    <el-input v-model="filename" placeholder="文件名" autoComplete="off">
+    <el-input v-model="filename" placeholder="文件名" autoComplete="off" maxlength="15" show-word-limit>
       <template slot="append">.xlsx</template>
     </el-input>
   <div slot="footer" class="dialog-footer">

@@ -9,7 +9,7 @@ supplement:添加管理员所在本院系的课程
       </div>
       <el-form :rules="rules"  status-icon ref="ruleForm" :model="form" label-width="100px">
         <el-form-item label="课程名称 " prop="name" >
-          <el-input v-model="form.name"  placeholder="请输入课程组名称"></el-input>
+          <el-input v-model="form.name"  placeholder="请输入课程组名称" maxlength="10" show-word-limit></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="submitForm('ruleForm')">添加</el-button>
@@ -23,6 +23,13 @@ supplement:添加管理员所在本院系的课程
 <script>
   import { mapGetters } from 'vuex'
   import lessonViewModel from '@/viewmodel/lesson'
+  const validateName = (rule, value, callback) => {
+    if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+      callback(new Error('课程名称不可为空'))
+    } else {
+      callback()
+    }
+  }
   export default {
     data() {
       return {
@@ -31,7 +38,8 @@ supplement:添加管理员所在本院系的课程
         },
         rules: {
           name: [
-            { required: true, message: '请输入课程名称', trigger: 'blur' }
+            { required: true, message: '请输入课程名称', trigger: 'blur' },
+            { required: true, trigger: 'blur', validator: validateName }
           ]
         }
       }
@@ -55,6 +63,12 @@ supplement:添加管理员所在本院系的课程
                     type: 'success'
                   })
                   this.$router.push('/manager/class/list')
+                } else {
+                  this.$message({
+                    message: '插入新课程组项已存在，无法重复添加',
+                    type: 'error',
+                    duration: 3000
+                  })
                 }
               })
           } else {
