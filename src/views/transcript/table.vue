@@ -70,6 +70,7 @@ DONE: post 返回需要 ID
                         type="number"
                         prop="number"
                         size="mini"
+                        ref="input"
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
                         @change="onItemChanged(getPointItem(scope, title), title)">

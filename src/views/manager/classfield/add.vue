@@ -206,13 +206,14 @@ export default {
       // console.log('semester = ' + semester)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          classInfo['override_tag'] = 0
           classViewModel.requestPostClassInfo(classInfo).then(response => {
-            if (response !== undefined) {
+            if (response.repeated_message.length === 0) {
               this.$message({
                 message: '添加教学班成功',
                 type: 'success'
               })
-              const class_id = response[0].id
+              const class_id = response.succeed_ids[0].id
               this.$router.push({
                 name: 'addClassField',
                 params: { id: class_id, type: 'add' },
