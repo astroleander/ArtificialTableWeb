@@ -66,22 +66,25 @@
       <el-table v-if="importStudentList !== null"
           :data="importStudentList"
           >
-        <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
+        <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
           :key="idx"
           align="center"
           style="min-width: 150px"
           >
           <template slot="header" slot-scope="scope" >
             <div class="header">
+              <!-- <div>{{scope.row}}</div> -->
               <span>
                 <el-checkbox
                   v-model="nameCheckedList[idx]"
+                  :disabled='computedColumn(idx)'
                   :true-label="scope.$index + 1"
                   @change="onNameChecked">姓名列</el-checkbox>
               </span>
               <span>
                 <el-checkbox
                   v-model="sidCheckedList[idx]"
+                  :disabled='computedColumn(idx)'
                   :true-label="scope.$index + 1"
                   @change="onSidChecked">学号列</el-checkbox>
               </span>
@@ -89,7 +92,7 @@
           </template>
           <template slot-scope="scope">
             <div style="min-width: 100px">
-              {{scope.row[idx]}}
+              {{scope.row[idx] || ''}}
             </div>
           </template>
         </el-table-column>
@@ -171,19 +174,24 @@ import MajorViewModel from '@/viewmodel/major'
 import StudentViewModel from '@/viewmodel/student'
 import { mapGetters } from 'vuex'
 
+const exist = (element) => {
+  return element &&
+    element !== null &&
+    element !== undefined &&
+    element.trim() !== ''
+}
+
 const eltableAdapter = (array) => {
+  console.log(array)
   const array_flag = []
   const results_array = []
+  let max = 0
   array.forEach(row => {
     let flagEmpty = true
+    if (row.length > max) max = row.length
     for (let index = 0; index < row.length; index++) {
-      const element = row[index]
-      if (element &&
-        element !== null &&
-        element !== undefined &&
-        element !== '' &&
-        element.trim() !== ''
-      ) {
+      const element = row[index] || ''
+      if (exist(element)) {
         flagEmpty = false
       }
     }
@@ -194,7 +202,8 @@ const eltableAdapter = (array) => {
       results_array.push(row)
     }
   })
-  return results_array
+  console.log(results_array)
+  return { results_array, max }
 }
 const validateName = (rule, value, callback) => {
   if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
@@ -246,6 +255,7 @@ export default {
       remoteCollegeList: [],
       // import data
       importStudentList: null,
+      importStudentListMax: 0,
       // 表单数据
       form: {
         name: '',
@@ -284,6 +294,18 @@ export default {
     ])
   },
   methods: {
+    computedColumn(colIdx) {
+      let legal = true
+      for (let index = 0; index < this.importStudentList.length; index++) {
+        console.log(index, colIdx)
+        console.log(this.importStudentList[index][colIdx])
+        if(!exist(this.importStudentList[index][colIdx])) legal = false
+      }
+      return !legal
+    },
+    exist(obj) {
+      return exist(obj)
+    },
     onSelectedLocalExcel(data) {
       let array = data.results
       this.$confirm('导入的文件是否有列名?(若有则会被删除)', '提示', {
@@ -291,9 +313,11 @@ export default {
         cancelButtonText: '不包含'
       }).then(() => {
         array = array.slice(1)
-        this.importStudentList = eltableAdapter(array)
       }).catch(() => {
-        this.importStudentList = eltableAdapter(array)
+      }).finally(() => {
+        let ret = eltableAdapter(array)
+        this.importStudentList = ret.results_array
+        this.importStudentListMax = ret.max
       })
     },
     onSubmitClicked() {
@@ -354,6 +378,7 @@ export default {
         semester: null
       }
       this.importStudentList = null
+      this.importStudentListMax = 0
     },
     submitStudentList(list) {
       StudentViewModel.requestPostStudents(list).then(res => {
@@ -479,7 +504,10 @@ export default {
   flex-wrap: nowrap;
   justify-content: center;
   align-content: center;
-  width: 100px;
+  width: 100%;
+  span {
+    margin: auto;
+  }
 }
 .container {
   min-height: 100vh;
