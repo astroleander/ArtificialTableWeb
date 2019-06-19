@@ -86,14 +86,14 @@
               <span>
                 <el-checkbox
                   v-model="nameCheckedList[idx]"
-                  :disabled='computedColumn(idx)'
+                  :disabled='computedColumn(idx) || anotherSelected("name", idx)'
                   :true-label="scope.$index + 1"
                   @change="onNameChecked">姓名列</el-checkbox>
               </span>
               <span>
                 <el-checkbox
                   v-model="sidCheckedList[idx]"
-                  :disabled='computedColumn(idx)'
+                  :disabled='computedColumn(idx) || anotherSelected("sid", idx)'
                   :true-label="scope.$index + 1"
                   @change="onSidChecked">学号列</el-checkbox>
               </span>
@@ -329,31 +329,37 @@ export default {
         this.importStudentListMax = ret.max
       })
     },
+    anotherSelected(type, idx) {
+      const sid_idx = this.sidCheckedList.findIndex(item => item === true)
+      const name_idx = this.nameCheckedList.findIndex(item => item === true)
+      return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
+    },
     onSubmitClicked() {
       const sid_idx = this.sidCheckedList.findIndex(item => item === true)
       const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      if (sid_idx === undefined || name_idx === undefined) {
+      console.log(sid_idx, name_idx)
+      if (sid_idx === -1 || name_idx === -1) {
         this.$message({
           type: 'error',
           message: '请先导入数据并选择学生列'
         })
         return
       }
-      if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
+      else if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
         this.$message({
           type: 'error',
           message: '尚未选择学生的归属信息'
         })
         return
       }
-      if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
+      else if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
         this.$message({
           type: 'error',
           message: '尚未选择学生的入学年份'
         })
         return
       }
-      if (sid_idx === name_idx) {
+      else if (sid_idx === name_idx) {
         this.$message({
           type: 'error',
           message: '学号和姓名不能是同一列'
@@ -362,6 +368,7 @@ export default {
       }
 
       // generate student objs list
+      let legal = true
       const studentList = []
       const Student = () => {
         return {
@@ -371,13 +378,31 @@ export default {
           major_id: this.selectedMajorId
         }
       }
-      this.importStudentList.forEach(row => {
+      for (let row of this.importStudentList) {
         const student = new Student()
         student.sid = row[sid_idx]
         student.name = row[name_idx]
         studentList.push(student)
-      })
-      this.submitStudentList(studentList)
+        if (!student.sid.match(/^[1-9]{6,20}$/)) {
+          this.$message({
+            type: 'error',
+            message: '有不合法的学号，请重新导入正确的文件！'
+          })
+          legal = false
+          return
+        }
+        else if (student.name.match(/^[1-9]{6,20}$/)) {
+          this.$message({
+            type: 'error',
+            message: '有不合规的姓名，请重新导入正确的文件！'
+          })
+          legal = false
+          return
+        }
+      }
+      if (legal) {
+        this.submitStudentList(studentList)
+      }
     },
     onResetClicked() {
       this.selectedCollegeId = null
