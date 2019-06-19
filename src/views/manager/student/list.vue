@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :id="tableId"> 
     <div class="frame">
       <span>学校：</span>
         <el-input style="width:200px" v-model="remoteUniversity.name"
@@ -10,10 +10,10 @@
         clearable
         :options="remoteCollegeList"
         :props="props"
-        @active-item-change="selectedCollegeChanged"
         @change="onMajorChanged"
         >
       </el-cascader>
+    <!-- @active-item-change="selectedCollegeChanged" -->
 
       <span class="span" style="padding-left: 10px;">学年：</span>
       <el-date-picker
@@ -23,8 +23,16 @@
       </el-date-picker>
     </div>
 
-    <el-table v-if="remoteStudentDataset.length > 0" :data="remoteStudentDataset" @selection-change="delChange" style="margin-top: 10px">
+    <el-table
+      v-if="remoteStudentDataset.length > 0" 
+      :data="remoteStudentDataset"
+      @selection-change="delChange"
+      style="margin-top: 10px"
+      >
       <!-- <el-table-column type="selection" width="50"></el-table-column> -->
+      <template slot="empty">
+        没有符合条件的学生！
+      </template>
       <el-table-column label="序号" width="60">
         <template slot-scope="scope">
             {{scope.$index+1}}
@@ -60,10 +68,21 @@ import CollegeViewModel from '@/viewmodel/college'
 import StudentViewModel from '@/viewmodel/student'
 
 import { mapGetters } from 'vuex'
+import { Loading } from 'element-ui'
+
+function fetchMajorListByCollegeId(id) {
+  return new Promise(resolve => {
+    MajorViewModel.requestByCollegeId(id).then(res => {
+      resolve(res)
+    })
+  })
+}
 
 export default {
   data: function() {
     return {
+      // loading: false,
+      tableId: 'student-manager-list-table',
       selectedCollege: null,
       selectedMajor: null,
       selectedYear: null,
@@ -78,9 +97,22 @@ export default {
       remoteStudentDataset: [],
 
       props: {
+        lazy: true,
+        lazyLoad(node, resolve) {
+          if(node && node.data && node.data.id) {
+            fetchMajorListByCollegeId(node.data.id).then(res => {
+              res.forEach((leaf, idx, res) => {
+                res[idx]['leaf'] = true
+              })
+              console.log(res)
+              resolve(res)
+            })
+          }
+        },
         value: 'id',
         label: 'name',
-        children: 'major'
+        children: 'major',
+        expandTrigger: 'click'
       }
     }
   },
@@ -117,13 +149,14 @@ export default {
       this.selectedYear
       this.fetchStudentList()
     },
-    selectedCollegeChanged(college_id) {
-      this.fetchMajorListByCollegeId(college_id[0]).then(res => {
-        // console.log(res)
-        const college = this.remoteCollegeList.find(item => item.id === college_id[0])
-        college.major = res
-      })
-    },
+    // selectedCollegeChanged(college_id) {
+    //   return this.fetchMajorListByCollegeId(college_id[0]).then(res => {
+    //     // console.log(res)
+    //     const college = this.remoteCollegeList.find(item => item.id === college_id[0])
+    //     college.major = res
+    //     resolve()
+    //   })
+    // },
     fetchCollegeList() {
       let user = null
       if (typeof this.user === 'string') {
@@ -141,15 +174,14 @@ export default {
         console.log(this.remoteCollegeList)
       })
     },
-    fetchMajorListByCollegeId(id) {
-      return new Promise(resolve => {
-        MajorViewModel.requestByCollegeId(id).then(res => {
-          resolve(res)
-        })
-      })
-    },
     fetchStudentList() {
       if (this.selectedYear && this.selectedMajor) {
+        let loadingInstance = Loading.service({
+            fullscreen: false,
+            text: '正在获取数据...',
+            // target: document.querySelector('#student-manager-list-table')
+            target: document.querySelector('#student-manager-list-table')
+        })
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
             if (students) {
@@ -157,8 +189,16 @@ export default {
             } else {
               this.remoteStudentDataset = []
             }
+            loadingInstance.close()
           })
       } else if (this.selectedYear && !this.selectedMajor) {
+        console.log(document.querySelector('#student-manager-list-table'))
+        let loadingInstance = Loading.service({
+            fullscreen: false,
+            text: '正在获取数据...',
+            target: document.querySelector('#student-manager-list-table')
+            // target: document.querySelector('#'+this.tableId)
+        })
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
             if (students) {
@@ -166,17 +206,20 @@ export default {
             } else {
               this.remoteStudentDataset = []
             }
+            loadingInstance.close()
           })
-      } else if (this.selectedMajor && !this.selectedYear) {
-        StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
-          .then(students => {
-            if (students) {
-              this.remoteStudentDataset = students
-            } else {
-              this.remoteStudentDataset = []
-            }
-          })
-      } else {
+      } 
+      else if (this.selectedMajor && !this.selectedYear) {
+      //   StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
+      //     .then(students => {
+      //       if (students) {
+      //         this.remoteStudentDataset = students
+      //       } else {
+      //         this.remoteStudentDataset = []
+      //       }
+      //     })
+      }
+      else {
         this.remoteStudentDataset = []
       }
     }
