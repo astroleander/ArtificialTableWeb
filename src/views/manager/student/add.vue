@@ -327,6 +327,8 @@ export default {
         let ret = eltableAdapter(array)
         this.importStudentList = ret.results_array
         this.importStudentListMax = ret.max
+        this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
+        this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
       })
     },
     anotherSelected(type, idx) {
@@ -451,20 +453,16 @@ export default {
         idx = idx - 1
         this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
         this.$set(this.nameCheckedList, idx, true)
-        console.log(this.nameCheckedList)
       }
     },
     onSidChecked(idx) {
       if (idx !== false) {
         idx = idx - 1
-        this.sidCheckedList.forEach((item, idx) =>
-          this.$set(this.sidCheckedList, idx, false))
+        this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
         this.$set(this.sidCheckedList, idx, true)
-        console.log(this.sidCheckedList)
       }
     },
     getNameChecked(scope) {
-      console.log(this.nameCheckedList)
       return this.nameCheckedList[scope.$index] || false
     },
     fetchCollegeList() {
