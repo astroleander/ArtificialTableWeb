@@ -28,8 +28,10 @@
     </div>
 
     <el-table v-if="remoteUserList.length > 0" :data="remoteUserList" @selection-change="delChange" style="margin-top: 10px">
-      <!-- <el-table-column type="selection" width="50"></el-table-column> -->
-      <el-table-column label="序号" width="60">
+      <template slot="empty">
+        当前学院暂无教师信息！
+      </template><!-- <el-table-column type="selection" width="50"></el-table-column> -->
+      <el-table-column label="序号" width="60">        <template slot="empty">
         <template slot-scope="scope">
             {{scope.$index+1}}
         </template>

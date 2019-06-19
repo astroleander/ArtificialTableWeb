@@ -3,6 +3,15 @@
     <section class="table" style="width: 55%">
       <el-table :data="database" v-loading.body="loading" ref="table" id="transcript-predict"
                 element-loading-text="Loading" class="table">
+        <template slot="empty">
+          <el-alert id="table-emptyalert"
+            title="没有数据"
+            type="warning"
+            :closable='false'
+            description="没有数据，请确认您选择数据的完整性！"
+            show-icon>
+          </el-alert>
+        </template>
         <el-table-column label="序号">
           <template slot-scope="scope">
             {{scope.$index+1}}

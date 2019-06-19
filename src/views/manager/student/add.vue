@@ -66,6 +66,15 @@
       <el-table v-if="importStudentList !== null"
           :data="importStudentList"
           >
+        <template slot="empty">
+            <el-alert id="table-emptyalert"
+            title="没有数据"
+            type="warning"
+            :closable='false'
+            description="没有数据，请确认您导入的文件完整性！"
+            show-icon>
+          </el-alert>
+        </template>
         <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
           :key="idx"
           align="center"

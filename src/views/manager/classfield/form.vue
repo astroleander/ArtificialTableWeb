@@ -25,6 +25,9 @@
       </div>
       <!-- 此班级的学生列表-->
       <el-table :data="tableStudents"  @selection-change="delChange">
+        <template slot="empty">
+          该班级没有学生信息
+        </template>
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="序号" width="60">
           <template slot-scope="scope">
@@ -82,6 +85,9 @@
       <!-- 确认学生的界面-->
       <el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
         <el-table :data="confirmTableStudents" >
+          <template slot="empty">
+            该班级暂无学生信息，请点击条目右上角导入
+          </template>
           <el-table-column prop="sid" label="学号" width="180"></el-table-column>
           <el-table-column prop="name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="major" label="专业" width="180"></el-table-column>
