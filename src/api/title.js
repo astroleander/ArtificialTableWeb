@@ -23,7 +23,7 @@ export function getTitle(titleGroup_id, classInfo_id) {
  */
 export function getTitles(params) {
   return request({
-    url: '/title/format',
+    url: '/title/display',
     method: 'get',
     params
   })

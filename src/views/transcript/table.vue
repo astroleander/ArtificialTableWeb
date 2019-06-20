@@ -37,7 +37,7 @@ DONE: post 返回需要 ID
                 v-loading.body="loading"
                 ref="table" id="transcript-table"
                 element-loading-text="Loading"
-                height="calc(100vh - 145px)"
+                max-height="650"
                 class="table">
 
             <el-table-column label="学生姓名" prop="student.name"
@@ -50,10 +50,12 @@ DONE: post 返回需要 ID
 
             <el-table-column
                     v-for="title in titles" :key="title.id"
-                    min-width="120px">
+                    min-width="200">
                 <template slot="header" slot-scope="head">
                     <div class="line-container">
-                        <span>{{title.name}}</span>
+                        <el-tooltip class="item" effect="dark" :content="title.titleGroup_message.name" placement="top">
+                            <span>{{title.name}}</span>
+                        </el-tooltip>
                         <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
                     </div>
                 </template>
@@ -191,6 +193,9 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        show() {
+         console.log(this.titles)
+        },
         beforeunloadHandler(event) {
           if(this.$store.state.table.changed) {
             event.preventDefault()
