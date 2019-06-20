@@ -194,7 +194,6 @@ DONE: post 返回需要 ID
       },
       methods: {
         show() {
-         console.log(this.titles)
         },
         beforeunloadHandler(event) {
           if(this.$store.state.table.changed) {
@@ -333,7 +332,6 @@ DONE: post 返回需要 ID
           location.reload()
         },
         onClickedUpload: function() {
-          console.log(this.updatedArray)
           viewmodel.modifyPoints(this.updatedArray).then(response => {
             this.$message({
               message: '修改成功',
@@ -344,12 +342,9 @@ DONE: post 返回需要 ID
         },
         onItemChanged: function(newItem, title) {
           this.$store.state.table.changed = true
-          console.log(this.$store)
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
-          console.log(newItem)
           const sid = newItem.student_id
           var name
-          console.log(this.viewDataset)
           this.viewDataset.forEach(studentItem => {
             if (studentItem.student.id === sid) {
               name = studentItem.student.name

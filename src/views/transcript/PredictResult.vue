@@ -47,14 +47,12 @@
     },
     methods: {
       getData() {
-        console.log('我来到了新界面')
         return this.$store.state.table.predictTable
       },
       init() {
         var countPass = 0
         var countNoPass = 0
         const Data = this.getData()
-        console.log(Data)
         for (let i = 0; i < Data.length; i++) {
           if (Data[i].pass == 0) {
             countNoPass++
@@ -71,11 +69,9 @@
           value: countNoPass,
           name: '不及格'
         })
-        console.log(data)
         return data
       },
       showPassed(row) {
-        console.log(row)
         // alert(row.pass)
         if (row.pass == 0) {
           return true

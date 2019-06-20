@@ -45,8 +45,6 @@ export default {
     }
   },
   created () {
-    console.log(this.boxWidth)
-    console.log(this.boxHeight)
   }
 }
 </script>

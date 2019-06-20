@@ -84,11 +84,8 @@ export default {
         .requestAnalyseLessons(this.semester)
         .then(response => {
           this.datavalue = response
-          console.log(this.datavalue)
           this.Item = Object.keys(this.datavalue)
-          console.log(this.Item)
           this.Value = Object.values(this.datavalue)
-          console.log(this.Value)
         })
     },
     // 接收学期列表

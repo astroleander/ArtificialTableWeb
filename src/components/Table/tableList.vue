@@ -84,7 +84,6 @@
     methods: {
       attendToBuildTable() {
         if (!this.is_sync && this.dataFormat != null && this.dataStudent != null) {
-          console.log('attendToBuildTable')
           this.is_sync = true
           this.buildTable()
         }
@@ -115,7 +114,7 @@
         title_string.map(e => {
           title.push({ prop: e, label: e })
         })
-        console.log(title)
+
         // generate student list
         for (const item in material_student) {
           if (material_student.hasOwnProperty(item)) {

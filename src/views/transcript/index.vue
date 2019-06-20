@@ -159,7 +159,6 @@ export default {
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
-    console.log(this.$router.currentRoute.params.id)
     // 加载成绩表
     this.fetchDataset()
   },
@@ -217,7 +216,6 @@ export default {
     },
     // 增加小项
     handleTitleChanged(title) {
-      console.log(this.model.titles)
       titleViewmodel.requestPostTitle(title).then(res => {
         title.id = res.succeed_ids[0].id
         this.model.titles.push(title)
@@ -290,8 +288,6 @@ export default {
                 titleGroupSum += element.weight
               })
             }
-            console.log('请求完成')
-            console.log(this.model.titles)
             this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
             // 加载成绩分析数据
             this.buildWeight()
