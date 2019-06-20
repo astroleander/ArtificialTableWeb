@@ -218,6 +218,7 @@ export default {
     handleTitleChanged(title) {
       titleViewmodel.requestPostTitle(title).then(res => {
         title.id = res.succeed_ids[0].id
+        title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
         this.model.titles.push(title)
       }).catch(error => {
         console.log(error)
@@ -232,6 +233,7 @@ export default {
           title.override_tag = 1
           titleViewmodel.requestPostTitle(title).then(res => {
             title.id = res.succeed_ids[0].id
+            title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
             this.model.titles.push(title)
           })
         })
