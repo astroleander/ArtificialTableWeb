@@ -63,7 +63,7 @@ export default {
         if (tidReg.test(value)) {
           callback()
         } else {
-          callback(new Error('教师编号至少四位'))
+          callback(new Error('教师编号至少四位，且不可输入空格'))
         }
       }
       callback()
@@ -74,7 +74,7 @@ export default {
       } else {
         // 以字母开头，长度在6~18之间，只能包含字母、数字和下划线
         // const passReg = /\w{4,20}/
-        const passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/
+        const passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/
         if (passReg.test(value)) {
           callback()
         } else {
@@ -128,7 +128,6 @@ export default {
         tid: '',
         password: '',
         repassword: '',
-        // is_manager: '',
         email: '',
         mobile: ''
       },
@@ -173,6 +172,7 @@ export default {
                 message: '添加用户成功',
                 type: 'success'
               })
+              this.$router.push({ path: 'list' })
             }
           })
         } else {

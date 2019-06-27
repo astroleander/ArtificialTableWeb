@@ -48,7 +48,7 @@
             <template>
               <el-row>
               <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;" type="success">添加新的班级</el-button>
-              <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程</el-button>
+              <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson, lesson.dataset)">删除课程</el-button>
               </el-row>
             </template>
           </template>
@@ -126,7 +126,8 @@ export default {
         week: ''
       },
       showDisable: false,
-      teachers: []
+      teachers: [],
+      IsCanDelete: false
     }
   },
   computed: {
@@ -149,7 +150,6 @@ export default {
     onSelectedLessonChanged(id) {
       if (id) {
         this.fetchClassInfoListByLessonId(id).then(res => {
-          console.log(res)
           const class_array = res
           this.lesson_list.forEach((lesson, idx) => {
             if (lesson.id === id) {
@@ -192,6 +192,9 @@ export default {
               orilesson.dataset.splice(idx, 1)
             }
           })
+          if (res[0].rest_classInfo_count === 0) {
+            location.reload()
+          }
         })
       })
     },
@@ -227,7 +230,6 @@ export default {
       console.log(idx)
     },
     showClass(row) {
-      console.log('1234567890')
       console.log(row)
       UserViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token)
         .then(res => {

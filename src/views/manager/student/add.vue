@@ -66,15 +66,6 @@
       <el-table v-if="importStudentList !== null"
           :data="importStudentList"
           >
-        <template slot="empty">
-            <el-alert id="table-emptyalert"
-            title="没有数据"
-            type="warning"
-            :closable='false'
-            description="没有数据，请确认您导入的文件完整性！"
-            show-icon>
-          </el-alert>
-        </template>
         <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
           :key="idx"
           align="center"
@@ -86,14 +77,14 @@
               <span>
                 <el-checkbox
                   v-model="nameCheckedList[idx]"
-                  :disabled='computedColumn(idx) || anotherSelected("name", idx)'
+                  :disabled='computedColumn(idx)'
                   :true-label="scope.$index + 1"
                   @change="onNameChecked">姓名列</el-checkbox>
               </span>
               <span>
                 <el-checkbox
                   v-model="sidCheckedList[idx]"
-                  :disabled='computedColumn(idx) || anotherSelected("sid", idx)'
+                  :disabled='computedColumn(idx)'
                   :true-label="scope.$index + 1"
                   @change="onSidChecked">学号列</el-checkbox>
               </span>
@@ -308,7 +299,7 @@ export default {
       for (let index = 0; index < this.importStudentList.length; index++) {
         // console.log(index, colIdx)
         // console.log(this.importStudentList[index][colIdx])
-        if(!exist(this.importStudentList[index][colIdx])) legal = false
+        if (!exist(this.importStudentList[index][colIdx])) legal = false
       }
       return !legal
     },
@@ -324,44 +315,36 @@ export default {
         array = array.slice(1)
       }).catch(() => {
       }).finally(() => {
-        let ret = eltableAdapter(array)
+        const ret = eltableAdapter(array)
         this.importStudentList = ret.results_array
         this.importStudentListMax = ret.max
-        this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
-        this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
       })
-    },
-    anotherSelected(type, idx) {
-      const sid_idx = this.sidCheckedList.findIndex(item => item === true)
-      const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
     },
     onSubmitClicked() {
       const sid_idx = this.sidCheckedList.findIndex(item => item === true)
       const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      console.log(sid_idx, name_idx)
-      if (sid_idx === -1 || name_idx === -1) {
+      if (sid_idx === undefined || name_idx === undefined) {
         this.$message({
           type: 'error',
           message: '请先导入数据并选择学生列'
         })
         return
       }
-      else if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
+      if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
         this.$message({
           type: 'error',
           message: '尚未选择学生的归属信息'
         })
         return
       }
-      else if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
+      if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
         this.$message({
           type: 'error',
           message: '尚未选择学生的入学年份'
         })
         return
       }
-      else if (sid_idx === name_idx) {
+      if (sid_idx === name_idx) {
         this.$message({
           type: 'error',
           message: '学号和姓名不能是同一列'
@@ -370,7 +353,6 @@ export default {
       }
 
       // generate student objs list
-      let legal = true
       const studentList = []
       const Student = () => {
         return {
@@ -380,31 +362,13 @@ export default {
           major_id: this.selectedMajorId
         }
       }
-      for (let row of this.importStudentList) {
+      this.importStudentList.forEach(row => {
         const student = new Student()
         student.sid = row[sid_idx]
         student.name = row[name_idx]
         studentList.push(student)
-        if (!student.sid.match(/^[1-9]{6,20}$/)) {
-          this.$message({
-            type: 'error',
-            message: '有不合法的学号，请重新导入正确的文件！'
-          })
-          legal = false
-          return
-        }
-        else if (student.name.match(/^[1-9]{6,20}$/)) {
-          this.$message({
-            type: 'error',
-            message: '有不合规的姓名，请重新导入正确的文件！'
-          })
-          legal = false
-          return
-        }
-      }
-      if (legal) {
-        this.submitStudentList(studentList)
-      }
+      })
+      this.submitStudentList(studentList)
     },
     onResetClicked() {
       this.selectedCollegeId = null
@@ -453,16 +417,20 @@ export default {
         idx = idx - 1
         this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
         this.$set(this.nameCheckedList, idx, true)
+        console.log(this.nameCheckedList)
       }
     },
     onSidChecked(idx) {
       if (idx !== false) {
         idx = idx - 1
-        this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
+        this.sidCheckedList.forEach((item, idx) =>
+          this.$set(this.sidCheckedList, idx, false))
         this.$set(this.sidCheckedList, idx, true)
+        console.log(this.sidCheckedList)
       }
     },
     getNameChecked(scope) {
+      console.log(this.nameCheckedList)
       return this.nameCheckedList[scope.$index] || false
     },
     fetchCollegeList() {

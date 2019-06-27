@@ -47,26 +47,26 @@ export default {
       Value: [],
       data: [],
       connection: [
-          {
-              number: '0.8-1.0',
-              tip: '极强相关'
-          },
-          {
-              number: '0.6-0.8',
-              tip: '强相关'
-          },
-          {
-              number: '0.4-0.6',
-              tip: '中等程度相关'
-          },
-          {
-              number: '0.2-0.4',
-              tip: '弱相关'
-          },
-          {
-              number: '0.0-0.2',
-              tip: '极弱相关或无相关'
-          }
+        {
+          number: '0.8-1.0',
+          tip: '极强相关'
+        },
+        {
+          number: '0.6-0.8',
+          tip: '强相关'
+        },
+        {
+          number: '0.4-0.6',
+          tip: '中等程度相关'
+        },
+        {
+          number: '0.2-0.4',
+          tip: '弱相关'
+        },
+        {
+          number: '0.0-0.2',
+          tip: '极弱相关或无相关'
+        }
       ]
     }
   },
@@ -116,7 +116,7 @@ export default {
     },
     fetchsemesterInfosById() {
       return classInfosViewModel
-        .requestByTeacherId(this.id)
+        .requestAll(this.token)
         .then(response => {
           if (response !== undefined) {
             // 将获取到班级信息按照学期分类

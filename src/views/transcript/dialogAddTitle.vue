@@ -71,6 +71,7 @@ export default {
     onAddNewTitle: function(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.titleForm.name = this.titleForm.name.replace(/\s*/g, '')
           this.titleForm['classInfo_id'] = this.classInfo.id
           this.titleForm['override_tag'] = 0
           this.$emit('onAddNewTitle', JSON.parse(JSON.stringify(this.titleForm)))

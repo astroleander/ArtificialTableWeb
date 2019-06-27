@@ -61,7 +61,6 @@ export default {
   methods: {
     handlePredictdata: function(val) {
       this.multipleSelection.push(val)
-      var len = this.multipleSelection.length
       // 获取班级成绩预测
     },
     handlePredictOne: function(row) {

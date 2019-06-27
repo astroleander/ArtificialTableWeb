@@ -85,15 +85,6 @@
         <p class="row">{{Message}}</p>
 
         <el-table  class="errortable" v-if="errorList.length> 0" :data="errorList">
-          <template slot="empty">
-            <el-alert id="table-emptyalert"
-              title="未获取到数据"
-              type="warning"
-              :closable='false'
-              description="请确认本页数据是否存在。如果存在，请尝试刷新页面，或联系系统管理员"
-              show-icon>
-            </el-alert>
-          </template>
           <el-table-column prop="name" label="班级名称" align="center" width="150"></el-table-column>
           <el-table-column  label="错误信息" align="center" width="200">
             <template slot-scope="scope">
@@ -111,15 +102,6 @@
       <div class="tableCard">
         <el-table :data="classPointInfos" stripe
                   ref="table" @selection-change="handleSome">
-          <template slot="empty">
-            <el-alert id="table-emptyalert"
-              title="未获取到数据"
-              type="warning"
-              :closable='false'
-              description="请确认本页数据是否存在。如果存在，请尝试刷新页面，或联系系统管理员"
-              show-icon>
-            </el-alert>
-          </template>
           <el-table-column width="80" type="selection"/>
           <el-table-column prop="name"  label="教学班名称" align="center"/>
           <el-table-column prop="total" label="总人数" align="center"/>
