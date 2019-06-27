@@ -203,7 +203,7 @@ const exist = (element) => {
 const eltableAdapter = (array) => {
   const illegal = []
   const array_flag = []
-  const results_array = Array(array.length)
+  const results_array = []
   let max = 0
   array.forEach(row => {
     let flagEmpty = true
@@ -414,7 +414,7 @@ export default {
         if (!student.sid.match(/^[0-9]{6,20}$/)) {
           this.$message({
             type: 'error',
-            message: '有不合法的学号，请重新导入正确的文件！'  + student.sid
+            message: '有不合法的学号，请重新导入正确的文件！'
           })
           legal = false
           return
