@@ -86,14 +86,14 @@
               <span>
                 <el-checkbox
                   v-model="nameCheckedList[idx]"
-                  :disabled='computedColumn(idx) || anotherSelected("name", idx)'
+                  :disabled='isColumnHasEmpty(idx) || anotherSelected("name", idx)'
                   :true-label="scope.$index + 1"
                   @change="onNameChecked">姓名列</el-checkbox>
               </span>
               <span>
                 <el-checkbox
                   v-model="sidCheckedList[idx]"
-                  :disabled='computedColumn(idx) || anotherSelected("sid", idx)'
+                  :disabled='isColumnHasEmpty(idx) || anotherSelected("sid", idx)'
                   :true-label="scope.$index + 1"
                   @change="onSidChecked">学号列</el-checkbox>
               </span>
@@ -117,9 +117,12 @@
         ></el-alert>
       </div>
       <el-pagination v-if='importStudentList'
+        :current-page.sync="page"
+        :total="importStudentList.length"
+        :page-size="pageSize"
         hide-on-single-page
         layout="prev, pager, next"
-        :total="this.importStudentList / this.page || 1">
+        >
       </el-pagination>
 
       <div>
@@ -188,6 +191,7 @@ import CollegeViewModel from '@/viewmodel/college'
 import MajorViewModel from '@/viewmodel/major'
 import StudentViewModel from '@/viewmodel/student'
 import { mapGetters } from 'vuex'
+import { Loading } from 'element-ui';
 
 const exist = (element) => {
   return element &&
@@ -197,9 +201,9 @@ const exist = (element) => {
 }
 
 const eltableAdapter = (array) => {
-  // console.log(array)
+  const illegal = []
   const array_flag = []
-  const results_array = []
+  const results_array = Array(array.length)
   let max = 0
   array.forEach(row => {
     let flagEmpty = true
@@ -213,12 +217,17 @@ const eltableAdapter = (array) => {
     array_flag.push(flagEmpty)
   })
   array.forEach((row, idx) => {
+    for (let colInx = 0; colInx < max; colInx++) {
+      const element = row[colInx] || undefined
+      if(!exist(element)) {
+        illegal[colInx] = true
+      }
+    }
     if (!array_flag[idx]) {
       results_array.push(row)
     }
   })
-  // console.log(results_array)
-  return { results_array, max }
+  return { results_array, max, illegal }
 }
 const validateName = (rule, value, callback) => {
   if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
@@ -272,6 +281,8 @@ export default {
       importStudentList: null,
       importStudentListMax: 0,
       page: 1,
+      pageSize: 20,
+      illegalColumn: [],
       // 表单数据
       form: {
         name: '',
@@ -309,47 +320,52 @@ export default {
       'user'
     ]),
     pageStudentList() {
-      return importStudentList(this.page * 100, this.page * 100 + 99)
+      return this.importStudentList.slice((this.page - 1) * this.pageSize , (this.page - 1) * this.pageSize + this.pageSize - 1)
     }
   },
   methods: {
-    computedColumn(colIdx) {
-      let legal = true
-      for (let index = 0; index < this.importStudentList.length; index++) {
-        // console.log(index, colIdx)
-        // console.log(this.importStudentList[index][colIdx])
-        if(!exist(this.importStudentList[index][colIdx])) legal = false
-      }
-      return !legal
+    isColumnHasEmpty(colIdx) {
+      console.log('[isColumnHasEmpty]',this.illegalColumn)
+      return !!this.illegalColumn[colIdx] && true
     },
     exist(obj) {
       return exist(obj)
     },
     onSelectedLocalExcel(data) {
       let array = data.results
-      this.$confirm('导入的文件是否有列名?(若有则会被删除)', '提示', {
+      let vm = this
+      this.$confirm('导入的文件是否有列名?(若有则会被删除)\n若文件过大请耐心等待', '提示', {
         confirmButtonText: '包含',
         cancelButtonText: '不包含'
       }).then(() => {
         array = array.slice(1)
       }).catch(() => {
       }).finally(() => {
-        let ret = eltableAdapter(array)
-        this.importStudentList = ret.results_array
-        this.importStudentListMax = ret.max
+        vm.loading = Loading.service({
+          fullscreen: true,
+          body: true
+          // target: document.querySelector('#add-student-page')
+        });
+        let {results_array, max, illegal} = eltableAdapter(array)
+        this.importStudentList = results_array
+        this.importStudentListMax = max
+        this.illegalColumn = illegal
         this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
         this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
+        vm.$nextTick(()=> {
+          if (vm.loading) vm.loading.close()
+        })
       })
     },
     anotherSelected(type, idx) {
       const sid_idx = this.sidCheckedList.findIndex(item => item === true)
       const name_idx = this.nameCheckedList.findIndex(item => item === true)
+      console.log('[AnotherSelected]',(type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx))
       return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
     },
     onSubmitClicked() {
       const sid_idx = this.sidCheckedList.findIndex(item => item === true)
       const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      console.log(sid_idx, name_idx)
       if (sid_idx === -1 || name_idx === -1) {
         this.$message({
           type: 'error',
@@ -395,15 +411,15 @@ export default {
         student.sid = row[sid_idx]
         student.name = row[name_idx]
         studentList.push(student)
-        if (!student.sid.match(/^[1-9]{6,20}$/)) {
+        if (!student.sid.match(/^[0-9]{6,20}$/)) {
           this.$message({
             type: 'error',
-            message: '有不合法的学号，请重新导入正确的文件！'
+            message: '有不合法的学号，请重新导入正确的文件！'  + student.sid
           })
           legal = false
           return
         }
-        else if (student.name.match(/^[1-9]{6,20}$/)) {
+        else if (!student.name.match(/^[\u4E00-\u9FA5A-Za-z0-9]+$/)) {
           this.$message({
             type: 'error',
             message: '有不合规的姓名，请重新导入正确的文件！'
@@ -499,9 +515,7 @@ export default {
       }
     },
     fetchMajorList() {
-      console.log('fetchMajorList')
       MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
-        // console.log('fetchMajorList success')
         this.remoteMajorList = res
         this.majorLoading = false
       })
