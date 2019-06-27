@@ -116,7 +116,6 @@ export default {
           // and close dialog if success
           const cell_upload = this.cell
           cell_upload.point = this.cell_copy.point
-          console.log(cell_upload)
           if (cell_upload.type === 'modify') {
             viewmodel.modifyPoint(cell_upload.point).then(response => {
               const id = response[0]['id']

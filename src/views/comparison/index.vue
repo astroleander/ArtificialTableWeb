@@ -293,7 +293,6 @@ export default {
         this.buildObject(this.diagramPointInfo, 5, classPointItem.avgScore)
         this.buildObject(this.diagramPointInfo, 6, classPointItem.passExamRate)
       })
-      console.log(this.diagramPointInfo)
       this.showDialogSome = true
     },
     buildObject(object, key, value) {
@@ -590,22 +589,22 @@ export default {
     },
     handleOne(row) {
       this.Score = []
-      console.log(row)
+      // console.log(row)
       var x1 = 0
       var x2 = 0
       var x3 = 0
       var x4 = 0
       var x5 = 0
       const studentScore = row.studentScore
-      console.log(studentScore)
+      // console.log(studentScore)
       for (const key in studentScore) {
-        console.log('123456789')
-        console.log(studentScore[key])
+        // console.log('123456789')
+        //  console.log(studentScore[key])
         const map = studentScore[key]
         console.log(map)
         map.forEach(score => {
-          console.log('987654321')
-          console.log(score)
+          // console.log('987654321')
+          // console.log(score)
           if (score > 0 && score < 60) {
             x1++
           } else if (score >= 60 && score < 70) {
@@ -639,13 +638,9 @@ export default {
         value: x5,
         name: '90~100'
       })
-      console.log(this.Score)
       this.showDialogOne = true
     },
     submitHandle() {
-      console.log('asdfghjk')
-      console.log(this.multipleSelection)
-
       if (this.multipleSelection === undefined || this.multipleSelection.length === 0) {
         this.showNone = true
       } else {

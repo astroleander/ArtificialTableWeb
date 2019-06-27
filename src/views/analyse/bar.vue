@@ -27,9 +27,6 @@
       // 绘制条状图
       drawBar() {
         // 初始化图表
-        console.log('12345678')
-        console.log(this.dataItem)
-        console.log(this.dataValue)
         this.chartBar = echarts.init(document.getElementById('chartBar' + this.DiagramId))
         // 绘制
         this.chartBar.setOption({

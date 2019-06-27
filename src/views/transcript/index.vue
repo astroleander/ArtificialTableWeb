@@ -146,25 +146,19 @@ export default {
   created() {
     // 要是想好好写这个代码的话可以考虑回滚到 12 月之前的版本
     this.info = this.$store.getters.course(this.id)
-    console.log(' 班级信息')
-    console.log(this.info)
     // 当前ID在数据仓库中未找到
     if (this.info === undefined) {
-      console.log('没找到')
       const class_id = this.id
       // 向后台请求数据
       classinfoViewmodel.requestClassInfos({ id: class_id }).then(res => {
         // console.log(res[0])
         // 加载数据到info中
         this.info = res && res[0]
-        console.log(' 班级信息')
-        console.log(this.info)
       })
     }
     // console.log(this.$store.getters.course(''+1))
   },
   mounted() {
-    console.log(this.$router.currentRoute.params.id)
     // 加载成绩表
     this.fetchDataset()
   },
@@ -182,21 +176,16 @@ export default {
     buildTable: function() {
       // build table cell
       // each student map to a row on table
-      console.log(' 学生信息')
       this.model.studentMap.forEach(element => {
         const row = {
           // add student info (first two column line of the table)
           student: element,
           point: []
         }
-        console.log(row)
         // add student's point
-        console.log(' 成绩信息')
         if (this.model.points) {
           this.model.points.forEach(pointItem => {
-            console.log(' 1111111')
             if (pointItem.student_id === element.id) {
-              console.log(' 2222222')
               row.point.push(pointItem)
               // row[pointItem.title_id] = pointItem
             }
@@ -211,8 +200,6 @@ export default {
             // row[pointItem.title_id] = pointItem
           }
         }) */
-        console.log(' llllllll')
-        console.log(this.table)
         this.table.push(row)
       })
       // build title
@@ -229,9 +216,9 @@ export default {
     },
     // 增加小项
     handleTitleChanged(title) {
-      console.log(this.model.titles)
       titleViewmodel.requestPostTitle(title).then(res => {
         title.id = res.succeed_ids[0].id
+        title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
         this.model.titles.push(title)
       }).catch(error => {
         console.log(error)
@@ -246,6 +233,7 @@ export default {
           title.override_tag = 1
           titleViewmodel.requestPostTitle(title).then(res => {
             title.id = res.succeed_ids[0].id
+            title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
             this.model.titles.push(title)
           })
         })
@@ -269,7 +257,6 @@ export default {
         classinfoViewmodel.requestClassInfos({ id: this.id })
       ])
         .then(result => {
-          console.log(result)
           // 获取小项数据
           if (result && result[0]) {
             result[0].forEach(element => {
@@ -287,14 +274,10 @@ export default {
           }
           // 获取分数数据
           this.model.points = result[1]
-          console.log(this.model.points)
           // 获取学生信息
-          console.log('显示学生信息')
           if (result[2]) {
             result[2].forEach(element => {
-              console.log(' 匹配学生信息')
               this.model.studentMap.set(element.id, element)
-              console.log(this.model.studentMap)
             })
           }
           this.info = result && result[3] && result[3][0]
@@ -337,8 +320,6 @@ export default {
     // 检验当前数据是否合法
     judgeLegal() {
       let flag = false // 数据为空 暂不加载雷达图
-      console.log(this.model)
-      console.log('1234567')
       const studentLength = this.model.studentMap.size
       const titleLength = this.model.titleMap.size
       const titleGroupLength = this.model.titleGroupMap.size

@@ -111,16 +111,11 @@ export default {
     // 6. vuex dispatcher requests login api remote server
     // 处理 登录函数
     handleLogin() {
-      console.log(' 开始处理登录界面')
-      console.log(this.loginForm)
-      console.log(this.loginForm.password)
-      console.log(this.loginForm.username)
       this.$refs.loginForm.validate(valid => {
       // this.loginForm.validate(valid => {
         // 判断输入用户名，密码是否符合规则
         if (valid) {
           // 符合输入规范 加载
-
           this.loading = true
           // login.vue 获取用户名 密码 ->
           // login view model 调用请求函数 -> vuex dispatcher -> remote
@@ -131,7 +126,6 @@ export default {
               // 登录用户名 密码匹配后
               // 在修改数据之后立即使用这个方法，获取更新后的 DOM，同理setTimeout()
               Vue.nextTick(resolve => {
-                console.log('login request success')
                 // 异步跳转到主页面
                 setTimeout(() => {
                   this.$router.push({ path: '/' })
