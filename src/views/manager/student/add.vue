@@ -63,8 +63,8 @@
           </el-card>
         </el-form>
 
-      <el-table v-if="importStudentList !== null"
-          :data="importStudentList"
+      <el-table v-if="importStudentList"
+          :data="pageStudentList"
           >
         <template slot="empty">
             <el-alert id="table-emptyalert"
@@ -116,6 +116,12 @@
           style="margin: 4px 12px 4px 12px;"
         ></el-alert>
       </div>
+      <el-pagination v-if='importStudentList'
+        hide-on-single-page
+        layout="prev, pager, next"
+        :total="this.importStudentList / this.page || 1">
+      </el-pagination>
+
       <div>
         <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
       </div>
@@ -265,6 +271,7 @@ export default {
       // import data
       importStudentList: null,
       importStudentListMax: 0,
+      page: 1,
       // 表单数据
       form: {
         name: '',
@@ -300,7 +307,10 @@ export default {
   computed: {
     ...mapGetters([
       'user'
-    ])
+    ]),
+    pageStudentList() {
+      return importStudentList(this.page * 100, this.page * 100 + 99)
+    }
   },
   methods: {
     computedColumn(colIdx) {
