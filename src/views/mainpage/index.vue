@@ -166,7 +166,6 @@ div(mainpage)
       },
       fetchClassInfos: function(use_manager) {
         if (use_manager) {
-          console.log(this.token)
           classInfoViewmModel
             .requestAll(this.token)
             .then(responseArray => {
@@ -198,15 +197,11 @@ div(mainpage)
     },
     watch: {
       use_manager() {
-        console.log('mainpage watch use_manager')
-        console.log(this.use_manager)
         this.fetchClassInfos(this.use_manager)
         this.changeRole()
       }
     },
     created() {
-      console.log('mainpage create')
-      console.log(this.use_manager)
       this.fetchClassInfos(this.use_manager)
     },
     mounted() {

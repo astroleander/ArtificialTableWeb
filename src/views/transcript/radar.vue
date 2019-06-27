@@ -79,8 +79,6 @@ export default {
   },
   watch: {
     dataSet: function() {
-      console.log('this.dataSet.length = ' + this.dataSet.length)
-      console.log('this.titleData.length = ' + this.titleData.length)
       if (this.dataSet.length > 0 && this.titleData.length > 0) {
         this.drawRadar()
       }

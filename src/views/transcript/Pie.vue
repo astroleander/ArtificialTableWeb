@@ -22,10 +22,10 @@
       // 绘制条状图
       drawPie() {
         // 初始化图表
-        console.log('wolaile')
+       // console.log('wolaile')
         this.chartPie = echarts.init(document.getElementById('Diagram' + this.DiagramId))
         // 绘制
-        console.log('wolaile1')
+        //console.log('wolaile1')
         this.chartPie.setOption({
           // 图表颜色
           title: {

@@ -7,8 +7,6 @@ const requestLogin = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     // 与后端交互成功匹配
     login(username, password).then(response => {
-      console.log('成功与后台数据匹配')
-      console.log(response)
       const data = response && response.subjects
       if (data !== undefined) {
         // 获取用户信息
@@ -20,8 +18,6 @@ const requestLogin = ({ username, password }) => {
           .then(response => {
             if (response.subjects !== undefined) {
               // 提交数据到store中进行登录存储数据信息
-              console.log('成功获取用户信息存储到store中')
-              console.log(response)
               // 数据加载到store中
               store.dispatch('Login', {
                 id: data.id,

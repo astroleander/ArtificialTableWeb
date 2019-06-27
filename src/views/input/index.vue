@@ -926,7 +926,7 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '相同的成绩类别中填写相同的测试名称产生冲突，请检查啊更改！',
+                    message: '相同的成绩类别中填写相同的测试名称产生冲突，请检查更改！',
                     type: 'error'
                   })
                 }

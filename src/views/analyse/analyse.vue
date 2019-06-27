@@ -15,7 +15,11 @@
       <p >{{Message}}</p>
     </div>
     <div v-else="empty" class="info-box">
-      <at-bar :data-item="this.Item" :data-value="this.Value"></at-bar>
+      <el-table :data="this.connection" class="flex-20">
+         <el-table-column prop="number" label="相关值"></el-table-column>
+          <el-table-column prop="tip" label="相关程度"></el-table-column>
+      </el-table>
+      <at-bar :data-item="this.Item" :data-value="this.Value" class="flex-80"></at-bar>
     </div>
   </div>
 </template>
@@ -41,7 +45,29 @@ export default {
       datavalue: [],
       Item: [],
       Value: [],
-      data: []
+      data: [],
+      connection: [
+          {
+              number: '0.8-1.0',
+              tip: '极强相关'
+          },
+          {
+              number: '0.6-0.8',
+              tip: '强相关'
+          },
+          {
+              number: '0.4-0.6',
+              tip: '中等程度相关'
+          },
+          {
+              number: '0.2-0.4',
+              tip: '弱相关'
+          },
+          {
+              number: '0.0-0.2',
+              tip: '极弱相关或无相关'
+          }
+      ]
     }
   },
   computed: {
@@ -58,11 +84,8 @@ export default {
         .requestAnalyseLessons(this.semester)
         .then(response => {
           this.datavalue = response
-          console.log(this.datavalue)
           this.Item = Object.keys(this.datavalue)
-          console.log(this.Item)
           this.Value = Object.values(this.datavalue)
-          console.log(this.Value)
         })
     },
     // 接收学期列表
@@ -134,8 +157,8 @@ export default {
     display: flex;
     background: white;
     margin-top: 1px;
-    align-items: center;
-    justify-content: center;
+    // align-items: center;
+    // justify-content: center;
   }
   .loading-box{
     display: flex;
@@ -146,5 +169,15 @@ export default {
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     align-items: center;
     justify-content: center;
+  }
+  .flex-20 {
+      float: left;
+      width: 20%;
+      background: white;
+  }
+  .flex-80 {
+      float: left;
+      width: 80%;
+      background: white;
   }
 </style>
