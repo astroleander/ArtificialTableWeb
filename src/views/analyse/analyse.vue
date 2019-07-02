@@ -73,7 +73,8 @@ export default {
   computed: {
     ...mapGetters([
       'id',
-      'token'
+      'token',
+      'use_manager'
     ])
   },
   methods: {
@@ -115,15 +116,27 @@ export default {
       this.semester = ''
     },
     fetchsemesterInfosById() {
-      return classInfosViewModel
-        .requestAll(this.token)
-        .then(response => {
-          if (response !== undefined) {
-            // 将获取到班级信息按照学期分类
-            this.buildSemesterList(response)
-          }
-        }).catch(reject => {
-        })
+      if (this.use_manager) {
+        return classInfosViewModel
+          .requestAll(this.token)
+          .then(response => {
+            if (response !== undefined) {
+              // 将获取到班级信息按照学期分类
+              this.buildSemesterList(response)
+            }
+          }).catch(reject => {
+          })
+      } else {
+        return classInfosViewModel
+          .requestByTeacherId(this.id)
+          .then(response => {
+            if (response !== undefined) {
+              // 将获取到班级信息按照学期分类
+              this.buildSemesterList(response)
+            }
+          }).catch(reject => {
+          })
+      }
     },
     initPage() {
       this.Message = '请选择要进行课程分析的学期'

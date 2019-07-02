@@ -64,10 +64,21 @@ export default {
     // 点击上传
     handleFileChange(e) {
       const files = e.target.files
-      const itemFile = files[0] // only use files[0]
-      if (!itemFile) return
-      this.readerData(itemFile)
-      this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+      console.log(files[0].size)
+      const size = files[0].size / 1024
+      console.log(size)
+      if (size <= 60) {
+        const itemFile = files[0] // only use files[0]
+        if (!itemFile) return
+        this.readerData(itemFile)
+        this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+      } else {
+        this.$message({
+          message: '文件大小不得超过60K',
+          type: 'warning'
+        })
+        document.getElementById('excel-upload-input').value = null
+      }
     },
     // 读取上传数据文件
     readerData(itemFile) {
