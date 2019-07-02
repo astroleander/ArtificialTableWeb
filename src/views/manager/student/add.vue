@@ -62,8 +62,6 @@
                       </el-select> -->
                 </el-card>
             </el-form>
-
-<<<<<<< HEAD
             <el-table v-if="importStudentList"
                       :data="pageStudentList"
             >
@@ -90,7 +88,6 @@
                         :disabled='isColumnHasEmpty(idx) || anotherSelected("name", idx)'
                         :true-label="scope.$index + 1"
                         @change="onNameChecked">姓名列</el-checkbox>
-=======
       <el-table v-if="importStudentList"
           :data="pageStudentList"
           >
@@ -108,21 +105,16 @@
                   :disabled='isColumnHasEmpty(idx) || anotherSelected("name", idx)'
                   :true-label="scope.$index + 1"
                   @change="onNameChecked">姓名列</el-checkbox>
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
+
               </span>
                             <span>
                 <el-checkbox
-<<<<<<< HEAD
+
                         v-model="sidCheckedList[idx]"
                         :disabled='isColumnHasEmpty(idx) || anotherSelected("sid", idx)'
                         :true-label="scope.$index + 1"
                         @change="onSidChecked">学号列</el-checkbox>
-=======
-                  v-model="sidCheckedList[idx]"
-                  :disabled='isColumnHasEmpty(idx) || anotherSelected("sid", idx)'
-                  :true-label="scope.$index + 1"
-                  @change="onSidChecked">学号列</el-checkbox>
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
+
               </span>
                         </div>
                     </template>
@@ -143,14 +135,12 @@
                         style="margin: 4px 12px 4px 12px;"
                 ></el-alert>
             </div>
-<<<<<<< HEAD
             <el-pagination v-if='importStudentList'
                            :current-page.sync="page"
                            :total="importStudentList.length"
                            :page-size="pageSize"
                            hide-on-single-page
-                           layout="prev, pager, next"
-=======
+                           layout="prev, pager, next">
           </template>
           <template slot-scope="scope">
             <div style="min-width: 100px">
@@ -273,7 +263,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
     import ImportExcelComponent from '@/components/ImportExcel.vue'
     import CollegeViewModel from '@/viewmodel/college'
     import MajorViewModel from '@/viewmodel/major'
@@ -318,7 +307,6 @@ const exist = (element) => {
     const validateName = (rule, value, callback) => {
       if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
         callback(new Error('学生名称不可为空'))
-=======
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import CollegeViewModel from '@/viewmodel/college'
 import MajorViewModel from '@/viewmodel/major'
@@ -380,7 +368,6 @@ export default {
         callback(new Error('请输入学生编号'))
       } else if (!Number.isInteger(+value)) {
         callback(new Error('请输入数字值'))
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
       } else {
         callback()
       }
@@ -390,25 +377,22 @@ export default {
       components: {
         ImportExcelComponent
       },
-<<<<<<< HEAD
       data: function() {
         var validateStudentId = (rule, value, callback) => {
-          if (value === '') {
-            callback(new Error('请输入学生编号'))
-          } else if (!Number.isInteger(+value)) {
-            callback(new Error('请输入数字值'))
-          } else {
-            const tidReg = /^\d{6,}$/
-            if (tidReg.test(value)) {
-              callback()
+            if (value === '') {
+                callback(new Error('请输入学生编号'))
+            } else if (!Number.isInteger(+value)) {
+                callback(new Error('请输入数字值'))
             } else {
-              callback(new Error('学生编号至少6位'))
+                const tidReg = /^\d{6,}$/
+                if (tidReg.test(value)) {
+                    callback()
+                } else {
+                    callback(new Error('学生编号至少6位'))
+                }
             }
-          }
-          callback()
+            callback()
         }
-=======
-      //
       nameCheckedList: [],
       sidCheckedList: [],
       // loading flag
@@ -417,7 +401,7 @@ export default {
       // remote list
       remoteUniversity: {
         name: null
-      },
+      }
       remoteMajorList: [],
       remoteCollegeList: [],
       // import data
