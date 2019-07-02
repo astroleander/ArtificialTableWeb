@@ -43,7 +43,7 @@ export default {
       }
       const itemFile = files[0] // only use files[0]
 
-      if (!itemFile.name.match(/.xls?x$/)) {
+      if (!itemFile.name.match(/.xls|.xlsx$/)) {
         this.$message.error('只接受 .xlsx 和 .xls 后缀的 Excel 文档!')
         return
       }
