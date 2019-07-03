@@ -217,13 +217,13 @@ const eltableAdapter = (array) => {
     array_flag.push(flagEmpty)
   })
   array.forEach((row, idx) => {
-    for (let colInx = 0; colInx < max; colInx++) {
-      const element = row[colInx] || undefined
-      if(!exist(element)) {
-        illegal[colInx] = true
-      }
-    }
     if (!array_flag[idx]) {
+      for (let colInx = 0; colInx < max; colInx++) {
+        const element = row[colInx] || undefined
+        if(!exist(element)) {
+          illegal[colInx] = true
+        }
+      }
       results_array.push(row)
     }
   })
