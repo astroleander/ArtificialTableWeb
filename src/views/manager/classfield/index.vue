@@ -150,6 +150,7 @@ export default {
     onSelectedLessonChanged(id) {
       if (id) {
         this.fetchClassInfoListByLessonId(id).then(res => {
+          console.log(res)
           const class_array = res
           this.lesson_list.forEach((lesson, idx) => {
             if (lesson.id === id) {
@@ -230,6 +231,7 @@ export default {
       console.log(idx)
     },
     showClass(row) {
+      console.log('1234567890')
       console.log(row)
       UserViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token)
         .then(res => {

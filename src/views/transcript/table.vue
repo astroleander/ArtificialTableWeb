@@ -234,8 +234,6 @@ DONE: post 返回需要 ID
         },
         showAddTitleDialog: function(dataset) {
           // this.menuDialogDataset = dataset
-          console.log('123456')
-          console.log(this.info)
           this.menuAddTitleDialogVisible = true
         },
         showExportDialog: function(dataset) {

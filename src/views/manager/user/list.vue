@@ -28,8 +28,10 @@
     </div>
 
     <el-table v-if="remoteUserList.length > 0" :data="remoteUserList" @selection-change="delChange" style="margin-top: 10px">
-      <!-- <el-table-column type="selection" width="50"></el-table-column> -->
-      <el-table-column label="序号" width="60">
+      <template slot="empty">
+        当前学院暂无教师信息！
+      </template><!-- <el-table-column type="selection" width="50"></el-table-column> -->
+      <el-table-column label="序号" width="60">        
         <template slot-scope="scope">
             {{scope.$index+1}}
         </template>
@@ -237,28 +239,35 @@ export default {
             confrimButtonText: '确定',
             cancelButtonText: '取消',
             inputPattern: /确认/
-          }
-        ).then(() => {
-          ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
-            if (res === undefined) {
-              UserViewModel.requestDelUser(user.id).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '删除成功'
-                })
-                const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
-                this.remoteUserList.splice(idx, 1)
-              })
-            } else {
-              this.$confirm('该用户还有正在教授的班级，无法删除！您可以到班级列表中进行确认。', '无法删除', {
-                type: 'warning',
-                confirmButtonText: '确定',
-                cancelButtonText: '关闭'
-              })
-            }
           })
-        })
       }
+      this.$prompt(
+        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该教师！',
+        '请确认删除操作', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /确认/
+        }
+      ).then(() => {
+        ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
+          if (res === undefined) {
+            UserViewModel.requestDelUser(user.id).then(res => {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
+              this.remoteUserList.splice(idx, 1)
+            })
+          } else {
+            this.$confirm('该用户还有正在教授的班级，无法删除！您可以到班级列表中进行确认。', '无法删除', {
+              type: 'warning',
+              confirmButtonText: '确定',
+              cancelButtonText: '关闭'
+            })
+          }
+        })
+      })
     },
     fetchCollegeList() {
       let user = null
@@ -299,6 +308,7 @@ export default {
         if (valid) {
           this.form.is_manager = this.role
           const Teacher = this.form
+          console.log(Teacher)
           if (Teacher.id === this.user.id) {
             this.$message({
               message: '此处无法更改个人信息，请前往个人信息处更改',

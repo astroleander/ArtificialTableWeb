@@ -1,5 +1,14 @@
 <template>
   <el-table :data="dataDisplayCell" v-loading.body="listLoading" element-loading-text="Loading">
+    <template slot="empty">
+      <el-alert id="table-emptyalert"
+        title="未获取到数据"
+        type="warning"
+        :closable='false'
+        description="请确认本页数据是否存在。如果存在，请尝试刷新页面，或联系系统管理员"
+        show-icon>
+      </el-alert>
+    </template>
     <el-table-column
       v-for="{ prop,label } in dataDisplayColumn"
       :label="label"

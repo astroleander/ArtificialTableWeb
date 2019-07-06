@@ -128,6 +128,7 @@ export default {
         tid: '',
         password: '',
         repassword: '',
+        // is_manager: '',
         email: '',
         mobile: ''
       },
@@ -167,13 +168,14 @@ export default {
         if (valid) {
           const Teacher = { ...this.form, college_id: this.user_collegeId }
           userViewModel.requestPostUser(Teacher).then(response => {
-            if (response !== undefined) {
-              this.$message({
-                message: '添加用户成功',
-                type: 'success'
-              })
-              this.$router.push({ path: 'list' })
+            if (response === undefined) {
+              return
             }
+            this.$message({
+              message: '添加用户成功',
+              type: 'success'
+            })
+            this.$router.push({ path: 'list' })
           })
         } else {
           return false

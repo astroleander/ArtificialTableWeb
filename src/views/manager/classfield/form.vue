@@ -25,6 +25,9 @@
       </div>
       <!-- 此班级的学生列表-->
       <el-table :data="tableStudents"  @selection-change="delChange">
+        <template slot="empty">
+          该班级没有学生信息
+        </template>
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="序号" width="60">
           <template slot-scope="scope">
@@ -82,6 +85,9 @@
       <!-- 确认学生的界面-->
       <el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
         <el-table :data="confirmTableStudents" >
+          <template slot="empty">
+            该班级暂无学生信息，请点击条目右上角导入
+          </template>
           <el-table-column prop="sid" label="学号" width="180"></el-table-column>
           <el-table-column prop="name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="major" label="专业" width="180"></el-table-column>
@@ -370,13 +376,16 @@ export default {
       this.transferData = []
       studentViewModel.requestStudents(params)
         .then(response => {
+          console.log('我又开始了')
           this.transferData = response
+          console.log(this.transferData)
           if (params.college_id !== undefined) {
             this.studentMap = new Map()
             this.transferData.forEach(student => {
               this.studentMap.set(student.id, student)
             })
           }
+          console.log(this.studentMap)
           this.dealTransferData()
         }).catch(error => {
           console.log(error)
@@ -394,6 +403,7 @@ export default {
         }
       }
       this.transferData = this.transferData.filter(item => !item.disabled)
+      console.log(this.transferData)
     },
 
     addClassFields(params) {
@@ -427,6 +437,7 @@ export default {
     },
     // 开始添加学生 获取班级ID
     openAddDialog() {
+      console.log('this.classInfo_id =' + this.classInfo_id)
       if (this.classInfo_id) {
         this.AddDialogVisible = true
         this.buildTransfer()
