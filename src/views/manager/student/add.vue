@@ -62,18 +62,10 @@
                       </el-select> -->
                 </el-card>
             </el-form>
+
             <el-table v-if="importStudentList"
                       :data="pageStudentList"
             >
-                <template slot="empty">
-                    <el-alert id="table-emptyalert"
-                              title="没有数据"
-                              type="warning"
-                              :closable='false'
-                              description="没有数据，请确认您导入的文件完整性！"
-                              show-icon>
-                    </el-alert>
-                </template>
                 <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
                                  :key="idx"
                                  align="center"
@@ -88,33 +80,13 @@
                         :disabled='isColumnHasEmpty(idx) || anotherSelected("name", idx)'
                         :true-label="scope.$index + 1"
                         @change="onNameChecked">姓名列</el-checkbox>
-      <el-table v-if="importStudentList"
-          :data="pageStudentList"
-          >
-        <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
-          :key="idx"
-          align="center"
-          style="min-width: 150px"
-          >
-          <template slot="header" slot-scope="scope" >
-            <div class="header">
-              <!-- <div>{{scope.row}}</div> -->
-              <span>
-                <el-checkbox
-                  v-model="nameCheckedList[idx]"
-                  :disabled='isColumnHasEmpty(idx) || anotherSelected("name", idx)'
-                  :true-label="scope.$index + 1"
-                  @change="onNameChecked">姓名列</el-checkbox>
-
               </span>
                             <span>
                 <el-checkbox
-
                         v-model="sidCheckedList[idx]"
                         :disabled='isColumnHasEmpty(idx) || anotherSelected("sid", idx)'
                         :true-label="scope.$index + 1"
                         @change="onSidChecked">学号列</el-checkbox>
-
               </span>
                         </div>
                     </template>
@@ -140,65 +112,7 @@
                            :total="importStudentList.length"
                            :page-size="pageSize"
                            hide-on-single-page
-                           layout="prev, pager, next">
-          </template>
-          <template slot-scope="scope">
-            <div style="min-width: 100px">
-              {{scope.row[idx] || ''}}
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div v-else>
-        <el-alert
-          title="请保证导入的数据包含学号列和姓名列" type="info"
-          style="margin: 4px 12px 4px 12px;"
-        ></el-alert>
-        <el-alert
-          title="一次只能导入同一个教学班的学生" type="info"
-          style="margin: 4px 12px 4px 12px;"
-        ></el-alert>
-      </div>
-      <el-pagination v-if='importStudentList'
-        :current-page.sync="page"
-        :total="importStudentList.length"
-        :page-size="pageSize"
-        hide-on-single-page
-        layout="prev, pager, next"
-        >
-      </el-pagination>
-
-      <div>
-        <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
-      </div>
-       <el-row>
-        <div class="row" style="padding:10px;">
-          <el-button @click="onResetClicked">重置界面</el-button>
-          <el-button type="success" @click="onSubmitClicked">上传学生</el-button>
-        </div>
-      </el-row>
-    </el-tab-pane>
-    <el-tab-pane label="添加单个学生">
-      <el-card class="form-box">
-        <div slot="header">
-          <span class="rowframe title">添加学生</span>
-        </div>
-        <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
-          <el-form-item label="学生姓名" prop="name">
-            <el-input v-model="form.name"  placeholder="请输入学生姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="学生编号" prop="sid" required>
-            <el-input v-model="form.sid" placeholder="请输入学生编号(至少6位数字)"></el-input>
-          </el-form-item>
-          <el-form-item label="入学年份" prop="year">
-            <el-date-picker v-model="form.year" placeholder="请选择入学年份" type="year" format='yyyy' value-format="yyyy">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="所属院系" prop="college_id">
-            <el-select v-model="form.college_id"
-                       placeholder="请选择学生所在院系"
-                       @change="fetchFormMajorList"
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
+                           layout="prev, pager, next"
             >
             </el-pagination>
 
@@ -268,676 +182,367 @@
     import MajorViewModel from '@/viewmodel/major'
     import StudentViewModel from '@/viewmodel/student'
     import { mapGetters } from 'vuex'
-    import { Loading } from 'element-ui'
-const exist = (element) => {
-      return element &&
+    import { Loading } from 'element-ui';
+    const exist = (element) => {
+        return element &&
             element !== null &&
             element !== undefined &&
             element.trim() !== ''
     }
     const eltableAdapter = (array) => {
-      const illegal = []
-      const array_flag = []
-      const results_array = []
-      let max = 0
-      array.forEach(row => {
-        let flagEmpty = true
-        if (row.length > max) max = row.length
-        for (let index = 0; index < row.length; index++) {
-          const element = row[index] || ''
-          if (exist(element)) {
-            flagEmpty = false
-          }
-        }
-        array_flag.push(flagEmpty)
-      })
-      array.forEach((row, idx) => {
-        for (let colInx = 0; colInx < max; colInx++) {
-          const element = row[colInx] || undefined
-          if (!exist(element)) {
-            illegal[colInx] = true
-          }
-        }
-        if (!array_flag[idx]) {
-          results_array.push(row)
-        }
-      })
-      return { results_array, max, illegal }
-    }
-    const validateName = (rule, value, callback) => {
-      if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
-        callback(new Error('学生名称不可为空'))
-import ImportExcelComponent from '@/components/ImportExcel.vue'
-import CollegeViewModel from '@/viewmodel/college'
-import MajorViewModel from '@/viewmodel/major'
-import StudentViewModel from '@/viewmodel/student'
-import { mapGetters } from 'vuex'
-import { Loading } from 'element-ui';
-
-const exist = (element) => {
-  return element &&
-    element !== null &&
-    element !== undefined &&
-    element.trim() !== ''
-}
-
-const eltableAdapter = (array) => {
-  const illegal = []
-  const array_flag = []
-  const results_array = []
-  let max = 0
-  array.forEach(row => {
-    let flagEmpty = true
-    if (row.length > max) max = row.length
-    for (let index = 0; index < row.length; index++) {
-      const element = row[index] || ''
-      if (exist(element)) {
-        flagEmpty = false
-      }
-    }
-    array_flag.push(flagEmpty)
-  })
-  array.forEach((row, idx) => {
-    for (let colInx = 0; colInx < max; colInx++) {
-      const element = row[colInx] || undefined
-      if(!exist(element)) {
-        illegal[colInx] = true
-      }
-    }
-    if (!array_flag[idx]) {
-      results_array.push(row)
-    }
-  })
-  return { results_array, max, illegal }
-}
-const validateName = (rule, value, callback) => {
-  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
-    callback(new Error('学生名称不可为空'))
-  } else {
-    callback()
-  }
-}
-export default {
-  name: 'addstupid',
-  components: {
-    ImportExcelComponent
-  },
-  data: function() {
-    var validateStudentId = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入学生编号'))
-      } else if (!Number.isInteger(+value)) {
-        callback(new Error('请输入数字值'))
-      } else {
-        callback()
-      }
-    }
-    export default {
-      name: 'addstupid',
-      components: {
-        ImportExcelComponent
-      },
-      data: function() {
-        var validateStudentId = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入学生编号'))
-            } else if (!Number.isInteger(+value)) {
-                callback(new Error('请输入数字值'))
-            } else {
-                const tidReg = /^\d{6,}$/
-                if (tidReg.test(value)) {
-                    callback()
-                } else {
-                    callback(new Error('学生编号至少6位'))
+        const illegal = []
+        const array_flag = []
+        const results_array = []
+        let max = 0
+        array.forEach(row => {
+            let flagEmpty = true
+            if (row.length > max) max = row.length
+            for (let index = 0; index < row.length; index++) {
+                const element = row[index] || ''
+                if (exist(element)) {
+                    flagEmpty = false
                 }
             }
+            array_flag.push(flagEmpty)
+        })
+        array.forEach((row, idx) => {
+            for (let colInx = 0; colInx < max; colInx++) {
+                const element = row[colInx] || undefined
+                if(!exist(element)) {
+                    illegal[colInx] = true
+                }
+            }
+            if (!array_flag[idx]) {
+                results_array.push(row)
+            }
+        })
+        return { results_array, max, illegal }
+    }
+    const validateName = (rule, value, callback) => {
+        if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+            callback(new Error('学生名称不可为空'))
+        } else {
             callback()
         }
-      nameCheckedList: [],
-      sidCheckedList: [],
-      // loading flag
-      collegeLoading: true,
-      majorLoading: true,
-      // remote list
-      remoteUniversity: {
-        name: null
-      }
-      remoteMajorList: [],
-      remoteCollegeList: [],
-      // import data
-      importStudentList: null,
-      importStudentListMax: 0,
-      page: 1,
-      pageSize: 20,
-      illegalColumn: [],
-      // 表单数据
-      form: {
-        name: '',
-        sid: '',
-        year: '',
-        major_id: '',
-        college_id: ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' },
-          { required: true, trigger: 'blur', validator: validateName }
-        ],
-        sid: [
-          { validator: validateStudentId, trigger: 'blur' }
-        ],
-        year: [
-          { required: true, message: '请选择年份', trigger: 'change' }
-        ],
-        college_id: [
-          { required: true, message: '请选择所属院系', trigger: 'change' }
-        ],
-        major_id: [
-          { required: true, message: '请选择所属专业', trigger: 'change' }
-        ]
-      },
-      // 表单需要的院系信息以及专业信息
-      formCollegeList: [],
-      formMajorList: [],
-      majorMessage: '请先选择院系'
     }
-  },
-  computed: {
-    ...mapGetters([
-      'user'
-    ]),
-    pageStudentList() {
-      return this.importStudentList.slice((this.page - 1) * this.pageSize , (this.page - 1) * this.pageSize + this.pageSize - 1)
-    }
-  },
-  methods: {
-    isColumnHasEmpty(colIdx) {
-      console.log('[isColumnHasEmpty]',this.illegalColumn)
-      return !!this.illegalColumn[colIdx] && true
-    },
-    exist(obj) {
-      return exist(obj)
-    },
-    onSelectedLocalExcel(data) {
-      let array = data.results
-      let vm = this
-      this.$confirm('导入的文件是否有列名?(若有则会被删除)\n若文件过大请耐心等待', '提示', {
-        confirmButtonText: '包含',
-        cancelButtonText: '不包含'
-      }).then(() => {
-        array = array.slice(1)
-      }).catch(() => {
-      }).finally(() => {
-        vm.loading = Loading.service({
-          fullscreen: true,
-          body: true
-          // target: document.querySelector('#add-student-page')
-        });
-        let {results_array, max, illegal} = eltableAdapter(array)
-        this.importStudentList = results_array
-        this.importStudentListMax = max
-        this.illegalColumn = illegal
-        this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
-        this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
-        vm.$nextTick(()=> {
-          if (vm.loading) vm.loading.close()
-        })
-      })
-    },
-    anotherSelected(type, idx) {
-      const sid_idx = this.sidCheckedList.findIndex(item => item === true)
-      const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      console.log('[AnotherSelected]',(type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx))
-      return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
-    },
-    onSubmitClicked() {
-      const sid_idx = this.sidCheckedList.findIndex(item => item === true)
-      const name_idx = this.nameCheckedList.findIndex(item => item === true)
-      if (sid_idx === -1 || name_idx === -1) {
-        this.$message({
-          type: 'error',
-          message: '请先导入数据并选择学生列'
-        })
-        return
-      }
-      if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
-        this.$message({
-          type: 'error',
-          message: '尚未选择学生的归属信息'
-        })
-        return
-      }
-      if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
-        this.$message({
-          type: 'error',
-          message: '尚未选择学生的入学年份'
-        })
-        return
-      }
-      if (sid_idx === name_idx) {
-        this.$message({
-          type: 'error',
-          message: '学号和姓名不能是同一列'
-        })
-        return
-      }
-
-      // generate student objs list
-      const studentList = []
-      const Student = () => {
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
-        return {
-          // selected college
-          selectedCollegeId: null,
-          selectedMajorId: null,
-          seletedSemester: {
-            year: null,
-            semester: null
-          },
-          //
-          nameCheckedList: [],
-          sidCheckedList: [],
-          // loading flag
-          collegeLoading: true,
-          majorLoading: true,
-          // remote list
-          remoteUniversity: {
-            name: null
-          },
-          remoteMajorList: [],
-          remoteCollegeList: [],
-          // import data
-          importStudentList: null,
-          importStudentListMax: 0,
-          page: 1,
-          pageSize: 20,
-          illegalColumn: [],
-          // 表单数据
-          form: {
-            name: '',
-            sid: '',
-            year: '',
-            major_id: '',
-            college_id: ''
-          },
-          rules: {
-            name: [
-              { required: true, message: '请输入学生姓名', trigger: 'blur' },
-              { required: true, trigger: 'blur', validator: validateName }
-            ],
-            sid: [
-              { validator: validateStudentId, trigger: 'blur' }
-            ],
-            year: [
-              { required: true, message: '请选择年份', trigger: 'change' }
-            ],
-            college_id: [
-              { required: true, message: '请选择所属院系', trigger: 'change' }
-            ],
-            major_id: [
-              { required: true, message: '请选择所属专业', trigger: 'change' }
-            ]
-          },
-          // 表单需要的院系信息以及专业信息
-          formCollegeList: [],
-          formMajorList: [],
-          majorMessage: '请先选择院系'
-        }
-<<<<<<< HEAD
-      },
-      computed: {
-        ...mapGetters([
-          'user'
-        ]),
-        pageStudentList() {
-          return this.importStudentList.slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize - 1)
-        }
-      },
-      methods: {
-        isColumnHasEmpty(colIdx) {
-          console.log('[isColumnHasEmpty]', this.illegalColumn)
-          return !!this.illegalColumn[colIdx] && true
+    export default {
+        name: 'addstupid',
+        components: {
+            ImportExcelComponent
         },
-        exist(obj) {
-          return exist(obj)
-        },
-        onSelectedLocalExcel(data) {
-          let array = data.results
-          const vm = this
-          this.$confirm('导入的文件是否有列名?(若有则会被删除)\n若文件过大请耐心等待', '提示', {
-            confirmButtonText: '包含',
-            cancelButtonText: '不包含'
-          }).then(() => {
-            array = array.slice(1)
-          }).catch(() => {
-          }).finally(() => {
-            vm.loading = Loading.service({
-              fullscreen: true,
-              body: true
-              // target: document.querySelector('#add-student-page')
-            })
-            const { results_array, max, illegal } = eltableAdapter(array)
-            this.importStudentList = results_array
-            this.importStudentListMax = max
-            this.illegalColumn = illegal
-            this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
-            this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
-            vm.$nextTick(() => {
-              if (vm.loading) vm.loading.close()
-            })
-          })
-        },
-        anotherSelected(type, idx) {
-          const sid_idx = this.sidCheckedList.findIndex(item => item === true)
-          const name_idx = this.nameCheckedList.findIndex(item => item === true)
-          console.log('[AnotherSelected]', (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx))
-          return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
-        },
-        onSubmitClicked() {
-          const sid_idx = this.sidCheckedList.findIndex(item => item === true)
-          const name_idx = this.nameCheckedList.findIndex(item => item === true)
-          if (sid_idx === -1 || name_idx === -1) {
-            this.$message({
-              type: 'error',
-              message: '请先导入数据并选择学生列'
-            })
-            return
-          } else if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
-            this.$message({
-              type: 'error',
-              message: '尚未选择学生的归属信息'
-            })
-            return
-          } else if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
-            this.$message({
-              type: 'error',
-              message: '尚未选择学生的入学年份'
-            })
-            return
-          } else if (sid_idx === name_idx) {
-            this.$message({
-              type: 'error',
-              message: '学号和姓名不能是同一列'
-            })
-            return
-          }
-          // generate student objs list
-          let legal = true
-          const studentList = []
-          const Student = () => {
+        data: function() {
+            var validateStudentId = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入学生编号'))
+                } else if (!Number.isInteger(+value)) {
+                    callback(new Error('请输入数字值'))
+                } else {
+                    const tidReg = /^\d{6,}$/
+                    if (tidReg.test(value)) {
+                        callback()
+                    } else {
+                        callback(new Error('学生编号至少6位'))
+                    }
+                }
+                callback()
+            }
             return {
-              sid: null,
-              name: null,
-              year: this.seletedSemester.year,
-              major_id: this.selectedMajorId
+                // selected college
+                selectedCollegeId: null,
+                selectedMajorId: null,
+                seletedSemester: {
+                    year: null,
+                    semester: null
+                },
+                //
+                nameCheckedList: [],
+                sidCheckedList: [],
+                // loading flag
+                collegeLoading: true,
+                majorLoading: true,
+                // remote list
+                remoteUniversity: {
+                    name: null
+                },
+                remoteMajorList: [],
+                remoteCollegeList: [],
+                // import data
+                importStudentList: null,
+                importStudentListMax: 0,
+                page: 1,
+                pageSize: 20,
+                illegalColumn: [],
+                // 表单数据
+                form: {
+                    name: '',
+                    sid: '',
+                    year: '',
+                    major_id: '',
+                    college_id: ''
+                },
+                rules: {
+                    name: [
+                        { required: true, message: '请输入学生姓名', trigger: 'blur' },
+                        { required: true, trigger: 'blur', validator: validateName }
+                    ],
+                    sid: [
+                        { validator: validateStudentId, trigger: 'blur' }
+                    ],
+                    year: [
+                        { required: true, message: '请选择年份', trigger: 'change' }
+                    ],
+                    college_id: [
+                        { required: true, message: '请选择所属院系', trigger: 'change' }
+                    ],
+                    major_id: [
+                        { required: true, message: '请选择所属专业', trigger: 'change' }
+                    ]
+                },
+                // 表单需要的院系信息以及专业信息
+                formCollegeList: [],
+                formMajorList: [],
+                majorMessage: '请先选择院系'
             }
-          }
-          for (const row of this.importStudentList) {
-            const student = new Student()
-            student.sid = row[sid_idx]
-            student.name = row[name_idx]
-            studentList.push(student)
-            if (!student.sid.match(/^[0-9]{6,20}$/)) {
-              this.$message({
-                type: 'error',
-                message: '有不合法的学号，请重新导入正确的文件！'
-              })
-              legal = false
-              return
-            } else if (!student.name.match(/^[\u4E00-\u9FA5A-Za-z0-9]+$/)) {
-              this.$message({
-                type: 'error',
-                message: '有不合规的姓名，请重新导入正确的文件！'
-              })
-              legal = false
-              return
+        },
+        computed: {
+            ...mapGetters([
+                'user'
+            ]),
+            pageStudentList() {
+                return this.importStudentList.slice((this.page - 1) * this.pageSize , (this.page - 1) * this.pageSize + this.pageSize - 1)
             }
-          }
-          if (legal) {
-            this.submitStudentList(studentList)
-          }
         },
-        onResetClicked() {
-          this.selectedCollegeId = null
-          this.selectedMajorId = null
-          this.seletedSemester = {
-            year: null,
-            semester: null
-          }
-          this.importStudentList = null
-          this.importStudentListMax = 0
+        methods: {
+            isColumnHasEmpty(colIdx) {
+                console.log('[isColumnHasEmpty]',this.illegalColumn)
+                return !!this.illegalColumn[colIdx] && true
+            },
+            exist(obj) {
+                return exist(obj)
+            },
+            onSelectedLocalExcel(data) {
+                let array = data.results
+                let vm = this
+                this.$confirm('导入的文件是否有列名?(若有则会被删除)\n若文件过大请耐心等待', '提示', {
+                    confirmButtonText: '包含',
+                    cancelButtonText: '不包含'
+                }).then(() => {
+                    array = array.slice(1)
+                }).catch(() => {
+                }).finally(() => {
+                    vm.loading = Loading.service({
+                        fullscreen: true,
+                        body: true
+                        // target: document.querySelector('#add-student-page')
+                    });
+                    let {results_array, max, illegal} = eltableAdapter(array)
+                    this.importStudentList = results_array
+                    this.importStudentListMax = max
+                    this.illegalColumn = illegal
+                    this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
+                    this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
+                    vm.$nextTick(()=> {
+                        if (vm.loading) vm.loading.close()
+                    })
+                })
+            },
+            anotherSelected(type, idx) {
+                const sid_idx = this.sidCheckedList.findIndex(item => item === true)
+                const name_idx = this.nameCheckedList.findIndex(item => item === true)
+                console.log('[AnotherSelected]',(type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx))
+                return (type === 'name' && idx === sid_idx) || (type === 'sid' && idx === name_idx)
+            },
+            onSubmitClicked() {
+                const sid_idx = this.sidCheckedList.findIndex(item => item === true)
+                const name_idx = this.nameCheckedList.findIndex(item => item === true)
+                if (sid_idx === -1 || name_idx === -1) {
+                    this.$message({
+                        type: 'error',
+                        message: '请先导入数据并选择学生列'
+                    })
+                    return
+                }
+                if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
+                    this.$message({
+                        type: 'error',
+                        message: '尚未选择学生的归属信息'
+                    })
+                    return
+                }
+                if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
+                    this.$message({
+                        type: 'error',
+                        message: '尚未选择学生的入学年份'
+                    })
+                    return
+                }
+                if (sid_idx === name_idx) {
+                    this.$message({
+                        type: 'error',
+                        message: '学号和姓名不能是同一列'
+                    })
+                    return
+                }
+                // generate student objs list
+                const studentList = []
+                const Student = () => {
+                    return {
+                        sid: null,
+                        name: null,
+                        year: this.seletedSemester.year,
+                        major_id: this.selectedMajorId
+                    }
+                }
+                this.importStudentList.forEach(row => {
+                    const student = new Student()
+                    student.sid = row[sid_idx]
+                    student.name = row[name_idx]
+                    studentList.push(student)
+                    if (!student.sid.match(/^[0-9]{6,20}$/)) {
+                        this.$message({
+                            type: 'error',
+                            message: '有不合法的学号，请重新导入正确的文件！'
+                        })
+                        legal = false
+                        return
+                    }
+                    else if (!student.name.match(/^[\u4E00-\u9FA5A-Za-z0-9]+$/)) {
+                        this.$message({
+                            type: 'error',
+                            message: '有不合规的姓名，请重新导入正确的文件！'
+                        })
+                        legal = false
+                        return
+                    }
+                }
+                if (legal) {
+                    this.submitStudentList(studentList)
+                }
+            },
+            onResetClicked() {
+                this.selectedCollegeId = null
+                this.selectedMajorId = null
+                this.seletedSemester = {
+                    year: null,
+                    semester: null
+                }
+                this.importStudentList = null
+                this.importStudentListMax = 0
+            },
+            submitStudentList(list) {
+                StudentViewModel.requestPostStudents(list).then(res => {
+                    const unsucceed = list.length - res.succeed_ids.length
+                    const message = res.succeed_ids.length + '条学生数据成功导入，' + unsucceed + '条未导入'
+                    this.$message({
+                        type: 'info',
+                        message: message
+                    })
+                }).catch(reject => {
+                    console.log('reject = ' + reject)
+                })
+            },
+            submitFormStudent(list) {
+                StudentViewModel.requestPostStudents(list).then(res => {
+                    if (res.succeed_ids.length > 0) {
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功'
+                        })
+                    } else if (res.repeated_ids.length > 0) {
+                        this.$message({
+                            type: 'error',
+                            message: '该学号已占用'
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '添加失败'
+                        })
+                    }
+                })
+            },
+            onNameChecked(idx) {
+                if (idx !== false) {
+                    idx = idx - 1
+                    this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
+                    this.$set(this.nameCheckedList, idx, true)
+                    console.log(this.nameCheckedList)
+                }
+            },
+            onSidChecked(idx) {
+                if (idx !== false) {
+                    idx = idx - 1
+                    this.sidCheckedList.forEach((item, idx) =>
+                        this.$set(this.sidCheckedList, idx, false))
+                    this.$set(this.sidCheckedList, idx, true)
+                    console.log(this.sidCheckedList)
+                }
+            },
+            getNameChecked(scope) {
+                console.log(this.nameCheckedList)
+                return this.nameCheckedList[scope.$index] || false
+            },
+            fetchCollegeList() {
+                if (typeof this.user === 'string') {
+                    const user = JSON.parse(this.user)
+                    const university_id = user.university_message.id
+                    this.remoteUniversity = user.university_message
+                    CollegeViewModel.requestByUniversityId(university_id).then(res => {
+                        this.remoteCollegeList = res
+                        this.formCollegeList = res
+                        this.collegeLoading = false
+                        this.majorLoading = true
+                    })
+                } else {
+                    const user = this.user
+                    const university_id = user.university_message.id
+                    this.remoteUniversity = user.university_message
+                    CollegeViewModel.requestByUniversityId(university_id).then(res => {
+                        this.remoteCollegeList = res
+                        this.formCollegeList = res
+                        this.collegeLoading = false
+                        this.majorLoading = true
+                    })
+                }
+            },
+            fetchMajorList() {
+                MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
+                    this.remoteMajorList = res
+                    this.majorLoading = false
+                })
+            },
+            fetchFormMajorList(value) {
+                if (value === '') {
+                    this.majorMessage = '请先选择院系'
+                } else {
+                    MajorViewModel.requestByCollegeId(value).then(res => {
+                        this.formMajorList = res
+                        this.majorMessage = '请选择学生所属专业'
+                    })
+                }
+            },
+            // 添加学生
+            submitForm: function(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.submitFormStudent([this.form])
+                    } else {
+                        return false
+                    }
+                })
+            },
+            // 重置表单
+            onReset() {
+                this.$refs['ruleForm'].resetFields()
+            }
         },
-        submitStudentList(list) {
-          StudentViewModel.requestPostStudents(list).then(res => {
-            const unsucceed = list.length - res.succeed_ids.length
-            const message = res.succeed_ids.length + '条学生数据成功导入，' + unsucceed + '条未导入'
-            this.$message({
-              type: 'info',
-              message: message
-            })
-          }).catch(reject => {
-            console.log('reject = ' + reject)
-=======
-      }
-      this.importStudentList.forEach(row => {
-        const student = new Student()
-        student.sid = row[sid_idx]
-        student.name = row[name_idx]
-        studentList.push(student)
-        if (!student.sid.match(/^[0-9]{6,20}$/)) {
-          this.$message({
-            type: 'error',
-            message: '有不合法的学号，请重新导入正确的文件！'
-          })
-          legal = false
-          return
+        created() {
+            this.fetchCollegeList()
+        },
+        watch: {
         }
-        else if (!student.name.match(/^[\u4E00-\u9FA5A-Za-z0-9]+$/)) {
-          this.$message({
-            type: 'error',
-            message: '有不合规的姓名，请重新导入正确的文件！'
-          })
-          legal = false
-          return
-        }
-      }
-      if (legal) {
-        this.submitStudentList(studentList)
-      }
-    },
-    onResetClicked() {
-      this.selectedCollegeId = null
-      this.selectedMajorId = null
-      this.seletedSemester = {
-        year: null,
-        semester: null
-      }
-      this.importStudentList = null
-      this.importStudentListMax = 0
-    },
-    submitStudentList(list) {
-      StudentViewModel.requestPostStudents(list).then(res => {
-        const unsucceed = list.length - res.succeed_ids.length
-        const message = res.succeed_ids.length + '条学生数据成功导入，' + unsucceed + '条未导入'
-        this.$message({
-          type: 'info',
-          message: message
-        })
-      }).catch(reject => {
-        console.log('reject = ' + reject)
-      })
-    },
-    submitFormStudent(list) {
-      StudentViewModel.requestPostStudents(list).then(res => {
-        if (res.succeed_ids.length > 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
-          })
-        },
-        submitFormStudent(list) {
-          StudentViewModel.requestPostStudents(list).then(res => {
-            if (res.succeed_ids.length > 0) {
-              this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
-            } else if (res.repeated_ids.length > 0) {
-              this.$message({
-                type: 'error',
-                message: '该学号已占用'
-              })
-            } else {
-              this.$message({
-                type: 'error',
-                message: '添加失败'
-              })
-            }
-          })
-        },
-        onNameChecked(idx) {
-          if (idx !== false) {
-            idx = idx - 1
-            this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
-            this.$set(this.nameCheckedList, idx, true)
-          }
-        },
-        onSidChecked(idx) {
-          if (idx !== false) {
-            idx = idx - 1
-            this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
-            this.$set(this.sidCheckedList, idx, true)
-          }
-        },
-        getNameChecked(scope) {
-          return this.nameCheckedList[scope.$index] || false
-        },
-        fetchCollegeList() {
-          if (typeof this.user === 'string') {
-            const user = JSON.parse(this.user)
-            const university_id = user.university_message.id
-            this.remoteUniversity = user.university_message
-            CollegeViewModel.requestByUniversityId(university_id).then(res => {
-              this.remoteCollegeList = res
-              this.formCollegeList = res
-              this.collegeLoading = false
-              this.majorLoading = true
-            })
-          } else {
-            const user = this.user
-            const university_id = user.university_message.id
-            this.remoteUniversity = user.university_message
-            CollegeViewModel.requestByUniversityId(university_id).then(res => {
-              this.remoteCollegeList = res
-              this.formCollegeList = res
-              this.collegeLoading = false
-              this.majorLoading = true
-            })
-          }
-        },
-        fetchMajorList() {
-          MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
-            this.remoteMajorList = res
-            this.majorLoading = false
-          })
-        },
-        fetchFormMajorList(value) {
-          if (value === '') {
-            this.majorMessage = '请先选择院系'
-          } else {
-            MajorViewModel.requestByCollegeId(value).then(res => {
-              this.formMajorList = res
-              this.majorMessage = '请选择学生所属专业'
-            })
-          }
-        },
-        // 添加学生
-        submitForm: function(formName) {
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.submitFormStudent([this.form])
-            } else {
-              return false
-            }
-          })
-        },
-        // 重置表单
-        onReset() {
-          this.$refs['ruleForm'].resetFields()
-        }
-<<<<<<< HEAD
-      },
-      created() {
-        this.fetchCollegeList()
-      },
-      watch: {
-=======
-      })
-    },
-    onNameChecked(idx) {
-      if (idx !== false) {
-        idx = idx - 1
-        this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
-        this.$set(this.nameCheckedList, idx, true)
-        console.log(this.nameCheckedList)
-      }
-    },
-    onSidChecked(idx) {
-      if (idx !== false) {
-        idx = idx - 1
-        this.sidCheckedList.forEach((item, idx) =>
-          this.$set(this.sidCheckedList, idx, false))
-        this.$set(this.sidCheckedList, idx, true)
-        console.log(this.sidCheckedList)
-      }
-    },
-    getNameChecked(scope) {
-      console.log(this.nameCheckedList)
-      return this.nameCheckedList[scope.$index] || false
-    },
-    fetchCollegeList() {
-      if (typeof this.user === 'string') {
-        const user = JSON.parse(this.user)
-        const university_id = user.university_message.id
-        this.remoteUniversity = user.university_message
-        CollegeViewModel.requestByUniversityId(university_id).then(res => {
-          this.remoteCollegeList = res
-          this.formCollegeList = res
-          this.collegeLoading = false
-          this.majorLoading = true
-        })
-      } else {
-        const user = this.user
-        const university_id = user.university_message.id
-        this.remoteUniversity = user.university_message
-        CollegeViewModel.requestByUniversityId(university_id).then(res => {
-          this.remoteCollegeList = res
-          this.formCollegeList = res
-          this.collegeLoading = false
-          this.majorLoading = true
-        })
-      }
-    },
-    fetchMajorList() {
-      MajorViewModel.requestByCollegeId(this.selectedCollegeId).then(res => {
-        this.remoteMajorList = res
-        this.majorLoading = false
-      })
-    },
-    fetchFormMajorList(value) {
-      if (value === '') {
-        this.majorMessage = '请先选择院系'
-      } else {
-        MajorViewModel.requestByCollegeId(value).then(res => {
-          this.formMajorList = res
-          this.majorMessage = '请选择学生所属专业'
-        })
->>>>>>> 5712c669f088956ab6912b7548ae1338c9d56c65
-      }
     }
 </script>
-
 <style lang="scss" scoped>
     .header {
         display:flex;
@@ -990,7 +595,6 @@ export default {
         justify-content:center;
     }
 </style>
-
 <style lang="scss">
     #select-input-semester {
         padding-left: 0px;
