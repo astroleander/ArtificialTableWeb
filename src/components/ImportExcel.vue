@@ -43,7 +43,7 @@ export default {
       }
       const itemFile = files[0] // only use files[0]
 
-      if (!itemFile.name.match(/.xls?x$/)) {
+      if (!itemFile.name.match(/.xls|.xlsx$/)) {
         this.$message.error('只接受 .xlsx 和 .xls 后缀的 Excel 文档!')
         return
       }
@@ -61,13 +61,22 @@ export default {
     handleUpload() {
       document.getElementById('excel-upload-input').click()
     },
-    // 点击上传
-    handleFileChange(e) {
-      const files = e.target.files
-      const itemFile = files[0] // only use files[0]
-      if (!itemFile) return
-      this.readerData(itemFile)
-      this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+    /const files = e.target.files
+      console.log(files[0].size)
+      const size = files[0].size / 1024
+      console.log(size)
+      if (size <= 60) {
+        const itemFile = files[0] // only use files[0]
+        if (!itemFile) return
+        this.readerData(itemFile)
+        this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+      } else {
+        this.$message({
+          message: '文件大小不得超过60K',
+          type: 'warning'
+        })
+        document.getElementById('excel-upload-input').value = null
+      }
     },
     // 读取上传数据文件
     readerData(itemFile) {
