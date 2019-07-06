@@ -71,10 +71,12 @@
                 >
                 </el-option>
               </el-select>
-                <el-radio-group v-model="importDataHasHead" style="margin-left: 30px">
-                    <el-radio :label="true">数据包含列名</el-radio>
-                    <el-radio :label="false">数据不包含列名</el-radio>
-                </el-radio-group>
+                <el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
+                导入的表格包含列名
+                 </el-checkbox>
+                 <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
+                 导入的表格最后一行是统计项
+                 </el-checkbox>
               <el-button style="margin-left: 30px"class="button" type="success" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
           <div class="inputTable">
@@ -378,12 +380,10 @@
    *           |
    *           |- dataset // hotData
    */
-  const hotToElementAdapter = (hotData, withHeader) => {
+  const hotToElementAdapter = (hotData, withHeader, withTail) => {
     const titleMap = new Map()
     const resDataSet = []
     const colNameList = []
-    console.log('我在进行2步')
-    console.log(hotData)
     //  获取所有标头
     for (let colIdx = 0; colIdx < hotData[0].length; colIdx++) {
       if (withHeader) {
@@ -417,6 +417,7 @@
     })
     // 如果是包含项名的输入，则将第一列删除
     if (withHeader) resDataSet.shift()
+    if (withTail) resDataSet.pop()
     return {
       titles: [...titleMap.values()],
       dataset: resDataSet
@@ -619,6 +620,7 @@
           }
         }, // hotSettings-end
         importDataHasHead: true,
+        importDataHasTail: false,
         DataHasHead: [
           {
             id: 1,
@@ -700,10 +702,10 @@
           if (this.importDataHasHead && importRows !== 0) {
             importRows--
           }
+          if (this.importDataHasTail && importRows !== 0) {
+             importRows--
+           }
           const importCols = col_count.filter(v => v !== 0).length
-          console.log('我好像输入了这些行、列')
-          console.log(importRows)
-          console.log(importCols)
           const alertsRaiseRules = [
             {
               validator: Math.max(...col_count) < importRows,
@@ -970,7 +972,7 @@
         } else {
           Object.assign(this.$data.settingsPageData, {})
           // 将step1中导入step2 table变换形式
-          this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead)
+          this.settingsPageData = hotToElementAdapter(this.importTable, this.importDataHasHead, this.importDataHasTail)
           return true
         }
       },
