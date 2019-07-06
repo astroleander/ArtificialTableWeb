@@ -66,6 +66,15 @@
             <el-table v-if="importStudentList"
                       :data="pageStudentList"
             >
+                <template slot="empty">
+                    <el-alert id="table-emptyalert"
+                              title="没有数据"
+                              type="warning"
+                              :closable='false'
+                              description="没有数据，请确认您导入的文件完整性！"
+                              show-icon>
+                    </el-alert>
+                </template>
                 <el-table-column v-for="(item, idx) in Array(importStudentListMax)"
                                  :key="idx"
                                  align="center"
@@ -206,93 +215,24 @@
             array_flag.push(flagEmpty)
         })
         array.forEach((row, idx) => {
-            for (let colInx = 0; colInx < max; colInx++) {
-                const element = row[colInx] || undefined
-                if(!exist(element)) {
-                    illegal[colInx] = true
-                }
-            }
             if (!array_flag[idx]) {
+                for (let colInx = 0; colInx < max; colInx++) {
+                    const element = row[colInx] || undefined
+                    if(!exist(element)) {
+                        illegal[colInx] = true
+                    }
+                }
                 results_array.push(row)
             }
         })
         return { results_array, max, illegal }
     }
     const validateName = (rule, value, callback) => {
-<<<<<<< HEAD
         if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
             callback(new Error('学生名称不可为空'))
         } else {
             callback()
         }
-=======
-      if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
-        callback(new Error('学生名称不可为空'))
-import ImportExcelComponent from '@/components/ImportExcel.vue'
-import CollegeViewModel from '@/viewmodel/college'
-import MajorViewModel from '@/viewmodel/major'
-import StudentViewModel from '@/viewmodel/student'
-import { mapGetters } from 'vuex'
-import { Loading } from 'element-ui';
-
-const exist = (element) => {
-  return element &&
-    element !== null &&
-    element !== undefined &&
-    element.trim() !== ''
-}
-
-const eltableAdapter = (array) => {
-  const illegal = []
-  const array_flag = []
-  const results_array = []
-  let max = 0
-  array.forEach(row => {
-    let flagEmpty = true
-    if (row.length > max) max = row.length
-    for (let index = 0; index < row.length; index++) {
-      const element = row[index] || ''
-      if (exist(element)) {
-        flagEmpty = false
-      }
-    }
-    array_flag.push(flagEmpty)
-  })
-  array.forEach((row, idx) => {
-    if (!array_flag[idx]) {
-      for (let colInx = 0; colInx < max; colInx++) {
-        const element = row[colInx] || undefined
-        if(!exist(element)) {
-          illegal[colInx] = true
-        }
-      }
-      results_array.push(row)
-    }
-  })
-  return { results_array, max, illegal }
-}
-const validateName = (rule, value, callback) => {
-  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
-    callback(new Error('学生名称不可为空'))
-  } else {
-    callback()
-  }
-}
-export default {
-  name: 'addstupid',
-  components: {
-    ImportExcelComponent
-  },
-  data: function() {
-    var validateStudentId = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入学生编号'))
-      } else if (!Number.isInteger(+value)) {
-        callback(new Error('请输入数字值'))
-      } else {
-        callback()
-      }
->>>>>>> ea33573a10d3ce791deadf25479a155eec045d1c
     }
     export default {
         name: 'addstupid',
@@ -431,21 +371,21 @@ export default {
                     })
                     return
                 }
-                if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
+                else if (this.selectedMajorId === undefined || this.selectedMajorId === null) {
                     this.$message({
                         type: 'error',
                         message: '尚未选择学生的归属信息'
                     })
                     return
                 }
-                if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
+                else if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
                     this.$message({
                         type: 'error',
                         message: '尚未选择学生的入学年份'
                     })
                     return
                 }
-                if (sid_idx === name_idx) {
+                else if (sid_idx === name_idx) {
                     this.$message({
                         type: 'error',
                         message: '学号和姓名不能是同一列'
@@ -453,6 +393,7 @@ export default {
                     return
                 }
                 // generate student objs list
+                let legal = true
                 const studentList = []
                 const Student = () => {
                     return {
@@ -462,7 +403,7 @@ export default {
                         major_id: this.selectedMajorId
                     }
                 }
-                this.importStudentList.forEach(row => {
+                for (let row of this.importStudentList) {
                     const student = new Student()
                     student.sid = row[sid_idx]
                     student.name = row[name_idx]
@@ -535,20 +476,16 @@ export default {
                     idx = idx - 1
                     this.nameCheckedList.forEach((item, idx) => this.$set(this.nameCheckedList, idx, false))
                     this.$set(this.nameCheckedList, idx, true)
-                    console.log(this.nameCheckedList)
                 }
             },
             onSidChecked(idx) {
                 if (idx !== false) {
                     idx = idx - 1
-                    this.sidCheckedList.forEach((item, idx) =>
-                        this.$set(this.sidCheckedList, idx, false))
+                    this.sidCheckedList.forEach((item, idx) => this.$set(this.sidCheckedList, idx, false))
                     this.$set(this.sidCheckedList, idx, true)
-                    console.log(this.sidCheckedList)
                 }
             },
             getNameChecked(scope) {
-                console.log(this.nameCheckedList)
                 return this.nameCheckedList[scope.$index] || false
             },
             fetchCollegeList() {
@@ -612,6 +549,7 @@ export default {
         }
     }
 </script>
+
 <style lang="scss" scoped>
     .header {
         display:flex;
@@ -664,6 +602,7 @@ export default {
         justify-content:center;
     }
 </style>
+
 <style lang="scss">
     #select-input-semester {
         padding-left: 0px;
