@@ -219,11 +219,80 @@
         return { results_array, max, illegal }
     }
     const validateName = (rule, value, callback) => {
+<<<<<<< HEAD
         if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
             callback(new Error('学生名称不可为空'))
         } else {
             callback()
         }
+=======
+      if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+        callback(new Error('学生名称不可为空'))
+import ImportExcelComponent from '@/components/ImportExcel.vue'
+import CollegeViewModel from '@/viewmodel/college'
+import MajorViewModel from '@/viewmodel/major'
+import StudentViewModel from '@/viewmodel/student'
+import { mapGetters } from 'vuex'
+import { Loading } from 'element-ui';
+
+const exist = (element) => {
+  return element &&
+    element !== null &&
+    element !== undefined &&
+    element.trim() !== ''
+}
+
+const eltableAdapter = (array) => {
+  const illegal = []
+  const array_flag = []
+  const results_array = []
+  let max = 0
+  array.forEach(row => {
+    let flagEmpty = true
+    if (row.length > max) max = row.length
+    for (let index = 0; index < row.length; index++) {
+      const element = row[index] || ''
+      if (exist(element)) {
+        flagEmpty = false
+      }
+    }
+    array_flag.push(flagEmpty)
+  })
+  array.forEach((row, idx) => {
+    if (!array_flag[idx]) {
+      for (let colInx = 0; colInx < max; colInx++) {
+        const element = row[colInx] || undefined
+        if(!exist(element)) {
+          illegal[colInx] = true
+        }
+      }
+      results_array.push(row)
+    }
+  })
+  return { results_array, max, illegal }
+}
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('学生名称不可为空'))
+  } else {
+    callback()
+  }
+}
+export default {
+  name: 'addstupid',
+  components: {
+    ImportExcelComponent
+  },
+  data: function() {
+    var validateStudentId = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入学生编号'))
+      } else if (!Number.isInteger(+value)) {
+        callback(new Error('请输入数字值'))
+      } else {
+        callback()
+      }
+>>>>>>> ea33573a10d3ce791deadf25479a155eec045d1c
     }
     export default {
         name: 'addstupid',
