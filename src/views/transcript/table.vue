@@ -37,7 +37,7 @@ DONE: post 返回需要 ID
                 v-loading.body="loading"
                 ref="table" id="transcript-table"
                 element-loading-text="Loading"
-                max-height="650"
+                height="calc(100vh - 145px)"
                 class="table">
 
             <el-table-column label="学生姓名" prop="student.name"
@@ -77,6 +77,7 @@ DONE: post 返回需要 ID
                         step=0.1
                         v-model.number="getPointItem(scope, title).pointNumber"
                         placeholder=""
+                        @blur="proving($event,getPointItem(scope, title),title)"
                         @change="onItemChanged(getPointItem(scope, title), title)">
                 </el-input>
               </el-form>
@@ -193,24 +194,33 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
-        show() {
+        proving(e, newItem, title) {
+          const sid = newItem.student_id
+          var name
+          this.viewDataset.forEach(studentItem => {
+            if (studentItem.student.id === sid) {
+              name = studentItem.student.name
+            }
+          })
+          if (newItem.pointNumber === '') {
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，此时可能无法进行数据更改',
+              type: 'warning',
+              duration: 8000
+            })
+          }
+          if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
+            this.$message({
+              message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
+              type: 'warning',
+              duration: 8000
+            })
+          }
         },
         beforeunloadHandler(event) {
-          if(this.$store.state.table.changed) {
+          if (this.$store.state.table.changed) {
             event.preventDefault()
-            event.returnValue = `直接离开会失去尚未保存修改的分数`;
-          }
-        },
-        proving1(e, scope, title) {
-          const boolean = new RegExp('^[1-9][0-9]*$').test(e.target.value)
-          if (!boolean) {
-            this.$message.warning(scope.name + '的' + title + '处禁止输入小数及负数')
-            e.target.value = 0
-          }
-          if (e.target.value > 100) {
-            this.$message.warning('禁止输入超过100满分数')
-            e.target.value = 0
-            e.target.color = 'red'
+            event.returnValue = `直接离开会失去尚未保存修改的分数`
           }
         },
         // shown controller, ensure dataset before
@@ -343,25 +353,6 @@ DONE: post 返回需要 ID
         onItemChanged: function(newItem, title) {
           this.$store.state.table.changed = true
           // 没做重复校验,对同一个分数改动多次会有多个item (问我为什么? 懒啊!)
-          const sid = newItem.student_id
-          var name
-          this.viewDataset.forEach(studentItem => {
-            if (studentItem.student.id === sid) {
-              name = studentItem.student.name
-            }
-          })
-          if (newItem.pointNumber === '') {
-            this.$message({
-              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，请及时查看',
-              type: 'warning',
-              duration: 8000 })
-          }
-          if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
-            this.$message({
-              message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
-              type: 'warning',
-              duration: 8000 })
-          }
           this.updatedArray.push(newItem)
         },
         handlePointChanged: function(dialogResult) {

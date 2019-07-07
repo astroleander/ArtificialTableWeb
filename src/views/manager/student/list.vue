@@ -99,7 +99,7 @@ export default {
       props: {
         lazy: true,
         lazyLoad(node, resolve) {
-          if(node && node.data && node.data.id) {
+          if (node && node.data && node.data.id) {
             fetchMajorListByCollegeId(node.data.id).then(res => {
               res.forEach((leaf, idx, res) => {
                 res[idx]['leaf'] = true
@@ -176,11 +176,12 @@ export default {
     },
     fetchStudentList() {
       if (this.selectedYear && this.selectedMajor) {
-        let loadingInstance = Loading.service({
-            fullscreen: false,
-            text: '正在获取数据...',
-            // target: document.querySelector('#student-manager-list-table')
-            target: document.querySelector('#student-manager-list-table')
+        const loadingInstance = Loading.service({
+
+          fullscreen: false,
+          text: '正在获取数据...',
+          // target: document.querySelector('#student-manager-list-table')
+          target: document.querySelector('#student-manager-list-table')
         })
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
@@ -193,11 +194,11 @@ export default {
           })
       } else if (this.selectedYear && !this.selectedMajor) {
         console.log(document.querySelector('#student-manager-list-table'))
-        let loadingInstance = Loading.service({
-            fullscreen: false,
-            text: '正在获取数据...',
-            target: document.querySelector('#student-manager-list-table')
-            // target: document.querySelector('#'+this.tableId)
+        const loadingInstance = Loading.service({
+          fullscreen: false,
+          text: '正在获取数据...',
+          target: document.querySelector('#student-manager-list-table')
+          // target: document.querySelector('#'+this.tableId)
         })
         StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
           .then(students => {
@@ -208,8 +209,7 @@ export default {
             }
             loadingInstance.close()
           })
-      } 
-      else if (this.selectedMajor && !this.selectedYear) {
+      } else if (this.selectedMajor && !this.selectedYear) {
       //   StudentViewModel.requestStudents({ major_id: this.selectedMajor, year: this.selectedYear })
       //     .then(students => {
       //       if (students) {
@@ -218,8 +218,7 @@ export default {
       //         this.remoteStudentDataset = []
       //       }
       //     })
-      }
-      else {
+      } else {
         this.remoteStudentDataset = []
       }
     }

@@ -54,6 +54,7 @@ supplement:添加管理员所在本院系的课程
       submitForm: function(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.form.name = this.form.name.replace(/\s*/g, '')
             const Lesson = { ...this.form, college_id: this.user_collegeId }
             lessonViewModel.requestPostLesson(Lesson)
               .then(response => {

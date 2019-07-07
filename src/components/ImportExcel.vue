@@ -43,6 +43,7 @@ export default {
       }
       const itemFile = files[0] // only use files[0]
 
+
       if (!itemFile.name.match(/.xls|.xlsx$/)) {
         this.$message.error('只接受 .xlsx 和 .xls 后缀的 Excel 文档!')
         return
@@ -61,7 +62,9 @@ export default {
     handleUpload() {
       document.getElementById('excel-upload-input').click()
     },
-    /const files = e.target.files
+    // 点击上传
+    handleFileChange(e) {
+      const files = e.target.files
       console.log(files[0].size)
       const size = files[0].size / 1024
       console.log(size)

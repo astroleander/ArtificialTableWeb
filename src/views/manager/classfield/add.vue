@@ -206,6 +206,7 @@ export default {
       // console.log('semester = ' + semester)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.form.name = this.form.name.replace(/\s*/g, '')
           classInfo['override_tag'] = 0
           classViewModel.requestPostClassInfo(classInfo).then(response => {
             if (response.repeated_message.length === 0) {

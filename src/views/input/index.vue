@@ -71,6 +71,7 @@
                 >
                 </el-option>
               </el-select>
+
               <el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
                 导入的表格包含列名
               </el-checkbox>
@@ -384,8 +385,6 @@
     const titleMap = new Map()
     const resDataSet = []
     const colNameList = []
-    console.log('我在进行2步')
-    console.log(hotData)
     //  获取所有标头
     for (let colIdx = 0; colIdx < hotData[0].length; colIdx++) {
       if (withHeader) {
@@ -708,9 +707,6 @@
             importRows--
           }
           const importCols = col_count.filter(v => v !== 0).length
-          console.log('我好像输入了这些行、列')
-          console.log(importRows)
-          console.log(importCols)
           const alertsRaiseRules = [
             {
               validator: Math.max(...col_count) < importRows,
@@ -892,26 +888,30 @@
             }
             break
           case 2: {
-            if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
-              // 将从step1中数据进行存储以及处理 跳转到step2
-              if (from === 1 && this.importAlertList.length === 0) {
-                if (this.renderSettingsPage()) {
-                  this.activeStep = 1
+            if (from === 1) {
+              if (this.importTable.length > 1 || (!this.importDataHasHead && this.importTable.length > 0)) {
+                // 将从step1中数据进行存储以及处理 跳转到step2
+                if (from === 1 && this.importAlertList.length === 0) {
+                  if (this.renderSettingsPage()) {
+                    this.activeStep = 1
+                  }
+                } else {
+                  this.$message({
+                    message: '请确认您已经排除了所有错误项！',
+                    type: 'error'
+                  })
                 }
+                break
               } else {
                 this.$message({
-                  message: '请确认您已经排除了所有错误项！',
-                  type: 'error'
+                  message: '您首先需要引入数据',
+                  type: 'warning'
                 })
               }
-              break
             } else {
-              this.$message({
-                message: '您首先需要引入数据',
-                type: 'warning'
-              })
-              break
+              this.activeStep = 1
             }
+            break
           }
           case 3: {
             let legalRequest = true

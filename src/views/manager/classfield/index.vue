@@ -126,7 +126,8 @@ export default {
         week: ''
       },
       showDisable: false,
-      teachers: []
+      teachers: [],
+      IsCanDelete: false
     }
   },
   computed: {
@@ -192,6 +193,9 @@ export default {
               orilesson.dataset.splice(idx, 1)
             }
           })
+          if (res[0].rest_classInfo_count === 0) {
+            location.reload()
+          }
         })
       })
     },
