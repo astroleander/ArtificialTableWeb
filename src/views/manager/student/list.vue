@@ -195,6 +195,7 @@ export default {
             loadingInstance.close()
           })
       } else if (this.selectedMajor && !this.selectedYear) {
+        this.$message('请继续选择年份')
         // const loadingInstance = Loading.service({
         //   fullscreen: false,
         //   text: '正在获取数据...',
