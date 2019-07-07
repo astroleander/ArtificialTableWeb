@@ -17,10 +17,10 @@ table
   <div>
   <div class="frame" style="margin-top: 1px">
     <div class="col" v-if="flag">
-      <el-progress type="circle" :width="100"  :percentage="0"  style="margin-right: 70px; margin-left: 50px">总人数<br>{{total}}</el-progress>
-      <el-progress type="circle" :width="100"  :percentage="100"  style="margin-right: 70px">有效成绩<br>{{valid}}</el-progress>
-      <el-progress type="circle" :width="100"  :percentage="rate"  color="#13ce66" style="margin-right: 70px">及格率<br>{{rate}}%</el-progress>
-      <el-progress type="circle" :width="100"  :percentage="100"  color="#FFA07A" style="margin-right: 70px">平均分<br/>{{avg}}</el-progress>
+      <el-progress type="circle" :width="100" status="text" :percentage="0"  style="margin-right: 70px; margin-left: 50px">总人数<br>{{total}}</el-progress>
+      <el-progress type="circle" :width="100" status="text" :percentage="100"  style="margin-right: 70px">有效成绩<br>{{valid}}</el-progress>
+      <el-progress type="circle" :width="100" status="text" :percentage="rate"  color="#13ce66" style="margin-right: 70px">及格率<br>{{rate}}%</el-progress>
+      <el-progress type="circle" :width="100" status="text" :percentage="100"  color="#FFA07A" style="margin-right: 70px">平均分<br/>{{avg}}</el-progress>
     </div>
     <div style="background-color: #e2e1e0;height: 1px"></div>
     <div class="row-box" v-if="flag">
