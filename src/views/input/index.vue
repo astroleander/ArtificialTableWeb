@@ -78,7 +78,7 @@
                <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
                 导入的表格最后一行是统计项
               </el-checkbox>
-              <el-button style="margin-left: 30px" class="button" type="success" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+              <el-button style="margin-left: 30px" class="button" type="primary" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
           <div class="inputTable">
             <div id="menu-data-previewer" class="menu-data-previewer">
@@ -155,8 +155,8 @@
               <span>{{stats.content}}</span>
             </p>
             <div style="display: flex;flex-direction: row;align-items: center;margin-left: 20px">
-            <el-button style="max-height: 30px" class="button" type="success" @click="toStep(2, 1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-            <el-button style="max-height: 30px" class="button" type="success" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
+            <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </div>
           </div>
           <el-table
@@ -214,7 +214,7 @@
                    <el-button @click="onTitleTypeClick(title, 'sid')"
                               size='mini' type='primary'>学号</el-button>
                    <el-button @click="onTitleTypeClick(title, 'title')"
-                              size='mini' type='success' >成绩</el-button>
+                              size='mini' type='primary' >成绩</el-button>
                    <el-button @click="onTitleTypeClick(title, 'useless')"
                               size='mini' type='danger'>其它</el-button>
                  </template>
@@ -240,8 +240,8 @@
         <div id="step-preview" class="step3">
           <!-- STEP - 3 - 步骤操作菜单 -->
           <div style="display: flex;flex-direction: row;align-items: center;height: 60px;margin: 10px">
-          <el-button  class="button" type="success" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-          <el-button class="button" type="success" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          <el-button  class="button" type="primary" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
+          <el-button class="button" type="primary" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           <el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)" size="mini">继续上传</el-button>
           </div>
           <!-- CONTAINER 容纳错误信息 -->
@@ -684,8 +684,6 @@
         get() {
           // 获取存储导入数据
           const importTable = this.$store.state.table.importTable
-          console.log('我要干啥？？？ 下面是表')
-          console.log(importTable)
           let count = 0
           const col_size = importTable[0] && importTable[0].length || 29
           const col_count = Array(col_size).fill(0)

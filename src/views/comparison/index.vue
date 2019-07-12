@@ -133,10 +133,10 @@
           <el-table-column prop="avgScore" label="平均分" align="center"/>
           <el-table-column align="center">
             <template slot="header" slot-scope="scope">
-              <el-button type="success" @click="submitHandle">批量查看</el-button>
+              <el-button type="primary" @click="submitHandle">批量查看</el-button>
             </template>
             <template slot-scope="scope">
-            <el-button @click="handleOne(scope.row)" type="success">查看信息</el-button>
+            <el-button @click="handleOne(scope.row)" type="primary">查看信息</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -7,8 +7,8 @@
       :default-active="$route.path"
       :collapse="isCollapse"
       :background-color="this.color"
-      text-color="#DDD"
-      active-text-color="#212121"
+      text-color="#FFF"
+      active-text-color="gold"
     >
     <sidebar-item :routes="routes"></sidebar-item>
 
@@ -23,86 +23,92 @@
         <span style="color:#EEE;">管理员模式</span>
       </template>
     </el-menu-item>
-
       <el-submenu v-if="this.use_manager" index="9992">
         <template slot="title">
-          <svg-icon icon-class="lessonManage"></svg-icon>
+          <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理课程信息</span>
         </template>
-        <el-menu-item index="99921">
-          <template slot="title">
-            <router-link to="/manager/lesson/addLesson">
-              <svg-icon icon-class="addCourse"></svg-icon>
-              <span>添加课程</span>
-            </router-link>
-          </template>
-        </el-menu-item>
+        <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+        <router-link to="/manager/lesson/addLesson">
+            <el-menu-item index="99921">
+                <svg-icon icon-class="addCourse"></svg-icon>
+                <span>添加课程</span>
+            </el-menu-item>
+        </router-link>
+          <div style="background-color: #FFF; height: 1px;width: 100%"></div>
       </el-submenu>
 
     <el-submenu v-if="this.use_manager" index="9990">
       <template slot="title">
-          <svg-icon icon-class="user"></svg-icon>
+          <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理教师信息</span>
       </template>
-      <el-menu-item index="9998">
-        <template slot="title">
-          <router-link to="/manager/user/list">
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+      <router-link to="/manager/user/list">
+        <el-menu-item index="9998">
             <svg-icon icon-class="userList"></svg-icon>
             <span>教师列表</span>
-          </router-link>
-        </template>
-      </el-menu-item>
+        </el-menu-item>
+      </router-link>
+        <div style="background-color: #FFF; height: 1px"></div>
+
       <router-link :to="{ name: 'addmanager', params: { type:'add' }}">
         <el-menu-item index="9995">
           <svg-icon icon-class="addUser"></svg-icon>
-          <span slot="title">添加教师</span>
+          <span>添加教师</span>
         </el-menu-item>
       </router-link>
+        <div style="background-color: #FFF; height: 1px"></div>
     </el-submenu>
 
 
     <el-submenu v-if="this.use_manager" index="9991">
       <template slot="title">
-          <svg-icon icon-class="domain"></svg-icon>
+          <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理教学班信息</span>
       </template>
-      <el-menu-item index="2131">
-        <template slot="title">
-          <router-link to="/manager/class/list">
-            <svg-icon icon-class="list"></svg-icon>
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+        <router-link to="/manager/class/list">
+         <el-menu-item index="2131">
+             <svg-icon icon-class="list"></svg-icon>
             <span>班级列表</span>
-          </router-link>
-        </template>
-      </el-menu-item>
+         </el-menu-item>
+        </router-link>
+        <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
       <router-link :to="{ name: 'addClassInfo', params: { type:'add' }}">
         <el-menu-item index="21412">
           <svg-icon icon-class="addClass"></svg-icon>
-          <span slot="title">添加班级</span>
+          <span>添加班级</span>
         </el-menu-item>
       </router-link>
+        <div style="background-color: #FFF; height: 1px;width: 100%"></div>
     </el-submenu>
 
     <el-submenu v-if="this.use_manager" index="9993">
       <template slot="title">
-          <svg-icon icon-class="userList"></svg-icon>
+          <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理学生信息</span>
       </template>
-      <el-menu-item index="213133">
-        <template slot="title">
-          <router-link to="/manager/student/list">
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+      <router-link to="/manager/student/list">
+        <el-menu-item  v-if="this.use_manager" index="9994">
             <svg-icon icon-class="list"></svg-icon>
-            <span>学生列表</span>
-          </router-link>
-        </template>
-      </el-menu-item>
-      <el-menu-item v-if="this.use_manager" index="99925">
-        <template slot="title">
-          <router-link to="/manager/student/add">
+            <span >学生列表</span>
+        </el-menu-item>
+      </router-link>
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+      <router-link to="/manager/student/add">
+        <el-menu-item v-if="this.use_manager" index="9995">
             <svg-icon icon-class="addUser"></svg-icon>
-            <span>添加学生</span>
-          </router-link>
-        </template>
-      </el-menu-item>
+            <span >添加学生</span>
+        </el-menu-item>
+      </router-link>
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
     </el-submenu>
     </el-menu>
   </el-scrollbar>
@@ -111,7 +117,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
-const cyan = '#4CAF50'
+const cyan = '#31b7a9'
 const green = '#00BCD4'
 export default {
   components: { SidebarItem },
@@ -125,9 +131,6 @@ export default {
       this.$store.dispatch('setUseManager', newValue)
     },
     init() {
-      console.log('1234567')
-      console.log(this.is_manager)
-      console.log(this.use_manager)
       if (this.use_manager) {
         return cyan
       } else {
@@ -153,11 +156,7 @@ export default {
     // console.log('sizebar create use_manager')
     // console.log(this.use_manager)
     // this.handler = this.use_manager
-    if (this.use_manager) {
-      this.color = cyan
-    } else {
-      this.color = green
-    }
+    this.color = cyan
   },
   watch: {
     use_manager() {

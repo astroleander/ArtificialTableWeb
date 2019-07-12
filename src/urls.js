@@ -3,6 +3,7 @@ export default {
   transcript: '/transcript',
   comparison: '/comparison',
   analyse: '/analyse',
+  class: '/class',
 
   login: '/user/login',
   logout: '/user/logout',

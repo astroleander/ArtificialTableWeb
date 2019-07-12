@@ -11,7 +11,7 @@
       @drop="handleDrop"
       @dragover="handleDragover" @dragenter="handleDragover">
       拖拽 Excel 文件到此处或者
-      <el-button style="margin-left:16px;" size="mini" type="primary" icon="el-icon-upload" @click="handleUpload">浏览文件夹</el-button>
+      <el-button style="margin-left:16px;" size="medium" type="primary" icon="el-icon-upload" @click="handleUpload">浏览本地文件</el-button>
     </div>
   </div>
 </template>

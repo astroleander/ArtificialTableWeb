@@ -37,7 +37,7 @@
           <el-button @click="addTitleGroupItem">添加大项</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
 
-          <el-button type="success" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
+          <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
 
 
         </div>

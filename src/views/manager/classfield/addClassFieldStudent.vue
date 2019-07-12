@@ -2,119 +2,127 @@
 <template>
   <el-tabs class="container" id="add-student-page">
     <el-tab-pane label="添加一群学生">
-        <el-form class="top-box">
-          <el-card class="card-box">
-            <span class="span">院系</span>
-            <el-select v-model="selectedCollegeId"
-              filterable
-              remote
-              size="mini"
-              placeholder="请选择所属院系"
-              @change="fetchMajorList"
-              :loading="collegeLoading"
-              >
-              <el-option
-                v-for="item in remoteCollegeList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                >
-              </el-option>
-            </el-select>
-          </el-card>
-          <el-card class="card-box">
-            <span class="span">专业</span>
-            <el-select v-model="selectedMajorId"
-              filterable
-              size="mini"
-              remote
-              placeholder="请选择所属专业"
-              :loading="majorLoading"
-              >
-              <el-option
-                v-for="item in remoteMajorList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                >
-              </el-option>
-            </el-select>
-          </el-card>
-          <!-- <el-card id="select-input-semester"> -->
-          <el-card class="card-box">
-            <span class="span" style="width:80px">学年</span>
-            <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
-              size="mini" type="year" format='yyyy' value-format="yyyy">
-            </el-date-picker>
-            <!-- <el-select size="mini" v-model="seletedSemester.season" placeholder="学期">
-                <el-option value="春季"></el-option>
-                <el-option value="暑假"></el-option>
-                <el-option value="秋季"></el-option>
-                <el-option value="夏季小学期"></el-option>
-                <el-option value="春季小学期"></el-option>
-              </el-select> -->
-          </el-card>
-        </el-form>
+        <el-steps :active="activeStep" finish-status="success" direction="horizontal" align-center>
+            <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
+        </el-steps>
+        <el-tabs v-model="getActiveStep" tab-position="hidden" class="tab flex-half flex-85">
+            <el-tab-pane name="0">
+                <el-button type="primary" style="margin-left: 800px;margin-bottom: 10px" @click="toStep(1, 2)">下一步</el-button>
+                <el-form class="top-box">
+                    <el-card class="card-box">
+                        <span class="span">院系</span>
+                        <el-select v-model="selectedCollegeId"
+                                   filterable
+                                   remote
+                                   size="mini"
+                                   placeholder="请选择所属院系"
+                                   @change="fetchMajorList"
+                                   :loading="collegeLoading"
+                        >
+                            <el-option
+                                    v-for="item in remoteCollegeList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-card>
+                    <el-card class="card-box">
+                        <span class="span">专业</span>
+                        <el-select v-model="selectedMajorId"
+                                   filterable
+                                   size="mini"
+                                   remote
+                                   placeholder="请选择所属专业"
+                                   :loading="majorLoading"
+                        >
+                            <el-option
+                                    v-for="item in remoteMajorList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-card>
+                    <!-- <el-card id="select-input-semester"> -->
+                    <el-card class="card-box">
+                        <span class="span" style="width:80px">学年</span>
+                        <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
+                                        size="mini" type="year" format='yyyy' value-format="yyyy">
+                        </el-date-picker>
+                        <!-- <el-select size="mini" v-model="seletedSemester.season" placeholder="学期">
+                            <el-option value="春季"></el-option>
+                            <el-option value="暑假"></el-option>
+                            <el-option value="秋季"></el-option>
+                            <el-option value="夏季小学期"></el-option>
+                            <el-option value="春季小学期"></el-option>
+                          </el-select> -->
+                    </el-card>
+                </el-form>
+            </el-tab-pane>
 
-      <el-table v-if="importStudentList !== null"
-          :data="importStudentList"
-          >
-        <template slot="empty">
-            <el-alert id="table-emptyalert"
-            title="没有数据"
-            type="warning"
-            :closable='false'
-            description="没有数据，请确认您导入的文件完整性！"
-            show-icon>
-          </el-alert>
-        </template>
-        <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
-          :key="idx"
-          align="center"
-          style="min-width: 200px"
-          >
-          <template slot="header" slot-scope="scope" >
-            <div class="header">
+            <el-tab-pane name="1">
+                <el-button type="primary" style="margin-left: 700px;margin-bottom: 10px" @click="returnLast">上一步</el-button>
+                <el-button type="primary" style="margin-left: 20px;margin-bottom: 10px" @click="toStep(2, 3)">下一步</el-button>
+                <img :src="src" style="align-content: center;justify-content: center">
+            </el-tab-pane>
+            <el-tab-pane name="2">
+                <div>
+                    <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
+                </div>
+                <el-table v-if="importStudentList !== null"
+                          :data="importStudentList"
+                >
+                    <template slot="empty">
+                        <el-alert id="table-emptyalert"
+                                  title="没有数据"
+                                  type="warning"
+                                  :closable='false'
+                                  description="没有数据，请确认您导入的文件完整性！"
+                                  show-icon>
+                        </el-alert>
+                    </template>
+                    <el-table-column v-for="(item, idx) in [...importStudentList[0]]"
+                                     :key="idx"
+                                     align="center"
+                                     min-width="200px"
+                    >
+                        <template slot="header" slot-scope="scope" >
+                            <div class="header">
               <span>
                 <el-checkbox
-                  v-model="nameCheckedList[idx]"
-                  :true-label="scope.$index + 1"
-                  @change="onNameChecked">姓名列</el-checkbox>
+                        v-model="nameCheckedList[idx]"
+                        :true-label="scope.$index + 1"
+                        @change="onNameChecked" border
+                        style="background-color: #CCCCCC">姓名列</el-checkbox>
               </span>
-              <span>
+                                <span>
                 <el-checkbox
-                  v-model="sidCheckedList[idx]"
-                  :true-label="scope.$index + 1"
-                  @change="onSidChecked">学号列</el-checkbox>
+                        v-model="sidCheckedList[idx]"
+                        :true-label="scope.$index + 1"
+                        @change="onSidChecked" border
+                        style="background-color: #CCCCCC">学号列</el-checkbox>
               </span>
-            </div>
-          </template>
-          <template slot-scope="scope">
-            <div>
-              {{scope.row[idx]}}
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div v-else>
-        <el-alert
-          title="请保证导入的数据包含学号列和姓名列" type="info"
-          style="margin: 4px 12px 4px 12px;"
-        ></el-alert>
-        <el-alert
-          title="一次只能导入同一个教学班的学生" type="info"
-          style="margin: 4px 12px 4px 12px;"
-        ></el-alert>
-      </div>
-      <div>
-        <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
-      </div>
-       <el-row>
-        <div class="row" style="padding:10px;">
-          <el-button @click="onResetClicked">重置界面</el-button>
-          <el-button type="success" @click="onSubmitClicked">添加学生</el-button>
-        </div>
-      </el-row>
+                            </div>
+                        </template>
+                        <template slot-scope="scope">
+                            <div>
+                                {{scope.row[idx]}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-row>
+                    <div class="row" style="padding:10px;">
+                        <el-button @click="returnLast" type="primary">返回上一步</el-button>
+                        <el-button @click="onResetClicked" type="primary">重新上传</el-button>
+                        <el-button type="primary" @click="onSubmitClicked">提交学生</el-button>
+                    </div>
+                </el-row>
+            </el-tab-pane>
+        </el-tabs>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -126,6 +134,7 @@ import MajorViewModel from '@/viewmodel/major'
 import classFieldViewModel from '@/viewmodel/classfield'
 import StudentViewModel from '@/viewmodel/student'
 import { mapGetters } from 'vuex'
+import template from '@/assets/images/template.png'
 
 const eltableAdapter = (array) => {
   const array_flag = []
@@ -186,18 +195,39 @@ export default {
       remoteMajorList: [],
       remoteCollegeList: [],
       // import data
-      importStudentList: null
+      importStudentList: null,
+      activeStep: 0,
+      steps: [
+        { title: '必要信息选择', description: '请为导入的学生选择院系、专业、入学学年', picture: 'el-icon-edit' },
+        { title: '上传Excel表格规范模版', description: '请确认本地需要上传的文件符合以下模版规范', picture: 'el-icon-upload' },
+        { title: '上传Excel表格读取学生信息到当前页面', description: '请确保本地文件包括学生姓名、学号,学生信息上传界面后请选择相应的学号和姓名', picture: 'el-icon-check' }
+      ],
+      src: template
     }
   },
   computed: {
     ...mapGetters([
       'user'
-    ])
+    ]),
+    getActiveStep: {
+      get() {
+        if (this.activeStep === 3) {
+          return '2'
+        }
+        return String(this.activeStep)
+      },
+      set(step) {
+        this.activeStep = Number(step)
+      }
+    }
   },
   methods: {
+    returnLast() {
+      this.activeStep--
+    },
     onSelectedLocalExcel(data) {
       let array = data.results
-      this.$confirm('导入的文件是否有列名?(若有则会被删除)', '提示', {
+      this.$confirm('导入的文件是否包含表头?(若选择包含，则导入Excel表格的第一行将会被删除，若选择不包含，则不会对导入Excel表格做任何处理)', '提示', {
         confirmButtonText: '包含',
         cancelButtonText: '不包含'
       }).then(() => {
@@ -228,6 +258,13 @@ export default {
         this.$message({
           type: 'error',
           message: '尚未选择学生的入学年份'
+        })
+        return
+      }
+      if (sid_idx === -1 || name_idx === -1) {
+        this.$message({
+          type: 'error',
+          message: '必须为导入到界面的数据选择对应的学号或姓名'
         })
         return
       }
@@ -351,25 +388,56 @@ export default {
         .then(response => {
           if (response) {
             // const unsucceed = params.length - response.length
-            const message = response.length + '条学生数据添加到班级中'
-            this.$message({
-              type: 'success',
-              message: message
+            const message = response.length + '条学生数据添加到班级中,' + (params.length - response.length) + '条学生数据由于已存在未能成功添加到班级中'
+            this.$confirm(message, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'success'
             })
           } else {
-            this.$message({
-              type: 'error',
-              message: '添加失败!'
+            this.$confirm('提交失败，请重试', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'error'
             })
           }
           this.$emit('addEnd')
         })
+    },
+    toStep(from, to) {
+      switch (to) {
+        case 1:
+          if (from === 3) {
+            this.$router.push('')
+          } else {
+            this.activeStep = 0
+          }
+          break
+        case 2: {
+          if (from === 1) {
+            this.activeStep = 1
+          }
+          break
+        }
+        case 3: {
+          this.activeStep = 2
+          break
+        }
+      }
+    }
+  },
+  watch: {
+    importStudentList: function() {
+      if (this.importStudentList !== null) {
+        this.$confirm('由于系统无法识别导入Excel表格中的学号与姓名列，请为所需数据标记各自的名称（学号/姓名）', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        })
+      }
     }
   },
   created() {
     this.fetchCollegeList()
-  },
-  watch: {
   }
 }
 </script>

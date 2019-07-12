@@ -28,13 +28,13 @@
 
               <el-table-column label="">
                 <template slot-scope="scope">
-                  <el-button @click="onModifyClicked(lesson, scope.row)" type="success">学生信息</el-button>
+                  <el-button @click="onModifyClicked(lesson, scope.row)" type="primary">学生信息</el-button>
                 </template>
               </el-table-column>
 
               <el-table-column label="">
                 <template slot-scope="scope">
-                  <el-button @click="showClass(scope.row)" type="success">修改信息</el-button>
+                  <el-button @click="showClass(scope.row)" type="primary">修改信息</el-button>
                 </template>
               </el-table-column>
 
@@ -47,7 +47,7 @@
 
             <template>
               <el-row>
-              <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;" type="success">添加新的班级</el-button>
+              <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;" type="primary">添加新的班级</el-button>
               <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程</el-button>
               </el-row>
             </template>

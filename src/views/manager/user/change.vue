@@ -29,8 +29,8 @@
           <el-input v-model="form.mobile" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="changePassword">重置密码</el-button>
-          <el-button type="success" @click="submitForm('ruleForm')">提交修改</el-button>
+          <el-button type="primary" @click="changePassword">重置密码</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交修改</el-button>
           <el-button @click="onReset">清空修改</el-button>
         </el-form-item>
       </el-form>

@@ -17,6 +17,15 @@
   margin: 0 auto;
 }
 
+.el-button_default {
+  background-color: #10cebc;
+  color: white;
+  &:hover {
+    background-color: #93aa45;
+    color: white;
+  }
+}
+
 //element ui upload
 .upload-container {
   .el-upload {
