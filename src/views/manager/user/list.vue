@@ -65,7 +65,7 @@
 
       <el-table-column>
         <template slot-scope="scope">
-          <el-button @click="PutUser(scope.row)" type="success">更改</el-button>
+          <el-button @click="PutUser(scope.row)" type="primary">更改</el-button>
         </template>
       </el-table-column>
 
@@ -106,7 +106,7 @@
           <el-input v-model="form.mobile" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="submitChange('infoForm')">确认</el-button>
+          <el-button type="primary" @click="submitChange('infoForm')">确认</el-button>
           <el-button @click="onDialogClose">取消</el-button>
         </el-form-item>
       </el-form>

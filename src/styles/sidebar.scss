@@ -10,9 +10,6 @@
   .sidebar-container {
     .is-active {
       background-color: $menuHover !important;
-      span {
-        color: #FFF !important;
-      }
     }
     transition: width 0.28s;
     width: 180px !important;
@@ -106,9 +103,6 @@
     }
     &.is-active {
       background-color: $menuHover !important;
-      span {
-        color: #FFF !important;
-      }
     }
   }
   .el-menu--collapse .el-menu .el-submenu {

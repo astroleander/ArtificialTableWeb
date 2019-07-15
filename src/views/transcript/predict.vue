@@ -23,10 +23,10 @@
       <el-table-column label="学生姓名" prop="student.name" ></el-table-column>
       <el-table-column>
         <template slot="header" slot-scope="scope">
-          <el-button @click="handlePredict" type="success">批量预测</el-button>
+          <el-button @click="handlePredict" type="primary">批量预测</el-button>
         </template>
         <template slot-scope="scope">
-          <el-button @click="handlePredictOne(scope.row)" type="success">预测</el-button>
+          <el-button @click="handlePredictOne(scope.row)" type="primary">预测</el-button>
         </template>
       </el-table-column>
     </el-table>

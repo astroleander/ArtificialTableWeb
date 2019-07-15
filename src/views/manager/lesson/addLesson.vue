@@ -12,7 +12,7 @@ supplement:添加管理员所在本院系的课程
           <el-input v-model="form.name"  placeholder="请输入课程组名称" maxlength="10" show-word-limit></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="submitForm('ruleForm')">添加</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
           <el-button @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>

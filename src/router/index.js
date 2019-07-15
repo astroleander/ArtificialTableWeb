@@ -33,8 +33,50 @@ export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true }, // 登录路径；组件模版views/login/index；可隐藏信息
   { path: '/404', component: () => import('@/views/404'), hidden: true }, // 错误页面404
   {
-    // 主界面
     path: '',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'help',
+      component: () => import('@/views/help/index'),
+      meta: { title: '首页', icon: 'home' }
+    }]
+  },
+  {
+    path: urls.class,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'class',
+      component: () => import('@/views/manager/classfield/listForTeacher'),
+      meta: { title: '班级信息', icon: 'banjiguanli' }
+    }]
+  },
+  {
+    path: urls.input,
+    // 重定位：用于返回导入成绩时直接返回
+    redirect: '/input/index',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'input',
+      meta: { title: '导入成绩', icon: 'upload' },
+      component: () => import('@/views/input/index')
+    }]
+  },
+  {
+    path: urls.weight,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'weight',
+      component: () => import('@/views/weight/index'),
+      meta: { title: '权重调整', icon: 'weight' }
+    }]
+  },
+  {
+    // 主界面
+    path: '/mainpage',
     component: Layout, // 上方引入的外部框架模版
     // 重定位 用于返回主界面模版页面
     redirect: 'index',
@@ -43,8 +85,8 @@ export const constantRouterMap = [
     // 创建子路由，进行跳转到菜单相应子模块中
     children: [{
       // 左侧菜单栏中标题和图片应用
-      meta: { title: '主界面', icon: 'list' },
-      path: 'index',
+      meta: { title: '成绩管理', icon: 'chengji' },
+      path: '',
       // 连接响应vue文件
       component: () => import('@/views/mainpage/index')
     }]
@@ -62,16 +104,6 @@ export const constantRouterMap = [
 
   },
   {
-    path: urls.weight,
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'weight',
-      component: () => import('@/views/weight/index'),
-      meta: { title: '权重调整', icon: 'weight' }
-    }]
-  },
-  {
     path: urls.analyse,
     component: Layout,
     children: [{
@@ -84,52 +116,6 @@ export const constantRouterMap = [
   /**
    * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
    */
-  {
-    path: '/input-wrapper',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'input-wrapper',
-      // 重定位：用于返回导入成绩时直接返回，用于代替component
-      redirect: '/input',
-      meta: { title: '导入成绩', icon: 'upload' }
-    }]
-  },
-  {
-    path: '/redirector',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: 'index',
-      name: 'input-wrapper-redirector',
-      component: () => import('@/views/redirector'),
-      meta: { title: '导入成绩', icon: 'upload' }
-    }]
-  },
-  {
-    path: '/input',
-    // 重定位：用于返回导入成绩时直接返回
-    redirect: '/input/index/',
-    meta: { title: '导入成绩', icon: 'upload' },
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: 'index',
-      name: 'input',
-      meta: { title: '导入成绩', icon: 'upload' },
-      component: () => import('@/views/input/index')
-    }]
-  },
-  {
-    path: '/help',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'help',
-      component: () => import('@/views/help/index'),
-      meta: { title: '帮助文档', icon: 'help' }
-    }]
-  },
   {
     path: urls.transcript,
     component: Layout,

@@ -131,7 +131,7 @@
       <el-row>
         <div class='row' style='padding:10px'>
           <el-button @click='onResetClicked'>重置界面</el-button>
-          <el-button type='success' @click='onSubmitClicked'>上传学生</el-button>
+          <el-button type='primary' @click='onSubmitClicked'>上传学生</el-button>
         </div>
       </el-row>
     </el-tab-pane>

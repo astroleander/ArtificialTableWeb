@@ -57,7 +57,7 @@ supplement: 为课程添加班级form
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="submitForm('ruleForm')">添加</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
           <el-button @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>

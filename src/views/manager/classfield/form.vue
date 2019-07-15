@@ -26,7 +26,7 @@
       <!-- 此班级的学生列表-->
       <el-table :data="tableStudents"  @selection-change="delChange">
         <template slot="empty">
-          该班级没有学生信息
+            该班级没有学生信息,请点击左上方的 "批量导入" 按钮为班级引入学生
         </template>
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="序号" width="60">
@@ -40,12 +40,12 @@
 
         <el-table-column label="操作" width="350">
           <template slot="header" slot-scope="scope">
-            <el-button type="success" size="medium"  @click="openImportDialog">批量导入</el-button>
-            <el-button type="success" size="medium"  @click="openAddDialog">添加学生</el-button>
-            <el-button type="danger" size="medium" @click="confirmDeleteClassFields">删除选中</el-button>
+            <el-button type="primary" size="medium"  @click="openImportDialog">批量导入</el-button>
+            <el-button type="primary" size="medium"  @click="openAddDialog">添加学生</el-button>
+            <el-button title="primary" size="medium" @click="confirmDeleteClassFields" type="danger">删除选中</el-button>
           </template>
           <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="confirmDeleteOne(scope.row.id)">删除</el-button>
+            <el-button type="danger" size="mini" @click="confirmDeleteOne(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -56,8 +56,56 @@
         ></add-class-student>
       </el-dialog>
 
+        <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
+                <el-form :rules='rules' ref='ruleForm' :model='form' label-width='100px'>
+                    <el-form-item label='学生姓名' prop='name'>
+                        <el-input v-model='form.name' placeholder='请输入学生姓名'></el-input>
+                    </el-form-item>
+                    <el-form-item label='学生编号' prop='sid' required>
+                        <el-input v-model='form.sid' placeholder='请输入学生编号(至少6位数字)'></el-input>
+                    </el-form-item>
+                    <el-form-item label='入学年份' prop='year'>
+                        <el-date-picker
+                                v-model='form.year'
+                                placeholder='请选择入学年份'
+                                type='year'
+                                format='yyyy'
+                                value-format='yyyy'
+                        ></el-date-picker>
+                    </el-form-item>
+                    <el-form-item label='所属院系' prop='college_id'>
+                        <el-select
+                                v-model='form.college_id'
+                                placeholder='请选择学生所在院系'
+                                @change='fetchFormMajorList'
+                        >
+                            <el-option
+                                    v-for='item in formCollegeList'
+                                    :key='item.id'
+                                    :label='item.name'
+                                    :value='item.id'
+                            ></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label='所属专业' prop='major_id'>
+                        <el-select v-model='form.major_id' :placeholder='majorMessage'>
+                            <el-option
+                                    v-for='(item,index) in formMajorList'
+                                    :key='index'
+                                    :label='item.name'
+                                    :value='item.id'
+                            ></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type='primary' @click='submitForm("ruleForm")'>添加单个学生</el-button>
+                        <el-button @click='onReset'>重新填写</el-button>
+                    </el-form-item>
+                </el-form>
+        </el-dialog>
+
       <!-- 添加学生的对话框-->
-      <el-dialog title="选择要添加的学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
+      <!--<el-dialog title="选择要添加的学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
           <el-select class="majorBox" v-model="selectedMajor" @change="handleMajorChange" placeholder="按专业筛选左侧学生列表" :clearable="true">
               <el-option v-for="major in majorList"
                          :key="major.id"
@@ -83,7 +131,7 @@
       </el-dialog>
 
       <!-- 确认学生的界面-->
-      <el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
+      <!--<el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
         <el-table :data="confirmTableStudents" >
           <template slot="empty">
             该班级暂无学生信息，请点击条目右上角导入
@@ -125,9 +173,33 @@ import lessonViewModel from '@/viewmodel/lesson'
 import classInfoViewModel from '@/viewmodel/classinfos'
 import classFieldViewModel from '@/viewmodel/classfield'
 import studentViewModel from '@/viewmodel/student'
+import CollegeViewModel from '@/viewmodel/college'
 import majorViewModel from '@/viewmodel/major'
 import { mapGetters } from 'vuex'
 import AddClassStudent from './addClassFieldStudent'
+
+const validateName = (rule, value, callback) => {
+  if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
+    callback(new Error('学生名称不可为空'))
+  } else {
+    callback()
+  }
+}
+const validateStudentId = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入学生编号'))
+  } else if (!Number.isInteger(+value)) {
+    callback(new Error('请输入数字值'))
+  } else {
+    const tidReg = /^\d{6,}$/
+    if (tidReg.test(value)) {
+      callback()
+    } else {
+      callback(new Error('学生编号至少6位'))
+    }
+  }
+  callback()
+}
 export default {
   components: { AddClassStudent },
   data() {
@@ -171,18 +243,39 @@ export default {
       // 准备提交的数据
       confirmTableStudents: [],
       // 批量导入dialog对话框相关数据
-      ImportDialogVisible: false
+      ImportDialogVisible: false,
+      rules: {
+        name: [
+          { required: true, message: '请输入学生姓名', trigger: 'blur' },
+          { required: true, trigger: 'blur', validator: validateName }
+        ],
+        sid: [{ validator: validateStudentId, trigger: 'blur' }],
+        year: [{ required: true, message: '请选择年份', trigger: 'change' }],
+        college_id: [
+          { required: true, message: '请选择所属院系', trigger: 'change' }
+        ],
+        major_id: [
+          { required: true, message: '请选择所属专业', trigger: 'change' }
+        ]
+      },
+      form: {
+        name: '',
+        sid: '',
+        year: '',
+        major_id: '',
+        college_id: ''
+      },
+      // 表单需要的院系信息以及专业信息
+      formCollegeList: [],
+      formMajorList: [],
+      majorMessage: '请先选择院系'
     }
   },
   computed: {
     ...mapGetters([
-      'user_collegeId'
+      'user_collegeId',
+      'user'
     ])
-  },
-  watch: {
-    selectedStudents(val) {
-      // console.log('val = ' + val)
-    }
   },
   methods: {
     handleAddEnd() {
@@ -376,16 +469,13 @@ export default {
       this.transferData = []
       studentViewModel.requestStudents(params)
         .then(response => {
-          console.log('我又开始了')
           this.transferData = response
-          console.log(this.transferData)
           if (params.college_id !== undefined) {
             this.studentMap = new Map()
             this.transferData.forEach(student => {
               this.studentMap.set(student.id, student)
             })
           }
-          console.log(this.studentMap)
           this.dealTransferData()
         }).catch(error => {
           console.log(error)
@@ -397,13 +487,11 @@ export default {
         const temp = this.tableStudents.findIndex((item, index, arr) => {
           return item.student_id === this.transferData[i].id
         })
-        console.log('temp =' + temp)
         if (temp > -1) {
           this.transferData[i].disabled = true
         }
       }
       this.transferData = this.transferData.filter(item => !item.disabled)
-      console.log(this.transferData)
     },
 
     addClassFields(params) {
@@ -437,10 +525,10 @@ export default {
     },
     // 开始添加学生 获取班级ID
     openAddDialog() {
-      console.log('this.classInfo_id =' + this.classInfo_id)
       if (this.classInfo_id) {
         this.AddDialogVisible = true
-        this.buildTransfer()
+        this.fetchCollegeList()
+        // this.buildTransfer()
       } else {
         this.$message({
           type: 'error',
@@ -465,6 +553,65 @@ export default {
         this.fetchTransferStudentInfo({ college_id: this.user_collegeId })
       } else {
         this.fetchTransferStudentInfo({ major_id: major_id })
+      }
+    },
+    submitForm: function(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.form['classInfo_id'] = this.classInfo_id
+          this.submitFormStudent([this.form])
+        } else {
+          return false
+        }
+      })
+    },
+    submitFormStudent(list) {
+      studentViewModel.requestPostStudents(list).then(res => {
+        if (res.succeed_ids.length > 0) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+        } else if (res.repeated_ids.length > 0) {
+          this.$message({
+            type: 'error',
+            message: '该学号已占用'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '添加失败'
+          })
+        }
+      })
+    },
+    // 重置表单
+    onReset() {
+      this.$refs['ruleForm'].resetFields()
+    },
+    fetchCollegeList() {
+      if (typeof this.user === 'string') {
+        const user = JSON.parse(this.user)
+        const university_id = user.university_message.id
+        CollegeViewModel.requestByUniversityId(university_id).then(res => {
+          this.formCollegeList = res
+        })
+      } else {
+        const user = this.user
+        const university_id = user.university_message.id
+        CollegeViewModel.requestByUniversityId(university_id).then(res => {
+          this.formCollegeList = res
+        })
+      }
+    },
+    fetchFormMajorList(value) {
+      if (value === '') {
+        this.majorMessage = '请先选择院系'
+      } else {
+        majorViewModel.requestByCollegeId(value).then(res => {
+          this.formMajorList = res
+          this.majorMessage = '请选择学生所属专业'
+        })
       }
     }
   },

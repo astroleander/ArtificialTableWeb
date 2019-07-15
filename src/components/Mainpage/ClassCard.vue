@@ -18,7 +18,6 @@
 
         <!-- DONE: to replace with real image url -->
 
-        <!-- TODO: to replace with real image url -->
 
         <img class='cover' :src='"https://picsum.photos/150/150/?image=" + dataset.id'/>
       </slot>
