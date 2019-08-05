@@ -4,7 +4,7 @@
     :visible.sync="visible"
     :before-close="onDialogClose">
     <template slot="title">
-        修改分数
+        修改分数（请将所有分值换算成百分制）
     </template>
     <slot>
       <el-form

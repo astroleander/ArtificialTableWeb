@@ -50,6 +50,7 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
+        :total="weightData.total"
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
         @onDeletedTitle="handleDeletedTitle"
@@ -151,7 +152,6 @@ export default {
       const class_id = this.id
       // 向后台请求数据
       classinfoViewmodel.requestClassInfos({ id: class_id }).then(res => {
-        // console.log(res[0])
         // 加载数据到info中
         this.info = res && res[0]
       })
@@ -180,7 +180,8 @@ export default {
         const row = {
           // add student info (first two column line of the table)
           student: element,
-          point: []
+          point: [],
+          totle: 0
         }
         // add student's point
         if (this.model.points) {
@@ -200,6 +201,12 @@ export default {
             // row[pointItem.title_id] = pointItem
           }
         }) */
+        if (row.point) {
+          row.point.forEach(pointItem => {
+            const result = this.countPoint(pointItem)
+            row.totle += result[1]
+          })
+        }
         this.table.push(row)
       })
       // build title
@@ -432,16 +439,17 @@ export default {
       if (this.model.titleMap.get(title_id)) {
         const title = this.model.titleMap.get(title_id)
         const titleWeight = title.weight
-        const titleGroup_id = title.titleGroup_id
+        const titleGroupWeight = title.titleGroup_message.weight
         // 根据小项的titleGroup_id得到大项及其权重
-        if (this.model.titleGroupMap.get(titleGroup_id)) {
-          const titleGroup = this.model.titleGroupMap.get(titleGroup_id)
-          const titleGroupWeight = titleGroup.weight
+        if (titleGroupWeight) {
+          // const titleGroup = this.model.titleGroupMap.get(titleGroup_id)
+          // const titleGroupWeight = titleGroup.weight
           // 分值*大项权重数值*小项权重数值/10000
-          const titleSum = this.model.titleSumMap.get(titleGroup_id)
-          const titleGroupSum = this.model.titleGroupMap.get('TitleGroupSum')
-          const sum = titleSum * titleGroupSum
-          score = pointItem.pointNumber * titleWeight * titleGroupWeight / sum
+          // const titleSum = this.model.titleSumMap.get(titleGroup_id)
+          // const titleGroupSum = this.model.titleGroupMap.get('TitleGroupSum')
+          // const sum = titleSum * titleGroupSum
+          score = pointItem.pointNumber * titleWeight / 100
+          console.log(score)
           flag = true
           // console.log('point.id = ' + pointItem.id)
           // console.log('title_id = ' + title_id)

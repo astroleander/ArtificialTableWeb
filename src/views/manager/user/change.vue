@@ -212,15 +212,11 @@ export default {
     created() {
       UserViewModel.requestOwnInfo(this.id)
         .then(response => {
-          console.log('new page1')
-          console.log(response)
           this.form.id = response[0].id
           this.form.name = response[0].name
           this.form.email = response[0].email
           this.form.mobile = response[0].mobile
           this.form.tid = response[0].tid
-          console.log('new page2')
-          console.log(this.form)
           this.empty = false
         })
     }

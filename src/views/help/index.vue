@@ -8,7 +8,33 @@
             <span class="help_text">{{role}}</span>
             <el-divider></el-divider>
         </section>
-        <div class="container">
+
+        <div class="container" v-if="this.use_manager">
+            <at-card
+                    :title="Info[4].title"
+                    :description="Info[4].description"
+                    :background="Info[4].backgroud"
+                    :router="Info[4].router">
+            </at-card>
+            <i style="margin-left: 20px;margin-top: 90px;margin-right: 20px;" class="el-icon-video-play"></i>
+
+            <at-card
+                    :title="Info[5].title"
+                    :description="Info[5].description"
+                    :background="Info[5].backgroud"
+                    :router="Info[5].router">
+            </at-card>
+            <i style="margin-left: 20px;margin-top: 90px;margin-right: 20px"class="el-icon-video-play"></i>
+
+            <at-card
+                    :title="Info[6].title"
+                    :description="Info[6].description"
+                    :background="Info[6].backgroud"
+                    :router="Info[6].router">
+            </at-card>
+
+        </div>
+        <div class="container" v-else="this.use_manager">
             <at-card
             :title="Info[0].title"
             :description="Info[0].description"
@@ -57,31 +83,52 @@ export default {
       role: '',
       Info: [
         {
-          title: '班级添加学生',
-          description: '教师需要为班级添加学生',
+          title: '添加班级',
+          description: '教师可以添加自己任课班级',
+          router: '/manager/class/add',
+          backgroud: 'background-image: url(\'https://picsum.photos/id/833/200/200\')'
+
+        },
+        {
+          title: '班级学生管理',
+          description: '教师可以为班级添加学生名单',
           router: '/class/index',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
 
         },
         {
-          title: '导入成绩',
-          description: '教师需要为班级学生导入成绩',
+          title: '成绩管理',
+          description: '教师可查看、增加、修改、删除任课班级学生成绩',
+          router: '/mainpage/',
+          backgroud: 'background-image: url(\'https://picsum.photos/id/256/200/200\')'
+
+        },
+        {
+          title: '添加成绩',
+          description: '教师可以通过导入Excel表格为班级学生添加成绩',
           router: '/input/index/',
           backgroud: 'background-image: url("https://picsum.photos/id/732/200/200")'
 
         },
         {
-          title: '调整权重',
-          description: '教师需为班级各项测试设置权重',
-          router: '/weight/index',
-          backgroud: 'background-image: url(\'https://picsum.photos/id/833/200/200\')'
+          title: '添加课程',
+          description: '教研室主任需要为学校添加课程组',
+          router: '/class/index',
+          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
 
         },
         {
-          title: '成绩查询',
-          description: '教师可查看任课班级学生成绩',
-          router: '/mainpage/',
-          backgroud: 'background-image: url(\'https://picsum.photos/id/256/200/200\')'
+          title: '添加班级',
+          description: '教研室主任需要为各个课程组添加班级',
+          router: '/class/index',
+          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+
+        },
+        {
+          title: '添加成绩类别并调整权重',
+          description: '教研室主任需要为各个课程组添加并调整成绩类别权重',
+          router: '/class/index',
+          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
 
         }
       ]

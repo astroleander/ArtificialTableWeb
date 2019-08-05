@@ -84,7 +84,7 @@
         </div>
         <p class="row">{{Message}}</p>
 
-        <el-table  class="errortable" v-if="errorList.length> 0" :data="errorList">
+        <el-table  class="errortable" v-if="errorList.length> 0" :data="errorList" border>
           <template slot="empty">
             <el-alert id="table-emptyalert"
               title="未获取到数据"
@@ -503,16 +503,16 @@ export default {
       if (model.titleMap.get(title_id)) {
         const title = model.titleMap.get(title_id)
         const titleWeight = title.weight
-        const titleGroup_id = title.titleGroup_id
+        const titleGroupWeight = title.titleGroup_message.weight
         // 根据小项的titleGroup_id得到大项及其权重
-        if (model.titleGroupMap.get(titleGroup_id)) {
-          const titleGroup = model.titleGroupMap.get(titleGroup_id)
-          const titleGroupWeight = titleGroup.weight
-          const titleSum = model.titleSumMap.get(titleGroup_id)
-          const titleGroupSum = model.titleGroupMap.get('TitleGroupSum')
-          const sum = titleSum * titleGroupSum
+        if (titleGroupWeight) {
+          //const titleGroup = model.titleGroupMap.get(titleGroup_id)
+          //const titleGroupWeight = titleGroup.weight
+          //const titleSum = model.titleSumMap.get(titleGroup_id)
+          //const titleGroupSum = model.titleGroupMap.get('TitleGroupSum')
+          //const sum = titleSum * titleGroupSum
           // 分值*大项权重数值*小项权重数值/10000
-          score = pointItem.pointNumber * titleWeight * titleGroupWeight / sum
+          score = pointItem.pointNumber * titleWeight  / 100
           flag = true
           // console.log('point.id = ' + pointItem.id)
           // console.log('title_id = ' + title_id)

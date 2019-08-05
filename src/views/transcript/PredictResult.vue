@@ -2,7 +2,8 @@
   <div class="predictResult">
     <section class="table" style="width: 55%">
       <el-table :data="database" v-loading.body="loading" ref="table" id="transcript-predict"
-                element-loading-text="Loading" class="table">
+                element-loading-text="Loading" class="table"
+      height="500">
         <template slot="empty">
           <el-alert id="table-emptyalert"
             title="没有数据"
@@ -12,7 +13,7 @@
             show-icon>
           </el-alert>
         </template>
-        <el-table-column label="序号">
+        <el-table-column label="序号" width="50">
           <template slot-scope="scope">
             {{scope.$index+1}}
           </template>
@@ -28,7 +29,7 @@
         </el-table-column>
       </el-table>
     </section>
-    <div class="pie-box" style="width: 50%; background-color: white">
+    <div class="pie-box" style="width: 45%; background-color: white">
       <at-pie class="pie" :dataSet="currentDataSet"></at-pie>
     </div>
   </div>
@@ -103,7 +104,7 @@
   }
 
   .pie {
-    margin-top: 100px;
+    margin-top: 50px;
     margin-left: 50px;
   }
 </style>

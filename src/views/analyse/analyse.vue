@@ -15,11 +15,19 @@
       <p >{{Message}}</p>
     </div>
     <div v-else="empty" class="info-box">
-      <el-table :data="this.connection" class="flex-20">
+      <el-table :data="this.connection" class="flex-30">
          <el-table-column prop="number" label="相关值"></el-table-column>
           <el-table-column prop="tip" label="相关程度"></el-table-column>
       </el-table>
-      <at-bar :data-item="this.Item" :data-value="this.Value" class="flex-80"></at-bar>
+        <div v-if="this.showDraw" class="flex-70" style="display: flex;flex-flow: row">
+            <at-bar :data-item="this.Item" :data-value="this.Value" style="width: 80%"></at-bar>
+            <el-button @click="onChangeDraw()" size="mini" style="height: 30px;width: 20%" type="primary">切换成雷达图</el-button>
+        </div>
+        <div v-else="this.showDraw" class="flex-70" style="display: flex;flex-flow: row">
+            <radar-bar :data-item="this.radarItem" :data-set="this.Value" style="width: 80%"></radar-bar>
+            <el-button @click="onChangeDraw()" size="mini" style="height: 30px;width: 20%" type="primary">切换成条状图</el-button>
+        </div>
+
     </div>
   </div>
 </template>
@@ -29,9 +37,10 @@ import { mapGetters } from 'vuex'
 import classInfosViewModel from '@/viewmodel/classinfos'
 import lessonanalyseViewModel from '@/viewmodel/lesson'
 import AtBar from './bar'
+import RadarBar from './rabar'
 
 export default {
-  components: { AtBar },
+  components: { AtBar, RadarBar },
   name: 'analyse',
   data() {
     return {
@@ -43,9 +52,11 @@ export default {
       errorList: [], // 错误信息列表
       empty: true,
       datavalue: [],
+      showDraw: true,
       Item: [],
       Value: [],
       data: [],
+      radarItem: [],
       connection: [
         {
           number: '0.8-1.0',
@@ -78,6 +89,11 @@ export default {
     ])
   },
   methods: {
+    onChangeDraw() {
+      if (this.showDraw === true) {
+        this.showDraw = false
+      } else { this.showDraw = true }
+    },
     // 接收到返回课程分析信息
     selectedSemester() {
       this.empty = false
@@ -86,6 +102,12 @@ export default {
         .then(response => {
           this.datavalue = response
           this.Item = Object.keys(this.datavalue)
+          for (let i = 0; i < this.Item.length; i++) {
+            this.radarItem.push({
+              name: this.Item[i],
+              max: 1
+            })
+          }
           this.Value = Object.values(this.datavalue)
         })
     },
@@ -170,6 +192,7 @@ export default {
     display: flex;
     background: white;
     margin-top: 1px;
+    flex-flow: row;
     // align-items: center;
     // justify-content: center;
   }
@@ -183,14 +206,19 @@ export default {
     align-items: center;
     justify-content: center;
   }
-  .flex-20 {
+  .flex-10 {
       float: left;
-      width: 20%;
+      width: 10%;
       background: white;
   }
-  .flex-80 {
+  .flex-30 {
       float: left;
-      width: 80%;
+      width: 30%;
+      background: white;
+  }
+  .flex-70 {
+      float: left;
+      width: 70%;
       background: white;
   }
 </style>

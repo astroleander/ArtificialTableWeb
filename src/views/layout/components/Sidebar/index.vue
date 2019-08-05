@@ -37,6 +37,14 @@
             </el-menu-item>
         </router-link>
           <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+          <router-link to="/manager/weight">
+              <el-menu-item index="99929">
+                  <svg-icon icon-class="weight"></svg-icon>
+                  <span>调整权重</span>
+              </el-menu-item>
+          </router-link>
+          <div style="background-color: #FFF; height: 1px;width: 100%"></div>
       </el-submenu>
 
     <el-submenu v-if="this.use_manager" index="9990">
@@ -64,7 +72,7 @@
     </el-submenu>
 
 
-    <el-submenu v-if="this.use_manager" index="9991">
+    <!--<el-submenu v-if="this.use_manager" index="9991">
       <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理教学班信息</span>
@@ -85,9 +93,9 @@
         </el-menu-item>
       </router-link>
         <div style="background-color: #FFF; height: 1px;width: 100%"></div>
-    </el-submenu>
+    </el-submenu>-->
 
-    <el-submenu v-if="this.use_manager" index="9993">
+    <!--<el-submenu v-if="this.use_manager" index="9993">
       <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理学生信息</span>
@@ -109,7 +117,7 @@
         </el-menu-item>
       </router-link>
       <div style="background-color: #FFF; height: 1px;width: 100%"></div>
-    </el-submenu>
+    </el-submenu>-->
     </el-menu>
   </el-scrollbar>
 </template>

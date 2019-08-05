@@ -43,6 +43,16 @@ export const constantRouterMap = [
     }]
   },
   {
+    path: '/manager',
+    component: Layout,
+    children: [{
+      path: 'class/add',
+      name: 'class',
+      component: () => import('@/views/manager/classfield/add.vue'),
+      meta: { title: '添加班级', icon: 'tree' }
+    }]
+  },
+  {
     path: urls.class,
     component: Layout,
     children: [{
@@ -50,28 +60,6 @@ export const constantRouterMap = [
       name: 'class',
       component: () => import('@/views/manager/classfield/listForTeacher'),
       meta: { title: '班级信息', icon: 'banjiguanli' }
-    }]
-  },
-  {
-    path: urls.input,
-    // 重定位：用于返回导入成绩时直接返回
-    redirect: '/input/index',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'input',
-      meta: { title: '导入成绩', icon: 'upload' },
-      component: () => import('@/views/input/index')
-    }]
-  },
-  {
-    path: urls.weight,
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'weight',
-      component: () => import('@/views/weight/index'),
-      meta: { title: '权重调整', icon: 'weight' }
     }]
   },
   {
@@ -92,6 +80,18 @@ export const constantRouterMap = [
     }]
   },
   {
+    path: urls.input,
+    // 重定位：用于返回导入成绩时直接返回
+    redirect: '/input/index',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'input',
+      meta: { title: '导入成绩', icon: 'upload' },
+      component: () => import('@/views/input/index')
+    }]
+  },
+  {
     path: urls.comparison,
     component: Layout, // 上方引入的外部框架模版
     children: [{
@@ -99,7 +99,7 @@ export const constantRouterMap = [
       name: 'comparison',
       component: () => import('@/views/comparison/index'),
       // 路由属性存储
-      meta: { title: '成绩比较', icon: 'dash' }
+      meta: { title: '班级成绩比较', icon: 'dash' }
     }]
 
   },
@@ -157,54 +157,61 @@ export const constantRouterMap = [
     path: '/manager',
     component: Layout,
     hidden: true,
-    children: [{
-      path: 'student/add',
-      name: 'addstudent',
-      component: () => import('@/views/manager/student/add.vue'),
-      meta: { title: '添加学生', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'student/list',
-      name: 'liststudent',
-      component: () => import('@/views/manager/student/list.vue'),
-      meta: { title: '学生列表', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'user/add',
-      name: 'addmanager',
-      component: () => import('@/views/manager/user/add.vue'),
-      meta: { title: '添加教师', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'user/list',
-      name: 'showmanager',
-      component: () => import('@/views/manager/user/list.vue'),
-      meta: { title: '教师列表', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'lesson/addLesson',
-      name: 'addlesson',
-      component: () => import('@/views/manager/lesson/addLesson.vue'),
-      meta: { title: '添加课程', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'class/add',
-      name: 'addClassInfo',
-      component: () => import('@/views/manager/classfield/add.vue'),
-      meta: { title: '添加班级', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'class/list',
-      name: 'classList',
-      component: () => import('@/views/manager/classfield/index.vue'),
-      meta: { title: '班级信息列表', icon: 'tree', roles: ['admin'] }
-    },
-    {
-      path: 'class/classfield',
-      name: 'addClassField',
-      component: () => import('@/views/manager/classfield/form.vue'),
-      meta: { title: '添加和修改班级', icon: 'tree', roles: ['admin'] }
-    }]
+    children: [
+      {
+        path: 'weight',
+        name: 'weight',
+        component: () => import('@/views/weight/index'),
+        meta: { title: '权重调整', icon: 'weight', roles: ['admin'] }
+      },
+      {
+        path: 'student/add',
+        name: 'addstudent',
+        component: () => import('@/views/manager/student/add.vue'),
+        meta: { title: '添加学生', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'student/list',
+        name: 'liststudent',
+        component: () => import('@/views/manager/student/list.vue'),
+        meta: { title: '学生列表', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'user/add',
+        name: 'addmanager',
+        component: () => import('@/views/manager/user/add.vue'),
+        meta: { title: '添加教师', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'user/list',
+        name: 'showmanager',
+        component: () => import('@/views/manager/user/list.vue'),
+        meta: { title: '教师列表', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'lesson/addLesson',
+        name: 'addlesson',
+        component: () => import('@/views/manager/lesson/addLesson.vue'),
+        meta: { title: '添加课程', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'class/add',
+        name: 'addClassInfo',
+        component: () => import('@/views/manager/classfield/add.vue'),
+        meta: { title: '添加班级', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'class/list',
+        name: 'classList',
+        component: () => import('@/views/manager/classfield/index.vue'),
+        meta: { title: '班级信息列表', icon: 'tree', roles: ['admin'] }
+      },
+      {
+        path: 'class/classfield',
+        name: 'addClassField',
+        component: () => import('@/views/manager/classfield/form.vue'),
+        meta: { title: '添加和修改班级', icon: 'tree', roles: ['admin'] }
+      }]
   }
 ]
 

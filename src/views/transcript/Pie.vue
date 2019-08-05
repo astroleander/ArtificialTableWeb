@@ -27,10 +27,6 @@
         // 绘制
         this.chartPie.setOption({
           // 图表颜色
-          title: {
-            text: '预测成绩及格情况',
-            x: 'center'
-          },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'

@@ -1,6 +1,8 @@
 <template>
     <div>
-        <el-table :data="this.classInfos">
+        <el-table :data="this.classInfos"
+        border
+        stripe>
             <el-table-column
                     v-for="(title, idx) in titles"
                     :key="idx"
@@ -12,6 +14,11 @@
                     <div>
                         <el-button type="primary" @click="onModifyClicked(scope.row)">班级学生信息管理</el-button>
                     </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="">
+                <template slot-scope="scope">
+                    <el-button @click="onDeleteClicked(scope.row)" type="danger">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -34,10 +41,8 @@
           classInfos: [],
           titles: [
             // DONE: teacher name
-            { prop: 'cid', label: '班级编号' },
             { prop: 'name', label: '班级名' },
             { prop: 'semester', label: '学期' },
-            { prop: 'student_count', label: '学生数' },
             { prop: 'room', label: '教室' },
             { prop: 'week', label: '上课时间' }
           ]
@@ -51,6 +56,26 @@
             }).catch(err => {
               console.log(err)
             })
+        },
+        onDeleteClicked(row) {
+          this.$prompt(
+            '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！', '请确认删除操作', {
+              confrimButtonText: '确定',
+              cancelButtonText: '取消',
+              inputPattern: /确认/
+              // type: 'warning',
+            }).then(() => {
+            classInfoViewModel.requestDelClassInfo(row.id).then(res => {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              const idx = this.classInfos.findIndex(classinfo => classinfo.id === row.id)
+              console.log(row)
+              console.log(idx)
+              this.classInfos.splice(idx, 1)
+            })
+          })
         },
         onModifyClicked(row) {
           // jump to modify pabe

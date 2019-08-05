@@ -50,13 +50,13 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog title="添加学生" :center="true"  width="70%" :visible.sync="ImportDialogVisible">
+      <el-dialog title="添加学生" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
         <add-class-student :class-info_id="this.$router.currentRoute.params.id"
                            @addEnd="handleAddEnd"
         ></add-class-student>
       </el-dialog>
 
-        <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
+        <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :before-close="handleClose">
                 <el-form :rules='rules' ref='ruleForm' :model='form' label-width='100px'>
                     <el-form-item label='学生姓名' prop='name'>
                         <el-input v-model='form.name' placeholder='请输入学生姓名'></el-input>
@@ -278,6 +278,13 @@ export default {
     ])
   },
   methods: {
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
     handleAddEnd() {
       this.ImportDialogVisible = false
       this.fetchTableStudentInfo()
@@ -560,6 +567,7 @@ export default {
         if (valid) {
           this.form['classInfo_id'] = this.classInfo_id
           this.submitFormStudent([this.form])
+          // this.fetchTableStudentInfo()
         } else {
           return false
         }
@@ -572,6 +580,8 @@ export default {
             type: 'success',
             message: '添加成功'
           })
+          this.AddDialogVisible = false
+          this.handleAddEnd()
         } else if (res.repeated_ids.length > 0) {
           this.$message({
             type: 'error',

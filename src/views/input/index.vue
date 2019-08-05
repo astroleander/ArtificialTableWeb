@@ -40,9 +40,10 @@
   <div class="BOX">
     <!--步骤操作 最上面的步骤进度-->
     <div class="steps flex-left flex-15">
-    <el-steps :active="activeStep" finish-status="success" direction="vertical" space="35%" style="margin-top: 40px">
-      <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description='eachStep.description'></el-step>
-    </el-steps>
+      <el-steps :active="activeStep" finish-status="success" direction="vertical" space="35%" style="margin-top: 40px">
+        <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title'
+                 :description='eachStep.description'></el-step>
+      </el-steps>
     </div>
     <!--步骤操作绑定 getActiveStep 自动切换成el-tab-pane中name值-->
     <el-tabs v-model="getActiveStep" tab-position="hidden" class="tab flex-half flex-85">
@@ -52,42 +53,45 @@
       <el-tab-pane name="0">
         <!--<span slot="label" style="display:none"></span>-->
         <div class="step1">
-            <!-- STEP - 1 - 导入工具 -->
-            <div id="menu-input-helper" class="input" style="margin-top: 5px">
-            <div id="menu-input-helper" class="input" style="margin-top: 1px">
-              <!-- 自定义组件 -->
-              <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
-            </div>
-            <div>
-              <el-alert :title="this.ALERT" style="margin: 10px"></el-alert>
-            </div>
-            <div class="menu-wrapper">
-              <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson" style="margin-left: 10px">
-                <el-option
-                  v-for="item in remoteLessonList"
-                  :value="item.id"
-                  :label="item.name"
-                  :key="item.id"
-                >
-                </el-option>
-              </el-select>
+          <!-- STEP - 1 - 导入工具 -->
+          <div id="menu-input-helper" class="input" style="margin-top: 1px">
+            <!-- 自定义组件 -->
+            <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
+          </div>
+          <!--<div>
+            <el-alert :title="this.ALERT" style="margin: 10px"></el-alert>
+          </div>-->
+          <div class="menu-wrapper">
+            <span style="margin-left: 10px;color: orange">请选择成绩导入的课程组：</span>
+            <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson"
+                       style="margin-left: 10px">
+              <el-option
+                v-for="item in remoteLessonList"
+                :value="item.id"
+                :label="item.name"
+                :key="item.id"
+              >
+              </el-option>
+            </el-select>
 
-              <el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
-                导入的表格包含列名
-              </el-checkbox>
-               <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
-                导入的表格最后一行是统计项
-              </el-checkbox>
-              <el-button style="margin-left: 30px" class="button" type="primary" @click="toStep(1, 2)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-            </div>
+            <!--<el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
+              导入的表格包含表头名
+            </el-checkbox>
+             <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
+              导入的表格最后一行是统计项
+            </el-checkbox>-->
+            <el-button style="margin-left: 30px" class="button" type="primary" @click="toStep(1, 2)" size="mini">下一步<i
+              class="el-icon-arrow-right el-icon--right"></i></el-button>
+          </div>
+
           <div class="inputTable">
             <div id="menu-data-previewer" class="menu-data-previewer">
-              <p v-for="stats of importTableAnalysis" :key="stats.id" style="margin-right: 20px">
+              <span v-for="stats of importTableAnalysis" :key="stats.id" style="margin-right: 20px">
                   <span>{{stats.title}}
                     <template v-if="stats.meaning">({{stats.meaning}}) : </template>
                  </span>
                 <span>{{stats.content}}</span>
-              </p>
+              </span>
             </div>
             <div id="step-import" class="content-wrapper">
               <!-- STEP - 1 - 下方的导入表格 -->
@@ -96,14 +100,14 @@
               </section>
             </div>
           </div>
-        </div>
+
         </div>
       </el-tab-pane>
       <!-- step 1 end, and step 2 start -->
       <!-- STEP - 2 -->
       <el-tab-pane name="1">
         <div id="step-settings" class="step2">
-          <el-collapse>
+          <!--<el-collapse>
             <el-collapse-item title="信息提示" style="margin-left: 5px">
               <div class="span-title inline-display-block" style="margin-top: 10px">
                 <label class="selector-for-hidden-selector sample"
@@ -147,102 +151,129 @@
                 </el-alert>
               </div>
             </el-collapse-item>
-          </el-collapse>
-
+          </el-collapse>-->
           <div id="menu-data-previewer-two" class="menu-data-previewer-two">
-            <p v-for="stats of settingsTableAnalysis" :key="stats.id" style="margin-right: 10px">
-              <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
-              <span>{{stats.content}}</span>
-            </p>
-            <div style="display: flex;flex-direction: row;align-items: center;margin-left: 20px">
-            <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 1)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-            <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 3)" size="mini">下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+            <img :src="src" style="margin-top: 0px">
+            <span><el-alert v-for="alert of settingsAlertList" :key="alert.id" :title="alert.title"
+                            style="margin-top: 1px" type="warning"></el-alert>
+            </span>
+            <div style="display: flex;flex-flow: row">
+              <p v-for="stats of settingsTableAnalysis" :key="stats.id" style="margin-right: 10px">
+                <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
+                <span>{{stats.content}}</span>
+              </p>
+              <div style="display: flex;flex-direction: row;align-items: center;margin-left: 20px">
+                <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 1)" size="mini"><i
+                  class="el-icon-arrow-left el-icon--left"></i>上一步
+                </el-button>
+                <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 3)" size="mini">
+                  下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+              </div>
             </div>
           </div>
           <el-table
-                  v-if="activeStep === 1"
-                  id='settings-table'
-                  ref='settingsTable'
-                  :data="settingsPageData.dataset"
-                  height="calc(100vh - 302px)"
-                  border>
-                <el-table-column
-                  v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
-                  min-width="150px" width="200px">
-                  <!-- 自定义表头，用于选择列的属性 -->
-             <template slot="header" slot-scope="scope" >
-               <!-- <template slot="header"> -->
-                  <div class="settings-table-header">
-                    <label :for='"el-selector-for-type-col-" + title.idx'
-                           class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title)+";"'>
-                    </label>
-                    <el-select v-model="title.type" placeholder="请选择"
-                               :id='"el-selector-for-type-col-" + title.idx'
-                               class="hidden-selector" size="mini">
-                      <el-option
-                        v-for="item in headTypeList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                    <!-- 如果 type === title，渲染选择框 -->
-                       <template v-if="title.type === 'title'">
-                         <div class="select-container">
+            v-if="activeStep === 1"
+            id='settings-table'
+            ref='settingsTable'
+            :data="settingsPageData.dataset"
+            height="calc(100vh - 260px)"
+            border
+            row-class-name="success-row">
+            <template>
+            </template>
+            <el-table-column
+              v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
+              min-width="150px" width="200px">
+              <!-- 自定义表头，用于选择列的属性 -->
+              <template slot="header" slot-scope="scope">
+                <!-- <template slot="header"> -->
+                <div class="settings-table-header">
+                  <el-checkbox
+                    v-model="sidCheckedList[title.idx]"
+                    :true-label="scope.$index + 1"
+                    @change="onSidChecked"
+                  >学号列
+                  </el-checkbox>
+                  <!--<label :for='"el-selector-for-type-col-" + title.idx'
+                         class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title)+";"'>
+                  </label>
+                  <el-select v-model="title.type" placeholder="请选择"
+                             :id='"el-selector-for-type-col-" + title.idx'
+                             class="hidden-selector" size="mini">
+                    <el-option
+                      v-for="item in headTypeList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>-->
+                  <!--<el-radio v-model="title.type" label="useless">丢弃</el-radio>
+                <!-- 如果 type === title，渲染选择框 -->
+                  <template v-if="title.type === 'title'">
+                    <el-radio v-model="title.type" label="useless">丢弃</el-radio>
+                    <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
+                    <div class="select-container">
                          <span class="span-title ">
-                         <span>列名: </span>
-                         <el-input type="text" v-model="title.name"
-                                   placeholder="列名" size="mini" class="title-name"/>
+                         <span>成绩项名: </span>
+                         <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
+                           <i slot="suffix" class="el-input__icon el-icon-edit"></i>
+                         </el-input>
                          </span>
-                           <span class="span-title ">
-                         <span>类别: </span>
-                         <el-select v-model="title.titleGroup" placeholder="类别"
+                      <span class="span-title ">
+                         <span>成绩类别: </span>
+                         <el-select v-model="title.titleGroup" placeholder="成绩类别"
                                     size="mini" class="title-name">
                            <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
                                       :label='titleGroup.name' :value='titleGroup.id'>
                            </el-option>
                          </el-select>
                          </span>
-                         </div>
-                       </template>
-                       <!-- 如果 type === sid，渲染学号框 -->
-                       <template v-else-if="title.type === 'sid'">
-                         学号
-                       </template>
-                       <!-- 如果 type === default，渲染默认框 -->
-                 <template v-else-if="title.type === 'default'">
-                   <el-button @click="onTitleTypeClick(title, 'sid')"
-                              size='mini' type='primary'>学号</el-button>
-                   <el-button @click="onTitleTypeClick(title, 'title')"
-                              size='mini' type='primary' >成绩</el-button>
-                   <el-button @click="onTitleTypeClick(title, 'useless')"
-                              size='mini' type='danger'>其它</el-button>
-                 </template>
-                 <!-- 如果 type !== sid || title || default，则渲染"无用项"框 -->
-                   <template v-else-if="title.type === 'useless'">
-                     不录入
-                   </template>
-                 </div>
-               </template>
-               <template slot-scope="scope">
-                 <div class="setting-table-cell" :style='"background:"+getCellColorByType(title.type)+";"'>
-                   <el-input v-model="scope.row[title.idx]">
-                   </el-input>
-                 </div>
-               </template>
-             </el-table-column>
-           </el-table>
-         </div>
-     </el-tab-pane>
-       <!-- STEP - 2 -  左边的补充项 -->
+                    </div>
+                  </template>
+                  <!-- 如果 type === sid，渲染学号框 -->
+                  <!--<template v-else-if="title.type === 'sid'">
+                  </template>
+                  <!-- 如果 type === default，渲染默认框 -->
+                  <!--<template v-else-if="title.type === 'default'">
+                    <el-button @click="onTitleTypeClick(title, 'sid')"
+                               size='mini' type='primary'>学号</el-button>
+                    <el-button @click="onTitleTypeClick(title, 'title')"
+                               size='mini' type='primary' >成绩</el-button>
+                    <el-button @click="onTitleTypeClick(title, 'useless')"
+                               size='mini' type='danger'>其它</el-button>
+                  </template>
+                  <!-- 如果 type !== sid || title || default，则渲染"无用项"框 -->
+                  <template v-else-if="title.type === 'useless'">
+                    <el-radio v-model="title.type" label="useless">丢弃</el-radio>
+                    <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
+                  </template>
+                </div>
+              </template>
+              <template slot-scope="scope">
+                <div id="input-text" class="setting-table-cell"
+                     :style='"background:"+getCellColorByType(title.type)+";"'>
+                  <el-input v-model="scope.row[title.idx]">
+                  </el-input>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
+      <!-- STEP - 2 -  左边的补充项 -->
       <!-- step 2 end, and step 3 start -->
       <el-tab-pane name="2">
         <div id="step-preview" class="step3">
           <!-- STEP - 3 - 步骤操作菜单 -->
           <div style="display: flex;flex-direction: row;align-items: center;height: 60px;margin: 10px">
-          <el-button  class="button" type="primary" @click="toStep(3, 2)" size="mini"><i class="el-icon-arrow-left el-icon--left"></i>上一步</el-button>
-          <el-button class="button" type="primary" @click="submit()" size="mini">提交<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-          <el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)" size="mini">继续上传</el-button>
+            <el-button class="button" type="primary" @click="toStep(3, 2)" size="mini"><i
+              class="el-icon-arrow-left el-icon--left"></i>上一步
+            </el-button>
+            <el-button class="button" type="primary" @click="submit()" size="mini">提交<i
+              class="el-icon-arrow-right el-icon--right"></i></el-button>
+            <el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)"
+                       size="mini">继续上传
+            </el-button>
           </div>
           <!-- CONTAINER 容纳错误信息 -->
           <div v-if="submitErrorMessage.existTitleNameList.length > 0">
@@ -309,6 +340,7 @@
           <el-table v-if="activeStep === 2" :key="activeStep" id='preview-table' ref='previewTable'
                     :data="previewPageData.dataset"
                     class="preivew-table"
+                    height="calc(100vh - 202px)"
                     border stripe size="mini"
           >
             <el-table-column label="学号" width="150px">
@@ -339,8 +371,20 @@
   import pointViewModel from '@/viewmodel/point'
   import PointMock from '@/mock/point'
   import TitleMock from '@/mock/title'
+  import step from '@/assets/images/step.png'
   // 引入常量，全是提示信息字符串
-  import { REQUIRED_TITLEGROUP, REQUIRED_TITLE, CLIP_BOARD_ALERT, REQUIRE_STUDENT_COLUMN, REQUIRE_STUDENT_COLUMN_LEFT, DUPLICATE_SID, REQUIRED_SID, REQUIRED_AT_LEAST_A_TITLE, NO_TITLE_GROUP } from '@/utils/alerts'
+  import {
+    REQUIRED_TITLEGROUP,
+    REQUIRED_TITLE,
+    CLIP_BOARD_ALERT,
+    REQUIRE_STUDENT_COLUMN,
+    REQUIRE_STUDENT_COLUMN_LEFT,
+    DUPLICATE_SID,
+    REQUIRED_SID,
+    REQUIRED_AT_LEAST_A_TITLE,
+    NO_TITLE_GROUP
+  } from '@/utils/alerts'
+
   const COLOR_SID = '#1976D2'
   const COLOR_UNFINISHED = '#FFCC33'
   const COLOR_TITLE = '#4caf50'
@@ -350,7 +394,7 @@
   const COLOR_LEFT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_TITLE + ', ' + COLOR_TITLE + ' 50% ,' + COLOR_UNFINISHED + ' 50%, ' + COLOR_UNFINISHED + ' 100%)'
   const COLOR_RIGHT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 50% ,' + COLOR_TITLE + ' 50%, ' + COLOR_TITLE + ' 100%)'
   const calHeight = () => {
-    return window.innerHeight - 350
+    return window.innerHeight - 250
   }
   /** // xlsx 的输出模式被制定为 header:1, 与 handsontable 兼容， 不需要转换
    * trim here
@@ -395,12 +439,21 @@
         if (rowArray[colIdx] !== null && rowArray[colIdx] !== '' && rowArray[colIdx] !== undefined) {
           // 初始化 title 项 区分sid 与普通title
           if (!titleMap.get(colIdx)) {
-            const newTitle = { idx: colIdx, type: 'default', name: colNameList[colIdx], titleGroup: undefined, total: 100 }
+            const newTitle = {
+              idx: colIdx,
+              type: 'default',
+              name: colNameList[colIdx],
+              titleGroup: undefined,
+              total: 100
+            }
             // 如果包含项名，则自动设置 title.type
             if (withHeader && !(hotData[0][colIdx] === undefined || hotData[0][colIdx] === null || hotData[0][colIdx] === '')) {
               // console.log(hotData[0][colIdx])
-              if (RegExp('学号').test(hotData[0][colIdx])) newTitle.type = 'sid'
-              else newTitle.type = 'title'
+              if (RegExp('学号').test(hotData[0][colIdx])) {
+                newTitle.type = 'sid'
+              } else {
+                newTitle.type = 'title'
+              }
             }
             titleMap.set(colIdx, newTitle)
           }
@@ -435,7 +488,6 @@
    *           |- dataset // hotData
    */
   const previewFilter = (settingsData) => {
-    console.log('我又来啦！！！！！')
     const dataset = JSON.parse(JSON.stringify(settingsData.dataset))
     const titles = JSON.parse(JSON.stringify(settingsData.titles))
     let sidColIdx
@@ -550,20 +602,27 @@
     data() {
       return {
         // 步骤参数
+        src: step,
         activeStep: 0,
         steps: [
-          { title: '引入数据', description: '导入Excel或输入数据', picture: 'el-icon-edit' },
-          { title: '规范数据', description: '筛选并补充导入数据', picture: 'el-icon-upload' },
-          { title: '校验数据', description: '校验并确认您的导入结果', picture: 'el-icon-check' }
+          {title: '引入数据', description: '导入Excel文件或填写数据', picture: 'el-icon-edit'},
+          {title: '规范数据', description: '标记学号、丢弃无用数据、为成绩项选择类别', picture: 'el-icon-upload'},
+          {title: '校验数据', description: '校验并确认您的导入结果', picture: 'el-icon-check'}
         ],
         // step2 中左侧表格选择标头数据
         headTypeList: [
-          { value: 'default', label: '默认(丢弃)', color: 'repeating-linear-gradient(45deg ,#FFCC33 0, #FFCC33 4px, #665 4px, #665 8px)' },
-          { value: 'sid', label: '学号列', color: COLOR_SID },
-          { value: 'title', label: '列项名', color: COLOR_UNFINISHED },
-          { value: 'useless',
+          {
+            value: 'default',
+            label: '默认(丢弃)',
+            color: 'repeating-linear-gradient(45deg ,#FFCC33 0, #FFCC33 4px, #665 4px, #665 8px)'
+          },
+          {value: 'sid', label: '学号列', color: COLOR_SID},
+          {value: 'title', label: '列项名', color: COLOR_UNFINISHED},
+          {
+            value: 'useless',
             label: '无用项',
-            color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)' }
+            color: 'linear-gradient(45deg, transparent 0,transparent 45%, #FFCC33 45%, #FFCC33 55%, transparent 55%, transparent 100%),linear-gradient(135deg, #665 0,#665 45%, #FFCC33 45%, #FFCC33 55%, #665 55%, #665 100%)'
+          }
         ],
         // step1中左侧输入表格
         hotSettings: {
@@ -586,7 +645,7 @@
               'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
               'clear_custom': {
                 name: '清除所有表格',
-                callback: function() {
+                callback: function () {
                   this.clear()
                 }
               },
@@ -603,25 +662,21 @@
            * @see https://handsontable.com/docs/6.2.0/tutorial-introduction.html
            */
           // 每次表格中数据改变，此时触发此函数
-          afterChange: function() {
+          afterChange: function () {
             let importDataset = this.getData()
-            console.log('我输入了啥？？？')
-            console.log(importDataset)
             // 返回不是全空的行
             importDataset = importDataset.filter((row, rowIndex, arr) => {
               return !row.every(cell => {
                 return cell === null || cell.trim() === '' || cell === undefined
               })
             })
-            console.log('我化简')
-            console.log(importDataset)
             const env = this.rootElement.__vue__
-            env.$store.dispatch('saveImportTable', { table: importDataset })
-            console.log('我好像输入了上面这个')
+            env.$store.dispatch('saveImportTable', {table: importDataset})
           }
         }, // hotSettings-end
         importDataHasHead: true,
         importDataHasTail: false,
+        sidCheckedList: [],
         DataHasHead: [
           {
             id: 1,
@@ -690,7 +745,8 @@
           importTable.forEach(row => {
             row.forEach((cell, idx) => {
               // eslint-disable-next-line
-              if (cell === null || cell === '' || cell === undefined) {}// 没有 pass 的第 3024 天, 想它
+              if (cell === null || cell === '' || cell === undefined) {
+              }// 没有 pass 的第 3024 天, 想它
               else {
                 count++
                 col_count[idx]++
@@ -720,7 +776,7 @@
             },
             {
               validator: col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0),
-              action: () => this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, { type: 'warning' }), this.importAlertList),
+              action: () => this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, {type: 'warning'}), this.importAlertList),
               close: () => (this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT))
             }
           ]
@@ -729,9 +785,9 @@
             else matchRule.close()
           })
           return [
-            { id: 1, title: '学生数', meaning: '导入的行数', content: importRows },
-            { id: 2, title: '类别数', meaning: '导入的列数', content: importCols },
-            { id: 3, title: '共计' + count + '条记录' }
+            {id: 1, title: '学生数', meaning: '导入的行数', content: importRows},
+            {id: 2, title: '类别数', meaning: '导入的列数', content: importCols},
+            {id: 3, title: '共计' + count + '条记录'}
           ]
         }
       },
@@ -748,10 +804,10 @@
           // let undefinedTitles = []
           // switch rules
           const t_rules = [
-            { type: 'sid', action: () => sidCount++ },
-            { type: 'title', action: () => titleCount++ },
-            { type: 'useless', action: () => uselessCount++ },
-            { type: 'default', action: () => defaultCount++ }
+            {type: 'sid', action: () => sidCount++},
+            {type: 'title', action: () => titleCount++},
+            {type: 'useless', action: () => uselessCount++},
+            {type: 'default', action: () => defaultCount++}
           ]
           // executing switch by rule
           settingsTable.titles.forEach(title => {
@@ -817,14 +873,32 @@
           })
           return [
             // { id: 1, title: '学生数', content: '24' },
-            { id: 2, title: '导入的成绩小项数', content: titleCount },
+            {id: 2, title: '导入的成绩小项数', content: titleCount},
             // { id: 3, title: '学生数', content: '24' },
-            { id: 4, title: '目前将有' + (uselessCount + defaultCount) + '列被废弃' }
+            {id: 4, title: '目前将有' + (uselessCount + defaultCount) + '列被废弃'}
           ]
         }
       }
     },
     methods: {
+      onSidChecked(idx) {
+        if (idx !== false) {
+          idx = idx - 1
+          this.settingsPageData.titles.forEach(title => {
+            if (title.type === 'sid') {
+              title.type = 'title'
+            }
+          })
+          this.settingsPageData.titles.forEach(title => {
+            if (title.idx === idx) {
+              title.type = 'sid'
+            }
+          })
+          this.sidCheckedList.forEach((item, idx) =>
+            this.$set(this.sidCheckedList, idx, false))
+          this.$set(this.sidCheckedList, idx, true)
+        }
+      },
       addAlert(alert, alertList) {
         // if exist the splice, else execute push statement
         let existAlertIdx
@@ -891,6 +965,18 @@
                 // 将从step1中数据进行存储以及处理 跳转到step2
                 if (from === 1 && this.importAlertList.length === 0) {
                   if (this.renderSettingsPage()) {
+                    console.log(this.settingsPageData)
+                    this.sidCheckedList = []
+                    const titles = this.settingsPageData.titles
+                    titles.forEach(title => {
+                      if (title.type === 'sid') {
+                        this.sidCheckedList.push(true)
+                      } else {
+                        this.sidCheckedList.push(false)
+                      }
+                    })
+                    console.log('987654321')
+                    console.log(this.sidCheckedList)
                     this.activeStep = 1
                   }
                 } else {
@@ -916,7 +1002,8 @@
             const previewPermission = [
               {
                 validator: this.settingsPageData.titles && this.settingsPageData.dataset,
-                action: () => {},
+                action: () => {
+                },
                 reject: () => {
                   legalRequest = false
                   this.$message({
@@ -927,7 +1014,8 @@
               },
               {
                 validator: !this.IsDuplication(this.settingsPageData.titles),
-                action: () => {},
+                action: () => {
+                },
                 reject: () => {
                   legalRequest = false
                   this.$message({
@@ -938,7 +1026,8 @@
               },
               {
                 validator: this.settingsAlertList.length === 0,
-                action: () => {},
+                action: () => {
+                },
                 reject: () => {
                   legalRequest = false
                   this.$message({
@@ -1081,7 +1170,7 @@
       }
     },
     watch: {
-      importAlertList: function() {
+      importAlertList: function () {
         const len = this.importAlertList.length
         this.$notify({
           title: '警告',
@@ -1090,7 +1179,7 @@
           duration: 9000
         })
       },
-      settingsAlertList: function() {
+      settingsAlertList: function () {
         const len = this.settingsAlertList.length
 
         if (len > 0) {
@@ -1102,7 +1191,7 @@
     },
     created() {
       // 将table获取到的数据存入store中
-      this.$store.dispatch('saveImportTable', { table: [] })
+      this.$store.dispatch('saveImportTable', {table: []})
       // 请求所有课程组信息
       this.fetchLesson()
     }
@@ -1114,33 +1203,46 @@
 </style>
 
 <style lang="scss" scoped>
-  .BOX{
+  .guide {
+    display: flex;
+    flex-flow: row;
+    border-radius: 2px;
+    font-size: 2em;
+  }
+
+  .BOX {
     display: flex;
     flex-direction: row;
   }
-  .step1{
+
+  .step1 {
     display: flex;
     flex-direction: column;
     width: auto;
   }
-  .step2{
-    display: flex;
-    flex-direction: column;
+
+  .step2 {
+    /*display: flex;*/
+    /*flex-direction: column;*/
     width: auto;
   }
-  .step3{
-    display: flex;
-    flex-direction: column;
+
+  .step3 {
+    /*display: flex;*/
+    /*flex-direction: column;*/
     width: auto;
   }
-  .tab{
+
+  .tab {
     background-color: white;
     width: auto;
     height: calc(100vh - 50px);
   }
-  .input{
+
+  .input {
     background-color: white;
   }
+
   .select-container {
     display: flex;
     flex-direction: column;
@@ -1148,6 +1250,7 @@
     justify-content: space-around;
     flex-wrap: wrap;
   }
+
   .span-title {
     display: inline-flex;
     flex-direction: row;
@@ -1157,27 +1260,33 @@
     justify-items: center;
     text-align: center;
   }
+
   .inline-display-block {
     padding: 5px;
+
     label {
       padding: 5px;
     }
   }
+
   .flex-half {
     float: left;
     width: 50%;
     background: white;
   }
+
   .flex-85 {
     float: left;
     width: 85%;
     background: white;
   }
+
   .flex-15 {
     float: left;
     width: 15%;
     background: white;
   }
+
   .steps {
     background: white;
     padding: 1em;
@@ -1188,23 +1297,29 @@
     //border: 20px solid #CCCCCC;
     // margin-bottom: 20px;
   }
+
   #import-menu-table-board {
-    .alert{
+    .alert {
       margin: 8px 12px;
       width: 98%;
     }
   }
+
   .content-wrapper {
     display: block;
+    margin-top: 4px;
   }
+
   .table-wrapper {
     // max-width: 55%;
   }
-  .action-menu{
+
+  .action-menu {
     display: flex;
     flex-direction: row;
     margin-top: 30px;
   }
+
   .menu-continue {
     display: flex;
     flex-direction: row;
@@ -1212,14 +1327,16 @@
     align-items: center;
 
   }
+
   .menu-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: left;
-    margin-top: 20px;
+    margin-top: 10px;
 
   }
+
   .menu-wrapper-two {
     display: flex;
     flex-direction: row;
@@ -1227,60 +1344,71 @@
     justify-content: left;
     margin-top: 20px;
   }
+
   .lesson-memu {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
   }
+
   .menu-data-previewer {
-    margin-top: 20px;
+    margin-top: 0px;
     display: flex;
     flex-direction: row;
     background: white;
     justify-content: flex-start;
   }
-  .menu-data-previewer-two{
-    margin-top: 10px;
+
+  .menu-data-previewer-two {
+    margin-top: 0px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background: white;
     justify-content: flex-start;
   }
-  .inputTable{
+
+  .inputTable {
     display: flex;
     flex-direction: column;
     margin: 10px;
   }
-  .data-table{
+
+  .data-table {
     width: 67%;
     margin-left: 3%;
   }
+
   .alert-info {
     margin-top: 20px;
   }
-  .Vertical{
+
+  .Vertical {
     width: 20px;
     margin: 0 auto;
     line-height: 24px;
     font-size: 10px;
   }
+
   .el-table th div {
     padding: 0px;
   }
+
   .settings-table-header {
-    margin-left: -4px;
+    margin-left: 4px;
     display: flex;
-    flex-flow: row;
-    justify-content: start;
-    align-items: center;
+    flex-flow: column;
+    justify-content: center;
+    // align-items: center;
     min-height: 50px;
     // max-height: 100px;
   }
-  .row-frame{
+
+  .row-frame {
     display: flex;
     flex-direction: row;
   }
+
   .hidden-selector {
     left: -40px;
     top: -20px;
@@ -1290,6 +1418,7 @@
     display: hidden;
     box-sizing: border-box;
   }
+
   .selector-for-hidden-selector {
     display: block;
     min-width: 24px;
@@ -1300,22 +1429,26 @@
     box-shadow: 0px 0px 0px transparent;
     margin: 2px;
     transition: 0.4s ease-in;
+
     &:hover {
       border: 0px solid #212121;
-      box-shadow: 1px 1px 2px 2px rgba(0,0,0,.5);
+      box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, .5);
       transition: 0.4s ease-in;
     }
+
     &.sample {
       width: 24px;
       //border: 1px solid #FFF;
       box-shadow: 2px 2px 5px #666;
     }
+
     // & div {
     //   border-radius: 999px;
     //   width: 24px;
     //   height: 24px;
     // }
   }
+
   .preivew-table {
     margin: 20px;
     width: calc(100% - 40px);
@@ -1328,45 +1461,61 @@
   #menu-continue-switch-btn .el-switch__label * {
     color: #BBB;
   }
+
   #menu-continue-switch-btn .el-switch__label.is-active * {
     color: #212121;
   }
+
   .el-tabs__header.is-hidden {
     display: none;
   }
+
   .title-name .el-input__inner, .title-name .el-input {
     min-width: 40px;
-    padding: 0 0 0 4px ;
+    padding: 0 0 0 4px;
   }
+
   .title-text .el-input__inner, .title-text .el-input {
     min-width: 40px;
-    padding: 0 0 0 4px ;
+    padding: 0 0 0 4px;
   }
+
   .title-select .el-input__inner, .title-select .el-input {
     min-width: 60px;
-    padding: 0 0 0 4px ;
+    padding: 0 0 0 4px;
   }
+
   .settings-table-header .el-button {
     min-width: 20px;
     padding: 2px 4px;
     margin: 1px;
   }
+
   .settings-table-header .el-button span {
     font-size: 6px;
   }
+
   #settings-table td {
     padding: 0px;
     border: none;
   }
-  #settings-table td .cell{
+
+  #settings-table td .cell {
     padding: 0px;
     border: none;
   }
+
   #settings-table td .setting-table-cell {
     /* background: #DDD; */
     border: none;
   }
+
   #settings-table .el-input__inner {
+    /*border: none;*/
+    background: transparent;
+  }
+
+  #input-text .el-input__inner {
     border: none;
     background: transparent;
   }
