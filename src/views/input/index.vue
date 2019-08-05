@@ -605,9 +605,9 @@
         src: step,
         activeStep: 0,
         steps: [
-          {title: '引入数据', description: '导入Excel文件或填写数据', picture: 'el-icon-edit'},
-          {title: '规范数据', description: '标记学号、丢弃无用数据、为成绩项选择类别', picture: 'el-icon-upload'},
-          {title: '校验数据', description: '校验并确认您的导入结果', picture: 'el-icon-check'}
+          { title: '引入数据', description: '导入Excel文件或填写数据', picture: 'el-icon-edit' },
+          { title: '规范数据', description: '标记学号、丢弃无用数据、为成绩项选择类别', picture: 'el-icon-upload' },
+          { title: '校验数据', description: '校验并确认您的导入结果', picture: 'el-icon-check' }
         ],
         // step2 中左侧表格选择标头数据
         headTypeList: [
@@ -616,8 +616,8 @@
             label: '默认(丢弃)',
             color: 'repeating-linear-gradient(45deg ,#FFCC33 0, #FFCC33 4px, #665 4px, #665 8px)'
           },
-          {value: 'sid', label: '学号列', color: COLOR_SID},
-          {value: 'title', label: '列项名', color: COLOR_UNFINISHED},
+          { value: 'sid', label: '学号列', color: COLOR_SID },
+          { value: 'title', label: '列项名', color: COLOR_UNFINISHED },
           {
             value: 'useless',
             label: '无用项',
@@ -645,7 +645,7 @@
               'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
               'clear_custom': {
                 name: '清除所有表格',
-                callback: function () {
+                callback: function() {
                   this.clear()
                 }
               },
@@ -662,7 +662,7 @@
            * @see https://handsontable.com/docs/6.2.0/tutorial-introduction.html
            */
           // 每次表格中数据改变，此时触发此函数
-          afterChange: function () {
+          afterChange: function() {
             let importDataset = this.getData()
             // 返回不是全空的行
             importDataset = importDataset.filter((row, rowIndex, arr) => {
@@ -671,7 +671,7 @@
               })
             })
             const env = this.rootElement.__vue__
-            env.$store.dispatch('saveImportTable', {table: importDataset})
+            env.$store.dispatch('saveImportTable', { table: importDataset })
           }
         }, // hotSettings-end
         importDataHasHead: true,
@@ -776,7 +776,7 @@
             },
             {
               validator: col_count.find(item => item !== 0) && Math.max(...col_count) !== col_count.find(item => item !== 0),
-              action: () => this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, {type: 'warning'}), this.importAlertList),
+              action: () => this.addAlert(Object.assign(REQUIRE_STUDENT_COLUMN_LEFT, { type: 'warning' }), this.importAlertList),
               close: () => (this.importAlertList = this.closeAlert(this.importAlertList, REQUIRE_STUDENT_COLUMN_LEFT))
             }
           ]
@@ -785,9 +785,9 @@
             else matchRule.close()
           })
           return [
-            {id: 1, title: '学生数', meaning: '导入的行数', content: importRows},
-            {id: 2, title: '类别数', meaning: '导入的列数', content: importCols},
-            {id: 3, title: '共计' + count + '条记录'}
+            { id: 1, title: '学生数', meaning: '导入的行数', content: importRows },
+            { id: 2, title: '类别数', meaning: '导入的列数', content: importCols },
+            { id: 3, title: '共计' + count + '条记录' }
           ]
         }
       },
@@ -804,10 +804,10 @@
           // let undefinedTitles = []
           // switch rules
           const t_rules = [
-            {type: 'sid', action: () => sidCount++},
-            {type: 'title', action: () => titleCount++},
-            {type: 'useless', action: () => uselessCount++},
-            {type: 'default', action: () => defaultCount++}
+            { type: 'sid', action: () => sidCount++ },
+            { type: 'title', action: () => titleCount++ },
+            { type: 'useless', action: () => uselessCount++ },
+            { type: 'default', action: () => defaultCount++ }
           ]
           // executing switch by rule
           settingsTable.titles.forEach(title => {
@@ -873,9 +873,9 @@
           })
           return [
             // { id: 1, title: '学生数', content: '24' },
-            {id: 2, title: '导入的成绩小项数', content: titleCount},
+            { id: 2, title: '导入的成绩小项数', content: titleCount },
             // { id: 3, title: '学生数', content: '24' },
-            {id: 4, title: '目前将有' + (uselessCount + defaultCount) + '列被废弃'}
+            { id: 4, title: '目前将有' + (uselessCount + defaultCount) + '列被废弃' }
           ]
         }
       }
@@ -1170,7 +1170,7 @@
       }
     },
     watch: {
-      importAlertList: function () {
+      importAlertList: function() {
         const len = this.importAlertList.length
         this.$notify({
           title: '警告',
@@ -1179,7 +1179,7 @@
           duration: 9000
         })
       },
-      settingsAlertList: function () {
+      settingsAlertList: function() {
         const len = this.settingsAlertList.length
 
         if (len > 0) {
@@ -1191,7 +1191,7 @@
     },
     created() {
       // 将table获取到的数据存入store中
-      this.$store.dispatch('saveImportTable', {table: []})
+      this.$store.dispatch('saveImportTable', { table: [] })
       // 请求所有课程组信息
       this.fetchLesson()
     }

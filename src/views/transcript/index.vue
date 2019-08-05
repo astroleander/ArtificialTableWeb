@@ -64,7 +64,7 @@ index
       >
       </transcript-predict>
       <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
-      <transcript-weight v-show='getMode("stats")'
+      <transcript-weight v-if='getMode("stats")'
                          :avg="weightData.avg"
                          :description="weightData.description"
                          :total="weightData.total"
@@ -163,19 +163,24 @@ export default {
     this.fetchDataset()
   },
   methods: {
-    // 获取当前模式（table/state）
+    // 获取当前模式（table/state/predict）
     getMode: function(code) {
       if (code === this.shownTab) return true
       else false
     },
-    // 转换模式 table 与 state
+    // 转换模式 table / state / predict
     switchMode: function(code) {
+      if (code === 'stats') {
+        this.initTable()
+        this.fetchDataset()
+      }
       this.shownTab = code
     },
     // 创建成绩表
     buildTable: function() {
       // build table cell
       // each student map to a row on table
+      this.table = []
       this.model.studentMap.forEach(element => {
         const row = {
           // add student info (first two column line of the table)
@@ -323,6 +328,14 @@ export default {
       for (let i = 0; i < 5; i++) {
         this.weightData.gradeSection.push(0)
       }
+    },
+    initTable() {
+      // this.table = null
+      this.model.points = null
+      this.model.studentMap = new Map()
+      this.model.titles = []
+      this.model.titleSumMap = new Map()
+      this.model.titleGroupMap = new Map()
     },
     // 检验当前数据是否合法
     judgeLegal() {

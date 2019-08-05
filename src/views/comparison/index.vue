@@ -506,13 +506,13 @@ export default {
         const titleGroupWeight = title.titleGroup_message.weight
         // 根据小项的titleGroup_id得到大项及其权重
         if (titleGroupWeight) {
-          //const titleGroup = model.titleGroupMap.get(titleGroup_id)
-          //const titleGroupWeight = titleGroup.weight
-          //const titleSum = model.titleSumMap.get(titleGroup_id)
-          //const titleGroupSum = model.titleGroupMap.get('TitleGroupSum')
-          //const sum = titleSum * titleGroupSum
+          // const titleGroup = model.titleGroupMap.get(titleGroup_id)
+          // const titleGroupWeight = titleGroup.weight
+          // const titleSum = model.titleSumMap.get(titleGroup_id)
+          // const titleGroupSum = model.titleGroupMap.get('TitleGroupSum')
+          // const sum = titleSum * titleGroupSum
           // 分值*大项权重数值*小项权重数值/10000
-          score = pointItem.pointNumber * titleWeight  / 100
+          score = pointItem.pointNumber * titleWeight / 100
           flag = true
           // console.log('point.id = ' + pointItem.id)
           // console.log('title_id = ' + title_id)
