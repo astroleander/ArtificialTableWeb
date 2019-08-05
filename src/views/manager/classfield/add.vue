@@ -4,7 +4,7 @@ supplement: 为课程添加班级form
 <template>
   <div class="app-container rowframe">
     <el-card class="form-box">
-      <div slot="header">
+      <div slot="header" class="head">
         <span class="rowframe title">添加班级</span>
       </div>
       <div v-if="!visible">
@@ -13,9 +13,6 @@ supplement: 为课程添加班级form
       <el-form :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="100px">
         <el-form-item label="班级名称" prop="name">
           <el-input v-model="form.name"  placeholder="请输入班级名称"></el-input>
-        </el-form-item>
-        <el-form-item label="班级编号" prop="cid" required>
-          <el-input v-model="form.cid" placeholder="请输入班级编号"></el-input>
         </el-form-item>
         <el-form-item label="任课教师" prop="teacher_id">
           <el-select v-model="form.teacher_id" placeholder="请选择任课教师">
@@ -77,16 +74,6 @@ const validateName = (rule, value, callback) => {
     callback()
   }
 }
-const validateClassId = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入班级编号'))
-  } else if (!Number.isInteger(+value)) {
-    callback(new Error('输入数字值'))
-  } else if (value.replace(/(^\s*)|(\s*$)/g, '').length === 0) {
-    callback(new Error('班级编号不可为空'))
-  }
-  callback()
-}
 const validateYear = (rule, value, callback) => {
   var date = new Date().getFullYear()
   if (value < date) {
@@ -126,7 +113,6 @@ export default {
       }],
       form: {
         name: '',
-        cid: '',
         teacher_id: '',
         lesson_id: '',
         room: '',
@@ -141,9 +127,6 @@ export default {
         name: [
           { required: true, message: '请输入班级名称', trigger: 'blur' },
           { required: true, trigger: 'blur', validator: validateName }
-        ],
-        cid: [
-          { required: true, validator: validateClassId, trigger: 'blur' }
         ],
         teacher_id: [
           { required: true, message: '请选择任课教师', trigger: 'blur' }
@@ -214,12 +197,8 @@ export default {
                 message: '添加教学班成功',
                 type: 'success'
               })
-              const class_id = response.succeed_ids[0].id
-              this.$router.push({
-                name: 'addClassField',
-                params: { id: class_id, type: 'add' },
-                query: { id: class_id }
-              })
+              // const class_id = response.succeed_ids[0].id
+              this.$router.push({ path: '/class/index' })
             } else {
               this.$message({
                 message: '插入新班级项已存在，无法重复添加',

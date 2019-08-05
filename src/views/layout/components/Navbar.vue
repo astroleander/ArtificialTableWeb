@@ -120,6 +120,7 @@ export default {
     line-height: 58px;
     height: 50px;
     float: left;
+    width: 80px;
     padding: 0 10px;
   }
   .screenfull {

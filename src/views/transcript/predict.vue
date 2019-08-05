@@ -7,13 +7,15 @@
     <el-table
       :data="viewDataset"
       v-loading.body="loading"
+      stripe
+      border
       ref="table" id="transcript-predict"
       element-loading-text="Loading"
       class="table"
       height="800"
       @selection-change="handlePredictdata">
 
-      <el-table-column label="预测操作" type="selection" ></el-table-column>
+      <el-table-column  type="selection" width="100" class="el-checkbox"></el-table-column>
       <el-table-column label="序号" >
         <template slot-scope="scope">
           {{scope.$index+1}}
@@ -26,18 +28,27 @@
           <el-button @click="handlePredict" type="primary">批量预测</el-button>
         </template>
         <template slot-scope="scope">
-          <el-button @click="handlePredictOne(scope.row)" type="primary">预测</el-button>
+          <el-button @click="handlePredictOne(scope.row)" type="primary" plain>预测</el-button>
         </template>
       </el-table-column>
     </el-table>
   </section>
+      <el-dialog :visible.sync="showResult"
+      width="50%"
+      title="预测结果">
+          <predict-result></predict-result>
+      </el-dialog>
   </div>
 </template>
 
 <script>
 import Predictmodel from '@/viewmodel/student'
+
 export default {
   name: 'predict',
+  components: {
+    PredictResult: () => import('./PredictResult.vue')
+  },
   props: {
     view: { // table页面
       type: Array,
@@ -55,7 +66,8 @@ export default {
       sidList: [],
       studentInfo: [],
       loading: true,
-      showAlert: false
+      showAlert: false,
+      showResult: false
     }
   },
   methods: {
@@ -69,7 +81,8 @@ export default {
         // 将传回来的数据存到store
         this.$store.dispatch('savePredictTable', { table: result })
         // this.$store.dispatch('saveStudentInfoTable', { table: result })
-        this.$router.push({ path: '/predict' })
+        this.showResult = true
+        // this.$router.push({ path: '/predict' })
         // var aaa = this.$store.state.table.predictTable
       })
     },
@@ -90,8 +103,9 @@ export default {
         // Predictmodel.requestPredict(JSON.parse(this.sidList)).then(result => {
           // 将传回来的数据存到store
           this.$store.dispatch('savePredictTable', { table: result })
+          this.showResult = true
           // this.$store.dispatch('saveStudentInfoTable', { table: result })
-          this.$router.push({ path: '/predict' })
+          // this.$router.push({ path: '/predict' })
           // var aaa = this.$store.state.table.predictTable
         })
       }
@@ -117,6 +131,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+    .el-table__header .el-table-column--selection .cell .el-checkbox:after {
+        content: '全选';
+    }
 </style>

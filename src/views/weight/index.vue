@@ -66,7 +66,7 @@ div(head)
           @notifyDel="handleDelTitleGroup">
         </at-lesson-card>
       </div>
-      <div v-else>
+      <!--<div v-else>
         <at-titlegroup-card class="title4_box"
                             v-for="(item, index) in titleGroupsInfo"
                             :key="index"
@@ -77,7 +77,7 @@ div(head)
                             @notifyAdd="handleAddTitle"
                             @notifyDel="handelDelTitle">
         </at-titlegroup-card>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -264,8 +264,6 @@ div(head)
       },
       // 根据college_id获取该学校课程组信息Lesson（管理员）
       fetchLessonData(college_id) {
-        console.log('123456789')
-        console.log(this.use_manager)
         lessonViewModel
           .requestByCollegeId(college_id)
           .then(response => {
@@ -293,10 +291,6 @@ div(head)
       },
       // 根据 teacher_id获取该教师的教学班ClassInfo（教师）
       fetchClassInfoData(teacher_id) {
-        console.log('987654321')
-        console.log(this.use_manager)
-        console.log(this.handle)
-        console.log(this.use_manager)
         classInfoModel
           .requestByTeacherId(teacher_id)
           .then(response => {

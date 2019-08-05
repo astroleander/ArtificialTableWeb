@@ -22,11 +22,12 @@ DONE: post 返回需要 ID
 
         <!-- table menu-->
         <el-row class="menu">
-            <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新列</el-button>
+            <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新成绩项</el-button>
             <el-button @click="onClickedExportTable()" type="primary" icon="el-icon-download">导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
             <el-button @click="onClickedUpload()"
               :type="this.$store.state.table.changed? 'warning' : 'primary'" icon="el-icon-upload">保存修改</el-button>
+            <el-button @click="reload()" type="primary" icon="">成绩汇总计算</el-button>
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
         </el-row>
@@ -46,6 +47,10 @@ DONE: post 返回需要 ID
 
             <el-table-column label="学号" prop="student.sid"
                              fixed min-width="100px">
+            </el-table-column>
+
+            <el-table-column label="总成绩" prop="totle"
+                             fixed min-width="150px">
             </el-table-column>
 
             <el-table-column
@@ -165,6 +170,10 @@ DONE: post 返回需要 ID
         info: {
           type: Object,
           require: false
+        },
+        totle: {
+          type: Array,
+          require: false
         }
       },
       data: function() {
@@ -182,6 +191,8 @@ DONE: post 返回需要 ID
           // every time open the dialog will re-set the dataset
           menuAddTitleDialogVisible: false,
           menuExportDialogVisible: false,
+          // 最后成绩
+          finalList: [],
           // 暂时不用携带数据
           // menuDialogDataset: {}
           // 载入状态
@@ -194,6 +205,9 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        reload() {
+          location.reload()
+        },
         proving(e, newItem, title) {
           const sid = newItem.student_id
           var name

@@ -10,9 +10,6 @@ router.beforeEach((to, from, next) => {
   if (from.path.match(/\/transcript\//)) {
     if (store.state.table.changed === true) {
       confirm('成绩表页面还有数据未保存，请点击 "保存修改" 按钮')
-      console.log(router)
-      console.log(from)
-      console.log(to)
       window.history.pushState(null, null, '#' + from.fullPath)
       return
     }

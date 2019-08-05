@@ -231,8 +231,6 @@ export default {
       console.log(idx)
     },
     showClass(row) {
-      console.log('1234567890')
-      console.log(row)
       UserViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token)
         .then(res => {
           this.teachers = res
