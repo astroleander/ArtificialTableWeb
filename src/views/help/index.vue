@@ -32,6 +32,14 @@
                     :background="Info[6].backgroud"
                     :router="Info[6].router">
             </at-card>
+            <i style="margin-left: 20px;margin-top: 90px;margin-right: 20px"class="el-icon-video-play"></i>
+
+            <at-card
+                    :title="Info[7].title"
+                    :description="Info[7].description"
+                    :background="Info[7].backgroud"
+                    :router="Info[7].router">
+            </at-card>
 
         </div>
         <div class="container" v-else="this.use_manager">
@@ -113,24 +121,29 @@ export default {
         {
           title: '添加课程',
           description: '教研室主任需要为学校添加课程组',
-          router: '/class/index',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
-
-        },
-        {
-          title: '添加班级',
-          description: '教研室主任需要为各个课程组添加班级',
-          router: '/class/index',
+          router: '/manager/lesson/addLesson',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
 
         },
         {
           title: '添加成绩类别并调整权重',
           description: '教研室主任需要为各个课程组添加并调整成绩类别权重',
-          router: '/class/index',
+          router: '/manager/weight',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
-
+        },
+        {
+          title: '管理教师信息',
+          description: '教研室主任可查看、添加、删除任课教师信息',
+          router: '/manager/user/list',
+          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+        },
+        {
+          title: '查看学生信息',
+          description: '教研室主任可查看学生信息',
+          router: '/manager/student/list',
+          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
         }
+
       ]
       // 继续加
     }

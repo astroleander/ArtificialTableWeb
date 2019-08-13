@@ -178,9 +178,7 @@
             :data="settingsPageData.dataset"
             height="calc(100vh - 260px)"
             border
-            row-class-name="success-row">
-            <template>
-            </template>
+            :row-class-name="tableRowClassName">
             <el-table-column
               v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
               min-width="150px" width="200px">
@@ -386,10 +384,10 @@
   } from '@/utils/alerts'
 
   const COLOR_SID = '#1976D2'
-  const COLOR_UNFINISHED = '#FFCC33'
+  const COLOR_UNFINISHED = '#ffb635'
   const COLOR_TITLE = '#4caf50'
   const CELL_COLOR_SID = 'linear-gradient(135deg, ' + COLOR_SID + ', ' + COLOR_SID + ' 6px , #FFF 10px, #FFF 100%)'
-  const CELL_COLOR_TITLE = '#FFF'
+  const CELL_COLOR_TITLE = 'linear-gradient(135deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 6px , #FFF 10px, #FFF 100%)'
   const CELL_COLOR_USELESS = '#DDD'
   const COLOR_LEFT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_TITLE + ', ' + COLOR_TITLE + ' 50% ,' + COLOR_UNFINISHED + ' 50%, ' + COLOR_UNFINISHED + ' 100%)'
   const COLOR_RIGHT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 50% ,' + COLOR_TITLE + ' 50%, ' + COLOR_TITLE + ' 100%)'
@@ -881,6 +879,13 @@
       }
     },
     methods: {
+      tableRowClassName({ row }) {
+        if (row.number === 1) {
+          return 'success'
+        } else {
+          return ''
+        }
+      },
       onSidChecked(idx) {
         if (idx !== false) {
           idx = idx - 1
@@ -1497,19 +1502,18 @@
 
   #settings-table td {
     padding: 0px;
-    border: none;
+    /* border: none;*/
   }
 
   #settings-table td .cell {
     padding: 0px;
-    border: none;
+    /*border: none;*/
   }
 
   #settings-table td .setting-table-cell {
     /* background: #DDD; */
     border: none;
   }
-
   #settings-table .el-input__inner {
     /*border: none;*/
     background: transparent;
