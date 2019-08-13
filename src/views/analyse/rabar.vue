@@ -70,19 +70,19 @@
         }, true)
       }
     },
-      watch: {
-          dataItem: function() {
-              if (this.dataItem) {
-                  this.drawRadar()
-              }
-          }
-      },
-      mounted() {
+    watch: {
+      dataItem: function() {
+        if (this.dataItem) {
           this.drawRadar()
-      },
-      created() {
-          this.drawRadar()
-      },
+        }
+      }
+    },
+    mounted() {
+      this.drawRadar()
+    },
+    created() {
+      this.drawRadar()
+    }
   }
 </script>
 

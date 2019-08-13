@@ -10,7 +10,6 @@
       text-color="#FFF"
       active-text-color="gold"
     >
-    <sidebar-item :routes="routes"></sidebar-item>
 
     <el-menu-item v-if="this.use_manager" index="999" disabled divided id="divided">
       <template slot="title">
@@ -71,6 +70,8 @@
         <div style="background-color: #FFF; height: 1px"></div>
     </el-submenu>
 
+    <sidebar-item v-else='this.use_manager' :routes="routes"></sidebar-item>
+
 
     <!--<el-submenu v-if="this.use_manager" index="9991">
       <template slot="title">
@@ -95,7 +96,7 @@
         <div style="background-color: #FFF; height: 1px;width: 100%"></div>
     </el-submenu>-->
 
-    <!--<el-submenu v-if="this.use_manager" index="9993">
+    <el-submenu v-if="this.use_manager" index="9993">
       <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理学生信息</span>
@@ -110,14 +111,14 @@
       </router-link>
       <div style="background-color: #FFF; height: 1px;width: 100%"></div>
 
-      <router-link to="/manager/student/add">
+      <!--<router-link to="/manager/student/add">
         <el-menu-item v-if="this.use_manager" index="9995">
             <svg-icon icon-class="addUser"></svg-icon>
             <span >添加学生</span>
         </el-menu-item>
       </router-link>
-      <div style="background-color: #FFF; height: 1px;width: 100%"></div>
-    </el-submenu>-->
+      <div style="background-color: #FFF; height: 1px;width: 100%"></div>-->
+    </el-submenu>
     </el-menu>
   </el-scrollbar>
 </template>
