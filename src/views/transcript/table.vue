@@ -94,12 +94,6 @@ DONE: post 返回需要 ID
 
                         <div v-if="getPointItem(scope, title)" class="point-div-addons">
             <span class="operator">
-              <!-- <label :for='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="trash" /></label>
-              <input :id='"at-operator-delete-button-"+title.id+"-"+scope.row.student.id' type="button"
-                @click="onDeleteClicked({scope, title})" class="operator-button"/>
-              <label :for='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id'><svg-icon icon-class="pencil" /></label>
-              <input :id='"at-operator-modify-button-"+title.id+"-"+scope.row.student.id' type="button"
-                @click="onModifyClicked({scope, title})" class="operator-button"/> -->
             </span>
                         </div>
                         <div v-else class="point-div-addons">
@@ -429,6 +423,9 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
+          this.viewDataset.forEach(data => {
+            data.totle = parseFloat(data.totle).toFixed(2)
+          })
           this.loading = false
         }
       }

@@ -88,7 +88,7 @@
 
 <style lang="scss" scoped>
     .box{
-        width: 700px;
-        height: calc(100vh - 110px);
+        width: 500px;
+        height: 500px;
     }
 </style>

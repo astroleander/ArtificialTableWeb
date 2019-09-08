@@ -10,6 +10,11 @@
 <script>
 export default {
   name: 'AppMain',
+  data() {
+    return {
+      name: ['首页', '添加班级', '班级信息', '成绩管理', '班级成绩比较', '课程分析','导入成绩']
+    }
+  },
   computed: {
     // key() {
     //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()

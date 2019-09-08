@@ -37,8 +37,6 @@ index
       <label  for="tab-one" id="tab-one-label" class="tab">成绩表</label>
       <label  for="tab-two" id="tab-two-label" class="tab">成绩分析</label>
       <label  for="tab-three" id="tab-three-label" class="tab">成绩预测</label>
-      <!-- <label for="tab-three" id="tab-three-label" class="tab">班级成员</label> -->
-      <!-- <label for="tab-four" id="tab-four-label" class="tab">成绩日志</label> -->
     </div>
 
 
@@ -262,6 +260,7 @@ export default {
     // 加载成绩表信息
     fetchDataset() {
       // const lesson_id = this.info.lesson_id
+      // console.log('11111111111' + this.id)
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
@@ -455,19 +454,9 @@ export default {
         const titleGroupWeight = title.titleGroup_message.weight
         // 根据小项的titleGroup_id得到大项及其权重
         if (titleGroupWeight) {
-          // const titleGroup = this.model.titleGroupMap.get(titleGroup_id)
-          // const titleGroupWeight = titleGroup.weight
-          // 分值*大项权重数值*小项权重数值/10000
-          // const titleSum = this.model.titleSumMap.get(titleGroup_id)
-          // const titleGroupSum = this.model.titleGroupMap.get('TitleGroupSum')
-          // const sum = titleSum * titleGroupSum
           score = pointItem.pointNumber * titleWeight / 100
-          console.log(score)
+          // console.log(score)
           flag = true
-          // console.log('point.id = ' + pointItem.id)
-          // console.log('title_id = ' + title_id)
-          // console.log('titleGroup_id =' + titleGroup_id)
-          // console.log('score = ' + pointItem.pointNumber + '*' + titleWeight + '*' + titleGroupWeight + ' = ' + score)
         } else {
           // 若无法根据小项中的titleGroup_id获取大项
           // 计算成绩失败,给出提示信息

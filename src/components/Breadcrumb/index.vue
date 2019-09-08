@@ -42,7 +42,7 @@ export default {
       let matched = this.$route.matched.filter(item => item.name)
       const first = matched[0]
       if (first) {
-        matched = [{ path: '/', meta: { title: '英语课程成绩管理系统' }}].concat(matched)
+        matched = [{ path: '', meta: { title: '英语课程成绩管理系统' }}].concat(matched)
       }
       this.levelList = matched
     }
