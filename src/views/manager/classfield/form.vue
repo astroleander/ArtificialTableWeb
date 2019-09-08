@@ -73,7 +73,7 @@
                                 value-format='yyyy'
                         ></el-date-picker>
                     </el-form-item>
-                    <el-form-item label='所属院系' prop='college_id'>
+                    <!--<el-form-item label='所属院系' prop='college_id'>
                         <el-select
                                 v-model='form.college_id'
                                 placeholder='请选择学生所在院系'
@@ -96,7 +96,7 @@
                                     :value='item.id'
                             ></el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-form-item>-->
                     <el-form-item>
                         <el-button type='primary' @click='submitForm("ruleForm")'>添加单个学生</el-button>
                         <el-button @click='onReset'>重新填写</el-button>
@@ -563,6 +563,8 @@ export default {
       }
     },
     submitForm: function(formName) {
+      this.form.college_id = 1
+      this.form.major_id = 1
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.form['classInfo_id'] = this.classInfo_id
@@ -583,14 +585,16 @@ export default {
           this.AddDialogVisible = false
           this.handleAddEnd()
         } else if (res.repeated_ids.length > 0) {
-          this.$message({
-            type: 'error',
-            message: '该学号已占用'
+          this.$confirm('该学号已占用', '提示', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
           })
         } else {
-          this.$message({
-            type: 'error',
-            message: '添加失败'
+          this.$confirm('添加失败', '提示', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
           })
         }
       })
@@ -630,9 +634,12 @@ export default {
       this.classInfo_id = this.$router.currentRoute.params.id
       this.fetchTableStudentInfo()
     } else {
-      this.$message({
-        type: 'error',
-        message: '缺少班级参数!'
+      this.$confirm('此页面依赖于班级信息界面，请到班级信息页面选择班级查看, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({ path: '/class/index' })
       })
     }
   }

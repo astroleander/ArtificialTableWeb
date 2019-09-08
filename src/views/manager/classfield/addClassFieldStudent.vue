@@ -272,27 +272,13 @@ export default {
       this.selectedMajorId = 1
       this.selectedCollegeId = 1
       if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
-        this.$message({
-          type: 'error',
-          message: '尚未选择学生的入学年份'
+        this.$confirm('您尚未选择学生的入学学年，请在页面左上方选择', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
         return
       }
-      /* if (sid_idx === -1 || name_idx === -1) {
-        this.$message({
-          type: 'error',
-          message: '必须为导入到界面的数据选择对应的学号或姓名'
-        })
-        return
-      }
-      if (sid_idx === name_idx) {
-        this.$message({
-          type: 'error',
-          message: '学号和姓名不能是同一列'
-        })
-        return
-      } */
-
       // generate student objs list
       const studentList = []
       const Student = () => {
@@ -327,9 +313,9 @@ export default {
         const succeed_ids = res.succeed_ids
         const repeated_ids = res.repeated_ids
         const failed_sids = res.failed_sids
-        console.log('succeed_ids = ' + succeed_ids)
-        console.log('repeated_ids = ' + repeated_ids)
-        console.log('failed_sids = ' + failed_sids)
+        // console.log('succeed_ids = ' + succeed_ids)
+        // console.log('repeated_ids = ' + repeated_ids)
+        // console.log('failed_sids = ' + failed_sids)
         const classFieldList = []
         if (succeed_ids.length + repeated_ids.length > 0) {
           succeed_ids.forEach(item => {
@@ -408,6 +394,9 @@ export default {
           if (response) {
             // const unsucceed = params.length - response.length
             const message = response.length + '条学生数据添加到班级中,' + (params.length - response.length) + '条学生数据由于已存在未能成功添加到班级中'
+            // clean the store
+            this.importStudentList = null
+            this.seletedSemester.year = null
             this.$confirm(message, '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',

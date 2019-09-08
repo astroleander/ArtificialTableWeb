@@ -37,19 +37,19 @@ export const REQUIRED_AT_LEAST_A_TITLE = {
 
 export const REQUIRED_TITLEGROUP = {
   id: 'DJAIOPHDAIODHA',
-  title: '您尚有未分类的小项, 点击列头的「类别」框来为小项选择一个类别。',
+  title: '您尚有未分类的成绩项, 点击表头的「成绩类别」框来为成绩选择一个类别。',
   type: 'error'
 }
 
 export const REQUIRED_TITLE = {
   id: 'FHAOIFOI',
-  title: '您尚有未命名的小项。点击列头的「列名」框来为小项输入一个名字。',
+  title: '您尚有未命名的成绩项。点击列头的「成绩名」框来为成绩项输入一个名字。',
   type: 'error'
 }
 
 export const NO_TITLE_GROUP = {
   id: 'fIOSHFoiahsf',
   title: '需要添加分数类别 (大项)',
-  description: '您当前选择的课程无分数组大项信息，将无法完成导入流程，请到左侧 「权重调整」 页面中添加大项, 若您是教师, 请联系管理员',
+  description: '您当前选择的课程无分数组大项信息，将无法完成导入流程，若您是教师, 请联系管理员为该课程组添加成绩类别大项及其权重',
   type: 'error'
 }

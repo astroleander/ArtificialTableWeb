@@ -104,7 +104,7 @@
 
 <style lang="scss" scoped>
   .bar{
-    height: calc(100vh - 110px);
+    height: 500px;
     width: 800px;
   }
 </style>

@@ -83,9 +83,13 @@ export default {
     },
     fetchTitleGroupList: function() {
       // DONE: Add request params
-      const lessonId = this.classInfo && this.classInfo.lesson_id || 1
+      console.log('11111111')
+      const lessonId = this.classInfo && this.classInfo.lesson_id
+      console.log(this.classInfo)
       titleGroupViewModel.requestTitleGroups({ lesson_id: lessonId }).then(list => {
+        console.log(list)
         this.titleGroupList = list
+        console.log(this.titleGroupList)
       }).catch(err => {
         console.error(err)
         this.$message({

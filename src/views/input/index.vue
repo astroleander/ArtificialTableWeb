@@ -206,6 +206,7 @@
                     </el-option>
                   </el-select>-->
                   <!--<el-radio v-model="title.type" label="useless">丢弃</el-radio>
+
                 <!-- 如果 type === title，渲染选择框 -->
                   <template v-if="title.type === 'title'">
                     <el-radio v-model="title.type" label="useless">丢弃</el-radio>
@@ -232,13 +233,15 @@
                   <!--<template v-else-if="title.type === 'sid'">
                   </template>
                   <!-- 如果 type === default，渲染默认框 -->
-                  <!--<template v-else-if="title.type === 'default'">
-                    <el-button @click="onTitleTypeClick(title, 'sid')"
+                  <template v-else-if="title.type === 'default'">
+                      <el-radio v-model="title.type" label="useless">丢弃</el-radio>
+                      <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
+                    <!--<el-button @click="onTitleTypeClick(title, 'sid')"
                                size='mini' type='primary'>学号</el-button>
                     <el-button @click="onTitleTypeClick(title, 'title')"
                                size='mini' type='primary' >成绩</el-button>
                     <el-button @click="onTitleTypeClick(title, 'useless')"
-                               size='mini' type='danger'>其它</el-button>
+                               size='mini' type='danger'>其它</el-button>-->
                   </template>
                   <!-- 如果 type !== sid || title || default，则渲染"无用项"框 -->
                   <template v-else-if="title.type === 'useless'">
@@ -675,7 +678,7 @@
         importDataHasHead: true,
         importDataHasTail: false,
         sidCheckedList: [],
-        DataHasHead: [
+        /* DataHasHead: [
           {
             id: 1,
             name: '包含列名',
@@ -686,7 +689,7 @@
             name: '不包含列名',
             value: false
           }
-        ],
+        ],*/
         importAlertList: [],
         settingsAlertList: [],
         // 第二页的数据存储 title + dataset
@@ -1107,15 +1110,16 @@
         pointViewModel.requestImportPoints(submitDataset).then(res => {
           this.activeStep = 3
           // 4037
-          console.log(res && String(res.code))
+          // console.log(res && String(res.code))
           if ((res && String(res.code) === '2011') || (res && String(res.code) === '2001')) {
-            console.log('数据导入成功')
+            // console.log('数据导入成功')
             this.$message({
               message: '数据导入成功',
               type: 'success'
             })
+            this.submitErrorMessage.responsed = true
           } else if (res && String(res.code) === '2019') {
-            console.log('数据导入失败')
+            // console.log('数据导入失败')
             this.$message({
               message: '数据已经导入, 部分数据存在冲突',
               type: 'warning'
@@ -1148,12 +1152,13 @@
       // 处理返回错误数据
       handleSubmitFeedback(response) {
         if (response.code === '4037') {
-          console.log(response)
-
-          this.$message({
-            message: '数据导入失败,请查看导入成绩的学号是否与课程组匹配',
-            type: 'error'
+          // console.log(response)
+          this.$confirm('数据导入失败,请查看导入成绩的学号是否与课程组匹配', '提示', {
+            type: 'error',
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
           })
+          this.submitErrorMessage.responsed = true
         } else {
           const errorList = response.subjects
           // deleted duplicated
@@ -1164,7 +1169,7 @@
           this.submitErrorMessage.errorTitleNameList = errorList['error_title_message'] || []
           this.submitErrorMessage.successTitleList = errorList['succeed_title_message'] || []
           this.submitErrorMessage.successPointList = errorList['succeed_point_message'] || []
-          console.log(this.submitErrorMessage)
+          // console.log(this.submitErrorMessage)
         }
       },
       getStudentNumber(scope) {

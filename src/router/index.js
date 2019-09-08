@@ -63,27 +63,50 @@ export const constantRouterMap = [
     }]
   },
   {
-    // 主界面
     path: '/mainpage',
     component: Layout, // 上方引入的外部框架模版
-    // 重定位 用于返回主界面模版页面
-    redirect: 'index',
-    // 路由名称
-    name: 'mainpage',
     // 创建子路由，进行跳转到菜单相应子模块中
     children: [{
+      path: 'index',
+      name: 'mainpage',
       // 左侧菜单栏中标题和图片应用
       meta: { title: '成绩管理', icon: 'chengji' },
-      path: '',
       // 连接响应vue文件
       component: () => import('@/views/mainpage/index')
     }]
   },
+  /**
+     * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
+     */
   {
-    path: urls.input,
-    // 重定位：用于返回导入成绩时直接返回
-    redirect: '/input/index',
+    path: '/input-wrapper',
     component: Layout,
+    children: [{
+      path: 'index',
+      name: 'input-wrapper',
+      // 重定位：用于返回导入成绩时直接返回，用于代替component
+      redirect: '/input',
+      meta: { title: '导入成绩', icon: 'upload' }
+    }]
+  },
+  {
+    path: '/redirector',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'input-wrapper-redirector',
+      component: () => import('@/views/redirector'),
+      meta: { title: '导入成绩', icon: 'upload' }
+    }]
+  },
+  {
+    path: '/input',
+    // 重定位：用于返回导入成绩时直接返回
+    redirect: '/input/index/',
+    meta: { title: '导入成绩', icon: 'upload' },
+    component: Layout,
+    hidden: true,
     children: [{
       path: 'index',
       name: 'input',
@@ -91,6 +114,17 @@ export const constantRouterMap = [
       component: () => import('@/views/input/index')
     }]
   },
+  /* {
+    path: urls.input,
+    // 重定位：用于返回导入成绩时直接返回
+    redirect: 'redirect/index',
+    component: Layout,
+    children: [{
+      path: 'index',
+      meta: { title: '导入成绩', icon: 'upload' },
+      component: () => import('@/views/input/index')
+    }]
+  },*/
   {
     path: urls.comparison,
     component: Layout, // 上方引入的外部框架模版
@@ -125,7 +159,7 @@ export const constantRouterMap = [
       path: ':id',
       name: 'transcript',
       component: () => import('@/views/transcript'),
-      meta: { title: '课程信息', icon: 'tree' }
+      meta: { title: '成绩管理', icon: 'tree' }
     }]
   },
   {
@@ -152,7 +186,6 @@ export const constantRouterMap = [
       meta: { title: '个人信息', icon: 'tree' }
     }]
   },
-  // 以下均为管理员权限
   {
     path: '/manager',
     component: Layout,
@@ -195,12 +228,6 @@ export const constantRouterMap = [
         meta: { title: '添加课程', icon: 'tree', roles: ['admin'] }
       },
       {
-        path: 'class/add',
-        name: 'addClassInfo',
-        component: () => import('@/views/manager/classfield/add.vue'),
-        meta: { title: '添加班级', icon: 'tree', roles: ['admin'] }
-      },
-      {
         path: 'class/list',
         name: 'classList',
         component: () => import('@/views/manager/classfield/index.vue'),
@@ -210,7 +237,7 @@ export const constantRouterMap = [
         path: 'class/classfield',
         name: 'addClassField',
         component: () => import('@/views/manager/classfield/form.vue'),
-        meta: { title: '添加和修改班级', icon: 'tree', roles: ['admin'] }
+        meta: { title: '班级添加删除学生', icon: 'tree', roles: ['admin'] }
       }]
   }
 ]
