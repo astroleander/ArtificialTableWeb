@@ -49,9 +49,9 @@ DONE: post 返回需要 ID
                              fixed min-width="100px">
             </el-table-column>
 
-            <el-table-column label="总成绩" prop="totle"
+            <!--<el-table-column label="总成绩" prop="totle"
                              fixed min-width="150px">
-            </el-table-column>
+            </el-table-column>-->
 
             <el-table-column
                     v-for="title in titles" :key="title.id"
@@ -144,6 +144,7 @@ DONE: post 返回需要 ID
     import FileSaver from 'file-saver'
     import XLSX from 'xlsx'
     import viewmodel from '@/viewmodel/table'
+    import titlemodel from '@/viewmodel/title'
     export default {
       name: 'transcriptTable',
       components: {
@@ -165,14 +166,15 @@ DONE: post 返回需要 ID
           type: Object,
           require: false
         },
-        totle: {
-          type: Array,
-          require: false
+        lessonId: {
+          type: String,
+          require: true
         }
       },
       data: function() {
         return {
           viewDataset: [],
+          titleWeight: [],
           // the array is for saving all modified point item,
           // if user click the [upload] button, push all modifies to server
           updatedArray: [],
@@ -423,8 +425,12 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
+          /* titlemodel.requestTitles(this.lessonId).then(response => {
+            response.forEach(title => {
+                this.title
+            })
+          }) */
           this.viewDataset.forEach(data => {
-            data.totle = parseFloat(data.totle).toFixed(2)
           })
           this.loading = false
         }

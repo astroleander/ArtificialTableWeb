@@ -19,6 +19,10 @@
         type: Array,
         default: () => []
       },
+        dataTitlegroupname: {
+            type: String,
+            default: null
+        },
       radarId: {
         type: [String, Number],
         default: 0
@@ -27,13 +31,13 @@
     methods: {
       drawRadar() {
         // 初始化图表
-        console.log(this.dataItem)
+        // console.log(this.dataItem)
         this.chartRadar = echarts.init(document.getElementById('radar' + this.radarId))
         // 绘制
         this.chartRadar.setOption({
         // 标题
           title: {
-            text: '各项测试对提高学位英语贡献值'
+            text: '各项测试对提高' + this.dataTitlegroupname + '的贡献值'
           },
           tooltip: {},
           // 雷达图

@@ -10,18 +10,24 @@
       text-color="#FFF"
       active-text-color="gold"
     >
-
     <el-menu-item v-if="this.use_manager" index="999" disabled divided id="divided">
       <template slot="title">
       </template>
     </el-menu-item>
 
-    <el-menu-item v-if="this.use_manager" index="999" disabled class="switch">
+    <!--<el-menu-item v-if="this.use_manager" index="999" disabled class="switch">
       <svg-icon icon-class="lock"></svg-icon>
       <template slot="title">
         <span style="color:#EEE;">管理员模式</span>
       </template>
-    </el-menu-item>
+    </el-menu-item>-->
+
+    <router-link to="/" v-if="this.use_manager">
+      <el-menu-item index="99928">
+         <svg-icon icon-class="home"></svg-icon>
+           <span>首页</span>
+      </el-menu-item>
+    </router-link>
       <el-submenu v-if="this.use_manager" index="9992">
         <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>

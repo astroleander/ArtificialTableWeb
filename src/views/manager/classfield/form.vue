@@ -471,6 +471,29 @@ export default {
           console.log(error)
         })
     },
+    /* fetchTableStudentInfo() {
+      this.tableStudents = []
+      classFieldViewModel.requestClassFields({ classInfo_id: this.classInfo_id })
+        .then(classfields => {
+          studentViewModel.requestStudents({ classInfo_id: this.classInfo_id })
+            .then(students => {
+              // for (let i = 0; i < classfields.length; i++) {
+              for (let i = 0; i < students.length; i++) {
+                // if (classfields[i].student_id === students[i].id) {
+                this.tableStudents.push({
+                  // id: classfields[i].id,
+                  sid: students[i].sid,
+                  student_id: students[i].id,
+                  name: students[i].name,
+                  major: students[i].major_message.name
+                })
+                // }
+              }
+            })
+        }).catch(error => {
+          console.log(error)
+        })
+    },*/
     // 根据classInfo_id获取学生信息,放入studentMap
     fetchTransferStudentInfo(params) {
       this.transferData = []

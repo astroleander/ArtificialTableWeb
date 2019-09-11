@@ -48,7 +48,7 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
-        :total="weightData.total"
+        :lessonId="this.id"
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
         @onDeletedTitle="handleDeletedTitle"

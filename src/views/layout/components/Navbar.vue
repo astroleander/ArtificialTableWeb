@@ -117,11 +117,16 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   .hamburger-container {
-    line-height: 58px;
-    height: 50px;
+    line-height: 50px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 2px;
+    height: 40px;
     float: left;
-    width: 80px;
-    padding: 0 10px;
+    width: 40px;
+    border: #001528;
+    padding: 0px 10px;
+    background-color: #d3dce6;
   }
   .screenfull {
     position: absolute;

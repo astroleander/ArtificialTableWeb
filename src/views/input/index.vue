@@ -547,8 +547,8 @@
    */
 // 将第三页数据拆分成：标题列表，成绩列表，学号列表，课程id
   const submitConverter = (previewPageData, lessonId) => {
-    console.log('我好像要提交了')
-    console.log(previewPageData)
+    // console.log('我好像要提交了')
+    // console.log(previewPageData)
     const newTitleItemArrayArray = []
     // 放置每一个新增的成绩项 初始权重为1
     previewPageData.titles.forEach(title => {
@@ -575,8 +575,8 @@
         newPointItemArray.push(item)
       })
     })
-    console.log(newPointItemArray)
-    console.log(newTitleItemArrayArray)
+    // console.log(newPointItemArray)
+    // console.log(newTitleItemArrayArray)
     const sid_list = previewPageData.sid
     const description = '分为四个部分, title 列表和 point 列表, <br/>' +
       '其中 title 列表需要补充 classInfo_id 字段, 最后创建后创建 id 字段.<br/>' +
@@ -1209,7 +1209,7 @@
 </script>
 
 <style lang="scss">
-  @import '../../../node_modules/handsontable/dist/handsontable.full.min.css';
+    @import '../../../node_modules/handsontable/dist/handsontable.full.min.css';
 </style>
 
 <style lang="scss" scoped>

@@ -154,12 +154,12 @@ const requestDelLessons = (lessonIdArray) => {
 }
 /**
  * 请求课程分析
- * @param lessonSemester
+ * @param titleGroup
  * @returns {Promise<any>}
  */
-const requestAnalyseLessons = (lessonSemester) => {
+const requestAnalyseLessons = (titleGroupId) => {
   return new Promise((resolve, reject) => {
-    lessonAnalyse(lessonSemester).then(response => {
+    lessonAnalyse(titleGroupId).then(response => {
       const dataset = response && response.subjects
       resolve(dataset)
     }).catch(error => {
