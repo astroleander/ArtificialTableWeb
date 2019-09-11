@@ -19,6 +19,7 @@ const getters = {
   course: state => id =>
     state.course.course_list.find(course => String(course.id) === String(id)),
   // for import table
-  importTable: state => state.table.importTable
+  importTable: state => state.table.importTable,
+  studnetTable: state => state.table.studentTable
 }
 export default getters

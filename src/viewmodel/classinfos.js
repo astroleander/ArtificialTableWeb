@@ -1,9 +1,11 @@
-import { getClassInfos, getByTeacherId,
+import {
+  getClassInfos, getByTeacherId,
   postClassInfo, postClassInfos,
   putClassInfo, putClassInfos,
-  deleteClassInfo, deleteClassInfos, getAllClassInfo } from '@/api/class_info'
+  deleteClassInfo, deleteClassInfos, getAllClassInfo, getLessonIdListByteacherId
+} from '@/api/class_info'
 
-  /**
+/**
  * date: 2018/12/20
  * @author liqian
  * @description 班级信息的get put post delete
@@ -153,10 +155,26 @@ const requestDelClassInfos = (classInfoIdArray) => {
   })
 }
 
+/**
+ * 根据教师id，获得lessonIdList
+ * @param teacher_id
+ * @returns {Promise<any>}
+ */
+const requestLessonIdListByteacherId = (teacher_id) => {
+  return new Promise((resolve, reject) => {
+    getLessonIdListByteacherId(teacher_id).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export default {
   requestByTeacherId, requestClassInfos,
   requestPutClassInfo, requestPutClassInfos,
   requestPostClassInfo, requestPostClassInfos,
   requestDelClassInfo, requestDelClassInfos,
-  requestAll
+  requestAll, requestLessonIdListByteacherId
 }

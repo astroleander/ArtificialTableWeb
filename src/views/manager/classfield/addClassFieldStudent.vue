@@ -6,9 +6,24 @@
         </el-steps>
         <el-tabs v-model="getActiveStep" tab-position="hidden" class="tab flex-half flex-85">
             <el-tab-pane name="0" style="display: flex;flex-flow: column">
-                <div style="display: flex;flex-flow: row">
+                <div class="card-box">
+                    <span class="span">请选择上传学生的入学学年</span><span class="span" style="color: red">（必选项）</span><span class="span">：</span>
+                    <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
+                                    size="mini" type="year" format='yyyy' value-format="yyyy">
+                    </el-date-picker>
+                    <el-button type="primary"  style="float: right; text-align: center" @click="toStep(1, 2)">下一步</el-button>
+                </div>
+                <div>
+                   <el-alert :title="this.Alert"></el-alert>
+                </div>
+                <div style="display: flex;flex-flow: row; justify-content: center;">
+                    <!--<import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>-->
+                    <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
+                </div>
+
+                <!--<div style="display: flex;flex-flow: row">
                     <span style="font-size: 20px;color: red; margin-left: 100px">请确保上传Excel文件前两列为学号列与姓名列</span>
-                    <el-button type="primary" style="margin-left: 350px" @click="toStep(1, 2)">下一步</el-button>
+
                 </div>
                 <div style="display:flex;justify-content: center;">
                     <img :src="src" style="margin-top: 1px">
@@ -70,25 +85,16 @@
             </el-tab-pane>
 
             <el-tab-pane name="1">
-                <div class="card-box">
-                    <span class="span" style="width:80px; color: orange">请选择上传学生的入学学年（必选项）：</span>
-                    <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
-                                    size="mini" type="year" format='yyyy' value-format="yyyy">
-                    </el-date-picker>
-                </div>
-                <div>
-                    <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
-                </div>
                 <el-table v-if="importStudentList !== null"
                           :data="importStudentList"
-                          height="300"
+                          height="450"
                 >
                     <template slot="empty">
                         <el-alert id="table-emptyalert"
                                   title="没有数据"
                                   type="warning"
                                   :closable='false'
-                                  description="没有数据，请确认您导入的文件完整性！"
+                                  description="没有数据，请确认您导入学生信息的完整性！"
                                   show-icon>
                         </el-alert>
                     </template>
@@ -132,7 +138,7 @@
                 <el-row>
                     <div class="row" style="padding:10px;">
                         <el-button @click="returnLast" type="primary">返回上一步</el-button>
-                        <el-button @click="onResetClicked" type="primary">重新上传</el-button>
+                        <!--<el-button @click="onResetClicked" type="primary">重新上传</el-button>-->
                         <el-button type="primary" @click="onSubmitClicked">确认提交</el-button>
                     </div>
                 </el-row>
@@ -144,13 +150,15 @@
 </template>
 
 <script>
+import { HotTable } from '@handsontable/vue'
+import Handsontable from 'handsontable'
 import ImportExcelComponent from '@/components/ImportExcel.vue'
 import CollegeViewModel from '@/viewmodel/college'
 import MajorViewModel from '@/viewmodel/major'
 import classFieldViewModel from '@/viewmodel/classfield'
 import StudentViewModel from '@/viewmodel/student'
 import { mapGetters } from 'vuex'
-import template from '@/assets/images/template.png'
+import { CLIP_BOARD_ALERT } from '@/utils/alerts'
 
 const eltableAdapter = (array) => {
   const array_flag = []
@@ -188,7 +196,7 @@ const eltableAdapter = (array) => {
 export default {
   name: 'addClassStudent',
   components: {
-    ImportExcelComponent
+    HotTable, ImportExcelComponent
   },
   props: {
     classInfo_id: {
@@ -205,6 +213,7 @@ export default {
         year: null,
         semester: null
       },
+      Alert: CLIP_BOARD_ALERT.title + CLIP_BOARD_ALERT.description,
       //
       nameCheckedList: [],
       sidCheckedList: [],
@@ -218,19 +227,88 @@ export default {
       remoteMajorList: [],
       remoteCollegeList: [],
       // import data
-      importStudentList: null,
+      // importStudentList: null,
       activeStep: 0,
       steps: [
-        { title: '上传表格规范模版', description: '', picture: 'el-icon-edit' },
-        { title: '选择入学学年，上传Excel文件', description: '', picture: 'el-icon-upload' }
+        { title: '选择入学学年，将学号与姓名复制到页面的Excel表格', description: '', picture: 'el-icon-edit' },
+        { title: '确认上传学生信息', description: '', picture: 'el-icon-upload' }
       ],
-      src: template
+      hotSettings: {
+        startRows: 3,
+        startCols: 2,
+        minCols: 4,
+        colWidths: 150,
+        rowHeights: 30,
+        minRows: 110,
+        height: 400, // 设置高度
+        rowHeaders: true,
+        colHeaders: ['学号', '姓名'],
+        // 表格右键一层操作设置
+        contextMenu: {
+          items: {
+            'row_above': {
+              name: '在当前行的上方插入'
+            },
+            'row_below': {
+              name: '在当前行的下方插入'
+            },
+            'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
+            'clear_custom': {
+              name: '清除所有表格',
+              callback: function() {
+                this.clear()
+              }
+            },
+            'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
+            'copy': {
+              name: '复制'
+            },
+            'cut': {
+              name: '剪切'
+            }
+          }
+        }, // contextMenu-end
+
+        /** 下面都是 hook
+             * @see https://handsontable.com/docs/6.2.0/tutorial-introduction.html
+             */
+        // 每次表格中数据改变，此时触发此函数
+        afterChange: function() {
+          let importDataset = this.getData()
+          // 返回不是全空的行
+          importDataset = importDataset.filter((row, rowIndex, arr) => {
+            return !row.every(cell => {
+              return cell === null || cell.trim() === '' || cell === undefined
+            })
+          })
+          // this.onSelectedLocalExcel(importDataset)
+          // console.log('111111111')
+          // console.log(importDataset)
+          const importStudentList = []
+          importDataset.forEach(dataSet => {
+            const student = {
+              sid: dataSet[0],
+              name: dataSet[1]
+            }
+            importStudentList.push(student)
+          })
+          console.log(importStudentList)
+          const env = this.rootElement.__vue__
+          env.$store.dispatch('saveStudentTable', { table: importStudentList })
+        }
+      }
     }
   },
   computed: {
     ...mapGetters([
       'user'
     ]),
+    // 导入数据
+    importStudentList: {
+      get() {
+        return this.$store.state.table.studentTable
+      }
+    },
     getActiveStep: {
       get() {
         if (this.activeStep === 2) {
@@ -248,9 +326,11 @@ export default {
       this.activeStep--
     },
     onSelectedLocalExcel(data) {
-      let array = data.results
-      array = array.slice(1)
-      this.importStudentList = eltableAdapter(array)
+      // let array = data.results
+      // array = array.slice(1)
+      this.importStudentList = eltableAdapter(data)
+      // console.log('222222222')
+      // console.log(this.importStudentList)
     },
     onSubmitClicked() {
       // const sid_idx = this.sidCheckedList.findIndex(item => item === true)
@@ -272,7 +352,7 @@ export default {
       this.selectedMajorId = 1
       this.selectedCollegeId = 1
       if (this.seletedSemester.year === undefined || this.seletedSemester.year === null) {
-        this.$confirm('您尚未选择学生的入学学年，请在页面左上方选择', '提示', {
+        this.$confirm('您尚未选择学生的入学学年，请在返回上一页选择', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -395,6 +475,7 @@ export default {
             // const unsucceed = params.length - response.length
             const message = response.length + '条学生数据添加到班级中,' + (params.length - response.length) + '条学生数据由于已存在未能成功添加到班级中'
             // clean the store
+            this.$store.dispatch('saveStudentTable', { table: null })
             this.importStudentList = null
             this.seletedSemester.year = null
             this.$confirm(message, '提示', {
@@ -442,7 +523,21 @@ export default {
 }
 </script>
 
+<style lang="scss">
+    @import '../../../../node_modules/handsontable/dist/handsontable.full.min.css';
+</style>
+
 <style lang="scss" scoped>
+    .table {
+        margin-top: 5px;
+        // margin-left: 8px;
+        text-align: center;
+        width: 70%;
+    }
+    .table-wrapper {
+        height: 100%;
+        // height: 200px;
+    }
 .header {
   display:flex;
   flex-direction: column;
@@ -458,7 +553,7 @@ export default {
   padding: 12px
 }
 .span {
-  padding: 8px;
+  // padding: 8px;
   font-weight: bold;
 }
 .card-box{

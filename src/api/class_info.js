@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 /**
  * description：课程辅助信息的增删改查
  */
@@ -22,6 +23,7 @@ export function getClassInfos(params) {
     params
   })
 }
+
 /**
  * 查找某一教师所执教的所有课程
  */
@@ -34,6 +36,7 @@ export function getByTeacherId(teacher_id) {
     }
   })
 }
+
 /**
  * 添加一条课程辅助信息
  * need fix content
@@ -47,6 +50,7 @@ export function postClassInfo(classInfoItem) {
     }
   })
 }
+
 /**
  * 添加多条课程辅助信息
  * need fix content
@@ -60,6 +64,7 @@ export function postClassInfos(classInfoArray) {
     }
   })
 }
+
 /**
  * 修改一条课程辅助信息
  * need fix token
@@ -73,6 +78,7 @@ export function putClassInfo(classInfoItem) {
     }
   })
 }
+
 /**
  * 修改多条课程辅助信息
  * need fix token
@@ -86,6 +92,7 @@ export function putClassInfos(classInfoArray) {
     }
   })
 }
+
 /**
  * 删除一条课程组信息
  */
@@ -95,11 +102,12 @@ export function deleteClassInfo(classInfo_id) {
     method: 'delete',
     data: {
       subjects: [
-        { id: classInfo_id }
+        {id: classInfo_id}
       ]
     }
   })
 }
+
 /**
  * 批量删除课程组
  */
@@ -109,6 +117,16 @@ export function deleteClassInfos(classInfoIdArray) {
     method: 'delete',
     data: {
       subjects: classInfoIdArray
+    }
+  })
+}
+
+export function getLessonIdListByteacherId(teacher_id) {
+  return request({
+    url: 'table/class_info/lessonList',
+    method: 'post',
+    data: {
+      teacher_id
     }
   })
 }

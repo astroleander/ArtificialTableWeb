@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <div :id="'chartBar'+ DiagramId"  v-if="dataItem" class="bar">
+  <div :id="'chartBar'+ DiagramId" v-if="dataItem" class="bar">
   </div>
 </template>
 
@@ -18,6 +18,10 @@
         type: Array,
         default: () => []
       },
+      dataTitlegroupname: {
+        type: String,
+        default: null
+      },
       DiagramId: {
         type: [String, Number],
         default: 0
@@ -32,7 +36,7 @@
         this.chartBar.setOption({
           // 图表颜色
           title: {
-            text: '各项测试对提高学位英语成绩的贡献'
+            text: '各项测试对提高' + this.dataTitlegroupname + '的贡献'
           },
           color: ['#3398FB'],
           tooltip: {
@@ -87,7 +91,7 @@
       }
     },
     watch: {
-      dataItem: function() {
+      dataItem: function () {
         if (this.dataItem) {
           this.drawBar()
         }
@@ -103,8 +107,8 @@
 </script>
 
 <style lang="scss" scoped>
-  .bar{
+  .bar {
     height: 500px;
-    width: 800px;
+    width: 500px;
   }
 </style>

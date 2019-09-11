@@ -40,11 +40,15 @@
             {{scope.$index+1}}
         </template>
       </el-table-column>
+      <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column prop="sid" label="学号" minWidth="150"></el-table-column>
       <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
       <el-table-column prop="major_message.name" label="专业"  minWidth="150"></el-table-column>
       <el-table-column prop="year" label="入学年份"  minWidth="150"></el-table-column>
       <el-table-column minWidth="150">
+          <template slot="header" slot-scope="scope">
+              <el-button title="primary" size="medium" @click="confirmDeleteStudents" type="danger">删除选中</el-button>
+          </template>
         <template slot-scope="scope">
           <el-button @click="deleteStudent(scope.row)" type="danger">删除</el-button>
         </template>
@@ -80,8 +84,9 @@ export default {
       selectedCollege: null,
       selectedMajor: null,
       selectedYear: null,
+      delList: [],
 
-      delChange: [],
+      // delChange: [],
 
       remoteUniversity: {
         name: null
@@ -104,6 +109,33 @@ export default {
     ])
   },
   methods: {
+    delChange(val) {
+      // console.log(val)
+      this.delList = val
+    },
+    confirmDeleteStudents() {
+      this.$confirm('此操作将选中学生从班级中删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.delStudents(this.delList)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    delStudents(students) {
+      StudentViewModel.requestDelStudents(students).then(res => {
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        })
+        this.fetchStudentList()
+      })
+    },
     deleteStudent(student) {
       this.$prompt(
         '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的学生！',
@@ -118,7 +150,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
-          location.reload()
+          this.fetchStudentList()
         })
       })
     },

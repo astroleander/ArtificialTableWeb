@@ -118,15 +118,15 @@ export function deleteLessons(lessonIdArray) {
 
 /**
  *
- * @param lessonSemester
+ * @param titleGroup
  */
-export function lessonAnalyse(lessonSemester) {
+export function lessonAnalyse(titleGroupId) {
   return request({
     url: '/analysis/class',
     method: 'post',
     data: {
       // subjects: lessonSemester
-      semester: lessonSemester
+      titleGroupId
     }
   })
 }
