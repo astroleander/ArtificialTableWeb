@@ -48,7 +48,7 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
-        :lessonId="this.id"
+        :classinfoId="this.id"
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
         @onDeletedTitle="handleDeletedTitle"
@@ -254,6 +254,18 @@ export default {
     },
     // 删除小项
     handleDeletedTitle(title) {
+      this.table.forEach(view => {
+        // console.log('77')
+        // console.log(view)
+        // console.log(title.id)
+        const pointx = view.point.findIndex(item => item.title_id === title.id)
+        // console.log(pointx)
+        if (pointx >= 0) {
+          view.point.splice(pointx, 1)
+        }
+      })
+      // console.log('9999')
+      // console.log(this.table)
       const idx = this.model.titles.findIndex(item => item.id === title.id)
       this.model.titles.splice(idx, 1)
     },

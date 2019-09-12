@@ -49,9 +49,9 @@ DONE: post 返回需要 ID
                              fixed min-width="100px">
             </el-table-column>
 
-            <!--<el-table-column label="总成绩" prop="totle"
+            <el-table-column label="总成绩" prop="totle"
                              fixed min-width="150px">
-            </el-table-column>-->
+            </el-table-column>
 
             <el-table-column
                     v-for="title in titles" :key="title.id"
@@ -166,7 +166,7 @@ DONE: post 返回需要 ID
           type: Object,
           require: false
         },
-        lessonId: {
+        classinfoId: {
           type: String,
           require: true
         }
@@ -192,7 +192,9 @@ DONE: post 返回需要 ID
           // 暂时不用携带数据
           // menuDialogDataset: {}
           // 载入状态
-          loading: true
+          loading: true,
+          // 成绩是否发生改变
+          pointChange: false
         }
       },
       computed: {
@@ -201,6 +203,43 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        ListenToChange() {
+          // console.log(this.viewDataset)
+          const titleWeight = []
+          titlemodel.requestTitles({ classInfo_id: this.classinfoId })
+            .then(response => {
+              response.forEach(title => {
+                titleWeight.push(title.weight)
+              })
+              // console.log('44444')
+              // console.log(titleWeight)
+              // console.log(this.viewDataset)
+              this.viewDataset.forEach(view => {
+                const pointNumber = []
+                const point = view.point
+                for (const i of point) {
+                  if (i.pointNumber === undefined) {
+                    i.pointNumber = 0
+                  }
+                  pointNumber.push(i.pointNumber)
+                }
+                let sum = 0
+                for (let i = 0; i < pointNumber.length; i++) {
+                  sum += pointNumber[i] * titleWeight[i] / 100
+                }
+                view.totle = parseFloat(sum).toFixed(2)
+              })
+            })
+          // console.log('77')
+          // console.log(this.viewDataset)
+        },
+        pointIfChange() {
+          if (this.pointChange === true) {
+            this.pointChange = false
+          } else {
+            this.pointChange = true
+          }
+        },
         reload() {
           location.reload()
         },
@@ -325,6 +364,7 @@ DONE: post 返回需要 ID
                 message: '删除成功'
               })
               this.$emit('onDeletedTitle', title)
+              this.pointIfChange()
             })
           })
         },
@@ -359,6 +399,8 @@ DONE: post 返回需要 ID
             })
             this.$store.state.table.changed = false
           })
+          // console.log('1111111')
+          this.pointIfChange()
         },
         onItemChanged: function(newItem, title) {
           this.$store.state.table.changed = true
@@ -384,9 +426,11 @@ DONE: post 返回需要 ID
               }
             }
           })
+          this.pointIfChange()
         },
         handleAddTitle: function(dialogResult) {
           this.$emit('onTitleAdded', dialogResult)
+          this.pointIfChange()
         },
         handleExport: function(dialogResult) {
           // this.$emit('onExportTable', dialogResult)
@@ -425,14 +469,13 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
-          /* titlemodel.requestTitles(this.lessonId).then(response => {
-            response.forEach(title => {
-                this.title
-            })
-          }) */
           this.viewDataset.forEach(data => {
+            data.totle = parseFloat(data.totle).toFixed(2)
           })
           this.loading = false
+        },
+        pointChange: function() {
+          this.ListenToChange()
         }
       }
     }
