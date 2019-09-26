@@ -7,16 +7,16 @@
                     v-for="(title, idx) in titles"
                     :key="idx"
                     :label="title.label"
-                    :prop="title.prop">
+                    :prop="title.prop" align="center">
             </el-table-column>
-            <el-table-column>
+            <el-table-column align="center">
                 <template slot-scope="scope">
                     <div>
                         <el-button type="primary" @click="onModifyClicked(scope.row)">班级学生信息管理</el-button>
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="">
+            <el-table-column label="" align="center">
                 <template slot-scope="scope">
                     <el-button @click="onDeleteClicked(scope.row)" type="danger">删除</el-button>
                 </template>

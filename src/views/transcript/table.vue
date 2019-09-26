@@ -23,11 +23,11 @@ DONE: post 返回需要 ID
         <!-- table menu-->
         <el-row class="menu">
             <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新成绩项</el-button>
-            <el-button @click="onClickedExportTable()" type="primary" icon="el-icon-download">导出文件</el-button>
+            <el-button @click="onClickedExportTable()" type="primary" icon="el-icon-download" plain>导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
             <el-button @click="onClickedUpload()"
-              :type="this.$store.state.table.changed? 'warning' : 'primary'" icon="el-icon-upload">保存修改</el-button>
-            <el-button @click="reload()" type="primary" icon="">成绩汇总计算</el-button>
+              :type="this.$store.state.table.changed? 'warning' : 'primary'" icon="el-icon-upload" plain>保存修改</el-button>
+            <!--<el-button @click="reload()" type="primary" icon="">成绩汇总计算</el-button>-->
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
         </el-row>
@@ -55,7 +55,7 @@ DONE: post 返回需要 ID
 
             <el-table-column
                     v-for="title in titles" :key="title.id"
-                    min-width="200">
+                    min-width="200" align="center">
                 <template slot="header" slot-scope="head">
                     <div class="line-container">
                         <el-tooltip class="item" effect="dark" :content="title.titleGroup_message.name" placement="top">

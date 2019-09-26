@@ -160,8 +160,8 @@ $black: #212121;
 // 登录界面样式设置
 .login-container {
   // 背景图片加载
-  background-image:
-    url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
+  //background-image:
+    //url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
   background-repeat: no-repeat;
   background-size: cover;
   // 输入格式设定

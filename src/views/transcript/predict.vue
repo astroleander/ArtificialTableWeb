@@ -15,15 +15,15 @@
       height="800"
       @selection-change="handlePredictdata">
 
-      <el-table-column  type="selection" width="100" class="el-checkbox"></el-table-column>
-      <el-table-column label="序号" >
+      <el-table-column  type="selection" width="100" class="el-checkbox" align="center"></el-table-column>
+      <el-table-column label="序号"align="center" >
         <template slot-scope="scope">
           {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column label="学号"  prop="student.sid"  sortable></el-table-column>
-      <el-table-column label="学生姓名" prop="student.name" ></el-table-column>
-      <el-table-column>
+      <el-table-column label="学号"  prop="student.sid"  sortable align="center"></el-table-column>
+      <el-table-column label="学生姓名" prop="student.name" align="center" ></el-table-column>
+      <el-table-column align="center">
         <template slot="header" slot-scope="scope">
           <el-button @click="handlePredict" type="primary">批量预测</el-button>
         </template>

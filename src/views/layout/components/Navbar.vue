@@ -2,7 +2,7 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-    <breadcrumb></breadcrumb>
+    <!--<breadcrumb></breadcrumb>-->
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
@@ -117,16 +117,19 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   .hamburger-container {
-    line-height: 50px;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-left: 2px;
-    height: 40px;
+    line-height: 58px;
+    //margin-top: 5px;
+    //margin-right: 5px;
+    //margin-left: 2px;
+    height: 50px;
     float: left;
-    width: 40px;
+    width: 50px;
     border: #001528;
     padding: 0px 10px;
-    background-color: #d3dce6;
+      &hover {
+          background-color: #dbe4ee;
+      }
+    //background-color: #d3dce6;
   }
   .screenfull {
     position: absolute;
