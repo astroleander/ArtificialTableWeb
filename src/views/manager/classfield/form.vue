@@ -18,7 +18,7 @@
    2.在point表中将student_id,classInfo_id相同的删除（保留）
 -->
 <template>
-  <div class="app-container">
+  <div>
     <el-card>
       <div slot="header">
         <span class="rowframe title">班级管理</span>
@@ -49,14 +49,12 @@
           </template>
         </el-table-column>
       </el-table>
-
       <el-dialog title="添加学生" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
         <add-class-student :class-info_id="this.$router.currentRoute.params.id"
                            @addEnd="handleAddEnd"
         ></add-class-student>
       </el-dialog>
-
-        <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :before-close="handleClose">
+      <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :before-close="handleClose">
                 <el-form :rules='rules' ref='ruleForm' :model='form' label-width='100px'>
                     <el-form-item label='学生姓名' prop='name'>
                         <el-input v-model='form.name' placeholder='请输入学生姓名'></el-input>
@@ -73,97 +71,12 @@
                                 value-format='yyyy'
                         ></el-date-picker>
                     </el-form-item>
-                    <!--<el-form-item label='所属院系' prop='college_id'>
-                        <el-select
-                                v-model='form.college_id'
-                                placeholder='请选择学生所在院系'
-                                @change='fetchFormMajorList'
-                        >
-                            <el-option
-                                    v-for='item in formCollegeList'
-                                    :key='item.id'
-                                    :label='item.name'
-                                    :value='item.id'
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label='所属专业' prop='major_id'>
-                        <el-select v-model='form.major_id' :placeholder='majorMessage'>
-                            <el-option
-                                    v-for='(item,index) in formMajorList'
-                                    :key='index'
-                                    :label='item.name'
-                                    :value='item.id'
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>-->
                     <el-form-item>
                         <el-button type='primary' @click='submitForm("ruleForm")'>添加单个学生</el-button>
                         <el-button @click='onReset'>重新填写</el-button>
                     </el-form-item>
                 </el-form>
         </el-dialog>
-
-      <!-- 添加学生的对话框-->
-      <!--<el-dialog title="选择要添加的学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :show-close="false">
-          <el-select class="majorBox" v-model="selectedMajor" @change="handleMajorChange" placeholder="按专业筛选左侧学生列表" :clearable="true">
-              <el-option v-for="major in majorList"
-                         :key="major.id"
-                         :label="major.name"
-                         :value="major.id">
-              </el-option>
-            </el-select>
-        <el-transfer
-          class="transferBox"
-            filterable
-            :titles="['可选学生列表', '当前范围内已选']"
-            :filter-method="filterMethod"
-            :render-content="renderFunc"
-            filter-placeholder="请输入学生的学号"
-            v-model="selectedStudents"
-            :props="transferProps"
-            :data="transferData">
-            </el-transfer>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="cancelAddStudent">取 消</el-button>
-          <el-button type="success" @click="confirmAddStudents">下一步</el-button>
-        </div>
-      </el-dialog>
-
-      <!-- 确认学生的界面-->
-      <!--<el-dialog title="添加学生" class="confirmPage" :center="true" width="80%" :visible.sync="confirmDialogVisible" :show-close="false">
-        <el-table :data="confirmTableStudents" >
-          <template slot="empty">
-            该班级暂无学生信息，请点击条目右上角导入
-          </template>
-          <el-table-column prop="sid" label="学号" width="180"></el-table-column>
-          <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-          <el-table-column prop="major" label="专业" width="180"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button size="mini" type="danger" @click="handleSelectedDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="backLastDialog">上一步</el-button>
-          <el-button type="success" @click="handleAddClassFields">添加学生</el-button>
-        </div>
-      </el-dialog>
-      <!--<div class="rowframe">-->
-        <!--<el-cascader-->
-          <!--v-if="selectList.length > 0"-->
-          <!--expand-trigger="hover"-->
-          <!--:options= "selectList"-->
-          <!--prefix="请选择添加学生的班级"-->
-          <!--@active-item-change="handleItemChange"-->
-          <!--:props="cascaderProps"-->
-          <!--:placeholder="message"-->
-          <!--v-model="selectedValue"-->
-          <!--:show-all-levels="false"-->
-          <!--@change="handleChange">-->
-        <!--</el-cascader>-->
-      <!--</div>-->
     </el-card>
   </div>
 </template>
@@ -471,29 +384,6 @@ export default {
           console.log(error)
         })
     },
-    /* fetchTableStudentInfo() {
-      this.tableStudents = []
-      classFieldViewModel.requestClassFields({ classInfo_id: this.classInfo_id })
-        .then(classfields => {
-          studentViewModel.requestStudents({ classInfo_id: this.classInfo_id })
-            .then(students => {
-              // for (let i = 0; i < classfields.length; i++) {
-              for (let i = 0; i < students.length; i++) {
-                // if (classfields[i].student_id === students[i].id) {
-                this.tableStudents.push({
-                  // id: classfields[i].id,
-                  sid: students[i].sid,
-                  student_id: students[i].id,
-                  name: students[i].name,
-                  major: students[i].major_message.name
-                })
-                // }
-              }
-            })
-        }).catch(error => {
-          console.log(error)
-        })
-    },*/
     // 根据classInfo_id获取学生信息,放入studentMap
     fetchTransferStudentInfo(params) {
       this.transferData = []

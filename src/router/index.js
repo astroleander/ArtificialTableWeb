@@ -195,52 +195,63 @@ export const constantRouterMap = [
         path: 'weight',
         name: 'weight',
         component: () => import('@/views/weight/index'),
-        meta: { title: '权重调整', icon: 'weight', roles: ['admin'] }
-      },
-      {
-        path: 'student/add',
-        name: 'addstudent',
-        component: () => import('@/views/manager/student/add.vue'),
-        meta: { title: '添加学生', icon: 'tree', roles: ['admin'] }
-      },
-      {
-        path: 'student/list',
-        name: 'liststudent',
-        component: () => import('@/views/manager/student/list.vue'),
-        meta: { title: '学生列表', icon: 'tree', roles: ['admin'] }
-      },
+        meta: { title: '权重调整', icon: 'weight' }
+      }]
+  },
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: true,
+    children: [
       {
         path: 'user/add',
         name: 'addmanager',
         component: () => import('@/views/manager/user/add.vue'),
-        meta: { title: '添加教师', icon: 'tree', roles: ['admin'] }
+        meta: { title: '添加教师', icon: 'tree' }
       },
       {
         path: 'user/list',
         name: 'showmanager',
         component: () => import('@/views/manager/user/list.vue'),
-        meta: { title: '教师列表', icon: 'tree', roles: ['admin'] }
-      },
+        meta: { title: '教师列表', icon: 'tree' }
+      }
+    ]
+  },
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: true,
+    children: [
       {
         path: 'lesson/addLesson',
         name: 'addlesson',
         component: () => import('@/views/manager/lesson/addLesson.vue'),
-        meta: { title: '添加课程', icon: 'tree', roles: ['admin'] }
+        meta: { title: '添加课程', icon: 'tree' }
       },
       {
-        path: 'class/list',
-        name: 'classList',
-        component: () => import('@/views/manager/classfield/index.vue'),
-        meta: { title: '班级信息列表', icon: 'tree', roles: ['admin'] }
-      },
+        path: 'student/list',
+        name: 'liststudent',
+        component: () => import('@/views/manager/student/list.vue'),
+        meta: { title: '学生列表', icon: 'tree' }
+      }
+    ]
+  }
+]
+/*
+constantRouterMap.addRoutes([
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: true,
+    children: [
       {
         path: 'class/classfield',
         name: 'addClassField',
         component: () => import('@/views/manager/classfield/form.vue'),
-        meta: { title: '班级添加删除学生', icon: 'tree', roles: ['admin'] }
+        meta: { title: '班级添加删除学生', icon: 'tree' }
       }]
   }
-]
+])*/
 
 export default new Router({
   // mode: 'history', // 后端支持可开 使用可以消除绝对路径url中的'#'符，可选操作

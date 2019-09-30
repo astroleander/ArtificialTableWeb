@@ -466,7 +466,7 @@ export default {
         const titleGroupWeight = title.titleGroup_message.weight
         // 根据小项的titleGroup_id得到大项及其权重
         if (titleGroupWeight) {
-          score = pointItem.pointNumber * titleWeight / 100
+          score = pointItem.pointNumber * titleWeight * titleGroupWeight/ 10000
           // console.log(score)
           flag = true
         } else {

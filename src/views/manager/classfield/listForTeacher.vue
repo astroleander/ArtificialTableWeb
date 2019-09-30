@@ -79,6 +79,13 @@
         },
         onModifyClicked(row) {
           // jump to modify pabe
+          this.$router.options.routes[14].children.push({
+            path: 'class/classfield',
+            name: 'addClassField',
+            component: () => import('@/views/manager/classfield/form.vue'),
+            meta: { title: '班级添加删除学生', icon: 'tree' }
+          })
+          this.$router.addRoutes(this.$router.options.routes)
           this.$router.push({
             name: 'addClassField',
             params: { id: row.id, type: 'modify' },
