@@ -2,7 +2,7 @@
   <div class="rowframe">
     <el-card class="form-box" v-if="!empty">
       <div slot="header">
-        <span class="rowframe title">个人信息更改</span>
+        <span class="rowframe title">个人信息</span>
       </div>
       <el-form class="form" :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
         <el-form-item label="教师姓名:" prop="name">
@@ -11,17 +11,15 @@
         <el-form-item label="教师编号:" prop="tid" required>
           <span> {{form.tid}}</span>
         </el-form-item>
-        <el-form-item label="输入密码: " prop="old_password" required>
-          <el-input v-model="form.old_password" placeholder="输入个人密码方可更改个人信息" type="password"></el-input>
+        <el-form-item label="输入旧密码: " prop="old_password" required>
+          <el-input v-model="form.old_password" placeholder="请输入旧密码" type="password"></el-input>
         </el-form-item>
-        <div v-if="ChangePassword">
-        <el-form-item label="重置密码: " prop="new_password" required>
+        <el-form-item label="输入新密码: " prop="new_password" required>
           <el-input v-model="form.new_password" placeholder="请输入新密码" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码: " prop="renew_password" required>
+        <el-form-item label="请确认密码: " prop="renew_password" required>
           <el-input v-model="form.renew_password" placeholder="请确认密码" type="password"></el-input>
         </el-form-item>
-         </div>
         <el-form-item label="教师邮箱: " prop="email" >
           <el-input v-model="form.email" placeholder="请输入邮箱" ></el-input>
         </el-form-item>
@@ -29,9 +27,8 @@
           <el-input v-model="form.mobile" placeholder="请输入电话"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="changePassword">重置密码</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">提交修改</el-button>
-          <el-button @click="onReset">清空修改</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">确认提交</el-button>
+          <el-button @click="onReset">清空重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -234,9 +231,14 @@ export default {
     justify-content:center;
   }
   .form-box{
-    width: 60%;
-    min-width: 500px;
+    width: 100%;
+    height: calc(100vh - 50px);
+    /*min-width: 500px;
     padding: 20px;
     /*border: 1px solid #999999;*/
   }
+    .form{
+        width: 50%;
+        margin-left: 25%;
+    }
 </style>

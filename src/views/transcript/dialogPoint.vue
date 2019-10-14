@@ -24,9 +24,22 @@
         <div class="text-editor">
           <el-form-item prop="point">
             <!-- DONE: 更加交互性的提示 -->
-            <el-input type="number"
-              v-model.number="cell_copy.point.pointNumber"
-            ></el-input>
+              <template v-if="titleGroupName === '出勤'">
+                  <el-select
+                   v-model="cell_copy.point.pointNumber">
+                      <el-option
+                              v-for="item in title_map"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id">
+                      </el-option>
+                  </el-select>
+              </template>
+              <template v-else>
+                  <el-input type="number"
+                            v-model.number="cell_copy.point.pointNumber"
+                  ></el-input>
+              </template>
           </el-form-item>
           <el-form-item prop="date">
             <el-date-picker type="date"
@@ -81,7 +94,7 @@ export default {
   //   |- student
   //   |- info
   //   |- type
-  props: ['visible', 'cell'],
+  props: ['visible', 'cell', 'titleGroupName'],
   components: {
   },
   computed: {
@@ -99,7 +112,14 @@ export default {
       pointRules: {
         point: [{ required: true, trigger: 'blur', validator: validatePointNumber }]
         // date: [{ required: true, trigger: 'blur', validator: validateDate }]
-      }
+      },
+      title_map: [
+        { name: '出勤', id: 1 },
+        { name: '缺勤', id: 2 },
+        { name: '请假', id: 3 },
+        { name: '迟到', id: 4 },
+        { name: '其他', id: 5 }
+      ]
     }
   },
   methods: {

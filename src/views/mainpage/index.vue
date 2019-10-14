@@ -46,7 +46,7 @@ div(mainpage)
         </el-option>
       </el-select>
       <el-button @click="currentFilter" style='margin-left:10px;'>当前学期</el-button>
-      <el-button @click="restFilter">显示全部</el-button>
+      <el-button @click="restFilter">显示全部教学班级</el-button>
     </div>
     <transition name="fade" mode="out-in">
       <div id="at-m-list-container" class="at-collapsible" v-show="shown">
@@ -122,6 +122,7 @@ div(mainpage)
       currentFilter: function() {
         for (const idx in this.semeseterDataset) {
           const item = this.semeseterDataset[idx]
+          console.log(item)
           if (item && item[0]) {
             this.selectedSemester = item[0]['current_semester']
             console.log(item)
@@ -171,6 +172,7 @@ div(mainpage)
             .then(responseArray => {
               try {
                 this.buildSemester(responseArray)
+                this.currentFilter()
               } catch (exception) {
                 console.error(exception)
               }
@@ -181,6 +183,7 @@ div(mainpage)
             .then(responseArray => {
               try {
                 this.buildSemester(responseArray)
+                this.currentFilter()
               } catch (exception) {
                 console.error(exception)
               }

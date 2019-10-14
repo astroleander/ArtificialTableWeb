@@ -21,7 +21,7 @@
   <div>
     <el-card>
       <div slot="header">
-        <span class="rowframe title">班级管理</span>
+        <span class="rowframe title">教学班级管理</span>
       </div>
       <!-- 此班级的学生列表-->
       <el-table :data="tableStudents"  @selection-change="delChange">

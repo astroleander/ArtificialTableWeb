@@ -5,13 +5,13 @@ supplement: 为课程添加班级form
   <div class="app-container rowframe">
     <el-card class="form-box">
       <div slot="header" class="head">
-        <span class="rowframe title">添加班级</span>
+        <span class="rowframe title">添加教学班级</span>
       </div>
       <div v-if="!visible">
         <el-alert v-for="(error, idx) in errorList" :key="idx" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
       </div>
       <el-form :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="100px">
-        <el-form-item label="班级名称" prop="name">
+        <el-form-item label="教学班级名称" prop="name">
           <el-input v-model="form.name"  placeholder="请输入班级名称"></el-input>
         </el-form-item>
         <el-form-item label="任课教师" prop="teacher_id">
@@ -125,7 +125,7 @@ export default {
           { required: true, message: '请选择教学班所属课程组', trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '请输入班级名称', trigger: 'blur' },
+          { required: true, message: '请输入教学班级名称', trigger: 'blur' },
           { required: true, trigger: 'blur', validator: validateName }
         ],
         teacher_id: [

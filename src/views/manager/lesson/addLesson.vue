@@ -5,10 +5,10 @@ supplement:添加管理员所在本院系的课程
   <div class="app-container rowframe">
     <el-card class="form-box">
       <div slot="header">
-        <span class="rowframe title">添加课程</span>
+        <span class="rowframe title">添加课程组</span>
       </div>
       <el-form :rules="rules"  status-icon ref="ruleForm" :model="form" label-width="100px">
-        <el-form-item label="课程名称 " prop="name" >
+        <el-form-item label="课程组名称 " prop="name" >
           <el-input v-model="form.name"  placeholder="请输入课程组名称" maxlength="10" show-word-limit></el-input>
         </el-form-item>
         <el-form-item>
@@ -63,7 +63,7 @@ supplement:添加管理员所在本院系的课程
                     message: '添加课程组成功',
                     type: 'success'
                   })
-                  this.$router.push('/manager/class/list')
+                  this.$router.push('/manager/weight')
                 } else {
                   this.$message({
                     message: '插入新课程组项已存在，无法重复添加',

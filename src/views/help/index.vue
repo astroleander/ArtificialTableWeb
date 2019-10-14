@@ -91,14 +91,14 @@ export default {
       role: '',
       Info: [
         {
-          title: '添加班级',
+          title: '添加教学班级',
           description: '教师可以添加自己任课班级',
           router: '/manager/class/add',
           backgroud: 'background-image: url(\'https://picsum.photos/id/833/200/200\')'
 
         },
         {
-          title: '班级学生管理',
+          title: '教学班级学生管理',
           description: '教师可以为班级添加学生名单',
           router: '/class/index',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
@@ -119,7 +119,7 @@ export default {
 
         },
         {
-          title: '添加课程',
+          title: '添加课程组',
           description: '教研室主任需要为学校添加课程组',
           router: '/manager/lesson/addLesson',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
@@ -212,7 +212,7 @@ export default {
         width: 200px;
         height: 200px;
     }
-  i:hover{
+  i{
       color: orange;
   }
 

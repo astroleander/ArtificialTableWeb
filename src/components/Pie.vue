@@ -28,7 +28,7 @@
           // 图表颜色
           title: {
 
-            text: '班级成绩及格情况',
+            text: '教学班级成绩及格情况',
             x: 'center'
           },
           tooltip: {
@@ -43,7 +43,7 @@
           series: [
             {
 
-              name: '班级成绩及格情况',
+              name: '教学班级成绩及格情况',
               type: 'pie',
               radius: '55%',
               center: ['50%', '60%'],

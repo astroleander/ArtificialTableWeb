@@ -10,7 +10,7 @@
       text-color="#FFF"
       active-text-color="gold"
     >
-    <el-menu-item v-if="this.use_manager" index="999" disabled divided id="divided">
+    <!--<el-menu-item v-if="this.use_manager" index="999" disabled divided id="divided">
       <template slot="title">
       </template>
     </el-menu-item>
@@ -21,26 +21,34 @@
         <span style="color:#EEE;">管理员模式</span>
       </template>
     </el-menu-item>-->
-
     <router-link to="/" v-if="this.use_manager">
       <el-menu-item index="99928">
          <svg-icon icon-class="home"></svg-icon>
            <span>首页</span>
       </el-menu-item>
     </router-link>
+
       <el-submenu v-if="this.use_manager" index="9992">
         <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>
-          <span>管理课程信息</span>
+          <span>管理课程组信息</span>
         </template>
         <div style="background-color: #FFF; height: 1px;width: 100%"></div>
 
         <router-link to="/manager/lesson/addLesson">
             <el-menu-item index="99921">
                 <svg-icon icon-class="addCourse"></svg-icon>
-                <span>添加课程</span>
+                <span>添加课程组</span>
             </el-menu-item>
         </router-link>
+          <div style="background-color: #FFF; height: 1px;width: 100%"></div>
+
+          <router-link to="/manager/lesson/class">
+              <el-menu-item index="99922">
+                  <svg-icon icon-class="list"></svg-icon>
+                  <span>课程组列表</span>
+              </el-menu-item>
+          </router-link>
           <div style="background-color: #FFF; height: 1px;width: 100%"></div>
 
           <router-link to="/manager/weight">
@@ -75,8 +83,7 @@
       </router-link>
         <div style="background-color: #FFF; height: 1px"></div>
     </el-submenu>
-
-    <sidebar-item v-else='this.use_manager' :routes="routes"></sidebar-item>
+    <sidebar-item :routes="routes"></sidebar-item>
 
 
     <!--<el-submenu v-if="this.use_manager" index="9991">

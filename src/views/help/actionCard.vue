@@ -2,7 +2,7 @@
     <div @click="routerTo">
             <el-card class="card" shadow="hover" :style="background">
                 <div slot="header" class="clearfix">
-                    {{title}}<i class="el-icon-thumb"></i>
+                    {{title}}
                 </div>
                 <div class="text">{{description}}</div>
             </el-card>
@@ -44,6 +44,7 @@
     .card{
         width: 200px;
         height: 200px;
+        cursor:pointer;
     }
     .clearfix:before,
     .clearfix:after {

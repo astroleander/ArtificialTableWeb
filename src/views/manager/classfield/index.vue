@@ -48,7 +48,7 @@
             <template>
               <el-row>
               <el-button @click="onAddToLessonClicked(lesson)" style="margin: 20px 0 0 40px;" type="primary">添加新的班级</el-button>
-              <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程</el-button>
+              <el-button @click="onDeleteLessonClicked(lesson)" style="margin: 20px 0 0 20px;" type="danger" :disabled="Boolean(lesson && lesson.dataset)">删除课程组</el-button>
               </el-row>
             </template>
           </template>

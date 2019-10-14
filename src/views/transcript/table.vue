@@ -17,6 +17,7 @@ DONE: post 返回需要 ID
 <!-- 2、显示一个table，具体学生数据-->
 
 <!-- 整个模版用于定义数据表table的自定义组件 -->
+<!--suppress ALL -->
 <template>
     <section class="table-wrapper">
 
@@ -69,22 +70,38 @@ DONE: post 返回需要 ID
                         <div slot="reference" v-if="getPointItem(scope, title)"
                              class="point-div">
                             <!-- using import to excel -->
-                            <span style="display:none">{{getPointNumber(scope, title)}}</span>
+                            <!--<span style="display:none">{{getPointNumber(scope, title)}}</span>-->
                             <span class="point">
               <el-form
                       :model="getPointItem(scope, title)"
               >
-                <el-input
-                        type="number"
-                        prop="number"
-                        size="mini"
-                        ref="input"
-                        step=0.1
-                        v-model.number="getPointItem(scope, title).pointNumber"
-                        placeholder=""
-                        @blur="proving($event,getPointItem(scope, title),title)"
-                        @change="onItemChanged(getPointItem(scope, title), title)">
+                <template v-if="title.titleGroup_message.name === '出勤'">
+                    <el-select
+                            v-model="getPointItem(scope, title).pointNumber"
+                            placeholder="请选择"
+                            @change="onItemChanged(getPointItem(scope, title), title)">
+                        <el-option
+                                v-for="item in title_map"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </template>
+
+                  <template v-else>
+                      <el-input
+                              type="number"
+                              prop="number"
+                              size="mini"
+                              ref="input"
+                              step=0.1
+                              v-model.number="getPointItem(scope, title).pointNumber"
+                              placeholder=""
+                              @blur="proving($event,getPointItem(scope, title),title)"
+                              @change="onItemChanged(getPointItem(scope, title), title)">
                 </el-input>
+                  </template>
               </el-form>
             </span>
                             <!-- <span class="point">
@@ -97,11 +114,11 @@ DONE: post 返回需要 ID
             </span>
                         </div>
                         <div v-else class="point-div-addons">
-            <span class="operator">
-              <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
-              <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
-                     @click="onAddClicked({scope, title})" class="operator-button"/>
-            </span>
+                              <span class="operator">
+                                <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
+                                  <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
+                                    @click="onAddClicked({scope, title})" class="operator-button"/>
+                                </span>
                         </div>
 
                     </div>
@@ -115,6 +132,7 @@ DONE: post 返回需要 ID
                 :v-if="this.pointDialogVisible"
                 :visible="this.pointDialogVisible"
                 :cell="getTableDataset"
+                :titleGroupName="this.selectTitleGroupName"
                 @onDialogClose="onDialogClose()"
                 @onPointChanged="handlePointChanged"
         ></at-point-dialog>
@@ -145,6 +163,7 @@ DONE: post 返回需要 ID
     import XLSX from 'xlsx'
     import viewmodel from '@/viewmodel/table'
     import titlemodel from '@/viewmodel/title'
+
     export default {
       name: 'transcriptTable',
       components: {
@@ -194,7 +213,15 @@ DONE: post 返回需要 ID
           // 载入状态
           loading: true,
           // 成绩是否发生改变
-          pointChange: false
+          pointChange: false,
+            title_map : [
+                { name: '出勤', id: 1 },
+                { name: '缺勤', id: 2 },
+                { name: '请假', id: 3 },
+                { name: '迟到', id: 4 },
+                { name: '其他', id: 5 }
+            ],
+            selectTitleGroupName: null
         }
       },
       computed: {
@@ -203,6 +230,13 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+        selectTitle(title_id) {
+          this.title_Map.forEach(title => {
+            if (title.id === title_id) {
+              return title.name
+            }
+          })
+        },
         ListenToChange() {
           // console.log(this.viewDataset)
           const titleWeight = []
@@ -323,6 +357,7 @@ DONE: post 返回需要 ID
                   pointNewItem['title'] = title
                   pointNewItem['info'] = this.info
                   pointNewItem['type'] = 'add' // declear if item is exist
+                  this.selectTitleGroupName = title.titleGroup_message.name
                   this.showPointDialog(pointNewItem)
                 })
         },

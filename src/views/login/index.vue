@@ -56,6 +56,7 @@ import { isvalidUsername } from '@/utils/validate'
 import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
 import Vue from 'vue'
+import { teacherRouter, adminRouter } from '../../router'
 
 // 判断用户名至少三位 isvalidUsername()函数在@/utils/validate文件中
 const validateUsername = (rule, value, callback) => {
@@ -122,7 +123,17 @@ export default {
           // 调用请求函数判断是否在数据库中
           ViewModel
             .requestLogin(this.loginForm)
-            .then(() => {
+            .then(response => {
+              // const role = this.$store.state.is_manager
+              // console.log('登陆验证权限：' + response.is_manager)
+              /*
+              if (response.is_manager) {
+                this.$router.options.routes.push(adminRouter)
+                console.log(this.$router.options.routes)
+                this.$router.addRoutes(this.$router.options.routes)
+              } else {
+                this.$router.addRoutes(teacherRouter)
+              }*/
               // 登录用户名 密码匹配后
               // 在修改数据之后立即使用这个方法，获取更新后的 DOM，同理setTimeout()
               Vue.nextTick(resolve => {

@@ -32,7 +32,7 @@ const requestLogin = ({ username, password }) => {
         const message = '\ncode:' + data.code + '\nmessage:' + data.message
         throw new Error(message)
       }
-      resolve()
+      resolve(data)
     }).catch(error => {
       reject(error)
     })

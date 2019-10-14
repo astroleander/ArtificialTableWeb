@@ -12,7 +12,7 @@
             <el-table-column align="center">
                 <template slot-scope="scope">
                     <div>
-                        <el-button type="primary" @click="onModifyClicked(scope.row)">班级学生信息管理</el-button>
+                        <el-button type="primary" @click="onModifyClicked(scope.row)">教学班级学生信息管理</el-button>
                     </div>
                 </template>
             </el-table-column>
