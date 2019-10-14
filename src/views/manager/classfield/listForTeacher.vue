@@ -12,7 +12,7 @@
             <el-table-column align="center">
                 <template slot-scope="scope">
                     <div>
-                        <el-button type="primary" @click="onModifyClicked(scope.row)">教学班级学生信息管理</el-button>
+                        <el-button type="primary" @click="onModifyClicked(scope.row)">教学班级学生信息</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -43,6 +43,7 @@
             // DONE: teacher name
             { prop: 'name', label: '班级名' },
             { prop: 'semester', label: '学期' },
+            { prop: 'student_count', label: '学生人数' },
             { prop: 'room', label: '教室' },
             { prop: 'week', label: '上课时间' }
           ]

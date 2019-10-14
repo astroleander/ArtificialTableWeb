@@ -23,11 +23,11 @@ DONE: post 返回需要 ID
 
         <!-- table menu-->
         <el-row class="menu">
-            <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新成绩项</el-button>
             <el-button @click="onClickedExportTable()" type="primary" icon="el-icon-download" plain>导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
             <el-button @click="onClickedUpload()"
               :type="this.$store.state.table.changed? 'warning' : 'primary'" icon="el-icon-upload" plain>保存修改</el-button>
+            <el-button @click="onClickedAddTitle()" type="primary" icon="el-icon-d-arrow-right">添加新成绩项</el-button>
             <!--<el-button @click="reload()" type="primary" icon="">成绩汇总计算</el-button>-->
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
@@ -40,23 +40,24 @@ DONE: post 返回需要 ID
                 ref="table" id="transcript-table"
                 element-loading-text="Loading"
                 height="calc(100vh - 145px)"
-                class="table">
+                class="table"
+                :cell-style="getCellColorByType">
 
             <el-table-column label="学生姓名" prop="student.name"
-                             fixed min-width="100px">
+                             fixed min-width="40px">
             </el-table-column>
 
             <el-table-column label="学号" prop="student.sid"
-                             fixed min-width="100px">
+                             fixed min-width="50px">
             </el-table-column>
 
             <el-table-column label="总成绩" prop="totle"
-                             fixed min-width="150px">
+                             fixed min-width="40px">
             </el-table-column>
 
             <el-table-column
                     v-for="title in titles" :key="title.id"
-                    min-width="200" align="center">
+                    min-width="200">
                 <template slot="header" slot-scope="head">
                     <div class="line-container">
                         <el-tooltip class="item" effect="dark" :content="title.titleGroup_message.name" placement="top">
@@ -67,15 +68,15 @@ DONE: post 返回需要 ID
                 </template>
                 <template slot-scope="scope">
                     <div class="item-wrapper">
-                        <div slot="reference" v-if="getPointItem(scope, title)"
+                        <div
+                             slot="reference"
+                             v-if="getPointItem(scope, title)"
                              class="point-div">
                             <!-- using import to excel -->
                             <!--<span style="display:none">{{getPointNumber(scope, title)}}</span>-->
                             <span class="point">
-              <el-form
-                      :model="getPointItem(scope, title)"
-              >
-                <template v-if="title.titleGroup_message.name === '出勤'">
+                                <el-form :model="getPointItem(scope, title)">
+                                    <template v-if="title.titleGroup_message.name === '出勤'">
                     <el-select
                             v-model="getPointItem(scope, title).pointNumber"
                             placeholder="请选择"
@@ -88,9 +89,8 @@ DONE: post 返回需要 ID
                         </el-option>
                     </el-select>
                 </template>
-
-                  <template v-else>
-                      <el-input
+                                    <template v-else>
+                        <el-input
                               type="number"
                               prop="number"
                               size="mini"
@@ -100,27 +100,24 @@ DONE: post 返回需要 ID
                               placeholder=""
                               @blur="proving($event,getPointItem(scope, title),title)"
                               @change="onItemChanged(getPointItem(scope, title), title)">
-                </el-input>
+                        </el-input>
                   </template>
-              </el-form>
-            </span>
+                                </el-form>
+                            </span>
                             <!-- <span class="point">
                               {{getPointNumber(scope, title)}}</span> -->
-
                         </div>
-
-                        <div v-if="getPointItem(scope, title)" class="point-div-addons">
-            <span class="operator">
-            </span>
-                        </div>
-                        <div v-else class="point-div-addons">
+            <!--            <div  class="point-div-addons">
+                            <span class="operator">
+                            </span>
+                        </div>     -->
+                       <div v-else class="point-div-addons">
                               <span class="operator">
                                 <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
                                   <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
                                     @click="onAddClicked({scope, title})" class="operator-button"/>
                                 </span>
                         </div>
-
                     </div>
 
                 </template>
@@ -230,6 +227,11 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+          getCellColorByType({row, column, rowIndex, columnIndex}) {
+              if(columnIndex === 0 || columnIndex === 1 || columnIndex === 2){
+                  return 'background:#f9f9f9'
+              }else return ''
+          },
         selectTitle(title_id) {
           this.title_Map.forEach(title => {
             if (title.id === title_id) {
@@ -240,9 +242,12 @@ DONE: post 返回需要 ID
         ListenToChange() {
           // console.log(this.viewDataset)
           const titleWeight = []
+          const titleGroupWeight = []
           titlemodel.requestTitles({ classInfo_id: this.classinfoId })
             .then(response => {
               response.forEach(title => {
+                console.log(title)
+                titleGroupWeight.push(title.titleGroup_message.weight)
                 titleWeight.push(title.weight)
               })
               // console.log('44444')
@@ -259,7 +264,7 @@ DONE: post 返回需要 ID
                 }
                 let sum = 0
                 for (let i = 0; i < pointNumber.length; i++) {
-                  sum += pointNumber[i] * titleWeight[i] / 100
+                  sum += pointNumber[i] * titleWeight[i] *titleGroupWeight[i] / 10000
                 }
                 view.totle = parseFloat(sum).toFixed(2)
               })
@@ -399,7 +404,8 @@ DONE: post 返回需要 ID
                 message: '删除成功'
               })
               this.$emit('onDeletedTitle', title)
-              this.pointIfChange()
+                // this.handleDeletedTitle()
+              // this.pointIfChange()
             })
           })
         },
@@ -546,7 +552,9 @@ DONE: post 返回需要 ID
         display: flex;
         flex-direction: row;
         align-content: center;
-        justify-content: flex-start;
+        // justify-content: flex-start;
+        justify-content: center;
+        // background: #e3fcf9;
         // height: 30px;
     }
     .point-div-addons {
@@ -589,6 +597,7 @@ DONE: post 返回需要 ID
         align-content: center;
         align-items: center;
         flex-direction: row;
+        justify-content: center;
         padding: 0px;
     }
 </style>
@@ -604,6 +613,7 @@ DONE: post 返回需要 ID
     }
     #transcript-table .el-input__inner {
         padding: 0 0 0 4px;
-        border: none;
+        // border: none;
+        text-align: center;
     }
 </style>

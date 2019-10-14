@@ -2,7 +2,7 @@
 supplement: 为课程添加班级form
 -->
 <template>
-  <div class="app-container rowframe">
+  <div class="rowframe">
     <el-card class="form-box">
       <div slot="header" class="head">
         <span class="rowframe title">添加教学班级</span>
@@ -10,19 +10,9 @@ supplement: 为课程添加班级form
       <div v-if="!visible">
         <el-alert v-for="(error, idx) in errorList" :key="idx" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
       </div>
-      <el-form :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="100px">
+      <el-form style="width: 60%; margin-left: 20%; margin-top: 5%" :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="150px">
         <el-form-item label="教学班级名称" prop="name">
           <el-input v-model="form.name"  placeholder="请输入班级名称"></el-input>
-        </el-form-item>
-        <el-form-item label="任课教师" prop="teacher_id">
-          <el-select v-model="form.teacher_id" placeholder="请选择任课教师">
-            <el-option
-              v-for="(item,index) in teachers"
-              :key="index"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
         </el-form-item>
         <el-form-item label="所属课程组" prop="lesson_id">
           <el-select v-model="form.lesson_id" placeholder="请选择所属课程组">
@@ -47,12 +37,12 @@ supplement: 为课程添加班级form
             </el-option>
           </el-select>
         </el-form-item>
-          <el-form-item label="开课时间" prop="week" >
+          <!--<el-form-item label="开课时间" prop="week" >
           <el-input v-model="form.week" placeholder="请输入上课时间" maxlength="18" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="上课地点" prop="room" >
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
           <el-button @click="onReset">重置</el-button>
@@ -113,7 +103,7 @@ export default {
       }],
       form: {
         name: '',
-        teacher_id: '',
+        teacher_id: null,
         lesson_id: '',
         room: '',
         week: '',
@@ -153,28 +143,21 @@ export default {
   computed: {
     ...mapGetters([
       'user_collegeId',
-      'token'
+      'token',
+      'id'
     ])
   },
   methods: {
     // 根据college_id获取课程组信息，教师信息
     fetchData() {
       Promise.all([
-        userViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token),
         lessonViewModel.requestLessons({ college_id: this.user_collegeId })
       ]).then(result => {
-        if (result[0] && result[1]) {
-          this.teachers = result[0]
-          this.lessons = result[1]
+        if (result[0]) {
+          this.lessons = result[0]
           this.visible = true
         }
         if (result[0] === undefined) {
-          this.errorList.push({
-            id: this.user_collegeId,
-            errorMsg: '该院系无教师信息，请导入教师信息后重新添加教学班'
-          })
-        }
-        if (result[1] === undefined) {
           this.errorList.push({
             id: this.user_collegeId,
             errorMsg: '该院系无课程信息，请导入课程信息后重新添加教学班'
@@ -190,6 +173,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.name = this.form.name.replace(/\s*/g, '')
+          console.log('111111' + this.id)
+          this.form.teacher_id = this.id
           classInfo['override_tag'] = 0
           classViewModel.requestPostClassInfo(classInfo).then(response => {
             if (response.repeated_message.length === 0) {
@@ -238,9 +223,10 @@ export default {
     justify-content:center;
   }
   .form-box{
-    width: 50%;
-    min-width: 500px;
+    width: 100%;
+    //min-width: 500px;
     padding: 20px;
+    height: calc(100vh - 50px);
     /*border: 1px solid #999999;*/
   }
 </style>

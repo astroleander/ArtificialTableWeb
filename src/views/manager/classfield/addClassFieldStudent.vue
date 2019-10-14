@@ -1,21 +1,22 @@
 <!-- 为班级导入学生模版-->
 <template>
   <div class="container" id="add-student-page">
-        <el-steps :active="activeStep" finish-status="success" direction="horizontal" align-center style="height: 40px">
+        <!--<el-steps :active="activeStep" finish-status="success" direction="horizontal" align-center style="height: 40px">
             <el-step v-for='eachStep in steps' :key='eachStep.title' :title='eachStep.title' :description="eachStep.description"></el-step>
-        </el-steps>
-        <el-tabs v-model="getActiveStep" tab-position="hidden" class="tab flex-half flex-85">
-            <el-tab-pane name="0" style="display: flex;flex-flow: column">
+        </el-steps>-->
+        <!--<el-tabs v-model="getActiveStep" tab-position="hidden" class="tab flex-half flex-85">
+            <el-tab-pane name="0" style="display: flex;flex-flow: column">-->
                 <div class="card-box">
                     <span class="span">请选择上传学生的入学学年</span><span class="span" style="color: red">（必选项）</span><span class="span">：</span>
                     <el-date-picker v-model="seletedSemester.year" placeholder="请选择入学年份"
                                     size="mini" type="year" format='yyyy' value-format="yyyy">
                     </el-date-picker>
-                    <el-button type="primary"  style="float: right; text-align: center" @click="toStep(1, 2)">下一步</el-button>
+                    <el-button type="primary" @click="onSubmitClicked" style="float: right; text-align: center">确认提交</el-button>
+                    <!--<el-button type="primary"  style="float: right; text-align: center" @click="toStep(1, 2)">预览</el-button>-->
                 </div>
-                <div>
+               <!-- <div>
                    <el-alert :title="this.Alert"></el-alert>
-                </div>
+                </div>-->
                 <div style="display: flex;flex-flow: row; justify-content: center;">
                     <!--<import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>-->
                     <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
@@ -82,7 +83,7 @@
                           </el-select> -
                     </el-card>
                 </el-form>-->
-            </el-tab-pane>
+            <!--</el-tab-pane>
 
             <el-tab-pane name="1">
                 <el-table v-if="importStudentList !== null"
@@ -104,6 +105,7 @@
                     <el-table-column label="姓名" prop="name" align="center"
                                      min-width="200px">
                     </el-table-column>
+
                     <!--<el-table-column v-for="(item, idx) in [...importStudentList[0]]"
                                      :key="idx"
                                      align="center"
@@ -134,18 +136,18 @@
                             </div>
                         </template>
                     </el-table-column>-->
-                </el-table>
+     <!--           </el-table>
                 <el-row>
                     <div class="row" style="padding:10px;">
                         <el-button @click="returnLast" type="primary">返回上一步</el-button>
                         <!--<el-button @click="onResetClicked" type="primary">重新上传</el-button>-->
-                        <el-button type="primary" @click="onSubmitClicked">确认提交</el-button>
-                    </div>
-                </el-row>
+             <!--           <el-button type="primary" @click="onSubmitClicked">确认提交</el-button>
+                   <!-- </div>
+        <!--        </el-row>
             </el-tab-pane>
             <el-tab-pane name="2">
             </el-tab-pane>
-  </el-tabs>
+  </el-tabs>-->
   </div>
 </template>
 
@@ -202,6 +204,10 @@ export default {
     classInfo_id: {
       type: [String, Number],
       default: 0
+    },
+    reset: {
+      type: Boolean,
+      default: false
     }
   },
   data: function() {
@@ -516,6 +522,13 @@ export default {
     }
   },
   watch: {
+    // 关闭窗口，清空页面缓存
+    reset: function(reset) {
+      if (reset === true) {
+        this.seletedSemester.year = ''
+        this.$refs.hotTable.hotInstance.clear()
+      }
+    }
   },
   created() {
     this.fetchCollegeList()

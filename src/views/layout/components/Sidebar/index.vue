@@ -83,7 +83,8 @@
       </router-link>
         <div style="background-color: #FFF; height: 1px"></div>
     </el-submenu>
-    <sidebar-item :routes="routes"></sidebar-item>
+
+    <sidebar-item  v-else :routes="routes"></sidebar-item>
 
 
     <!--<el-submenu v-if="this.use_manager" index="9991">

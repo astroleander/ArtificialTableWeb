@@ -36,12 +36,12 @@
         </el-table-column>
         <el-table-column prop="sid" label="学号" minWidth="150" sortable></el-table-column>
         <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
-        <el-table-column prop="major" label="专业"  minWidth="150"></el-table-column>
+        <!--<el-table-column prop="major" label="专业"  minWidth="150"></el-table-column>-->
 
         <el-table-column label="操作" width="350">
           <template slot="header" slot-scope="scope">
             <el-button type="primary" size="medium"  @click="openImportDialog">批量导入</el-button>
-            <el-button type="primary" size="medium"  @click="openAddDialog">添加学生</el-button>
+            <!--<el-button type="primary" size="medium"  @click="openAddDialog">添加学生</el-button>-->
             <el-button title="primary" size="medium" @click="confirmDeleteClassFields" type="danger">删除选中</el-button>
           </template>
           <template slot-scope="scope">
@@ -49,12 +49,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="添加学生" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
+      <el-dialog title="将学生学号、姓名复制到网页表格中（Ctl+V）" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
         <add-class-student :class-info_id="this.$router.currentRoute.params.id"
                            @addEnd="handleAddEnd"
+                           :reset="resetField"
         ></add-class-student>
       </el-dialog>
-      <el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :before-close="handleClose">
+      <!--<el-dialog title="添加单个学生" :center="true"  width="70%" :visible.sync="AddDialogVisible" :before-close="handleClose">
                 <el-form :rules='rules' ref='ruleForm' :model='form' label-width='100px'>
                     <el-form-item label='学生姓名' prop='name'>
                         <el-input v-model='form.name' placeholder='请输入学生姓名'></el-input>
@@ -76,7 +77,7 @@
                         <el-button @click='onReset'>重新填写</el-button>
                     </el-form-item>
                 </el-form>
-        </el-dialog>
+        </el-dialog>-->
     </el-card>
   </div>
 </template>
@@ -142,6 +143,7 @@ export default {
         key: 'id',
         label: 'name'
       },
+      resetField: false,
       renderFunc(h, option) {
         return <span>{option.name}-{option.sid}</span>
       },
@@ -194,6 +196,7 @@ export default {
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {
+          this.resetField = true
           done()
         })
         .catch(_ => {})

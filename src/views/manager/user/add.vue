@@ -201,7 +201,7 @@ export default {
   justify-content:center;
 }
 .form-box{
-  width: 50%;
+  width:100%;
   min-width: 500px;
   padding: 20px;
   /*border: 1px solid #999999;*/

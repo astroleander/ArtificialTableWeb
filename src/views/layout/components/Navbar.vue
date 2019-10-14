@@ -11,7 +11,7 @@
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
 
-        <router-link class="inlineBlock" to="/">
+        <router-link v-if="Ishome" class="inlineBlock" to="/">
           <el-dropdown-item>
             返回主页
           </el-dropdown-item>
@@ -62,6 +62,14 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
+    },
+    Ishome() {
+      const path = this.$route.path
+      console.log('111111' + path)
+      if (path === '/') {
+        return false
+      }
+      return true
     },
     init() {
       if (this.use_manager) {

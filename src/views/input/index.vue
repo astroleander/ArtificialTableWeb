@@ -747,7 +747,7 @@
             row.forEach((cell, idx) => {
               // eslint-disable-next-line
               if (cell === null || cell === '' || cell === undefined) {
-              }// 没有 pass 的第 3024 天, 想它
+              } // 没有 pass 的第 3024 天, 想它
               else {
                 count++
                 col_count[idx]++
