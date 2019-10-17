@@ -229,7 +229,15 @@ export default {
       titleViewmodel.requestPostTitle(title).then(res => {
         title.id = res.succeed_ids[0].id
         title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
-        this.model.titles.push(title)
+        viewmodel.requestPoints({ classInfo_id: this.id }).then(result => {
+          console.log('I get classInfo_id' + this.id)
+          console.log('I get new points' + result)
+          if (result) {
+            this.model.points = result
+            this.model.titles.push(title)
+            this.buildTable()
+          }
+        })
       }).catch(error => {
         console.log(error)
         this.$prompt(
@@ -271,8 +279,6 @@ export default {
     },
     // 加载成绩表信息
     fetchDataset() {
-      // const lesson_id = this.info.lesson_id
-      // console.log('11111111111' + this.id)
       Promise.all([
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),

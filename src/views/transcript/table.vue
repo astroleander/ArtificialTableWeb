@@ -44,15 +44,15 @@ DONE: post 返回需要 ID
                 :cell-style="getCellColorByType">
 
             <el-table-column label="学生姓名" prop="student.name"
-                             fixed min-width="40px">
+                             fixed min-width="100px">
             </el-table-column>
 
             <el-table-column label="学号" prop="student.sid"
-                             fixed min-width="50px">
+                             fixed min-width="100px">
             </el-table-column>
 
             <el-table-column label="总成绩" prop="totle"
-                             fixed min-width="40px">
+                             fixed min-width="80px">
             </el-table-column>
 
             <el-table-column

@@ -139,7 +139,7 @@ export const constantRouterMap = [
   /**
      * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
      */
-  {
+  /* {
     path: '/input-wrapper',
     component: Layout,
     children: [{
@@ -149,7 +149,7 @@ export const constantRouterMap = [
       redirect: '/input',
       meta: { title: '导入成绩', icon: 'upload' }
     }]
-  },
+  },*/
   {
     path: '/redirector',
     component: Layout,
@@ -164,10 +164,10 @@ export const constantRouterMap = [
   {
     path: '/input',
     // 重定位：用于返回导入成绩时直接返回
-    redirect: '/input/index/',
+    // redirect: '/input/index',
     meta: { title: '导入成绩', icon: 'upload' },
     component: Layout,
-    hidden: true,
+    // hidden: true,
     children: [{
       path: 'index',
       name: 'input',
