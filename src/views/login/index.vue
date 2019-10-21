@@ -16,38 +16,42 @@
 <template>
   <div class="login-container">
     <!-- autoComplete="on" 规定启用自动完成功能。 -->
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <!-- 在登录页面框架中显示系统名称：英语课程成绩管理系统 -->
-      <h2 class="title">{{AppName}}</h2>
-      <!-- 用户名组件 -->
-      <el-form-item prop="username">
-        <span class="svg-container svg-container_login">
-          <!-- 引用Iconfont库中.svg文件 标签为svg-icon 通过icon-class直接通过svg图片名字调用 此处加入用户标志图片-->
-          <svg-icon icon-class="user" />
-        </span>
-        <!-- 输入用户名，同时双向绑定到loginForm.username中，此时loginForm.username与输入值相同 -->
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
-      </el-form-item>
-      <!-- 密码组件 -->
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password"></svg-icon>
-        </span>
-        <!-- 输入密码后回车触发函数handleLogin -->
-        <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
-          placeholder="password"></el-input>
+      <div style="display: flex;flex-direction: column; width: 520px; background-color: white; justify-content: center; height: calc(100vh - 100px); margin-top: 50px">
+          <div style="height: 40%" class="img">
 
-        <!-- 点击eye图片显示密码 -->
-          <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
-      </el-form-item>
-      <!-- 按钮组件 -->
-      <el-form-item>
-        <!-- 点击按钮触发函数handleLogin -->
-        <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-          进入系统
-        </el-button>
-      </el-form-item>
-    </el-form>
+          </div>
+          <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+              <!-- 在登录页面框架中显示系统名称：英语课程成绩管理系统 -->
+              <h2 class="title">{{AppName}}</h2>
+              <!-- 用户名组件 -->
+              <el-form-item prop="username">
+                <span class="svg-container svg-container_login">
+                <!-- 引用Iconfont库中.svg文件 标签为svg-icon 通过icon-class直接通过svg图片名字调用 此处加入用户标志图片-->
+                <svg-icon icon-class="user" />
+                </span>
+                  <!-- 输入用户名，同时双向绑定到loginForm.username中，此时loginForm.username与输入值相同 -->
+                <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+              </el-form-item>
+              <!-- 密码组件 -->
+              <el-form-item prop="password">
+                <span class="svg-container">
+                    <svg-icon icon-class="password"></svg-icon>
+                 </span>
+                  <!-- 输入密码后回车触发函数handleLogin -->
+                  <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
+                            placeholder="password"></el-input>
+                  <!-- 点击eye图片显示密码 -->
+                  <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
+              </el-form-item>
+              <!-- 按钮组件 -->
+              <el-form-item>
+                  <!-- 点击按钮触发函数handleLogin -->
+                  <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
+                      进入系统
+                  </el-button>
+              </el-form-item>
+          </el-form>
+      </div>
   </div>
 </template>
 
@@ -56,7 +60,6 @@ import { isvalidUsername } from '@/utils/validate'
 import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
 import Vue from 'vue'
-import { teacherRouter, adminRouter } from '../../router'
 
 // 判断用户名至少三位 isvalidUsername()函数在@/utils/validate文件中
 const validateUsername = (rule, value, callback) => {
@@ -165,16 +168,15 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
-$light_gray:#eee;
-$black: #212121;
+$light_gray: #ffffff;
+$black: rgb(28, 31, 8);
 /* reset element-ui css */
 // 登录界面样式设置
 .login-container {
   // 背景图片加载
-  //background-image:
-    //url("https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png");
+  background: url("../../assets/images/login-background.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  // background-size: cover;
   // 输入格式设定
   .el-input {
     display: inline-block;
@@ -197,7 +199,7 @@ $black: #212121;
   }
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.47);
     border-radius: 2px;
     color: #454545;
   }
@@ -214,19 +216,32 @@ $black: #212121;
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $white:#FFF;
-$light_gray:#eee;
+$light_gray: #000000;
+
+.img{
+    background: url("../../assets/images/login-background.jpg");
+    background-size: cover;
+}
 .login-container {
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: $bg;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  //background-color: $bg;
   .login-form {
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 520px;
-    padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    // position: absolute;
+    //left: 0;
+    //right: 0;
+    width: 450px;
+    padding: 35px 35px 35px 35px;
+    margin: 35px 35px auto 35px;
+    //border: 3px solid ;
+      //border-style:outset;
+      // border-radius: 20px;
+      // box-shadow: 0 0 9px #222;
+    // background-color: white;
   }
   .tips {
     font-size: 14px;
