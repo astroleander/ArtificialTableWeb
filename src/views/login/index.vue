@@ -1,6 +1,18 @@
+<!-- 页面思想
+
+    登录：当用户填写完账号和密码后向服务端验证是否正确，
+    验证通过之后，服务端会返回一个token，
+    拿到token之后（我会将这个token存贮到cookie中，保证刷新页面后能记住用户登录状态），
+    前端会根据token再去拉取一个 user_info 的接口来获取用户的详细信息（如用户权限，用户名等等信息）
+
+    动态路由加载
+    权限验证：通过token获取用户对应的 role，动态根据用户的 role 算出其对应有权限的路由，通过 router.addRoutes 动态挂载这些路由
+-->
+
 <!--登录界面运行过程   -->
 <!--  1、模版构建界面  -->
 <!--     输入的用户名、密码绑定LoginForm，点击/回车触发handleLogin函数
+
 <!--  2、在判断输入符合规则的情况下，调用@/viewmodel/login.js中的requestLogin请求登录函数将LoginForm作为参数传递过去
 <!--  3、@/viewmodel/login.js 中requestLogin函数返回return new Promise((resolve, reject)=>{}
 <!--     此时调用@/api/login.js中的login函数，向后端发出request请求
@@ -60,6 +72,7 @@ import { isvalidUsername } from '@/utils/validate'
 import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
 import Vue from 'vue'
+import { add, constantRouterMap } from '@/router'
 
 // 判断用户名至少三位 isvalidUsername()函数在@/utils/validate文件中
 const validateUsername = (rule, value, callback) => {
@@ -127,16 +140,8 @@ export default {
           ViewModel
             .requestLogin(this.loginForm)
             .then(response => {
-              // const role = this.$store.state.is_manager
-              // console.log('登陆验证权限：' + response.is_manager)
-              /*
-              if (response.is_manager) {
-                this.$router.options.routes.push(adminRouter)
-                console.log(this.$router.options.routes)
-                this.$router.addRoutes(this.$router.options.routes)
-              } else {
-                this.$router.addRoutes(teacherRouter)
-              }*/
+              const role = response.is_manager
+              console.log('登陆验证权限：' + role)
               // 登录用户名 密码匹配后
               // 在修改数据之后立即使用这个方法，获取更新后的 DOM，同理setTimeout()
               Vue.nextTick(resolve => {

@@ -1,11 +1,14 @@
-import router from './router'
+import router, { constantRouterMap } from './router'
 import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // 验权
+import { teacherRouter, adminRouter } from './router'
 
 const whiteList = ['/login'] // 不重定向白名单
+var addRouteFlag = false
+
 router.beforeEach((to, from, next) => {
   if (from.path.match(/\/transcript\//)) {
     if (store.state.table.changed === true) {
@@ -21,18 +24,29 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      if (store.getters.groups === -1) {
-        store.dispatch('GetInfo').then(res => { // 拉取用户信息
-          next()
-        }).catch((err) => {
-          console.log('[Router Permission]: fetch userinfo failed, execute logout')
-          store.dispatch('FedLogOut').then(() => {
-            Message.error(err || 'Verification failed, please login again')
-            next({ path: '/' })
-          })
-        })
-      } else {
+      // 获取用户权限
+      const role = store.getters.is_manager
+      console.log('用户权限加载' + role)
+      if (role !== undefined) {
         next()
+        console.log('luyou加载' + addRouteFlag)
+        if (!addRouteFlag) {
+          addRouteFlag = true
+          if (role === false) {
+            router.options.routes = constantRouterMap.concat(teacherRouter)
+            router.addRoutes(teacherRouter)
+          } else {
+            router.options.routes = constantRouterMap.concat(adminRouter)
+            router.addRoutes(adminRouter)
+          }
+          router.push({ path: to.path })
+        }
+      } else {
+        if (to.path === '/') {
+          next()
+        } else {
+          next('/')
+        }
       }
     }
   } else {

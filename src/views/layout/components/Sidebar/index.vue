@@ -21,7 +21,7 @@
         <span style="color:#EEE;">管理员模式</span>
       </template>
     </el-menu-item>-->
-    <router-link to="/" v-if="this.use_manager">
+   <!-- <router-link to="/" v-if="this.use_manager">
       <el-menu-item index="99928">
          <svg-icon icon-class="home"></svg-icon>
            <span>首页</span>
@@ -82,9 +82,9 @@
         </el-menu-item>
       </router-link>
         <div style="background-color: #FFF; height: 1px"></div>
-    </el-submenu>
+    </el-submenu>   -->
 
-    <sidebar-item  v-else :routes="routes"></sidebar-item>
+    <sidebar-item  :routes="routes"></sidebar-item>
 
 
     <!--<el-submenu v-if="this.use_manager" index="9991">
@@ -110,7 +110,7 @@
         <div style="background-color: #FFF; height: 1px;width: 100%"></div>
     </el-submenu>-->
 
-    <el-submenu v-if="this.use_manager" index="9993">
+    <!--<el-submenu v-if="this.use_manager" index="9993">
       <template slot="title">
           <svg-icon icon-class="jiahao"></svg-icon>
           <span>管理学生信息</span>
@@ -132,7 +132,7 @@
         </el-menu-item>
       </router-link>
       <div style="background-color: #FFF; height: 1px;width: 100%"></div>-->
-    </el-submenu>
+   <!-- </el-submenu> -->
     </el-menu>
   </el-scrollbar>
 </template>
