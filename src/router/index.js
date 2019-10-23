@@ -55,23 +55,30 @@ export const constantRouterMap = [
   },
   { path: '/404', component: () => import('@/views/404'), hidden: true } // 错误页面404
 ]
-/*
-constantRouterMap.addRoutes([
+
+export const adminRouter = [
   {
     path: '/manager',
     component: Layout,
-    hidden: true,
     children: [
       {
-        path: 'class/classfield',
-        name: 'addClassField',
-        component: () => import('@/views/manager/classfield/form.vue'),
-        meta: { title: '班级添加删除学生', icon: 'tree' }
+        path: 'lesson/addLesson',
+        name: 'addlesson',
+        component: () => import('@/views/manager/lesson/addLesson.vue'),
+        meta: { title: '添加课程组', icon: 'tree' }
       }]
-  }
-])*/
-
-export const adminRouter = [
+  },
+  {
+    path: '/manager',
+    component: Layout,
+    children: [
+      {
+        path: 'lesson/class',
+        name: 'classList',
+        component: () => import('@/views/manager/classfield/index.vue'),
+        meta: { title: '课程组列表', icon: 'tree' }
+      }]
+  },
   {
     path: '/manager',
     component: Layout,
@@ -102,19 +109,6 @@ export const adminRouter = [
     // hidden: true,
     children: [
       {
-        path: 'user/list',
-        name: 'showmanager',
-        component: () => import('@/views/manager/user/list.vue'),
-        meta: { title: '教师列表', icon: 'tree' }
-      }
-    ]
-  },
-  {
-    path: '/manager',
-    component: Layout,
-    // hidden: true,
-    children: [
-      {
         path: 'user/add',
         name: 'addmanager',
         component: () => import('@/views/manager/user/add.vue'),
@@ -125,41 +119,19 @@ export const adminRouter = [
   {
     path: '/manager',
     component: Layout,
+    // hidden: true,
     children: [
       {
-        path: 'lesson/addLesson',
-        name: 'addlesson',
-        component: () => import('@/views/manager/lesson/addLesson.vue'),
-        meta: { title: '添加课程组', icon: 'tree' }
-      }]
-  },
-  {
-    path: '/manager',
-    component: Layout,
-    children: [
-      {
-        path: 'lesson/class',
-        name: 'classList',
-        component: () => import('@/views/manager/classfield/index.vue'),
-        meta: { title: '课程组列表', icon: 'tree' }
-      }]
+        path: 'user/list',
+        name: 'showmanager',
+        component: () => import('@/views/manager/user/list.vue'),
+        meta: { title: '教师列表', icon: 'tree' }
+      }
+    ]
   }
 ]
 
 export const teacherRouter = [
-  {
-    path: '/mainpage',
-    component: Layout, // 上方引入的外部框架模版
-    // 创建子路由，进行跳转到菜单相应子模块中
-    children: [{
-      path: 'index',
-      name: 'mainpage',
-      // 左侧菜单栏中标题和图片应用
-      meta: { title: '成绩管理', icon: 'chengji' },
-      // 连接响应vue文件
-      component: () => import('@/views/mainpage/index')
-    }]
-  },
   {
     path: '/manager',
     component: Layout,
@@ -194,6 +166,19 @@ export const teacherRouter = [
         meta: { title: '导入成绩', icon: 'upload' }
       }]
     },*/
+  {
+    path: '/mainpage',
+    component: Layout, // 上方引入的外部框架模版
+    // 创建子路由，进行跳转到菜单相应子模块中
+    children: [{
+      path: 'index',
+      name: 'mainpage',
+      // 左侧菜单栏中标题和图片应用
+      meta: { title: '成绩管理', icon: 'chengji' },
+      // 连接响应vue文件
+      component: () => import('@/views/mainpage/index')
+    }]
+  },
   {
     path: '/redirector',
     component: Layout,

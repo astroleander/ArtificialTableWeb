@@ -8,6 +8,7 @@ const getters = {
   name: state => state.user.name,
   id: state => state.user.id,
   user: state => state.user.user,
+  addRouterFlag: state => state.user.addRouterFlag,
   user_collegeId: state => state.user.user_collegeId,
   // 是否是管理员
   is_manager: state => state.user.is_manager,

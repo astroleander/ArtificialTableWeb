@@ -8,6 +8,7 @@ const Use_Manager_KEY = 'Use-Manager'
 const Is_Manager_KEY = 'Is-Manager'
 
 const User_College_KEY = 'College_Id'
+
 export function getToken() {
   return Cookies.get(TOKEN_KEY)
 }

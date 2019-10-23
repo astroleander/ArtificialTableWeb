@@ -7,7 +7,6 @@ import { getToken } from '@/utils/auth' // 验权
 import { teacherRouter, adminRouter } from './router'
 
 const whiteList = ['/login'] // 不重定向白名单
-var addRouteFlag = false
 
 router.beforeEach((to, from, next) => {
   if (from.path.match(/\/transcript\//)) {
@@ -25,20 +24,27 @@ router.beforeEach((to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       // 获取用户权限
-      const role = store.getters.is_manager
+      const role = store.getters.use_manager
       console.log('用户权限加载' + role)
-      if (role !== undefined) {
+      if (store.getters.use_manager !== undefined) {
         next()
-        console.log('luyou加载' + addRouteFlag)
-        if (!addRouteFlag) {
-          addRouteFlag = true
-          if (role === false) {
-            router.options.routes = constantRouterMap.concat(teacherRouter)
-            router.addRoutes(teacherRouter)
-          } else {
+        console.log('权限加载' + store.getters.use_manager)
+        if (!store.getters.addRouterFlag) {
+          store.dispatch('setAddRouterFlag', true)
+          // console.log('111111' + store.getters.addRouterFlag)
+          console.log(typeof (store.getters.use_manager))
+          if (String(store.getters.use_manager) === 'true') {
+            // console.log(store.getters.use_manager)
+            // console.log('我进入管理员模式')
             router.options.routes = constantRouterMap.concat(adminRouter)
             router.addRoutes(adminRouter)
+            // console.log('222' + router.options.routes.length)
+          } else if (String(store.getters.use_manager) === 'false') {
+            // console.log('我进入教师模式')
+            router.options.routes = constantRouterMap.concat(teacherRouter)
+            router.addRoutes(teacherRouter)
           }
+          // console.log('222' + router.options.routes.length)
           router.push({ path: to.path })
         }
       } else {

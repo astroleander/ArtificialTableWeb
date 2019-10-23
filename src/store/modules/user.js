@@ -8,7 +8,8 @@ const user = {
     is_manager: getIsManager(),
     use_manager: getUseManager(),
     user_collegeId: getCollegeId(),
-    userInfo: {}
+    userInfo: {},
+    addRouterFlag: false
   },
 
   mutations: {
@@ -27,6 +28,9 @@ const user = {
       } else {
         state.user = user
       }
+    },
+    SET_ROUTER: (state, flag) => {
+      state.addRouterFlag = flag
     },
     SET_MANAGER: (state, is) => {
       state.is_manager = is
@@ -54,6 +58,7 @@ const user = {
       commit('SET_USER', data.user)
       commit('SET_MANAGER', data.user.is_manager)
       commit('SET_COLLEGE_ID', data.user.college_id)
+      commit('SET_ROUTER', false)
     },
     // 登出
     LogOut({ commit, state }) {
@@ -63,6 +68,7 @@ const user = {
       commit('SET_MANAGER', false)
       commit('SET_COLLEGE_ID', '')
       commit('SET_USE_MANAGER', false)
+      commit('SET_ROUTER', false)
       removeToken()
       removeId()
       removeUser()
@@ -89,6 +95,12 @@ const user = {
     saveUserInfo({ commit }, user) {
       return new Promise(resolve => {
         commit('SAVE_USER_INFO', user)
+        resolve()
+      })
+    },
+    setAddRouterFlag({ commit }, flag) {
+      return new Promise(resolve => {
+        commit('SET_ROUTER', flag)
         resolve()
       })
     }

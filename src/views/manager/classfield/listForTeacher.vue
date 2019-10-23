@@ -28,6 +28,22 @@
 <script>
     import { mapGetters } from 'vuex'
     import classInfoViewModel from '@/viewmodel/classinfos'
+    import router from '@/router'
+    import Layout from '@/views/layout/Layout'
+
+    const addrouter = [
+      {
+        path: 'class',
+        component: Layout,
+        children: [
+          {
+            path: 'classfield',
+            name: 'addClassField',
+            component: () => import('@/views/manager/classfield/form.vue'),
+            meta: { title: '班级添加删除学生', icon: 'tree' }
+          }
+        ]
+      }]
 
     export default {
       name: 'listForTeacher',
@@ -80,14 +96,8 @@
         },
         onModifyClicked(row) {
           // jump to modify pabe
-          this.$router.options.routes[14].children.push({
-            path: 'class/classfield',
-            name: 'addClassField',
-            component: () => import('@/views/manager/classfield/form.vue'),
-            meta: { title: '班级添加删除学生', icon: 'tree' }
-          })
-          this.$router.addRoutes(this.$router.options.routes)
-          this.$router.push({
+          router.addRoutes(addrouter)
+          router.push({
             name: 'addClassField',
             params: { id: row.id, type: 'modify' },
             query: { id: row.id }
