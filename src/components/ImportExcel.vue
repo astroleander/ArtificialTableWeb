@@ -84,7 +84,7 @@
           const end_row = range.e.r
           // 列的结束
           const end_col = range.e.c
-          if (end_row > 110) {
+          /* if (end_row > 110) {
             this.$message({
               message: 'excel表格行数超过了100行',
               type: 'warning'
@@ -99,7 +99,7 @@
             })
             document.getElementById('excel-upload-input').value = null
             return
-          }
+          } */
 
           /**
            * @see https://docs.sheetjs.com/#json
