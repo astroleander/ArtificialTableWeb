@@ -51,7 +51,8 @@ export default {
             }
           },
           // 加载数据
-          indicator: this.titleData
+          indicator: this.titleData,
+          radius: 100
         },
         // 各个小项加载
         series: [{
@@ -93,6 +94,6 @@ export default {
 <style lang="scss" scoped>
 .box{
   width: 500px;
-  height: 400px;
+  height: 300px;
 }
 </style>

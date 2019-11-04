@@ -28,8 +28,8 @@
       <div class="row-frame">
         <p><span>{{titles.className}}</span>：
           <span>{{dataset.lesson_message && dataset.lesson_message.name}}</span></p>
-        <p><span>{{titles.cid}}</span>：
-          <span>{{dataset.cid}}</span></p>
+        <!--<p><span>{{titles.cid}}</span>：
+          <span>{{dataset.cid}}</span></p> -->
         <p><span>{{titles.room}}</span>：
           <span>{{dataset.room}}</span></p>
         <p><span>{{titles.studentCount}}</span>：
@@ -78,7 +78,7 @@
       return {
         titles: {
           title: '课程名称',
-          cid: '课程编号',
+          // cid: '课程编号',
           id: '课程编号',
           teacher: '任课教师',
           className: '课程名',

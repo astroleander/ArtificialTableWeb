@@ -92,6 +92,18 @@ export const adminRouter = [
       }]
   },
   {
+    path: urls.comparison,
+    component: Layout, // 上方引入的外部框架模版
+    children: [{
+      path: 'index',
+      name: 'comparison',
+      component: () => import('@/views/comparison/index'),
+      // 路由属性存储
+      meta: { title: '班级成绩比较', icon: 'dash' }
+    }]
+
+  },
+  {
     path: '/manager',
     component: Layout,
     // hidden: true,
@@ -170,13 +182,26 @@ export const teacherRouter = [
     path: '/mainpage',
     component: Layout, // 上方引入的外部框架模版
     // 创建子路由，进行跳转到菜单相应子模块中
+    children: [
+      {
+        path: 'index',
+        name: 'mainpage',
+        // 左侧菜单栏中标题和图片应用
+        meta: { title: '成绩管理', icon: 'chengji' },
+        // 连接响应vue文件
+        component: () => import('@/views/mainpage/index')
+      }]
+  },
+  {
+    path: urls.transcript,
+    component: Layout,
+    // 可隐藏信息
+    hidden: true,
     children: [{
-      path: 'index',
-      name: 'mainpage',
-      // 左侧菜单栏中标题和图片应用
-      meta: { title: '成绩管理', icon: 'chengji' },
-      // 连接响应vue文件
-      component: () => import('@/views/mainpage/index')
+      path: ':id',
+      name: 'transcript',
+      component: () => import('@/views/transcript'),
+      meta: { title: '成绩管理', icon: 'tree' }
     }]
   },
   {
@@ -216,18 +241,6 @@ export const teacherRouter = [
           }]
         },*/
   {
-    path: urls.comparison,
-    component: Layout, // 上方引入的外部框架模版
-    children: [{
-      path: 'index',
-      name: 'comparison',
-      component: () => import('@/views/comparison/index'),
-      // 路由属性存储
-      meta: { title: '班级成绩比较', icon: 'dash' }
-    }]
-
-  },
-  {
     path: urls.analyse,
     component: Layout,
     children: [{
@@ -240,18 +253,6 @@ export const teacherRouter = [
   /**
      * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
      */
-  {
-    path: urls.transcript,
-    component: Layout,
-    // 可隐藏信息
-    hidden: true,
-    children: [{
-      path: ':id',
-      name: 'transcript',
-      component: () => import('@/views/transcript'),
-      meta: { title: '成绩管理', icon: 'tree' }
-    }]
-  },
   {
     path: urls.transcript,
     component: Layout,

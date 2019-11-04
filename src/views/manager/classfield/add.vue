@@ -24,7 +24,7 @@ supplement: 为课程添加班级form
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="开课年份" prop="variableYear">
+        <!--<el-form-item label="开课年份" prop="variableYear">
           <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required></el-date-picker>
         </el-form-item>
         <el-form-item label="开课学期" prop="variableSemester">
@@ -36,13 +36,13 @@ supplement: 为课程添加班级form
               :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>
-          <!--<el-form-item label="开课时间" prop="week" >
+        </el-form-item>-->
+          <el-form-item label="上课时间" prop="week" >
           <el-input v-model="form.week" placeholder="请输入上课时间" maxlength="18" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="上课地点" prop="room" >
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
-        </el-form-item>-->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
           <el-button @click="onReset">重置</el-button>
@@ -54,7 +54,7 @@ supplement: 为课程添加班级form
 
 <script>
 import { mapGetters } from 'vuex'
-import userViewModel from '@/viewmodel/user'
+// import userViewModel from '@/viewmodel/user'
 import lessonViewModel from '@/viewmodel/lesson'
 import classViewModel from '@/viewmodel/classinfos'
 const validateName = (rule, value, callback) => {
@@ -107,8 +107,8 @@ export default {
         lesson_id: '',
         room: '',
         week: '',
-        variableSemester: '',
-        variableYear: ''
+        variableSemester: this.getSemester(),
+        variableYear: new Date().getFullYear()
       },
       rules: {
         lesson_id: [
@@ -133,8 +133,8 @@ export default {
         ]
         // room: [
         //   { required: true, message: '请输入上课地点', trigger: 'blur' }
-        // ],
-        // week: [
+        //  ],
+        //  week: [
         //   { required: true, message: '请输入上课时间', trigger: 'blur' }
         // ]
       }
@@ -148,6 +148,21 @@ export default {
     ])
   },
   methods: {
+    // 获取当前学期
+    getSemester() {
+      const month = new Date().getMonth()
+      if (month >= 3 && month <= 7) {
+        return '春季'
+      } else if ((month >= 9 && month <= 12) || month === 1) {
+        return '秋季'
+      } else if (month === 8) {
+        return '秋季小学期'
+      } else if (month === 2) {
+        return '春季小学期'
+      } else {
+        return '其他'
+      }
+    },
     // 根据college_id获取课程组信息，教师信息
     fetchData() {
       Promise.all([

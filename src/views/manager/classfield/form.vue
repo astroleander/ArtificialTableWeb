@@ -295,18 +295,25 @@ export default {
       })
     },
     confirmDeleteClassFields() {
-      this.$confirm('此操作将选中学生从班级中删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.delClassField(this.delList)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+      if (this.delList.length > 0) {
+        this.$confirm('此操作将选中学生从班级中删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.delClassField(this.delList)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
-      })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '尚未选择删除学生'
+        })
+      }
     },
     // 根据参数删除classfiled记录
     delClassField(params) {

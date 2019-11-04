@@ -41,18 +41,27 @@ DONE: post 返回需要 ID
                 element-loading-text="Loading"
                 height="calc(100vh - 145px)"
                 class="table"
+                border
                 :cell-style="getCellColorByType">
 
-            <el-table-column label="学生姓名" prop="student.name"
+            <el-table-column label="序号" align="center" fixed min-width="80px">
+                <template slot-scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="学生姓名" prop="student.name" align="center"
                              fixed min-width="100px">
             </el-table-column>
 
-            <el-table-column label="学号" prop="student.sid"
+            <el-table-column label="学号" prop="student.sid" align="center"
                              fixed min-width="100px">
             </el-table-column>
 
-            <el-table-column label="总成绩" prop="totle"
-                             fixed min-width="80px">
+            <el-table-column label="总成绩" align="center" fixed min-width="280px">
+                <el-table-column :label="this.message" prop="totle" align="center"
+                                  min-width="280px">
+                </el-table-column>
             </el-table-column>
 
             <el-table-column
@@ -72,36 +81,37 @@ DONE: post 返回需要 ID
                              slot="reference"
                              v-if="getPointItem(scope, title)"
                              class="point-div">
+
                             <!-- using import to excel -->
-                            <!--<span style="display:none">{{getPointNumber(scope, title)}}</span>-->
+                            <span style="display:none">{{getPointNumber(scope, title)}}</span>
                             <span class="point">
                                 <el-form :model="getPointItem(scope, title)">
                                     <template v-if="title.titleGroup_message.name === '出勤'">
-                    <el-select
-                            v-model="getPointItem(scope, title).pointNumber"
-                            placeholder="请选择"
-                            @change="onItemChanged(getPointItem(scope, title), title)">
-                        <el-option
-                                v-for="item in title_map"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-                </template>
+                                        <el-select
+                                            v-model="getPointItem(scope, title).pointNumber"
+                                            placeholder="请选择"
+                                            @change="onItemChanged(getPointItem(scope, title), title)">
+                                                <el-option
+                                                    v-for="item in title_map"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id">
+                                                </el-option>
+                                        </el-select>
+                                    </template>
                                     <template v-else>
-                        <el-input
-                              type="number"
-                              prop="number"
-                              size="mini"
-                              ref="input"
-                              step=0.1
-                              v-model.number="getPointItem(scope, title).pointNumber"
-                              placeholder=""
-                              @blur="proving($event,getPointItem(scope, title),title)"
-                              @change="onItemChanged(getPointItem(scope, title), title)">
-                        </el-input>
-                  </template>
+                                        <el-input
+                                            type="number"
+                                            prop="number"
+                                            size="mini"
+                                            ref="input"
+                                            step=0.1
+                                            v-model.number="getPointItem(scope, title).pointNumber"
+                                            placeholder=""
+                                            @blur="proving($event,getPointItem(scope, title),title)"
+                                            @change="onItemChanged(getPointItem(scope, title), title)">
+                                        </el-input>
+                                    </template>
                                 </el-form>
                             </span>
                             <!-- <span class="point">
@@ -174,6 +184,10 @@ DONE: post 返回需要 ID
           type: Array,
           require: true
         },
+          message: {
+              type: String,
+              require: true
+          },
         titles: {
           type: Array,
           require: true
@@ -218,7 +232,8 @@ DONE: post 返回需要 ID
                 { name: '迟到', id: 4 },
                 { name: '其他', id: 5 }
             ],
-            selectTitleGroupName: null
+            selectTitleGroupName: null,
+            color: null
         }
       },
       computed: {
@@ -228,9 +243,10 @@ DONE: post 返回需要 ID
       },
       methods: {
           getCellColorByType({row, column, rowIndex, columnIndex}) {
-              if(columnIndex === 0 || columnIndex === 1 || columnIndex === 2){
-                  return 'background:#f9f9f9'
+              if(columnIndex === this.color){
+                  return 'background: rgba(255, 232, 143, 0.94)'
               }else return ''
+
           },
         selectTitle(title_id) {
           this.title_Map.forEach(title => {
@@ -243,10 +259,11 @@ DONE: post 返回需要 ID
           // console.log(this.viewDataset)
           const titleWeight = []
           const titleGroupWeight = []
+          // console.log('123456788765432')
           titlemodel.requestTitles({ classInfo_id: this.classinfoId })
             .then(response => {
+              // console.log('1111111111111111')
               response.forEach(title => {
-                console.log(title)
                 titleGroupWeight.push(title.titleGroup_message.weight)
                 titleWeight.push(title.weight)
               })
@@ -282,7 +299,7 @@ DONE: post 返回需要 ID
         reload() {
           location.reload()
         },
-        proving(e, newItem, title) {
+        proving(e, newItem, title, row, index) {
           const sid = newItem.student_id
           var name
           this.viewDataset.forEach(studentItem => {
@@ -291,17 +308,15 @@ DONE: post 返回需要 ID
             }
           })
           if (newItem.pointNumber === '') {
-            this.$message({
-              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，此时可能无法进行数据更改',
-              type: 'warning',
-              duration: 8000
+            this.$confirm('warning',{
+              message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，此时无法进行数据更改',
+              type: 'warning'
             })
           }
           if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
-            this.$message({
+            this.$confirm('warning',{
               message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
-              type: 'warning',
-              duration: 8000
+              type: 'warning'
             })
           }
         },
@@ -390,6 +405,9 @@ DONE: post 返回需要 ID
         // },
         onDeleteColClicked: function(scope, title) {
           // console.log(title)
+          console.log(scope.$index)
+          this.color = scope.$index
+         // this.getCellColorByType(scope.row,scope.column)
           this.$prompt(
             '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该列, 所有分数信息都将丢失！',
             '请确认删除操作', {
@@ -404,9 +422,12 @@ DONE: post 返回需要 ID
                 message: '删除成功'
               })
               this.$emit('onDeletedTitle', title)
+              this.color = null
                 // this.handleDeletedTitle()
               // this.pointIfChange()
             })
+          }).catch(() => {
+              this.color = null
           })
         },
         onCellClicked: function(row, column, cell, event) {
@@ -499,10 +520,11 @@ DONE: post 返回需要 ID
       },
       mounted() {
         window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
-
-        setTimeout(() => {
-          if (this.loading) this.loading = false
-        }, 5000)
+        // setTimeout(() => {
+          Vue.$nextTick(() => {
+              this.loading = false
+          })
+        // }, 1000)
       },
       beforeDestroy() {
         window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
@@ -613,7 +635,7 @@ DONE: post 返回需要 ID
     }
     #transcript-table .el-input__inner {
         padding: 0 0 0 4px;
-        // border: none;
+        border: none;
         text-align: center;
     }
 </style>

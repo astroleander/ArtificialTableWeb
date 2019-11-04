@@ -29,7 +29,7 @@ export default {
         // 图表颜色
         color: ['#3398FB'],
         title: {
-          text: '分数分布'
+          text: '学生总成绩分数分布'
         },
         tooltip: {
           trigger: 'axis',
@@ -39,23 +39,23 @@ export default {
         },
         grid: {
           left: '3%',
-          right: '10%',
+          right: '4%',
           bottom: '3%',
           containLabel: true
         },
         // 横坐标
         xAxis: [
           {
-            type: 'category',
-            name: '分数段',
-            data: ['0-60', '60-70', '70-80', '80-90', '90-100']
+            type: 'value',
+            name: '人数'
           }
         ],
         // 纵坐标
         yAxis: [
           {
-            type: 'value',
-            name: '人数'
+            type: 'category',
+            name: '分数段',
+            data: ['0-60', '60-70', '70-80', '80-90', '90-100']
           }
         ],
         // 加载数据
@@ -63,7 +63,7 @@ export default {
           {
             name: '人数',
             type: 'bar',
-            barWidth: 50,
+            // barWidth: 45,
             label: {
               normal: {
                 show: true,
@@ -92,6 +92,6 @@ export default {
 <style lang="scss" scoped>
 .bar{
   width: 400px;
-  height: 400px;
+  height: 300px;
 }
 </style>

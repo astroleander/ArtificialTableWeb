@@ -48,6 +48,7 @@ index
         :view='this.table'
         :titles='this.model.titles'
         :info='this.info'
+        :message='this.model.message'
         :classinfoId="this.id"
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
@@ -62,7 +63,7 @@ index
       >
       </transcript-predict>
       <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
-      <transcript-weight v-if='getMode("stats")'
+      <transcript-weight v-show='getMode("stats")'
                          :avg="weightData.avg"
                          :description="weightData.description"
                          :total="weightData.total"
@@ -109,7 +110,8 @@ export default {
         titles: [],
         titleMap: new Map(),
         titleSumMap: new Map(),
-        titleGroupMap: new Map()
+        titleGroupMap: new Map(),
+        message: ''
       },
       weightData: {
         avg: 0, // 班级平均分
@@ -168,10 +170,10 @@ export default {
     },
     // 转换模式 table / state / predict
     switchMode: function(code) {
-      if (code === 'stats') {
+      /* if (code === 'stats') {
         this.initTable()
         this.fetchDataset()
-      }
+      }*/
       this.shownTab = code
     },
     // 创建成绩表
@@ -283,9 +285,11 @@ export default {
         viewmodel.requestTitles({ classInfo_id: this.id }),
         viewmodel.requestPoints({ classInfo_id: this.id }),
         viewmodel.requestStudents({ classInfo_id: this.id }),
-        classinfoViewmodel.requestClassInfos({ id: this.id })
+        titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id })
+        // classinfoViewmodel.requestClassInfos({ id: this.id })
       ])
         .then(result => {
+          // console.log('111111111' + this.info.lesson_id)
           // 获取小项数据
           if (result && result[0]) {
             result[0].forEach(element => {
@@ -309,20 +313,21 @@ export default {
               this.model.studentMap.set(element.id, element)
             })
           }
-          this.info = result && result[3] && result[3][0]
-          titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
-            let titleGroupSum = 0
-            // 获取大项数据
-            if (res) {
-              res.forEach(element => {
-                this.model.titleGroupMap.set(element.id, element)
-                titleGroupSum += element.weight
-              })
-            }
-            this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
-            // 加载成绩分析数据
-            this.buildWeight()
-          })
+          // this.info = result && result[3] && result[3][0]
+          // titleGroupViewModel.requestTitleGroups({ lesson_id: this.info.lesson_id }).then(res => {
+          let titleGroupSum = 0
+          // 获取大项数据
+          if (result[3]) {
+            result[3].forEach(element => {
+              this.model.message = this.model.message + element.name + '*' + element.weight + '%' + '+'
+              this.model.titleGroupMap.set(element.id, element)
+              titleGroupSum += element.weight
+            })
+          }
+          this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
+          // 加载成绩分析数据
+          this.buildWeight()
+          // })
           // 加载成绩表
           this.buildTable()
         }).catch(err => {

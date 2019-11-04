@@ -54,35 +54,42 @@
         <!--<span slot="label" style="display:none"></span>-->
         <div class="step1">
           <!-- STEP - 1 - 导入工具 -->
-          <div id="menu-input-helper" class="input" style="margin-top: 1px">
+
+            <div class="menu-wrapper">
+                <div>
+                <span v-if="remoteLesson"style="margin-left: 10px;">请选择成绩导入的课程组：</span>
+                    <span v-else style="margin-left: 10px;">请选择成绩导入的课程组
+                        <span style="color: red">(* 必填项):</span>
+                    </span>
+                <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson"
+                           style="margin-left: 10px"
+                           >
+                    <el-option
+                            v-for="item in remoteLessonList"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                    >
+                    </el-option>
+                </el-select>
+                </div>
+
+                <!--<el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
+                  导入的表格包含表头名
+                </el-checkbox>
+                 <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
+                  导入的表格最后一行是统计项
+                </el-checkbox>-->
+                <el-button style="text-align: center;margin-right: 10px" class="button" type="primary" @click="toStep(1, 2)" size="mini">下一步<i
+                        class="el-icon-arrow-right el-icon--right"></i></el-button>
+            </div>
+          <div id="menu-input-helper" class="input" style="margin-top: 10px">
             <!-- 自定义组件 -->
             <import-excel-component @on-selected-file='onSelectedLocalExcel'></import-excel-component>
           </div>
           <!--<div>
             <el-alert :title="this.ALERT" style="margin: 10px"></el-alert>
           </div>-->
-          <div class="menu-wrapper">
-            <span style="margin-left: 10px;color: orange">请选择成绩导入的课程组：</span>
-            <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson"
-                       style="margin-left: 10px">
-              <el-option
-                v-for="item in remoteLessonList"
-                :value="item.id"
-                :label="item.name"
-                :key="item.id"
-              >
-              </el-option>
-            </el-select>
-
-            <!--<el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
-              导入的表格包含表头名
-            </el-checkbox>
-             <el-checkbox v-model="importDataHasTail" style="margin-left: 30px">
-              导入的表格最后一行是统计项
-            </el-checkbox>-->
-            <el-button style="margin-left: 30px" class="button" type="primary" @click="toStep(1, 2)" size="mini">下一步<i
-              class="el-icon-arrow-right el-icon--right"></i></el-button>
-          </div>
 
           <div class="inputTable">
             <div id="menu-data-previewer" class="menu-data-previewer">
@@ -155,9 +162,9 @@
           <div id="menu-data-previewer-two" class="menu-data-previewer-two">
             <img :src="src" style="margin-top: 0px">
             <span><el-alert v-for="alert of settingsAlertList" :key="alert.id" :title="alert.title"
-                            style="margin-top: 1px" type="warning"></el-alert>
+                            style="margin-top: 1px" type="error"></el-alert>
             </span>
-            <div style="display: flex;flex-flow: row">
+            <div style="display: flex;flex-flow: row;margin-top: 10px">
               <p v-for="stats of settingsTableAnalysis" :key="stats.id" style="margin-right: 10px">
                 <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
                 <span>{{stats.content}}</span>
@@ -184,7 +191,6 @@
               min-width="150px" width="200px">
               <!-- 自定义表头，用于选择列的属性 -->
               <template slot="header" slot-scope="scope">
-                <!-- <template slot="header"> -->
                 <div class="settings-table-header">
                   <el-checkbox
                     v-model="sidCheckedList[title.idx]"
@@ -212,14 +218,24 @@
                     <el-radio v-model="title.type" label="useless">丢弃</el-radio>
                     <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
                     <div class="select-container">
-                         <span class="span-title ">
-                         <span>成绩项名: </span>
-                         <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
-                           <i slot="suffix" class="el-input__icon el-icon-edit"></i>
-                         </el-input>
+                        <span class="span-title ">
+                            <span v-if="title.name">成绩项名: </span>
+                            <span v-else style="color: red">*
+                                <span style="color: #898989">
+                                   成绩项名:
+                                </span>
+                            </span>
+                             <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
+                                 <i slot="suffix" class="el-input__icon el-icon-edit"></i>
+                            </el-input>
                          </span>
-                      <span class="span-title ">
-                         <span>成绩类别: </span>
+                      <span class="span-title">
+                         <span v-if="title.titleGroup">成绩类别: </span>
+                          <span v-else style="color: red">*
+                                <span style="color: #898989">
+                                   成绩类别:
+                                </span>
+                            </span>
                          <el-select v-model="title.titleGroup" placeholder="成绩类别"
                                     size="mini" class="title-name">
                            <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
@@ -247,6 +263,23 @@
                   <template v-else-if="title.type === 'useless'">
                     <el-radio v-model="title.type" label="useless">丢弃</el-radio>
                     <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
+                      <div class="select-container">
+                        <span class="span-title ">
+                            <span>成绩项名: </span>
+                             <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
+                                 <i slot="suffix" class="el-input__icon el-icon-edit"></i>
+                            </el-input>
+                         </span>
+                          <span class="span-title">
+                         <span>成绩类别: </span>
+                         <el-select v-model="title.titleGroup" placeholder="成绩类别"
+                                    size="mini" class="title-name">
+                           <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
+                                      :label='titleGroup.name' :value='titleGroup.id'>
+                           </el-option>
+                         </el-select>
+                         </span>
+                      </div>
                   </template>
                 </div>
               </template>
@@ -272,9 +305,9 @@
             </el-button>
             <el-button class="button" type="primary" @click="submit()" size="mini">提交<i
               class="el-icon-arrow-right el-icon--right"></i></el-button>
-            <el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)"
+            <!--<el-button v-if="submitErrorMessage.responsed" class="button" type="warning" @click="toStep(3, 1)"
                        size="mini">继续上传
-            </el-button>
+            </el-button>-->
           </div>
           <!-- CONTAINER 容纳错误信息 -->
           <div v-if="submitErrorMessage.existTitleNameList.length > 0">
@@ -343,8 +376,14 @@
                     class="preivew-table"
                     height="calc(100vh - 202px)"
                     border stripe size="mini"
+                    v-loading="loading"
           >
-            <el-table-column label="学号" width="150px">
+              <el-table-column label="序号" align="center" width="80px">
+                  <template slot-scope="scope">
+                      {{scope.$index+1}}
+                  </template>
+              </el-table-column>
+            <el-table-column label="学号" width="150px" align="center">
               <template slot-scope="scope">
                 {{ getStudentNumber(scope) }}
               </template>
@@ -353,7 +392,7 @@
             <el-table-column
               v-for="title in previewPageData.titles" :key="title.idx"
               :prop="String(title.idx)" :label="title.name"
-              min-width="80px" width="120px">
+              min-width="80px" width="120px" align="center">
             </el-table-column>
           </el-table>
         </div>
@@ -605,6 +644,7 @@
         // 步骤参数
         src: step,
         activeStep: 0,
+        loading: false,
         steps: [
           { title: '引入数据', description: '导入Excel文件或填写数据', picture: 'el-icon-edit' },
           { title: '规范数据', description: '标记学号、丢弃无用数据、为成绩项选择类别', picture: 'el-icon-upload' },
@@ -939,10 +979,10 @@
       },
       getCellColorByType(type) {
         if (type === 'title') {
-          return CELL_COLOR_TITLE
+          return ''
         } else if (type === 'sid') {
           return CELL_COLOR_SID
-        } else {
+        } else if (type === 'useless') {
           return CELL_COLOR_USELESS
         }
       },
@@ -973,7 +1013,6 @@
                 // 将从step1中数据进行存储以及处理 跳转到step2
                 if (from === 1 && this.importAlertList.length === 0) {
                   if (this.renderSettingsPage()) {
-                    console.log(this.settingsPageData)
                     this.sidCheckedList = []
                     const titles = this.settingsPageData.titles
                     titles.forEach(title => {
@@ -983,13 +1022,11 @@
                         this.sidCheckedList.push(false)
                       }
                     })
-                    console.log('987654321')
-                    console.log(this.sidCheckedList)
                     this.activeStep = 1
                   }
                 } else {
                   this.$message({
-                    message: '请确认您已经排除了所有错误项！',
+                    message: '请确认您已经完成以上三个步骤！',
                     type: 'error'
                   })
                 }
@@ -1106,9 +1143,11 @@
       },
       // listners 提交
       submit() {
+        this.loading = true
         const submitDataset = submitConverter(this.previewPageData, this.remoteLesson)
         pointViewModel.requestImportPoints(submitDataset).then(res => {
           this.activeStep = 3
+          this.loading = false
           // 4037
           // console.log(res && String(res.code))
           if ((res && String(res.code) === '2011') || (res && String(res.code) === '2001')) {
@@ -1117,7 +1156,8 @@
               message: '数据导入成功',
               type: 'success'
             })
-            this.submitErrorMessage.responsed = true
+            this.toStep(3, 1)
+            // this.submitErrorMessage.responsed = true
           } else if (res && String(res.code) === '2019') {
             // console.log('数据导入失败')
             this.$message({
@@ -1342,7 +1382,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: left;
+    justify-content: space-between;
     margin-top: 10px;
 
   }

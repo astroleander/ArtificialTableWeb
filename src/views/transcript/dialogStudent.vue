@@ -6,7 +6,7 @@
     :before-close="onDialogClose">
     <template slot="title">
       <section class="avatar-wrapper">
-        <img class="avatar" src="https://picsum.photos/300/300/?random"/>
+        <!--<img class="avatar" src="https://picsum.photos/300/300/?random"/>-->
         <p class="at-text-primary">{{this.student.name}}</p>
       </section>
     </template>

@@ -72,7 +72,6 @@ import { isvalidUsername } from '@/utils/validate'
 import ViewModel from '@/viewmodel/login'
 import { Message } from 'element-ui'
 import Vue from 'vue'
-import { add, constantRouterMap } from '@/router'
 
 // 判断用户名至少三位 isvalidUsername()函数在@/utils/validate文件中
 const validateUsername = (rule, value, callback) => {

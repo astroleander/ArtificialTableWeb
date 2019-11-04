@@ -14,20 +14,40 @@ table
 <!-- 用于为用户定义成绩分析的自定义组件模版 -->
 <!--suppress ALL -->
 <template>
-  <div>
-  <div class="frame" style="margin-top: 1px">
+  <div style="background-color: #dbdbdb">
+  <div class="frame">
     <div class="col" v-if="flag">
-      <el-progress type="circle" :width="100" status="text" :percentage="0"  style="margin-right: 70px; margin-left: 50px">总人数<br>{{total}}</el-progress>
-      <el-progress type="circle" :width="100" status="text" :percentage="100"  style="margin-right: 70px">有效成绩<br>{{valid}}</el-progress>
-      <el-progress type="circle" :width="100" status="text" :percentage="rate"  color="#13ce66" style="margin-right: 70px">及格率<br>{{rate}}%</el-progress>
-      <el-progress type="circle" :width="100" status="text" :percentage="100"  color="#FFA07A" style="margin-right: 70px">平均分<br/>{{avg}}</el-progress>
-    </div>
-    <div style="background-color: #e2e1e0;height: 1px"></div>
-    <div class="row-box" v-if="flag">
-     <!-- 条状图 -->
-    <at-bar class="bar-box" :data-set="gradeSection"></at-bar>
-      <!--雷达图-->
-    <at-radar class="radar-box" :title-data="titles" :data-set="titleAverage" v-if="flag"></at-radar>
+        <el-card class="flex-80" style="margin-top: 5px">
+            <div style="display: flex;flex-direction: row; justify-content: space-around">
+                <div style="margin-right: 100px; margin-left: 50px; margin-top: 50px">
+                    <span>学生统计信息</span>
+                    <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                    <p><span>学生总人数：{{total}}</span></p>
+                    <p><span>总分及格率：{{rate}}%</span></p>
+                    <p><span>总分平均分：{{avg}}</span></p>
+                </div>
+                <at-bar  :data-set="gradeSection"></at-bar>
+                <pie-for-weight  :data-set="gradeSection" :title-text="totleText"></pie-for-weight>
+            </div>
+        </el-card>
+
+        <el-card style="margin-top: 10px;" class="flex-80">
+            <!--雷达图-->
+            <div style="display: flex;flex-direction: row; justify-content: space-around">
+                <at-radar :title-data="titles" :data-set="titleAverage"></at-radar>
+                <div style="margin-left: 50px">
+                    <el-select v-model="value" placeholder="请选择测试名称" @change="selectedTitle">
+                        <el-option
+                            v-for="item in titles"
+                            :key="item.name"
+                            :label="item.name"
+                            :value="item.name">
+                        </el-option>
+                    </el-select>
+                    <pie-for-title  :data-set="this.dataForTest" :title-text="this.titleText"></pie-for-title>
+                </div>
+            </div>
+        </el-card>
       <!-- 人数、成绩、及格率、平均分信息 -->
     </div>
     <!--数据无效警告 -->
@@ -53,12 +73,14 @@ table
 <script>
 import AtRadar from './radar'
 import AtBar from './Bar'
+import PieForWeight from './pieForWeight'
+import PieForTitle from '@/components/Pie'
 // import viewmodel from '@/viewmodel/table'
 // import titleGroupViewModel from '@/viewmodel/titlegroups'
 
 export default {
   name: 'transcriptWeight',
-  components: { AtBar, AtRadar },
+  components: { AtBar, AtRadar, PieForWeight, PieForTitle },
   props: {
     // 是否显示提示卡片
     flag: {
@@ -106,11 +128,33 @@ export default {
       default: () => []
     }
   },
+    computed: {
+        // 返回当前路径中transcript/：后的ID值 即跳转页面前选择的任课班级卡片的id
+        id: function() {
+            return this.$router.currentRoute.params.id
+        }
+    },
   data() {
     return {
-      message: '数据不全，请完善数据后分析成绩'
+      message: '数据不全，请完善数据后分析成绩',
+      totleText: '学生总成绩分布占比',
+      value: '',
+      dataForTest: [],
+      titleText: ''
     }
-  }
+  },
+    methods: {
+        selectedTitle(){
+            this.dataForTest = []
+            this.dataForTest.push(13)
+            this.dataForTest.push(14)
+            this.dataForTest.push(40)
+            this.dataForTest.push(30)
+            this.dataForTest.push(50)
+            // this.titleText = '1654324565432'
+
+        }
+    }
 }
 </script>
 
@@ -128,9 +172,9 @@ export default {
 }
 .frame{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 10px;
 }
 .row-box{
   display: flex;
@@ -141,14 +185,35 @@ export default {
 }
 .col{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+    width: 100%;
   // align-content:center;
-  // justify-content: space-around;
-  height: 200px;
+  justify-content: space-around;
+  // height: 400px;
 }
 .bar-box{
-  margin-left: 20px;
-  width: 50%;
+  //float: left;
+  width: 400px;
+  height: 300px;
+  // margin-left: 5;
+}
+.flex-half {
+    float: left;
+    width: 50%;
+    background: white;
+}
+
+.flex-80 {
+    display: flex;
+    flex-direction: row;
+    float: left;
+    width: 96%;
+    background: white;
+}
+
+.flex-15 {
+    float: left;
+    width: 15%;
 }
 </style>
