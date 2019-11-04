@@ -84,11 +84,7 @@
           const end_row = range.e.r
           // 列的结束
           const end_col = range.e.c
-<<<<<<< HEAD
           if (end_row > 1000) {
-=======
-          /* if (end_row > 110) {
->>>>>>> 7169bc0b2a4195aa33f88ff4a0b3e1fcf185c217
             this.$message({
               message: 'excel表格行数超过了1000行',
               type: 'warning'
@@ -96,15 +92,14 @@
             document.getElementById('excel-upload-input').value = null
             return
           }
-          if (end_col > 50) {
+          if (end_col > 20) {
             this.$message({
-              message: 'excel表格列数超过了50列',
+              message: 'excel表格列数超过了20列',
               type: 'warning'
             })
             document.getElementById('excel-upload-input').value = null
             return
-          } */
-
+          }
           /**
            * @see https://docs.sheetjs.com/#json
            */
