@@ -164,11 +164,13 @@
             <span><el-alert v-for="alert of settingsAlertList" :key="alert.id" :title="alert.title"
                             style="margin-top: 1px" type="error"></el-alert>
             </span>
+
             <div style="display: flex;flex-flow: row;margin-top: 10px">
               <p v-for="stats of settingsTableAnalysis" :key="stats.id" style="margin-right: 10px">
                 <span>{{stats.title}}<template v-if="stats.meaning">({{stats.meaning}})</template></span>
                 <span>{{stats.content}}</span>
               </p>
+
               <div style="display: flex;flex-direction: row;align-items: center;margin-left: 20px">
                 <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 1)" size="mini"><i
                   class="el-icon-arrow-left el-icon--left"></i>上一步
@@ -176,6 +178,7 @@
                 <el-button style="max-height: 30px" class="button" type="primary" @click="toStep(2, 3)" size="mini">
                   下一步<i class="el-icon-arrow-right el-icon--right"></i></el-button>
               </div>
+
             </div>
           </div>
           <el-table
@@ -192,11 +195,15 @@
               <!-- 自定义表头，用于选择列的属性 -->
               <template slot="header" slot-scope="scope">
                 <div class="settings-table-header">
+                    <el-radio v-model="sidIndex" :label="scope.$index" @change="onSidChecked">学号</el-radio>
+
+
+<!--
                   <el-checkbox
                     v-model="sidCheckedList[title.idx]"
                     :true-label="scope.$index + 1"
                     @change="onSidChecked"
-                  >学号列
+                  >学号
                   </el-checkbox>
                   <!--<label :for='"el-selector-for-type-col-" + title.idx'
                          class="selector-for-hidden-selector" :style='"background:" + getSelectorColorByType(title)+";"'>
@@ -266,14 +273,14 @@
                       <div class="select-container">
                         <span class="span-title ">
                             <span>成绩项名: </span>
-                             <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
+                             <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name" :disabled="true">
                                  <i slot="suffix" class="el-input__icon el-icon-edit"></i>
                             </el-input>
                          </span>
                           <span class="span-title">
                          <span>成绩类别: </span>
                          <el-select v-model="title.titleGroup" placeholder="成绩类别"
-                                    size="mini" class="title-name">
+                                    size="mini" class="title-name" disabled>
                            <el-option v-for='titleGroup in remoteTitleGroupList' :key='titleGroup.id'
                                       :label='titleGroup.name' :value='titleGroup.id'>
                            </el-option>
@@ -641,6 +648,7 @@
     },
     data() {
       return {
+        sidIndex: 0,
         // 步骤参数
         src: step,
         activeStep: 0,
@@ -930,22 +938,34 @@
         }
       },
       onSidChecked(idx) {
-        if (idx !== false) {
-          idx = idx - 1
+        this.$confirm('此操作将会更改学号列，请确定是否真正需要修改', '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          if (this.sidIndex !== false) {
+            // idx = idx - 1
+            this.settingsPageData.titles.forEach(title => {
+              if (title.type === 'sid') {
+                title.type = 'title'
+              }
+            })
+            this.settingsPageData.titles.forEach(title => {
+              if (title.idx === this.sidIndex) {
+                title.type = 'sid'
+              }
+            })
+            /* this.sidCheckedList.forEach((item, idx) =>
+              this.$set(this.sidCheckedList, idx, false))
+            this.$set(this.sidCheckedList, idx, true) */
+          }
+        }).catch(() => {
           this.settingsPageData.titles.forEach(title => {
             if (title.type === 'sid') {
-              title.type = 'title'
+              this.sidIndex = title.idx
             }
           })
-          this.settingsPageData.titles.forEach(title => {
-            if (title.idx === idx) {
-              title.type = 'sid'
-            }
-          })
-          this.sidCheckedList.forEach((item, idx) =>
-            this.$set(this.sidCheckedList, idx, false))
-          this.$set(this.sidCheckedList, idx, true)
-        }
+        })
       },
       addAlert(alert, alertList) {
         // if exist the splice, else execute push statement
@@ -1013,13 +1033,14 @@
                 // 将从step1中数据进行存储以及处理 跳转到step2
                 if (from === 1 && this.importAlertList.length === 0) {
                   if (this.renderSettingsPage()) {
-                    this.sidCheckedList = []
+                    // this.sidCheckedList = []
                     const titles = this.settingsPageData.titles
                     titles.forEach(title => {
                       if (title.type === 'sid') {
-                        this.sidCheckedList.push(true)
+                        // this.sidCheckedList.push(true)
+                        this.sidIndex = title.idx
                       } else {
-                        this.sidCheckedList.push(false)
+                        // this.sidCheckedList.push(false)
                       }
                     })
                     this.activeStep = 1
@@ -1076,7 +1097,7 @@
                 reject: () => {
                   legalRequest = false
                   this.$message({
-                    message: '请确认您已经排除了所有错误项！',
+                    message: '请确认您已经完成以上三个步骤！',
                     type: 'error'
                   })
                 }
