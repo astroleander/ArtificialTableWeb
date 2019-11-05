@@ -34,12 +34,12 @@ DONE: post 返回需要 ID
         </el-row>
         <!-- table main container-->
         <el-table
-                :data="viewDataset"
+                :data="viewDataset.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                 @cell-dblclick='onCellClicked'
                 v-loading.body="loading"
                 ref="table" id="transcript-table"
                 element-loading-text="Loading"
-                height="calc(100vh - 145px)"
+                height="calc(100vh - 190px)"
                 class="table"
                 border
                 :cell-style="getCellColorByType">
@@ -134,6 +134,13 @@ DONE: post 返回需要 ID
             </el-table-column>
         </el-table>
 
+        <el-pagination
+                background
+                layout="prev, pager, next"
+                @current-change="current_change"
+                :total="total">
+        </el-pagination>
+
         <!-- Dialog for showing and modifying details -->
         <at-point-dialog
                 :v-if="this.pointDialogVisible"
@@ -203,6 +210,10 @@ DONE: post 返回需要 ID
       },
       data: function() {
         return {
+          // 换页所需参数
+          total:200,//默认数据总数
+          pagesize:8,//每页的数据条数
+          currentPage:1,//默认开始页面
           viewDataset: [],
           titleWeight: [],
           // the array is for saving all modified point item,
@@ -242,6 +253,10 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
+            // 换页
+          current_change(currentPage){
+              this.currentPage = currentPage;
+          },
           getCellColorByType({row, column, rowIndex, columnIndex}) {
               if(columnIndex === this.color){
                   return 'background: rgba(255, 232, 143, 0.94)'
@@ -532,6 +547,7 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
+          // this.totle = this.viewDataset.length()
           this.viewDataset.forEach(data => {
             data.totle = parseFloat(data.totle).toFixed(2)
           })
