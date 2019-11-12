@@ -180,7 +180,7 @@ export default {
       StudentViewModel.requestPostStudents(list).then(res => {
         const succeed_ids = res.succeed_ids
         const repeated_ids = res.repeated_ids
-        const failed_sids = res.failed_sids
+        // const failed_sids = res.failed_sids
         const classFieldList = []
         if (succeed_ids.length + repeated_ids.length > 0) {
           succeed_ids.forEach(item => {

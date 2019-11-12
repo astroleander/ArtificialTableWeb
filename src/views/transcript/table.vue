@@ -138,7 +138,7 @@ DONE: post 返回需要 ID
                 background
                 layout="prev, pager, next"
                 @current-change="current_change"
-                :total="total">
+                :total="row_total">
         </el-pagination>
 
         <!-- Dialog for showing and modifying details -->
@@ -173,10 +173,11 @@ DONE: post 返回需要 ID
 </template>
 
 <script>
-    import FileSaver from 'file-saver'
-    import XLSX from 'xlsx'
+    // import FileSaver from 'file-saver'
+    // import XLSX from 'xlsx'
     import viewmodel from '@/viewmodel/table'
     import titlemodel from '@/viewmodel/title'
+    // import Export2Excel from '@/excel/Export2Excel.js'
 
     export default {
       name: 'transcriptTable',
@@ -191,10 +192,14 @@ DONE: post 返回需要 ID
           type: Array,
           require: true
         },
-          message: {
-              type: String,
-              require: true
-          },
+        outPutExcel: {
+          type: Array,
+          require: true
+        },
+        message: {
+          type: String,
+          require: true
+        },
         titles: {
           type: Array,
           require: true
@@ -211,9 +216,9 @@ DONE: post 返回需要 ID
       data: function() {
         return {
           // 换页所需参数
-          total:200,//默认数据总数
-          pagesize:8,//每页的数据条数
-          currentPage:1,//默认开始页面
+          row_total:130,  // 默认数据总数
+          pagesize:8,  // 每页的数据条数
+          currentPage:1,  // 默认开始页面
           viewDataset: [],
           titleWeight: [],
           // the array is for saving all modified point item,
@@ -236,15 +241,15 @@ DONE: post 返回需要 ID
           loading: true,
           // 成绩是否发生改变
           pointChange: false,
-            title_map : [
-                { name: '出勤', id: 1 },
-                { name: '缺勤', id: 2 },
-                { name: '请假', id: 3 },
-                { name: '迟到', id: 4 },
-                { name: '其他', id: 5 }
-            ],
-            selectTitleGroupName: null,
-            color: null
+          title_map: [
+            { name: '出勤', id: 1 },
+            { name: '缺勤', id: 2 },
+            { name: '请假', id: 3 },
+            { name: '迟到', id: 4 },
+            { name: '其他', id: 5 }
+          ],
+          selectTitleGroupName: null,
+          color: null
         }
       },
       computed: {
@@ -253,16 +258,15 @@ DONE: post 返回需要 ID
         }
       },
       methods: {
-            // 换页
-          current_change(currentPage){
-              this.currentPage = currentPage;
-          },
-          getCellColorByType({row, column, rowIndex, columnIndex}) {
-              if(columnIndex === this.color){
-                  return 'background: rgba(255, 232, 143, 0.94)'
-              }else return ''
-
-          },
+        // 换页
+        current_change(currentPage) {
+          this.currentPage = currentPage
+        },
+        getCellColorByType({ row, column, rowIndex, columnIndex }) {
+          if(columnIndex === this.color) {
+            return 'background: rgba(255, 232, 143, 0.94)'
+          } else return ''
+        },
         selectTitle(title_id) {
           this.title_Map.forEach(title => {
             if (title.id === title_id) {
@@ -296,7 +300,7 @@ DONE: post 返回需要 ID
                 }
                 let sum = 0
                 for (let i = 0; i < pointNumber.length; i++) {
-                  sum += pointNumber[i] * titleWeight[i] *titleGroupWeight[i] / 10000
+                  sum += pointNumber[i] * titleWeight[i] * titleGroupWeight[i] / 10000
                 }
                 view.totle = parseFloat(sum).toFixed(2)
               })
@@ -323,13 +327,13 @@ DONE: post 返回需要 ID
             }
           })
           if (newItem.pointNumber === '') {
-            this.$confirm('warning',{
+            this.$confirm('warning', {
               message: name + '同学的' + title.name + '处成绩未输入或输入数据错误，此时无法进行数据更改',
               type: 'warning'
             })
           }
           if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
-            this.$confirm('warning',{
+            this.$confirm('warning', {
               message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
               type: 'warning'
             })
@@ -422,7 +426,7 @@ DONE: post 返回需要 ID
           // console.log(title)
           console.log(scope.$index)
           this.color = scope.$index
-         // this.getCellColorByType(scope.row,scope.column)
+          // this.getCellColorByType(scope.row,scope.column)
           this.$prompt(
             '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该列, 所有分数信息都将丢失！',
             '请确认删除操作', {
@@ -438,11 +442,11 @@ DONE: post 返回需要 ID
               })
               this.$emit('onDeletedTitle', title)
               this.color = null
-                // this.handleDeletedTitle()
+              // this.handleDeletedTitle()
               // this.pointIfChange()
             })
           }).catch(() => {
-              this.color = null
+            this.color = null
           })
         },
         onCellClicked: function(row, column, cell, event) {
@@ -509,9 +513,27 @@ DONE: post 返回需要 ID
           this.$emit('onTitleAdded', dialogResult)
           this.pointIfChange()
         },
+
+        // export to excel
+        formatJson(filterVal, jsonData) {
+          return jsonData.map(v => filterVal.map(j => v[j]))
+        },
         handleExport: function(dialogResult) {
+          require.ensure([], () => {
+            const { export_json_to_excel } = require('../../excel/Export2Excel')
+            const tHeader = ['学号', '姓名']
+            const filterVal = ['student_sid', 'student_name']
+            this.titles.forEach(title => {
+              tHeader.push(title.name)
+              filterVal.push(title.id)
+            })
+            const list = this.outPutExcel
+            const data = this.formatJson(filterVal, list)
+            export_json_to_excel(tHeader, data, dialogResult.filename)
+          })
           // this.$emit('onExportTable', dialogResult)
           /* generate workbook object from table */
+          /*
           const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
           const size = wb.Sheets[wb.SheetNames[0]]['!ref']
           const endNumber = size.match(/\d+$/)
@@ -519,6 +541,7 @@ DONE: post 返回需要 ID
           const newSize = size.slice(0, endNumber.index) + newNumber
           wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
           /* get binary string as output */
+          /*
           const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
           try {
             FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
@@ -527,8 +550,9 @@ DONE: post 返回需要 ID
               console.log(e, wbout)
             }
           }
-          return wbout
+          return wbout*/
         }
+
       },
       created() {
         this.$store.state.table.changed = false
@@ -536,9 +560,9 @@ DONE: post 返回需要 ID
       mounted() {
         window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
         // setTimeout(() => {
-          Vue.$nextTick(() => {
-              this.loading = false
-          })
+        Vue.$nextTick(() => {
+          this.loading = false
+        })
         // }, 1000)
       },
       beforeDestroy() {
@@ -547,7 +571,10 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
-          // this.totle = this.viewDataset.length()
+          // console.log('12345676543234565434565432456543')
+          // console.log(this.viewDataset.length)
+          this.row_total = this.viewDataset.length
+
           this.viewDataset.forEach(data => {
             data.totle = parseFloat(data.totle).toFixed(2)
           })

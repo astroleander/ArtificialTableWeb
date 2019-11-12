@@ -436,7 +436,7 @@
   const COLOR_UNFINISHED = '#ffb635'
   const COLOR_TITLE = '#4caf50'
   const CELL_COLOR_SID = 'linear-gradient(135deg, ' + COLOR_SID + ', ' + COLOR_SID + ' 6px , #FFF 10px, #FFF 100%)'
-  const CELL_COLOR_TITLE = 'linear-gradient(135deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 6px , #FFF 10px, #FFF 100%)'
+  // const CELL_COLOR_TITLE = 'linear-gradient(135deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 6px , #FFF 10px, #FFF 100%)'
   const CELL_COLOR_USELESS = '#DDD'
   const COLOR_LEFT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_TITLE + ', ' + COLOR_TITLE + ' 50% ,' + COLOR_UNFINISHED + ' 50%, ' + COLOR_UNFINISHED + ' 100%)'
   const COLOR_RIGHT_HALF_TITLE = 'linear-gradient(90deg, ' + COLOR_UNFINISHED + ', ' + COLOR_UNFINISHED + ' 50% ,' + COLOR_TITLE + ' 50%, ' + COLOR_TITLE + ' 100%)'
@@ -795,6 +795,7 @@
             row.forEach((cell, idx) => {
               // eslint-disable-next-line
               if (cell === null || cell === '' || cell === undefined) {
+
               } // 没有 pass 的第 3024 天, 想它
               else {
                 count++

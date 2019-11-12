@@ -102,7 +102,7 @@ export function deleteClassInfo(classInfo_id) {
     method: 'delete',
     data: {
       subjects: [
-        {id: classInfo_id}
+        { id: classInfo_id }
       ]
     }
   })

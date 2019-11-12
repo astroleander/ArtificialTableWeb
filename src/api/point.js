@@ -143,3 +143,18 @@ export function deletePoints(PointIdArray) {
     }
   })
 }
+
+/**
+* 用于成绩分析中展示各个小项的成绩分布，
+* 参数包括classInfo_id和小项ID title_id，返回['0-60','60-70','70-80','80-90','90-100]数据
+*/
+export function getTitlePoints(classInfo_id, title_id) {
+  return request({
+    url: '/point/get_Count_point',
+    method: 'get',
+    params: {
+      classInfo_id: classInfo_id,
+      title_id: title_id
+    }
+  })
+}

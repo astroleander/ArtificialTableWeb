@@ -91,7 +91,7 @@
       }
     },
     watch: {
-      dataItem: function () {
+      dataItem: function() {
         if (this.dataItem) {
           this.drawBar()
         }

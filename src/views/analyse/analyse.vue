@@ -51,7 +51,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import { mapGetters } from 'vuex'
   import classInfosViewModel from '@/viewmodel/classinfos'
   import lessonanalyseViewModel from '@/viewmodel/lesson'
   import titleGroupViewModel from '@/viewmodel/titlegroups'
@@ -59,7 +59,7 @@
   import RadarBar from './rabar'
 
   export default {
-    components: {AtBar, RadarBar},
+    components: { AtBar, RadarBar },
     name: 'analyse',
     data() {
       return {
@@ -171,7 +171,7 @@
       // 选择课程组后组装大项titleGroup
       selectedLesson() {
         titleGroupViewModel
-          .requestTitleGroups({'lesson_id': this.lessonId})
+          .requestTitleGroups({ 'lesson_id': this.lessonId })
           .then(response => {
             this.titleGroupList = response
             console.log('response=', this.titleGroupList)

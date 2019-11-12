@@ -19,10 +19,10 @@
         type: Array,
         default: () => []
       },
-        dataTitlegroupname: {
-            type: String,
-            default: null
-        },
+      dataTitlegroupname: {
+        type: String,
+        default: null
+      },
       radarId: {
         type: [String, Number],
         default: 0

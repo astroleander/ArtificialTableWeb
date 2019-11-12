@@ -1,7 +1,7 @@
 import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
   postPoint, postPoints,
   putPoint, putPoints,
-  deletePoint, deletePoints, importPoints } from '@/api/point'
+  deletePoint, deletePoints, importPoints, getTitlePoints } from '@/api/point'
 /**
  * @date 2018/12/20
  * @author liqian
@@ -188,10 +188,27 @@ const requestDelPoints = (pointIdArray) => {
     })
   })
 }
+
+/**
+ * 请求成绩分析各个小项成绩分布
+ * @param pointIdArray
+ * @returns {Promise<any>}
+ */
+const requestTitlePoints = (classInfo_id, title_id) => {
+  return new Promise((resolve, reject) => {
+    getTitlePoints(classInfo_id, title_id).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export default {
   requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
   requestPutPoint, requestPutPoints,
   requestPostPoint, requestPostPoints,
   requestDelPoint, requestDelPoints,
-  requestImportPoints
+  requestImportPoints, requestTitlePoints
 }

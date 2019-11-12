@@ -39,9 +39,9 @@ table
                     <el-select v-model="value" placeholder="请选择测试名称" @change="selectedTitle">
                         <el-option
                             v-for="item in titles"
-                            :key="item.name"
+                            :key="item.id"
                             :label="item.name"
-                            :value="item.name">
+                            :value="item.id">
                         </el-option>
                     </el-select>
                     <pie-for-title  :data-set="this.dataForTest" :title-text="this.titleText"></pie-for-title>
@@ -75,7 +75,7 @@ import AtRadar from './radar'
 import AtBar from './Bar'
 import PieForWeight from './pieForWeight'
 import PieForTitle from '@/components/Pie'
-// import viewmodel from '@/viewmodel/table'
+import viewmodel from '@/viewmodel/point'
 // import titleGroupViewModel from '@/viewmodel/titlegroups'
 
 export default {
@@ -128,12 +128,12 @@ export default {
       default: () => []
     }
   },
-    computed: {
-        // 返回当前路径中transcript/：后的ID值 即跳转页面前选择的任课班级卡片的id
-        id: function() {
-            return this.$router.currentRoute.params.id
-        }
-    },
+  computed: {
+    // 返回当前路径中transcript/：后的ID值 即跳转页面前选择的任课班级卡片的id
+    id: function() {
+      return this.$router.currentRoute.params.id
+    }
+  },
   data() {
     return {
       message: '数据不全，请完善数据后分析成绩',
@@ -143,18 +143,21 @@ export default {
       titleText: ''
     }
   },
-    methods: {
-        selectedTitle(){
-            this.dataForTest = []
-            this.dataForTest.push(13)
-            this.dataForTest.push(14)
-            this.dataForTest.push(40)
-            this.dataForTest.push(30)
-            this.dataForTest.push(50)
-            // this.titleText = '1654324565432'
-
-        }
+  methods: {
+    selectedTitle() {
+      viewmodel.requestTitlePoints(this.id, this.value)
+        .then(response => {
+          // console.log('11111' + this.dataForTest)
+          this.dataForTest = []
+          // console.log('22222' + this.dataForTest)
+          response.forEach(element => {
+            this.dataForTest.push(element)
+          })
+          // console.log('33333' + this.dataForTest)
+        })
+      // this.titleText = '1654324565432'
     }
+  }
 }
 </script>
 
@@ -208,7 +211,7 @@ export default {
     display: flex;
     flex-direction: row;
     float: left;
-    width: 96%;
+    width: 98%;
     background: white;
 }
 

@@ -39,6 +39,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'vendor': path.resolve(__dirname, '../src/vendor'),
+      'excel': path.resolve(__dirname, '../src/excel'),//新增加一行
     }
   },
   module: {
@@ -70,6 +71,13 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
+
+            /*{
+                loader: 'image-webpack-loader',// 压缩图片
+                options: {
+                    bypassOnDebug: true,
+                }
+            }*/
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,

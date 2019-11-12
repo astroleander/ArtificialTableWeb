@@ -50,6 +50,7 @@ index
         :info='this.info'
         :message='this.model.message'
         :classinfoId="this.id"
+        :outPutExcel="this.outToExcel"
         @onTitleAdded='handleTitleChanged'
         @onExportTable='handleExportTable'
         @onDeletedTitle="handleDeletedTitle"
@@ -69,7 +70,7 @@ index
                          :total="weightData.total"
                          :rate="weightData.rate"
                          :flag="weightData.flag"
-                         :titles="model.titles"
+                         :titles="titles_without_attendance"
                          :valid="weightData.studentScore.size-weightData.invalidScore"
                          :grade-section="weightData.gradeSection"
                          :title-average="weightData.titleAverage">
@@ -104,6 +105,8 @@ export default {
       info: this.getInfo,
       shownTab: 'table',
       loading: true,
+      titles_without_attendance: [],
+      outToExcel: [],
       model: {
         points: null,
         studentMap: new Map(),
@@ -125,7 +128,29 @@ export default {
         studentScore: new Map(), // 学生成绩统计
         titlePoint: [] // 按照小项分别统计成绩
       },
-      table: []
+      table: [],
+      info_attentance: [
+        {
+          key: 1,
+          value: '出勤'
+        },
+        {
+          key: 2,
+          value: '请假'
+        },
+        {
+          key: 3,
+          value: '迟到'
+        },
+        {
+          key: 4,
+          value: '缺勤'
+        },
+        {
+          key: 5,
+          value: '其他'
+        }
+      ]
     }
   },
   watch: {
@@ -181,6 +206,7 @@ export default {
       // build table cell
       // each student map to a row on table
       this.table = []
+      this.outToExcel = []
       this.model.studentMap.forEach(element => {
         const row = {
           // add student info (first two column line of the table)
@@ -206,12 +232,28 @@ export default {
             // row[pointItem.title_id] = pointItem
           }
         }) */
+        const outPutRow = {
+          student_sid: element.sid,
+          student_name: element.name
+        }
         if (row.point) {
           row.point.forEach(pointItem => {
+            const name = pointItem.title_id
+            const value = pointItem.pointNumber
+            if (pointItem.titleGroup_name === '出勤' || pointItem.titleGroup_name === '其他') {
+              this.info_attentance.forEach(attetance => {
+                if (attetance.key === value) {
+                  outPutRow[name] = attetance.value
+                }
+              })
+            } else {
+              outPutRow[name] = value
+            }
             const result = this.countPoint(pointItem)
             row.totle += result[1]
           })
         }
+        this.outToExcel.push(outPutRow)
         this.table.push(row)
       })
       // build title
@@ -294,6 +336,10 @@ export default {
           if (result && result[0]) {
             result[0].forEach(element => {
               this.model.titles.push({ ...element, max: 100 })
+              // console.log('1234567654321' + element)
+              if (element.titleGroup_message.name !== '出勤' && element.titleGroup_message.name !== '其他') {
+                this.titles_without_attendance.push({ ...element, max: 100 })
+              }
               this.model.titleMap.set(element.id, element)
               // console.log('title' + element.id + ' : ' + element.weight + ' titleGroupId = '+ element.titleGroup_id )
               if (this.model.titleSumMap.get(element.titleGroup_id)) {
