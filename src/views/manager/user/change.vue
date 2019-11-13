@@ -8,8 +8,8 @@
         <el-form-item label="教师姓名:" prop="name">
           <span> {{form.name}}</span>
         </el-form-item>
-        <el-form-item label="教师编号:" prop="tid" required>
-          <span> {{form.tid}}</span>
+        <el-form-item label="教师编号:" prop="tid">
+          <span>{{form.tid}}</span>
         </el-form-item>
         <el-form-item label="输入旧密码: " prop="old_password" required>
           <el-input v-model="form.old_password" placeholder="请输入旧密码" type="password"></el-input>

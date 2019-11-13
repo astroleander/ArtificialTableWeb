@@ -87,7 +87,7 @@
           <span> {{form.name}}</span>
         </el-form-item>
         <el-form-item label="教师编号:" prop="tid" required>
-          <span> {{form.tid}}</span>
+          <el-input v-model="form.tid" placeholder="请输入教师编号" ></el-input>
         </el-form-item>
         <el-form-item label="身份选择: " prop="is_manager" required>
           <el-select v-model="role" placeholder="请选择该用户身份">

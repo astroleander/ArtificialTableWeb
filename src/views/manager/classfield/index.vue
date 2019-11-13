@@ -18,19 +18,21 @@
           <!-- lesson has class inside -->
           <template>
             <el-table v-if="lesson.dataset"
-              :data="lesson.dataset">
+              :data="lesson.dataset"
+              style="margin-left: 10px">
               <el-table-column
                 v-for="(title, idx) in titles"
                 :key="idx"
                 :label="title.label"
-                :prop="title.prop">
+                :prop="title.prop"
+                v-if=" title.label !== '班级编号'">
               </el-table-column>
 
      <!--         <el-table-column label="">
                 <template slot-scope="scope">
                   <el-button @click="onModifyClicked(lesson, scope.row)" type="primary">学生信息</el-button>
                 </template>
-              </el-table-column>
+              </el-table-column>  -->
 
               <el-table-column label="">
                 <template slot-scope="scope">
@@ -38,7 +40,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="">
+   <!--           <el-table-column label="">
                 <template slot-scope="scope">
                   <el-button @click="onDeleteClicked(lesson, scope.row)" type="danger">删除</el-button>
                 </template>
@@ -56,9 +58,9 @@
     </el-collapse>
     <el-dialog title="修改班级信息" class="ClassInfo" :visible.sync="show" :before-close="onDialogClose">
       <el-form :model="InfoForm" ref="infoform">
-        <el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
+        <!--<el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
           <span>{{InfoForm.cid}}</span>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="班级名：" prop="name" style="max-height: 60px">
           <span>{{InfoForm.name}}</span>
         </el-form-item>

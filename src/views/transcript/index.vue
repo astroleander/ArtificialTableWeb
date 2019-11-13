@@ -212,7 +212,8 @@ export default {
           // add student info (first two column line of the table)
           student: element,
           point: [],
-          totle: 0
+          totle: 0,
+          index: 0
         }
         // add student's point
         if (this.model.points) {
@@ -253,6 +254,10 @@ export default {
             row.totle += result[1]
           })
         }
+        if (this.table !== undefined) {
+          row.index = this.table.length
+        }
+        row.index = row.index + 1
         this.outToExcel.push(outPutRow)
         this.table.push(row)
       })
@@ -369,6 +374,7 @@ export default {
               this.model.titleGroupMap.set(element.id, element)
               titleGroupSum += element.weight
             })
+            this.model.message = this.model.message.substring(0, this.model.message.length - 1)
           }
           this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
           // 加载成绩分析数据
