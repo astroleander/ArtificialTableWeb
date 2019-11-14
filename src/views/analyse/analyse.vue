@@ -68,7 +68,7 @@
         loading: false,
         semester: '', // 已选择学期
         semesterList: [], // 学期列表
-        lessonId: '', // 已选择课程组
+        lessonId: '', // 已选择w课程组
         lessonList: [], // 课程组列表
         titleGroupId: '', // 已选大项
         titleGroupList: [], // 大项列表

@@ -202,6 +202,7 @@ export default {
         .catch(_ => {})
     },
     handleAddEnd() {
+      this.resetField = true
       this.ImportDialogVisible = false
       this.fetchTableStudentInfo()
     },
@@ -550,21 +551,26 @@ export default {
           this.majorMessage = '请选择学生所属专业'
         })
       }
+    },
+    output() {
+      console.log('123454321345')
+      console.log(this.$router.currentRoute.params.id)
+      if (this.$router.currentRoute.params.id) {
+        this.classInfo_id = this.$router.currentRoute.params.id
+        this.fetchTableStudentInfo()
+      } else {
+        this.$confirm('此页面依赖于班级信息界面，请到班级信息页面选择班级查看, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push({ path: '/class/index' })
+        })
+      }
     }
   },
   created() {
-    if (this.$router.currentRoute.params.id) {
-      this.classInfo_id = this.$router.currentRoute.params.id
-      this.fetchTableStudentInfo()
-    } else {
-      this.$confirm('此页面依赖于班级信息界面，请到班级信息页面选择班级查看, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$router.push({ path: '/class/index' })
-      })
-    }
+    this.output()
   }
 }
 </script>

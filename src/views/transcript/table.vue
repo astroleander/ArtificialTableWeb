@@ -333,7 +333,7 @@ DONE: post 返回需要 ID
           }
           if (newItem.pointNumber < 0 || newItem.pointNumber > 100) {
             this.$confirm('warning', {
-              message: name + '同学的' + title.name + '处成绩输入负数或超过100的数，请确认此处为正确操作',
+              message: name + '同学的' + title.name + '处成绩输入超过100的数值，请确认此处为正确操作',
               type: 'warning'
             })
           }
@@ -580,8 +580,8 @@ DONE: post 返回需要 ID
                       preventInput();
                   }
               })
-              //按键弹起=>并限制最大最小
-              el.addEventListener("keyup",event => {
+              // 按键弹起=>并限制最大最小
+             /* el.addEventListener("keyup",event => {
                   let e = event || window.event;
                   content = parseFloat(e.target.value)
                   if (!content) {
@@ -597,15 +597,15 @@ DONE: post 返回需要 ID
                       e.target.value = arg_min;
                       content = arg_min;
                   }
-              })
+              }) */
               // 失去焦点=>保留指定位小数
-              el.addEventListener("focusout",event=>{//此处会在 el-input 的 @change 后执行
+              el.addEventListener("focusout",event=>{ // 此处会在 el-input 的 @change 后执行
                   let e = event || window.event;
                   content = parseFloat(e.target.value);
                   if (!content) {
-                      content = 0.00;
+                      content = 0.00
                   }
-                  let arg_precision = 0;//默认保留至整数
+                  let arg_precision = 0 // 默认保留至整数
                   if (vDir.value.precision) {
                       arg_precision = parseFloat(vDir.value.precision);
                   }
@@ -641,10 +641,7 @@ DONE: post 返回需要 ID
       watch: {
         view: function(newView) {
           this.viewDataset = newView
-          // console.log('12345676543234565434565432456543')
-          // console.log(this.viewDataset.length)
           this.row_total = this.viewDataset.length
-
           this.viewDataset.forEach(data => {
             data.totle = parseFloat(data.totle).toFixed(2)
           })
@@ -652,6 +649,9 @@ DONE: post 返回需要 ID
         },
         pointChange: function() {
           this.ListenToChange()
+        },
+        titles: function (titles) {
+            this.pointChange = true
         }
       }
     }

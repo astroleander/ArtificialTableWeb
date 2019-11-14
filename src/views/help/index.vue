@@ -98,7 +98,7 @@ export default {
 
         },
         {
-          title: '教学班级学生管理',
+          title: '教学班级信息',
           description: '教师可以为班级添加学生名单',
           router: '/class/index',
           backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
@@ -112,7 +112,7 @@ export default {
 
         },
         {
-          title: '添加成绩',
+          title: '导入成绩',
           description: '教师可以通过导入Excel表格为班级学生添加成绩',
           router: '/input/index/',
           backgroud: 'background-image: url("https://picsum.photos/id/732/200/200")'

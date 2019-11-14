@@ -164,6 +164,19 @@ export const teacherRouter = [
       meta: { title: '教学班级信息', icon: 'banjiguanli' }
     }]
   },
+  {
+    path: '/class',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'classfield/:id',
+        name: 'addClassField',
+        component: () => import('@/views/manager/classfield/form.vue'),
+        meta: { title: '班级添加删除学生', icon: 'tree' }
+      }
+    ]
+  },
   /**
      * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
      */
@@ -240,7 +253,7 @@ export const teacherRouter = [
             component: () => import('@/views/input/index')
           }]
         },*/
-  {
+  /* {
     path: urls.analyse,
     component: Layout,
     children: [{
@@ -249,7 +262,7 @@ export const teacherRouter = [
       component: () => import('@/views/analyse/analyse'),
       meta: { title: '课程分析', icon: 'lessonAnalyse' }
     }]
-  },
+  },*/
   /**
      * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
      */

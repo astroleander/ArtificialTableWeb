@@ -64,7 +64,7 @@ index
       >
       </transcript-predict>
       <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
-      <transcript-weight v-show='getMode("stats")'
+      <transcript-weight v-if='getMode("stats")'
                          :avg="weightData.avg"
                          :description="weightData.description"
                          :total="weightData.total"
@@ -136,15 +136,15 @@ export default {
         },
         {
           key: 2,
-          value: '请假'
+          value: '缺勤'
         },
         {
           key: 3,
-          value: '迟到'
+          value: '请假'
         },
         {
           key: 4,
-          value: '缺勤'
+          value: '迟到'
         },
         {
           key: 5,
@@ -195,10 +195,10 @@ export default {
     },
     // 转换模式 table / state / predict
     switchMode: function(code) {
-      /* if (code === 'stats') {
+      if (code === 'stats') {
         this.initTable()
         this.fetchDataset()
-      }*/
+      }
       this.shownTab = code
     },
     // 创建成绩表
@@ -224,15 +224,7 @@ export default {
             }
           })
         }
-        // ?
-        /* this.model.points.forEach(pointItem => {
-          console.log(' 1111111')
-          if (pointItem.student_id === element.id) {
-            console.log(' 2222222')
-            row.point.push(pointItem)
-            // row[pointItem.title_id] = pointItem
-          }
-        }) */
+        // 设置可导出的数据源
         const outPutRow = {
           student_sid: element.sid,
           student_name: element.name
@@ -312,17 +304,11 @@ export default {
     // 删除小项
     handleDeletedTitle(title) {
       this.table.forEach(view => {
-        // console.log('77')
-        // console.log(view)
-        // console.log(title.id)
         const pointx = view.point.findIndex(item => item.title_id === title.id)
-        // console.log(pointx)
         if (pointx >= 0) {
           view.point.splice(pointx, 1)
         }
       })
-      // console.log('9999')
-      // console.log(this.table)
       const idx = this.model.titles.findIndex(item => item.id === title.id)
       this.model.titles.splice(idx, 1)
     },
@@ -405,6 +391,8 @@ export default {
     },
     initTable() {
       // this.table = null
+      this.model.message = ''
+      this.titles_without_attendance = []
       this.model.points = null
       this.model.studentMap = new Map()
       this.model.titles = []

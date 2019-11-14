@@ -134,8 +134,8 @@ export default {
   },
   methods: {
     onSubmitClicked() {
-      console.log('11111111')
-      console.log(this.importStudentList)
+      // console.log('11111111')
+      // console.log(this.importStudentList)
       if (this.importStudentList.length > 0) {
         this.loading = true
       } else {
@@ -172,6 +172,7 @@ export default {
         studentList.push(student)
       })
       this.submitStudentList(studentList)
+      this.$refs.hotTable.hotInstance.clear()
     },
     onResetClicked() {
       this.$refs.hotTable.hotInstance.clear()
@@ -229,15 +230,15 @@ export default {
     }
   },
   watch: {
-    // 关闭窗口，清空页面缓存
+    // 关闭窗口，成功导入学生，清空页面缓存
     reset: function(reset) {
-      if (reset === true) {
-        this.seletedSemester.year = ''
+      if (reset) {
         this.$refs.hotTable.hotInstance.clear()
       }
     }
   },
   created() {
+    this.seletedSemester.year = new Date().getFullYear()
   }
 }
 </script>

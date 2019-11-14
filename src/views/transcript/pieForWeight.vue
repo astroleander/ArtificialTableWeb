@@ -29,6 +29,7 @@
       methods: {
         // 绘制条状图
         drawPie() {
+          this.data = []
           if (this.dataSet) {
             this.data.push({
               value: this.dataSet[0],
