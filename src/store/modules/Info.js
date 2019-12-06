@@ -1,7 +1,8 @@
 const Info = {
   state: {
     college_id: null,
-    year: null
+    year: null,
+    lessonId: null
   },
   // 通过commit调用函数 同步事务
   mutations: {
@@ -10,6 +11,9 @@ const Info = {
     },
     SET_YEAR: (state, { year }) => {
       state.year = year
+    },
+    SET_LESSON_ID: (state, { lessonId }) => {
+      state.lessonId = lessonId
     }
   },
   // 异步处理 Action 提交commit的是 mutation
@@ -24,6 +28,12 @@ const Info = {
     setYear({ commit, state }, { year }) {
       return new Promise((resolve, reject) => {
         commit('SET_YEAR', { year })
+        resolve()
+      })
+    },
+    setLessonId({ commit, state }, { lessonId }) {
+      return new Promise((resolve, reject) => {
+        commit('SET_LESSON_ID', { lessonId })
         resolve()
       })
     }

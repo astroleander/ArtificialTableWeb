@@ -83,8 +83,8 @@ const validateUsername = (rule, value, callback) => {
 }
 // 判断密码不得少于5位
 const validatePass = (rule, value, callback) => {
-  if (value.length < 5) {
-    callback(new Error('密码不能小于5位'))
+  if (!value) {
+    callback(new Error('密码不能为空'))
   } else {
     callback()
   }
@@ -94,7 +94,7 @@ export default {
   name: 'login',
   data() {
     return {
-      AppName: '英语课程成绩管理系统',
+      AppName: '英语课程智慧管理平台',
       loginForm: {
         // 在输入用户名，密码时v-model绑定数据
         username: null,
@@ -140,7 +140,7 @@ export default {
             .requestLogin(this.loginForm)
             .then(response => {
               const role = response.is_manager
-              console.log('登陆验证权限：' + role)
+              // console.log('登陆验证权限：' + role)
               // 登录用户名 密码匹配后
               // 在修改数据之后立即使用这个方法，获取更新后的 DOM，同理setTimeout()
               Vue.nextTick(resolve => {

@@ -19,7 +19,7 @@
         </el-option>
       </el-select>
       <!--选择大项 -->
-      <el-select v-model="titleGroupId" placeholder="请选择大项" @change="selectedTitleGroup" style="margin-left: 10px">
+      <el-select v-model="titleGroupId" placeholder="请选择成绩类别" @change="selectedTitleGroup" style="margin-left: 10px">
         <el-option
           v-for="item in titleGroupList"
           :key="item.id"

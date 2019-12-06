@@ -35,7 +35,6 @@
 
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
 
-
         </div>
       </div>
     </div>
@@ -203,14 +202,11 @@ export default {
     },
     // 删除小项
     delTitleItem: function(title_id) {
-      this.$prompt(
-        '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的成绩测试项及其权重！',
-        '请确认删除操作', {
-          confrimButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /确认/
-        }
-      ).then(() => {
+      this.$confirm('此操作将彻底删除该项测试及其权重占比，请确认是否删除！', '提示', {
+        confrimButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         this.$emit('notifyDel', title_id)
       })
     },
@@ -301,7 +297,7 @@ export default {
         this.modifyDisabled = false
         this.isError = true
         this.errorType = ''
-        this.errorMsg = '当前大项下无小项信息'
+        this.errorMsg = '当前成绩类别下无测试信息'
       } else {
         if (this.weightSum() === 100) {
           this.modifyDisabled = false

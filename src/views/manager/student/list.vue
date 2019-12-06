@@ -137,14 +137,11 @@ export default {
       })
     },
     deleteStudent(student) {
-      this.$prompt(
-        '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的学生！',
-        '请确认删除操作', {
-          confrimButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /确认/
-        }
-      ).then(() => {
+      this.$confirm('此操作将彻底删除数据库中学生，请确认是否删除！', '提示', {
+        confrimButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         StudentViewModel.requestDelStudent(student.id).then(res => {
           this.$message({
             type: 'success',

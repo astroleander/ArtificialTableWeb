@@ -49,7 +49,7 @@ export const REQUIRED_TITLE = {
 
 export const NO_TITLE_GROUP = {
   id: 'fIOSHFoiahsf',
-  title: '需要添加分数类别 (大项)',
-  description: '您当前选择的课程无分数组大项信息，将无法完成导入流程，若您是教师, 请联系管理员为该课程组添加成绩类别大项及其权重',
+  title: '需要添加分数类别 (成绩类别)',
+  description: '您当前选择的课程无分数组成绩类别信息，将无法完成导入流程，若您是教师, 请联系管理员为该课程组添加成绩类别大项及其权重',
   type: 'error'
 }

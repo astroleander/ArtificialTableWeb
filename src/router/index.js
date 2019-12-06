@@ -60,35 +60,25 @@ export const adminRouter = [
   {
     path: '/manager',
     component: Layout,
-    children: [
-      {
-        path: 'lesson/addLesson',
-        name: 'addlesson',
-        component: () => import('@/views/manager/lesson/addLesson.vue'),
-        meta: { title: '添加课程组', icon: 'tree' }
-      }]
-  },
-  {
-    path: '/manager',
-    component: Layout,
+    meta: { title: '课程组管理', icon: 'tree' },
     children: [
       {
         path: 'lesson/class',
         name: 'classList',
         component: () => import('@/views/manager/classfield/index.vue'),
-        meta: { title: '课程组列表', icon: 'tree' }
-      }]
-  },
-  {
-    path: '/manager',
-    component: Layout,
-    // hidden: true,
-    children: [
+        meta: { title: '课程组列表', icon: 'lesson' }
+      },
+      {
+        path: 'lesson/addLesson',
+        name: 'addlesson',
+        component: () => import('@/views/manager/lesson/addLesson.vue'),
+        meta: { title: '添加课程组', icon: 'add' }
+      },
       {
         path: 'weight',
         name: 'weight',
         component: () => import('@/views/weight/index'),
-        meta: { title: '权重调整', icon: 'weight' }
+        meta: { title: '设置权重', icon: 'weight' }
       }]
   },
   {
@@ -99,7 +89,7 @@ export const adminRouter = [
       name: 'comparison',
       component: () => import('@/views/comparison/index'),
       // 路由属性存储
-      meta: { title: '班级成绩比较', icon: 'dash' }
+      meta: { title: '班级成绩比较', icon: 'score' }
     }]
 
   },
@@ -112,32 +102,25 @@ export const adminRouter = [
         path: 'student/list',
         name: 'liststudent',
         component: () => import('@/views/manager/student/list.vue'),
-        meta: { title: '学生列表', icon: 'tree' }
+        meta: { title: '学生管理', icon: 'list' }
       }]
   },
   {
-    path: '/manager',
+    path: '/manager/user',
     component: Layout,
-    // hidden: true,
+    meta: { title: '教师管理', icon: 'tree' },
     children: [
       {
-        path: 'user/add',
+        path: 'add',
         name: 'addmanager',
         component: () => import('@/views/manager/user/add.vue'),
-        meta: { title: '添加教师', icon: 'tree' }
-      }
-    ]
-  },
-  {
-    path: '/manager',
-    component: Layout,
-    // hidden: true,
-    children: [
+        meta: { title: '添加教师', icon: 'addUser' }
+      },
       {
-        path: 'user/list',
+        path: 'list',
         name: 'showmanager',
         component: () => import('@/views/manager/user/list.vue'),
-        meta: { title: '教师列表', icon: 'tree' }
+        meta: { title: '教师列表', icon: 'userList' }
       }
     ]
   }
@@ -151,7 +134,7 @@ export const teacherRouter = [
       path: 'class/add',
       name: 'class',
       component: () => import('@/views/manager/classfield/add.vue'),
-      meta: { title: '添加教学班级', icon: 'tree' }
+      meta: { title: '添加教学班级', icon: 'add' }
     }]
   },
   {
@@ -253,7 +236,8 @@ export const teacherRouter = [
             component: () => import('@/views/input/index')
           }]
         },*/
-  /* {
+  /* 暂时屏蔽
+  {
     path: urls.analyse,
     component: Layout,
     children: [{
@@ -262,7 +246,7 @@ export const teacherRouter = [
       component: () => import('@/views/analyse/analyse'),
       meta: { title: '课程分析', icon: 'lessonAnalyse' }
     }]
-  },*/
+  },
   /**
      * 曲线救国，可能是版本过旧的原因反正我这儿 alwaysShow 不好用
      */

@@ -55,6 +55,12 @@
       height: 50px !important;
       font-size: 16px;
     }
+    .el-submenu__title{
+      font-size: 16px !important;
+    }
+    .el-submenu__title i {
+      color: white !important;
+    }
   }
   .hideSidebar {
     .sidebar-container {
@@ -83,7 +89,6 @@
       }
     }
     .el-menu-item {
-      
       .el-tooltip {
         padding-left: 10px !important;
       }
@@ -105,6 +110,7 @@
   .sidebar-container .nest-menu .el-submenu>.el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {
     min-width: 180px !important;
+    padding-left: 20px !important;
     background-color: $subMenuBg !important;
     &:hover {
       background-color: $menuHover !important;
@@ -115,6 +121,7 @@
   }
   .el-menu--collapse .el-menu .el-submenu {
     min-width: 180px !important;
+    font-size: 16px;
   }
 
   //适配移动端

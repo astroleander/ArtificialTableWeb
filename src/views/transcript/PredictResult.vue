@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column label="学号" prop="sid" sortable></el-table-column>
         <el-table-column label="学生姓名" prop="name"></el-table-column>
-
+        <el-table-column label="预测下一次考试" prop="pointNumber" sortable min-width="150"></el-table-column>
         <el-table-column label="预测结果" prop="pass" sortable min-width="150">
           <template slot-scope="scope">
             <span v-if="showPassed(scope.row)">不及格</span>

@@ -57,6 +57,7 @@ index
         >
         </transcript-table>
       </transition>
+      <!-- 暂时屏蔽成绩预测 -->
       <transcript-predict
         v-show='this.getMode("predict")'
         :view='this.table'
@@ -64,7 +65,7 @@ index
       >
       </transcript-predict>
       <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
-      <transcript-weight v-if='getMode("stats")'
+      <transcript-weight v-show='getMode("stats")'
                          :avg="weightData.avg"
                          :description="weightData.description"
                          :total="weightData.total"
@@ -73,7 +74,8 @@ index
                          :titles="titles_without_attendance"
                          :valid="weightData.studentScore.size-weightData.invalidScore"
                          :grade-section="weightData.gradeSection"
-                         :title-average="weightData.titleAverage">
+                         :title-average="weightData.titleAverage"
+                         :message='this.model.message'>
       </transcript-weight>
     </div>
   </div>
@@ -195,16 +197,17 @@ export default {
     },
     // 转换模式 table / state / predict
     switchMode: function(code) {
-      if (code === 'stats') {
+      /* if (code === 'stats') {
         this.initTable()
         this.fetchDataset()
-      }
+      }*/
       this.shownTab = code
     },
     // 创建成绩表
     buildTable: function() {
       // build table cell
       // each student map to a row on table
+      // console.log('开始创建成绩表')
       this.table = []
       this.outToExcel = []
       this.model.studentMap.forEach(element => {
@@ -233,7 +236,7 @@ export default {
           row.point.forEach(pointItem => {
             const name = pointItem.title_id
             const value = pointItem.pointNumber
-            if (pointItem.titleGroup_name === '出勤' || pointItem.titleGroup_name === '其他') {
+            if (pointItem.title__titleGroup__name === '出勤' || pointItem.title__titleGroup__name === '其他') {
               this.info_attentance.forEach(attetance => {
                 if (attetance.key === value) {
                   outPutRow[name] = attetance.value
@@ -253,6 +256,7 @@ export default {
         this.outToExcel.push(outPutRow)
         this.table.push(row)
       })
+      // console.log('成绩表创建完成')
       // build title
     },
     // 由id返回学生信息
@@ -322,7 +326,7 @@ export default {
         // classinfoViewmodel.requestClassInfos({ id: this.id })
       ])
         .then(result => {
-          // console.log('111111111' + this.info.lesson_id)
+          // console.log('请求所有数据')
           // 获取小项数据
           if (result && result[0]) {
             result[0].forEach(element => {
@@ -419,7 +423,7 @@ export default {
         if (studentLength === 0) {
           this.weightData.description = '当前班级无学生信息'
         } else if (titleGroupLength === 0) {
-          this.weightData.description = '请检查成绩类别数据是否全部添加，如若没有，请联系年级组长'
+          this.weightData.description = '请检查成绩类别数据是否全部添加，如若没有，请联系教研室主任'
         } else if (pointLength === 0) {
           this.weightData.description = '请检查成绩数据是否全部导入'
         } else if (titleLength === 0) {
@@ -523,7 +527,7 @@ export default {
         } else {
           // 若无法根据小项中的titleGroup_id获取大项
           // 计算成绩失败,给出提示信息
-          this.weightData.description = '请检查大项数据是否全部导入'
+          this.weightData.description = '请检查成绩类别数据是否全部导入'
         }
       } else {
         // 若无法根据分数中的title_id获取小项

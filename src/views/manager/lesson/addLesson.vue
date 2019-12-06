@@ -9,7 +9,7 @@ supplement:添加管理员所在本院系的课程
       </div>
       <el-form :rules="rules"  status-icon ref="ruleForm" :model="form" label-width="100px">
         <el-form-item label="课程组名称 " prop="name" >
-          <el-input v-model="form.name"  placeholder="请输入课程组名称" maxlength="10" show-word-limit></el-input>
+          <el-input v-model="form.name"  placeholder="请输入课程组名称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
@@ -59,11 +59,18 @@ supplement:添加管理员所在本院系的课程
             lessonViewModel.requestPostLesson(Lesson)
               .then(response => {
                 if (response !== undefined) {
+                  // console.log('11111' + response)
+                  this.$store.dispatch('setLessonId', response[0].id)
                   this.$message({
                     message: '添加课程组成功',
                     type: 'success'
                   })
-                  this.$router.push('/manager/weight')
+                  this.$router.push({
+                    path: '/manager/weight',
+                    query: {
+                      lesson_id: response[0].id
+                    }
+                  })
                 } else {
                   this.$message({
                     message: '插入新课程组项已存在，无法重复添加',

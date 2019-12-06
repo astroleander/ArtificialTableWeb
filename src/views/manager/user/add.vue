@@ -8,7 +8,7 @@ supplement:
   <div class="app-container rowframe">
     <el-card class="form-box">
     <div slot="header">
-      <span class="rowframe title">添加教师</span>
+      <span class="rowframe title">添加教师（初始密码6个1）</span>
     </div>
     <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
       <el-form-item label="教师姓名" prop="name">
@@ -21,7 +21,7 @@ supplement:
         <el-input v-model="form.password" type="password" placeholder="输入密码" maxlength="18"></el-input>
       </el-form-item>
       <el-form-item label="确认密码 " prop="repassword" required>
-        <el-input v-model="form.repassword" type="password" placeholder="请确认密码" maxlength="18"></el-input>
+        <el-input v-model="form.repassword" type="password" placeholder="初始密码为111111，如不更改请确认再次输入密码" maxlength="18"></el-input>
       </el-form-item>
       <!--<el-form-item label="管理员权限" prop="is_manager">-->
         <!--<el-switch v-model="form.is_manager"></el-switch>-->
@@ -126,7 +126,7 @@ export default {
       form: {
         name: '',
         tid: '',
-        password: '',
+        password: '111111',
         repassword: '',
         // is_manager: '',
         email: '',
@@ -140,8 +140,9 @@ export default {
         tid: [
           { validator: validateTeacherId, trigger: 'blur' }
         ],
+        // 密码暂时不设置限制
         password: [
-          { validator: validatePassword, trigger: 'blur' }
+          { trigger: 'blur' }
         ],
         repassword: [
           { validator: validateRePassword, trigger: 'blur' }

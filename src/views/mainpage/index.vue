@@ -92,7 +92,7 @@ div(mainpage)
         return this.user.college_message.name
       },
       getManager() {
-        return this.use_manager ? '年级组长' : '普通教师'
+        return this.use_manager ? '教研室主任' : '普通教师'
       }
     },
     data() {
@@ -192,7 +192,7 @@ div(mainpage)
       },
       changeRole() {
         if (this.use_manager) {
-          this.infos_arrays[2].content = '年级组长'
+          this.infos_arrays[2].content = '教研室主任'
         } else {
           this.infos_arrays[2].content = '普通教师'
         }

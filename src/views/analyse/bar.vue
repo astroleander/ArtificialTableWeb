@@ -36,7 +36,7 @@
         this.chartBar.setOption({
           // 图表颜色
           title: {
-            text: '各项测试对提高' + this.dataTitlegroupname + '的贡献'
+            text: '各项测试与' + this.dataTitlegroupname + '的相关度'
           },
           color: ['#3398FB'],
           tooltip: {

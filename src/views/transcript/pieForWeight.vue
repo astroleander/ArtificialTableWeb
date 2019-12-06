@@ -33,23 +33,23 @@
           if (this.dataSet) {
             this.data.push({
               value: this.dataSet[0],
-              name: '0-60'
+              name: '0-60分'
             })
             this.data.push({
               value: this.dataSet[1],
-              name: '60-70'
+              name: '60-70分'
             })
             this.data.push({
               value: this.dataSet[2],
-              name: '70-80'
+              name: '70-80分'
             })
             this.data.push({
               value: this.dataSet[3],
-              name: '80-90'
+              name: '80-90分'
             })
             this.data.push({
               value: this.dataSet[4],
-              name: '90-10'
+              name: '90-10分'
             })
           }
           // 初始化图表
@@ -69,7 +69,7 @@
             legend: {
               orient: 'vertical',
               right: 'right',
-              data: ['0-60', '60-70', '70-80', '80-90', '90-100']
+              data: ['0-60分', '60-70分', '70-80分', '80-90分', '90-100分']
             },
             series: [
               {

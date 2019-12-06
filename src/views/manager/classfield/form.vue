@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column prop="sid" label="学号" minWidth="150" sortable></el-table-column>
         <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
-        <!--<el-table-column prop="major" label="专业"  minWidth="150"></el-table-column>-->
+        <el-table-column prop="majorName" label="专业"  minWidth="150"></el-table-column>
 
         <el-table-column label="操作" width="350">
           <template slot="header" slot-scope="scope">
@@ -386,7 +386,7 @@ export default {
                     sid: students[i].sid,
                     student_id: students[i].id,
                     name: students[i].name,
-                    major: students[i].major_message.name
+                    majorName: students[i].majorName
                   })
                 }
               }
@@ -553,8 +553,8 @@ export default {
       }
     },
     output() {
-      console.log('123454321345')
-      console.log(this.$router.currentRoute.params.id)
+      // console.log('123454321345')
+      // console.log(this.$router.currentRoute.params.id)
       if (this.$router.currentRoute.params.id) {
         this.classInfo_id = this.$router.currentRoute.params.id
         this.fetchTableStudentInfo()

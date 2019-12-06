@@ -43,10 +43,10 @@ div(head)
 
       <el-select v-model="value" :placeholder="selectText" @change="selectedCourse">
         <el-option
-          v-for="(item,index) in selectData"
+          v-for="item in selectData"
           :key="item.id"
           :label="item.name"
-          :value="index">
+          :value="item.id">
         </el-option>
       </el-select>
     </div>
@@ -56,28 +56,16 @@ div(head)
     </div>
 
     <div v-if="!empty">
-      <div v-if="this.use_manager">
+      <div>
         <!--自定义组件-->
         <at-lesson-card
-          groupName="权重大项"
+          groupName="成绩类别权重设置"
           :dataSet="titleGroups"
           @notifyChanged="handleBigChanged"
           @notifyAdd="handleAddTitleGroup"
           @notifyDel="handleDelTitleGroup">
         </at-lesson-card>
       </div>
-      <!--<div v-else>
-        <at-titlegroup-card class="title4_box"
-                            v-for="(item, index) in titleGroupsInfo"
-                            :key="index"
-                            :groupName="item.name"
-                            :dataSet="titles[item.id]"
-                            :groupId="item.id"
-                            @notifyChanged="handleTitleChanged"
-                            @notifyAdd="handleAddTitle"
-                            @notifyDel="handelDelTitle">
-        </at-titlegroup-card>
-      </div>-->
     </div>
   </div>
 </template>
@@ -87,15 +75,14 @@ div(head)
   import lessonViewModel from '@/viewmodel/lesson'
   import titleViewModel from '@/viewmodel/title'
   import titleGroupViewModel from '@/viewmodel/titlegroups'
-  import classInfoModel from '@/viewmodel/classinfos'
-  import AtTitlegroupCard from '@/components/Weight/TitlegroupCard'
+  // import classInfoModel from '@/viewmodel/classinfos'
   import AtLessonCard from '@/components/Weight/LessonCard'
   import { mapGetters } from 'vuex'
   export default {
-    components: { AtTitlegroupCard, AtLessonCard },
+    components: { AtLessonCard },
     data() {
       return {
-        selectData: [], // 课程组列表/教学班列表
+        selectData: [], // 课程组列表
         titleGroups: [], // 某一课程组的大类列表（管理员状态下）
         titleGroupsInfo: [], // 某一课程组的大类列表（教师状态下），可能存在某一教学班的大项下无小项的情况
         titles: {}, // 某一课程的全部小类
@@ -125,20 +112,7 @@ div(head)
       },
       // 管理员/教师 大类列表(角色判断)
       buildTitleGroup: function(titlegroups) {
-        if (this.use_manager) {
-          this.titleGroups = titlegroups // (管理员)
-        } else {
-          this.titleGroupsInfo = titlegroups // 教师
-          if (titlegroups.length === 0) {
-            this.$message({
-              message: '当前教学班所在的课程组无大项信息',
-              type: 'info'
-            })
-            this.Message = '当前教学班所在的课程组无大项信息'
-          } else {
-            this.empty = false
-          }
-        }
+        this.titleGroups = titlegroups // (管理员)
       },
       // 教师某一教学班的所有小项（按照titleGroup_id分类）
       buildTitles: function(titles) {
@@ -164,22 +138,22 @@ div(head)
             })
           })
       },
-      // 大项数据修改（管理员）
+      // 大项数据修改（管理员） 保留
       handleBigChanged: function(newDataSet) {
         titleGroupViewModel
           .requestPutTitleGroups(newDataSet).then(response => {
             this.getTitleGroup()
             this.$message({
-              message: '修改大项成功',
+              message: '修改成绩类别成功',
               type: 'success'
             })
           })
       },
-      // 添加一条大项记录（管理员）
+      // 添加一条大项记录（管理员） 保留
       handleAddTitleGroup: function(NewTitleGroup) {
         const TitleGroup = {
           name: NewTitleGroup.name,
-          lesson_id: this.selectData[this.value].id,
+          lesson_id: this.value,
           weight: NewTitleGroup.weight,
           override_tag: 0
         }
@@ -194,19 +168,19 @@ div(head)
             //   this.titleGroups.push(TitleGroup)
             // }
             this.$message({
-              message: '添加大项成功',
+              message: '添加成绩类别成功',
               type: 'success'
             })
           })
       },
-      // 删除一条大项记录 （管理员）
+      // 删除一条大项记录 （管理员）保留
       handleDelTitleGroup: function(titleGroup_id) {
         titleViewModel.requestTitles({ titleGroup_id: titleGroup_id })
           .then(titles => {
             if (titles) {
             // 若该大项下有小项，不能删除
               this.$message({
-                message: '该大项下有小项信息，无法删除',
+                message: '该成绩类别下有小项信息，无法删除',
                 type: 'warning'
               })
             } else {
@@ -214,7 +188,7 @@ div(head)
                 .then(reponse => {
                   this.getTitleGroup()
                   this.$message({
-                    message: '删除大项成功',
+                    message: '删除成绩类别成功',
                     type: 'success'
                   })
                 })
@@ -223,7 +197,8 @@ div(head)
             console.log(reject)
           })
       },
-      // 添加一条小项记录（教师）
+      // 添加一条小项记录（教师）删除
+      /*
       handleAddTitle: function(NewTitle, titleGroup_id) {
         // console.log('NewTitle' + NewTitle.name + ' ' + NewTitle.weight)
         // console.log('titleGroup_id' + titleGroup_id)
@@ -248,8 +223,9 @@ div(head)
               type: 'success'
             })
           })
-      },
-      // 删除小项
+      }, */
+      // 删除小项 删除
+      /*
       handelDelTitle(title_id) {
         titleViewModel.requestDelTitle(title_id)
           .then(reponse => {
@@ -261,8 +237,8 @@ div(head)
           }).catch(reject => {
             console.log(reject)
           })
-      },
-      // 根据college_id获取该学校课程组信息Lesson（管理员）
+      },*/
+      // 根据college_id获取该学校课程组信息Lesson（管理员）保留
       fetchLessonData(college_id) {
         lessonViewModel
           .requestByCollegeId(college_id)
@@ -278,7 +254,7 @@ div(head)
             }
           })
       },
-      // 根据lesson_id获取该课程组的大项信息titleGroup（管理员）
+      // 根据lesson_id获取该课程组的大项信息titleGroup（管理员）保留
       fetchTitleGroup(data_id) {
         // console.log('lesson_id = ' + data_id)
         titleGroupViewModel
@@ -289,7 +265,8 @@ div(head)
             }
           })
       },
-      // 根据 teacher_id获取该教师的教学班ClassInfo（教师）
+      // 根据 teacher_id获取该教师的教学班ClassInfo（教师）删除
+      /*
       fetchClassInfoData(teacher_id) {
         classInfoModel
           .requestByTeacherId(teacher_id)
@@ -304,8 +281,9 @@ div(head)
               this.Message = '当前教师无课程信息'
             }
           })
-      },
-      // 根据classInfo_id 获取该课程的所有小项信息（教师）
+      },*/
+      // 根据classInfo_id 获取该课程的所有小项信息（教师）删除
+      /*
       fetchTitlesData(cid) {
         titleViewModel
           .requestTitles({
@@ -314,41 +292,38 @@ div(head)
           .then(response => {
             this.buildTitles(response)
           })
-      },
+      },*/
       init() {
         this.titles = {}
         this.titleGroups = []
-        this.titleGroupsInfo = []
+        // this.titleGroupsInfo = []
       },
       // 小项新建或者修改后重新获取
+      /*
       getTitle() {
         this.init()
         this.fetchTitleGroup(this.selectData[this.value].lesson_id)// 当前角色是教师
         this.fetchTitlesData(this.selectData[this.value].id)
-      },
-      // 大项新建或者修改后重新获取
+      },*/
+      // 大项新建或者修改后重新获取 保留
       getTitleGroup() {
         this.init()
-        this.fetchTitleGroup(this.selectData[this.value].id)
+        this.fetchTitleGroup(this.value)
       },
-      // 列表选中值改变时  (角色判断)
+      // 列表选中值改变时
       selectedCourse: function(index) {
         // 初始化数据
         this.init()
-        // console.log(index)
-        // 开启管理员权限时
-        if (this.use_manager) {
-          // console.log('课程组id = ' + this.selectData[index].id)
-          this.fetchTitleGroup(this.selectData[index].id) // 当前角色是管理员
-          this.empty = false
-        } else {
-          // console.log('班级id = ' + this.selectData[index].id)
-          this.fetchTitleGroup(this.selectData[index].lesson_id)// 当前角色是教师
-          this.fetchTitlesData(this.selectData[index].id) // 当前角色是教师
-        }
+        this.fetchTitleGroup(this.value) // 当前角色是管理员
+        this.empty = false
       },
       initWeight() {
-        this.value = ''
+        const lesson_id = this.$route.query.lesson_id
+        if (lesson_id !== undefined) {
+          this.value = this.$route.query.lesson_id
+        } else {
+          this.value = ''
+        }
         this.selectData = []
         this.empty = true
       },
@@ -359,40 +334,23 @@ div(head)
     computed: {
       ...mapGetters([
         'user_collegeId',
-        'use_manager',
+        'is_manager',
         'id'
       ])
-    },
-    watch: {
-      use_manager: function() {
-        if (this.use_manager) {
-          this.init()
-          this.selectText = '请选择课程组'
-          this.Message = '请选择调整的课程组'
-          this.fetchLessonData(this.user_collegeId)
-        } else {
-          this.selectText = '请选择教学班'
-          this.Message = '请选择调整的教学班'
-          this.fetchClassInfoData(this.id)
-        }
-      }
     },
     // (角色判断) 初始加载数据
     created() {
       // 当前角色是管理员
-      if (this.use_manager) {
-        this.initWeight()
-        this.init()
-        this.selectText = '请选择课程组'
-        this.Message = '请选择调整的课程组'
-        // 由院系ID获取课程组信息
-        this.fetchLessonData(this.user_collegeId)
-      } else { // 当前角色是教师
-        this.initWeight()
-        this.init()
-        this.selectText = '请选择教学班'
-        this.Message = '请选择调整的教学班'
-        this.fetchClassInfoData(this.id)
+      this.initWeight()
+      this.init()
+      this.selectText = '请选择课程组'
+      this.Message = '请选择调整的课程组'
+      // 由院系ID获取课程组信息
+      this.fetchLessonData(this.user_collegeId)
+    },
+    watch: {
+      value: function() {
+        this.selectedCourse()
       }
     }
   }

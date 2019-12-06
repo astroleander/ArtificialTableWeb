@@ -393,7 +393,7 @@ export default {
             this.errorList.push({
               id: classInfo_id,
               name: name,
-              errorMsg: '  无大项数据，请导入大项数据'
+              errorMsg: '  无成绩类别数据，请导入成绩类别数据'
             })
           }
           if (this.errorList.length > 0) {
@@ -524,7 +524,7 @@ export default {
           this.errorList.push({
             id: param.classInfo_id,
             name: param.name,
-            errorMsg: '  大项数据不全，请输入完整的大项数据'
+            errorMsg: '  成绩类别数据不全，请输入完整的成绩类别数据'
           })
         }
       } else {

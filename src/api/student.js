@@ -105,13 +105,14 @@ export function deleteStudents(studentIdArray) {
 /*
    获取预测成绩信息
  */
-export function getPredict(studentIdArray) {
+export function getPredict(studentIdArray, classInfo_id) {
   // 此时request 为一个 axios实例，发送请求
   return request({
     url: '/analysis/pass',
     method: 'post',
     data: {
-      sidList: studentIdArray
+      sidList: studentIdArray,
+      classInfo_id: classInfo_id
     }
   })
 }

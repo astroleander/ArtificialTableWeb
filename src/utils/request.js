@@ -10,7 +10,7 @@ import exceptHandler from '@/utils/except'
 //  `baseURL` 将自动加在 `url` 前面
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url 请求前往的url
-  timeout: 15000 // 请求超时时间
+  timeout: 20000 // 请求超时时间
 })
 
 // request 拦截器
@@ -28,6 +28,10 @@ service.interceptors.request.use(config => {
 })
 
 // response 拦截器
+/*
+* 对于出现错误的情况，还需要进行详细的错误处理
+* *
+*/
 service.interceptors.response.use(
   response => {
     const res = response.data

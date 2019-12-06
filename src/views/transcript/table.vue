@@ -32,115 +32,120 @@ DONE: post 返回需要 ID
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
         </el-row>
-        <!-- table main container-->
-        <el-table
-                :data="viewDataset.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-                @cell-dblclick='onCellClicked'
+        <!-- table main container   id="transcript-table" class="table" :data="viewDataset.slice((currentPage-1)*pagesize,currentPage*pagesize)" element-loading-text="Loading"-->
+        <div style="height: 100%; width: 100%">
+            <div style="height: calc(100vh - 140px);padding: 10px;">
+                <pl-table
+                :datas="viewDataset"
+                use-virtual
                 v-loading.body="loading"
-                ref="table" id="transcript-table"
+                ref="table"
+                height="calc(100vh - 140px)"
+                id="transcript-table"
                 element-loading-text="Loading"
-                height="calc(100vh - 190px)"
                 class="table"
-                border
+                :row-height="65"
                 :cell-style="getCellColorByType">
 
-            <el-table-column label="序号" align="center"
-                             fixed min-width="80px" prop="index">
-            </el-table-column>
+            <pl-table-column label="序号" align="center"
+                             fixed min-width="60px" prop="index">
+            </pl-table-column>
 
-            <el-table-column label="学生姓名" prop="student.name" align="center"
+            <pl-table-column label="学生姓名" prop="student.name" align="center"
                              fixed min-width="100px">
-            </el-table-column>
+            </pl-table-column>
 
-            <el-table-column label="学号" prop="student.sid" align="center"
-                             fixed min-width="100px">
-            </el-table-column>
+            <pl-table-column label="学号" prop="student.sid" align="center"
+                             fixed min-width="100px" sortable>
+            </pl-table-column>
 
-            <el-table-column label="总成绩" align="center" fixed min-width="280px">
-                <el-table-column :label="this.message" prop="totle" align="center"
-                                  min-width="280px">
-                </el-table-column>
-            </el-table-column>
+            <pl-table-column  label="总成绩" align="center">
+                <pl-table-column  :label="this.message" prop="totle" align="center" sortable>
+                </pl-table-column>
+            </pl-table-column>
 
-            <el-table-column
+            <pl-table-column
                     v-for="title in titles" :key="title.id"
-                    min-width="200">
+                    min-width="180">
                 <template slot="header" slot-scope="head">
                     <div class="line-container">
                         <el-tooltip class="item" effect="dark" :content="title.titleGroup_message.name" placement="top">
                             <span>{{title.name}}</span>
                         </el-tooltip>
-                        <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
-                    </div>
-                </template>
-                <template slot-scope="scope">
-                    <div class="item-wrapper">
-                        <div
-                             slot="reference"
-                             v-if="getPointItem(scope, title)"
-                             class="point-div">
+                               <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
+                           </div>
+                       </template>
+                       <template slot-scope="scope">
+                           <div class="item-wrapper">
+                               <div
+                                    slot="reference"
+                                    v-if="getPointItem(scope, title)"
+                                    class="point-div">
 
-                            <!-- using import to excel -->
-                            <span style="display:none">{{getPointNumber(scope, title)}}</span>
-                            <span class="point">
-                                <el-form :model="getPointItem(scope, title)">
-                                    <template v-if="title.titleGroup_message.name === '出勤'">
-                                        <el-select
-                                            v-model="getPointItem(scope, title).pointNumber"
-                                            placeholder="请选择"
-                                            @change="onItemChanged(getPointItem(scope, title), title)">
-                                                <el-option
-                                                    v-for="item in title_map"
-                                                    :key="item.id"
-                                                    :label="item.name"
-                                                    :value="item.id">
-                                                </el-option>
-                                        </el-select>
-                                    </template>
-                                    <template v-else>
-                                        <el-input
-                                            type="number"
-                                            prop="number"
-                                            size="mini"
-                                            ref="input"
-                                            step=0.1
-                                            v-model.number="getPointItem(scope, title).pointNumber"
-                                            placeholder=""
-                                            @blur="proving($event,getPointItem(scope, title),title)"
-                                            @change="onItemChanged(getPointItem(scope, title), title)"
-                                            v-limit>
-                                        </el-input>
-                                    </template>
-                                </el-form>
-                            </span>
-                            <!-- <span class="point">
-                              {{getPointNumber(scope, title)}}</span> -->
-                        </div>
-            <!--            <div  class="point-div-addons">
-                            <span class="operator">
-                            </span>
-                        </div>     -->
-                       <div v-else class="point-div-addons">
-                              <span class="operator">
-                                <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
-                                  <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
-                                    @click="onAddClicked({scope, title})" class="operator-button"/>
+                                   <!-- using import to excel -->
+                            <span style="display:none">{{getPointNumber(scope, title).pointNumber}}</span>
+                                 <span class="point">
+                                     <el-form :model="getPointItem(scope, title)">
+                                         <template v-if="title.titleGroup_message.name === '出勤'">
+                                             <el-select
+                                                 v-model="getPointItem(scope, title).pointNumber"
+                                                 placeholder="请选择"
+                                                 @change="onItemChanged(getPointItem(scope, title), title)">
+                                                     <el-option
+                                                         v-for="item in title_map"
+                                                         :key="item.id"
+                                                         :label="item.name"
+                                                         :value="item.id">
+                                                     </el-option>
+                                             </el-select>
+                                         </template>
+                                         <template v-else>
+                                             <el-input
+                                                 type="number"
+                                                 prop="number"
+                                                 size="mini"
+                                                 ref="input"
+                                                 step=0.1
+                                                 v-model.number="getPointItem(scope, title).pointNumber"
+                                                 placeholder=""
+                                                 @blur="proving($event,getPointItem(scope, title),title)"
+                                                 @change="onItemChanged(getPointItem(scope, title), title)"
+                                                 v-limit>
+                                             </el-input>
+                                         </template>
+                                     </el-form>
+                                 </span>
+                                 <!-- <span class="point">
+                                   {{getPointNumber(scope, title)}}</span> -->
+                            </div>
+                   <!--         <div  class="point-div-addons">
+                                <span class="operator">
                                 </span>
+                            </div> -->
+                           <div v-else class="point-div-addons">
+                                  <span class="operator">
+                                    <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
+                                      <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
+                                        @click="onAddClicked({scope, title})" class="operator-button"/>
+                                    </span>
+                            </div>
                         </div>
-                    </div>
 
-                </template>
-            </el-table-column>
-        </el-table>
+                    </template>
+                </pl-table-column>
+            </pl-table>
+            </div>
+        </div>
 
-        <el-pagination
-                background
-                layout="prev, pager, next"
-                @current-change="current_change"
-                :total="row_total">
-        </el-pagination>
+            <!--<el-pagination
+                    background
+                    layout="prev, pager, next"
+                    @current-change="current_change"
+                    :total="row_total"
+                    :page-size="pagesize">
+            </el-pagination>
 
-        <!-- Dialog for showing and modifying details -->
+            <!-- Dialog for showing and modifying details -->
         <at-point-dialog
                 :v-if="this.pointDialogVisible"
                 :visible="this.pointDialogVisible"
@@ -176,7 +181,9 @@ DONE: post 返回需要 ID
     // import XLSX from 'xlsx'
     import viewmodel from '@/viewmodel/table'
     import titlemodel from '@/viewmodel/title'
+    import elTableInfiniteScroll from 'el-table-infinite-scroll'
     // import Export2Excel from '@/excel/Export2Excel.js'
+    import Vue from 'vue'
 
     export default {
       name: 'transcriptTable',
@@ -214,11 +221,22 @@ DONE: post 返回需要 ID
       },
       data: function() {
         return {
+            tableData: Array.from({ length: 10000 }, (_, idx) => ({
+                idx: idx + 1,
+                date: '2016-05-03',
+                name: '王小虎',
+                ab: '欢迎使用pl-table',
+                address: '上海市普陀区金沙江路 1516 弄'
+            })),
+            // show totle
+            showTotle: false,
           // 换页所需参数
           row_total:130,  // 默认数据总数
-          pagesize:8,  // 每页的数据条数
+          pagesize:10,  // 每页的数据条数
           currentPage:1,  // 默认开始页面
+          totle_page: this.row_total / this.pagesize, // 总页数
           viewDataset: [],
+          loadingDataset: [],
           titleWeight: [],
           // the array is for saving all modified point item,
           // if user click the [upload] button, push all modifies to server
@@ -238,6 +256,8 @@ DONE: post 返回需要 ID
           // menuDialogDataset: {}
           // 载入状态
           loading: true,
+          // 是否滚动加载
+          loadSign: true,
           // 成绩是否发生改变
           pointChange: false,
           title_map: [
@@ -255,8 +275,17 @@ DONE: post 返回需要 ID
         getTableDataset() {
           return this.tableDialogDataset
         }
+        // addDataset: this.viewDataset.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
       },
       methods: {
+          onClickTotle(){
+             if(this.showTotle === false){
+                 this.showTotle = true
+             }else {
+                 this.showTotle = false
+             }
+
+          },
         // 换页
         current_change(currentPage) {
           this.currentPage = currentPage
@@ -266,6 +295,9 @@ DONE: post 返回需要 ID
             return 'background: rgba(255, 232, 143, 0.94)'
           } else return ''
         },
+          getHeaderColor({ row, rowIndex }){
+              return 'background: rgba(255, 232, 143, 0.94)'
+          },
         selectTitle(title_id) {
           this.title_Map.forEach(title => {
             if (title.id === title_id) {
@@ -277,11 +309,11 @@ DONE: post 返回需要 ID
           // console.log(this.viewDataset)
           const titleWeight = []
           const titleGroupWeight = []
-          // console.log('123456788765432')
-          titlemodel.requestTitles({ classInfo_id: this.classinfoId })
-            .then(response => {
+          // console.log('监听成绩变化')
+          // titlemodel.requestTitles({ classInfo_id: this.classinfoId })
+            // .then(response => {
               // console.log('1111111111111111')
-              response.forEach(title => {
+              this.titles.forEach(title => {
                 titleGroupWeight.push(title.titleGroup_message.weight)
                 titleWeight.push(title.weight)
               })
@@ -303,7 +335,7 @@ DONE: post 返回需要 ID
                 }
                 view.totle = parseFloat(sum).toFixed(2)
               })
-            })
+
           // console.log('77')
           // console.log(this.viewDataset)
         },
@@ -426,14 +458,11 @@ DONE: post 返回需要 ID
           // console.log(scope.$index)
           this.color = scope.$index
           // this.getCellColorByType(scope.row,scope.column)
-          this.$prompt(
-            '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该列, 所有分数信息都将丢失！',
-            '请确认删除操作', {
-              confrimButtonText: '确定',
-              cancelButtonText: '取消',
-              inputPattern: /确认/
-            }
-          ).then(() => {
+            this.$confirm('此操作将彻底删除该列，所有分数信息均被删除，请确认是否删除！', '提示', {
+                confrimButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
             viewmodel.deleteTitle(title.id).then(res => {
               this.$message({
                 type: 'success',
@@ -550,8 +579,17 @@ DONE: post 返回需要 ID
             }
           }
           return wbout*/
+        },
+        loadMore(){
+          if (this.currentPage < this.totle_page ) {
+            this.loading = true
+            this.currentPage++
+            this.loadingDataset = this.loadingDataset.concat(this.viewDataset.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize))
+            Vue.nextTick(()=>{
+              this.loading = false
+            })
+          }
         }
-
       },
       // 自定义指令
       directives: {
@@ -621,30 +659,44 @@ DONE: post 返回需要 ID
                   // )
               })
           }
+        },
+        'el-table-infinite-scroll': elTableInfiniteScroll,
+        loadMore: {
+            bind(el, binding) {
+                const selectWrap = el.querySelector('.el-table__body-wrapper')
+                selectWrap.addEventListener('scroll', function() {
+                    let sign = 5
+                    const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
+                    if (scrollDistance <= sign) {
+                        binding.value()
+                    }
+                })
+            }
         }
-
       },
       created() {
         this.$store.state.table.changed = false
       },
       mounted() {
         window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
-        // setTimeout(() => {
-        Vue.$nextTick(() => {
-          this.loading = false
+        Vue.$nextTick(()=>{
+            this.loading = false
         })
-        // }, 1000)
       },
       beforeDestroy() {
         window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
       },
       watch: {
         view: function(newView) {
+          // console.log('成绩表传到子组件中')
           this.viewDataset = newView
           this.row_total = this.viewDataset.length
           this.viewDataset.forEach(data => {
             data.totle = parseFloat(data.totle).toFixed(2)
           })
+          this.loadingDataset = this.viewDataset.slice((this.currentPage-1)* this.pagesize, this.currentPage* this.pagesize)
+          this.currentPage = 1
+          this.totle_page = this.row_total / this.pagesize
           this.loading = false
         },
         pointChange: function() {
@@ -659,9 +711,11 @@ DONE: post 返回需要 ID
 
 <style lang="scss" scoped>
     .table {
+        // display: none;
         width: 100%;
     }
     .table-wrapper {
+        // display: none;
         height: 100%;
         // height: 200px;
     }

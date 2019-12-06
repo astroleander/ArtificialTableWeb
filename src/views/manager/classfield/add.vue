@@ -24,7 +24,7 @@ supplement: 为课程添加班级form
             </el-option>
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="开课年份" prop="variableYear">
+        <el-form-item label="开课年份" prop="variableYear">
           <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required></el-date-picker>
         </el-form-item>
         <el-form-item label="开课学期" prop="variableSemester">
@@ -36,9 +36,9 @@ supplement: 为课程添加班级form
               :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>-->
+        </el-form-item>
           <el-form-item label="上课时间" prop="week" >
-          <el-input v-model="form.week" placeholder="请输入上课时间" maxlength="18" show-word-limit></el-input>
+          <el-input v-model="form.week" placeholder="请输入上课时间"></el-input>
         </el-form-item>
         <el-form-item label="上课地点" prop="room" >
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
@@ -64,13 +64,14 @@ const validateName = (rule, value, callback) => {
     callback()
   }
 }
+/*
 const validateYear = (rule, value, callback) => {
   var date = new Date().getFullYear()
   if (value < date) {
     callback(new Error('新班级开课时间不可为过去时间'))
   }
   callback()
-}
+}*/
 export default {
   data() {
     return {
@@ -103,12 +104,12 @@ export default {
       }],
       form: {
         name: '',
-        teacher_id: null,
+        teacher_id: '',
         lesson_id: '',
         room: '',
         week: '',
         variableSemester: this.getSemester(),
-        variableYear: new Date().getFullYear()
+        variableYear: '' // new Date().getFullYear()
       },
       rules: {
         lesson_id: [
@@ -119,14 +120,13 @@ export default {
           { required: true, trigger: 'blur', validator: validateName }
         ],
         teacher_id: [
-          { required: true, message: '请选择任课教师', trigger: 'blur' }
+          { required: true, trigger: 'blur' }
         ],
         semester: [
           { required: true, message: '请输入学期', trigger: 'blur' }
         ],
         variableYear: [
-          { required: true, message: '请选择年份', trigger: 'change' },
-          { trigger: 'change', validator: validateYear }
+          { required: true, message: '请选择年份', trigger: 'change' }
         ],
         variableSemester: [
           { required: true, message: '请选择学期', trigger: 'change' }
@@ -163,6 +163,10 @@ export default {
         return '其他'
       }
     },
+    // 获取当前年份
+    getYear() {
+      return new Date().getFullYear()
+    },
     // 根据college_id获取课程组信息，教师信息
     fetchData() {
       Promise.all([
@@ -183,13 +187,12 @@ export default {
     // 添加班级
     submitForm: function(formName) {
       const semester = this.form.variableYear + '年' + this.form.variableSemester
-      const classInfo = { ...this.form, semester: semester }
       // console.log('semester = ' + semester)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.name = this.form.name.replace(/\s*/g, '')
-          console.log('111111' + this.id)
           this.form.teacher_id = this.id
+          const classInfo = { ...this.form, semester: semester }
           classInfo['override_tag'] = 0
           classViewModel.requestPostClassInfo(classInfo).then(response => {
             if (response.repeated_message.length === 0) {
@@ -219,7 +222,7 @@ export default {
   },
   created() {
     this.fetchData()
-    console.log(this.$router)
+    // console.log(this.$router)
     if (this.$router.currentRoute.params) {
       this.form.lesson_id = this.$router.currentRoute.params.lesson_id
     }

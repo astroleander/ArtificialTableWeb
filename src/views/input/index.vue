@@ -191,7 +191,7 @@
             :row-class-name="tableRowClassName">
             <el-table-column
               v-for="title in settingsPageData.titles" :prop="String(title.idx)" :key="title.idx"
-              min-width="150px" width="200px">
+              min-width="150px" width="250px">
               <!-- 自定义表头，用于选择列的属性 -->
               <template slot="header" slot-scope="scope">
                 <div class="settings-table-header">
@@ -226,9 +226,9 @@
                     <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
                     <div class="select-container">
                         <span class="span-title ">
-                            <span v-if="title.name">成绩项名: </span>
+                            <span v-if="title.name">成绩项名:</span>
                             <span v-else style="color: red">*
-                                <span style="color: #898989">
+                               <span style="color: #898989">
                                    成绩项名:
                                 </span>
                             </span>
@@ -337,7 +337,7 @@
               <el-table-column prop="student_message.sid" label="学号"></el-table-column>
               <el-table-column prop="pointNumber" label="分数"></el-table-column>
               <el-table-column prop="title_message.name" label="列名"></el-table-column>
-              <el-table-column label="大项">
+              <el-table-column label="成绩类别">
                 <template slot-scope="scope">
                   <span>{{ getTitleGroup(scope.row.title_message.titleGroup).name }}</span>
                 </template>
@@ -353,7 +353,7 @@
               <el-table-column prop="sid" label="学号"></el-table-column>
               <el-table-column prop="pointNumber" label="分数"></el-table-column>
               <el-table-column prop="title_name" label="列名"></el-table-column>
-              <el-table-column label="大项">
+              <el-table-column label="成绩类别">
                 <template slot-scope="scope">
                   <span>{{ getTitleGroup(scope.row.titleGroup_id).name }}</span>
                 </template>
@@ -369,7 +369,7 @@
               <el-table-column prop="sid" label="学号"></el-table-column>
               <el-table-column prop="pointNumber" label="分数"></el-table-column>
               <el-table-column prop="title_name" label="列名"></el-table-column>
-              <el-table-column label="大项">
+              <el-table-column label="成绩类别">
                 <template slot-scope="scope">
                   <span>{{ getTitleGroup(scope.row.titleGroup_id).name }}</span>
                 </template>
@@ -1133,10 +1133,10 @@
       },
       // 进入第三页，将第二页中的标题和数据分开存储到settingsPageData中
       renderPreviewPage() {
-        // console.log(this.settingsPageData)
+        console.log('1111111' + this.settingsPageData.dataset)
         this.previewPageData = {}
         this.previewPageData = previewFilter(this.settingsPageData)
-        // console.log(this.previewPageData)
+        console.log('22222222' + this.previewPageData.dataset)
       },
       // 请求所有课程组信息存储到remoteLessonList中
       fetchLesson() {

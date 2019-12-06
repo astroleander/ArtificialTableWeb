@@ -12,7 +12,7 @@
       <el-input style="width:200px" v-model="remoteUniversity.name"
         :disabled="true" size="mini"></el-input>
 
-      <span class="span">院系: </span>
+   <!--   <span class="span">院系: </span>
       <el-select
         v-model="selectedCollege"
         @change="selectChange"
@@ -24,7 +24,7 @@
           :label="college.name">
         </el-option>
       </el-select>
-
+  -->
     </div>
 
     <el-table v-if="remoteUserList.length > 0" :data="remoteUserList" @selection-change="delChange" style="margin-top: 10px">
@@ -43,7 +43,7 @@
 
       <el-table-column label="身份"  minWidth="80">
         <template slot-scope="scope">
-          {{scope.row.is_manager? '年级组长' : '普通教师'}}
+          {{scope.row.is_manager? '教研室主任' : '普通教师'}}
         </template>
       </el-table-column>
       <el-table-column minWidth="80">
@@ -187,7 +187,7 @@ export default {
         },
         {
           id: 2,
-          name: '年级组长',
+          name: '教研室主任',
           value: 1
         }
       ],
@@ -219,56 +219,50 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
+      'user',
+      'id'
     ])
   },
   methods: {
-    selectChange() {
+  // 暂时将教师展示的选择院系关闭，教师的院系并不重要
+  /*  selectChange() {
       this.fetchUserList()
-    },
+    }, */
     deleteUser: function(user) {
-      if (user.id === this.user.id) {
-        this.$message({
-          message: '年级组长无法删除个人信息，请赋予他人权限进行删除',
+      if (user.id === this.id) {
+        this.$confirm('教研室主任无法删除个人信息，请赋予他人权限进行删除', '提示', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
           type: 'warning'
         })
       } else {
-        this.$prompt(
-          '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该教师！',
-          '请确认删除操作', {
-            confrimButtonText: '确定',
-            cancelButtonText: '取消',
-            inputPattern: /确认/
-          })
-      }
-      this.$prompt(
-        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该教师！',
-        '请确认删除操作', {
+        this.$confirm('此操作将彻底删除该教师，请确认是否删除！', '提示', {
           confrimButtonText: '确定',
           cancelButtonText: '取消',
-          inputPattern: /确认/
-        }
-      ).then(() => {
-        ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
-          if (res === undefined) {
-            UserViewModel.requestDelUser(user.id).then(res => {
-              this.$message({
-                type: 'success',
-                message: '删除成功'
+          type: 'warning'
+        }).then(() => {
+          ClassInfoViewMdoel.requestByTeacherId(user.id).then(res => {
+            if (res === undefined) {
+              UserViewModel.requestDelUser(user.id).then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功'
+                })
+                const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
+                this.remoteUserList.splice(idx, 1)
               })
-              const idx = this.remoteUserList.findIndex(ouser => ouser.id === user.id)
-              this.remoteUserList.splice(idx, 1)
-            })
-          } else {
-            this.$confirm('该用户还有正在教授的班级，无法删除！您需要先删除该教师的教学班级。', '无法删除', {
-              type: 'warning',
-              confirmButtonText: '确定',
-              cancelButtonText: '关闭'
-            })
-          }
+            } else {
+              this.$confirm('该用户还有正在教授的班级，无法删除！您需要先删除该教师的教学班级。', '无法删除', {
+                type: 'warning',
+                confirmButtonText: '确定',
+                cancelButtonText: '关闭'
+              })
+            }
+          })
         })
-      })
+      }
     },
+    // 匹配院系，暂时只有一个院系，该函数有些赘余
     fetchCollegeList() {
       let user = null
       if (typeof this.user === 'string') {
@@ -280,6 +274,8 @@ export default {
       this.remoteUniversity = user.university_message
       CollegeViewModel.requestByUniversityId(university_id).then(res => {
         this.remoteCollegeList = res
+        this.selectedCollege = this.remoteCollegeList[0].id
+        this.fetchUserList()
       })
     },
     // 加载远端用户信息到 remoteUserList 中
@@ -293,15 +289,24 @@ export default {
           }
         })
     },
+    // 更改教师信息
     PutUser(user) {
-      this.form.id = user.id
-      this.form.name = user.name
-      this.form.tid = user.tid
-      this.form.is_manager = user.is_manager
-      this.form.email = user.email
-      this.form.mobile = user.mobile
-      this.form.password = user.password
-      this.showDialog = true
+      if (user.id !== this.id) {
+        this.form.id = user.id
+        this.form.name = user.name
+        this.form.tid = user.tid
+        this.form.is_manager = user.is_manager
+        this.form.email = user.email
+        this.form.mobile = user.mobile
+        this.form.password = user.password
+        this.showDialog = true
+      } else {
+        this.$confirm('教研室主任在此处无法修改个人信息，请前往右上角的个人信息处进行修改！', '提示', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+      }
     },
     submitChange(infoForm) {
       this.$refs[infoForm].validate((valid) => {
@@ -337,13 +342,13 @@ export default {
     }
   },
   created() {
+    this.fetchCollegeList()
     const college_id = this.$store.state.Info.college_id
     if (college_id !== undefined && college_id !== null) {
       this.selectedCollege = college_id
       this.$store.dispatch('setCollegeId', { college_id: null })
       this.fetchUserList()
     }
-    this.fetchCollegeList()
   }
 }
 </script>

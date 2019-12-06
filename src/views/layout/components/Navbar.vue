@@ -11,7 +11,7 @@
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
 
-        <router-link v-if="Ishome" class="inlineBlock" to="/">
+        <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
             返回主页
           </el-dropdown-item>
@@ -56,7 +56,10 @@ export default {
   },
   data() {
     return {
-      role: ''
+      role: '',
+      IsHome: this.Ishome(),
+      change: this.Change_role(),
+      path: this.$router.currentRoute.path
     }
   },
   methods: {
@@ -64,22 +67,26 @@ export default {
       this.$store.dispatch('ToggleSideBar')
     },
     Ishome() {
-      const path = this.$route.path
-      console.log('111111' + path)
+      const path = this.$router.currentRoute.path
       if (path === '/') {
-        return false
+        return true
       }
-      return true
+      return false
+    },
+    Change_role() {
+      if (this.is_manager && this.path === '/') {
+        return true
+      }
+      return false
     },
     init() {
       if (this.use_manager) {
-        return '年级组长'
+        return '教研室主任'
       } else {
         return '普通教师'
       }
     },
     onSwitchChange() {
-      this.$router.replace({ path: '/' })
       if (this.use_manager) {
         this.$store.dispatch('setUseManager', false)
         this.role = '普通教师'
@@ -89,12 +96,13 @@ export default {
         })
       } else {
         this.$store.dispatch('setUseManager', true)
-        this.role = '年级组长'
+        this.role = '教研室主任'
         this.$message({
-          message: '已开启年级组长身份',
+          message: '已开启教研室主任身份',
           type: 'success'
         })
       }
+      this.$router.replace({ path: '/' })
       location.reload()
     },
     logout() {
@@ -106,12 +114,15 @@ export default {
   watch: {
     use_manager: function() {
       this.init()
+    },
+    path: function() {
+      this.change = this.Change_role()
     }
 
   },
   created() {
     if (this.use_manager) {
-      this.role = '年级组长'
+      this.role = '教研室主任'
     } else {
       this.role = '普通教师'
     }

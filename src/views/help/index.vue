@@ -94,54 +94,54 @@ export default {
           title: '添加教学班级',
           description: '教师可以添加自己任课班级',
           router: '/manager/class/add',
-          backgroud: 'background-image: url(\'https://picsum.photos/id/833/200/200\')'
+          backgroud: 'background-image: url("https://picsum.photos/id/131/200/200")'
 
         },
         {
           title: '教学班级信息',
           description: '教师可以为班级添加学生名单',
           router: '/class/index',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+          backgroud: 'background-image: url("https://picsum.photos/id/24/200/200")'
 
         },
         {
           title: '成绩管理',
           description: '教师可查看、增加、修改、删除任课班级学生成绩',
           router: '/mainpage/index',
-          backgroud: 'background-image: url(\'https://picsum.photos/id/256/200/200\')'
+          backgroud: 'background-image: url(\'https://picsum.photos/id/213/200/200\')'
 
         },
         {
           title: '导入成绩',
           description: '教师可以通过导入Excel表格为班级学生添加成绩',
           router: '/input/index/',
-          backgroud: 'background-image: url("https://picsum.photos/id/732/200/200")'
+          backgroud: 'background-image: url("https://picsum.photos/id/385/200/200")'
 
         },
         {
-          title: '添加课程组',
-          description: '教研室主任需要为学校添加课程组',
-          router: '/manager/lesson/addLesson',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+          title: '课程组管理',
+          description: '教研室主任需要为年级添加课程组，并调整课程组内各项成绩权重占比',
+          router: '/manager/lesson/class',
+          backgroud: 'background-image: url("https://picsum.photos/id/131/200/200")'
 
         },
         {
-          title: '添加成绩类别并调整权重',
-          description: '教研室主任需要为各个课程组添加并调整成绩类别权重',
-          router: '/manager/weight',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+          title: '班级成绩比较',
+          description: '教研室主任可以比较各个课程组之间的成绩',
+          router: '/comparison/index',
+          backgroud: 'background-image: url("https://picsum.photos/id/24/200/200")'
         },
         {
-          title: '管理教师信息',
+          title: '教师管理',
           description: '教研室主任可查看、添加、删除任课教师信息',
           router: '/manager/user/list',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+          backgroud: 'background-image: url("https://picsum.photos/id/385/200/200")'
         },
         {
-          title: '查看学生信息',
+          title: '学生管理',
           description: '教研室主任可查看学生信息',
           router: '/manager/student/list',
-          backgroud: 'background-image: url("https://picsum.photos/id/256/200/200")'
+          backgroud: 'background-image: url("https://picsum.photos/id/732/200/200")'
         }
 
       ]

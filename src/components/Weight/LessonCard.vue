@@ -32,9 +32,9 @@
         </div>
 
         <div class="button-group">
-          <el-button @click="dealAvg"  :disabled="btnDisabled">一键平均</el-button>
+          <el-button @click="dealAvg"  :disabled="btnDisabled" type="primary" plain>一键平均</el-button>
           <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
-          <el-button @click="addTitleGroupItem">添加大项</el-button>
+          <el-button @click="addTitleGroupItem" type="primary" plain>添加成绩类别</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
 
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
@@ -60,15 +60,14 @@
                     type="text"
                     size="small"
                     v-model="title.weight"
-                    :maxlength="3"
                     :disabled="titleDisabled[index]"
                     @change="handleInput(title.weight,index)"/>
 
           <div  class="slider-box">
             <vue-slide-bar v-model="title.weight"
                            :lineHeight="10"
-                           :min="0"
                            :max="100"
+                           :min="0"
                            :draggable="!titleDisabled[index]"
                            :is-disabled="titleDisabled[index]"
                            @input="handleInput(title.weight,index)"/>
@@ -81,13 +80,16 @@
 
       <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
 
-      <el-dialog title="添加大项" :visible.sync="dialogFormVisible">
+      <el-dialog
+              title="添加成绩类别"
+              v-Drag
+              :visible.sync="dialogFormVisible">
         <el-form :model="NewTitleGroup" status-icon :rules="rules" ref="ruleForm">
           <el-form-item label="名称" prop="name" :label-width="formLabelWidth">
             <el-input v-model="NewTitleGroup.name"    placeholder="请输入名称" autocomplete="off" maxlength="10" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="权重" prop="weight" :label-width="formLabelWidth">
-            <el-input  v-model.number="NewTitleGroup.weight"   placeholder="请输入权重值（0-100之间）" ></el-input>
+            <el-input  type="number" v-model.number="NewTitleGroup.weight"   placeholder="请输入权重值（0-100之间）" ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -97,6 +99,7 @@
       </el-dialog>
     </div>
   </el-card>
+
 </template>
 
 <script>
@@ -108,7 +111,8 @@
       // 权重数据规范
       var checkWeight = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('权重不能为空'))
+          value = 0
+          // return callback(new Error('权重不能为空'))
         }
         if (!Number.isInteger(value)) {
           callback(new Error('请输入数字值'))
@@ -132,7 +136,7 @@
       }
       return {
         isError: true,
-        errorMsg: '当前课程组无大项信息',
+        errorMsg: '当前课程组无成绩类别信息',
         errorType: '',
         groupId: 0,
         currentDataSet: [],
@@ -152,7 +156,8 @@
             { validator: checkWeight, trigger: 'blur' }
           ]
         },
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        test: 0
       }
     },
     components: {
@@ -181,14 +186,11 @@
       },
       // 删除大项
       delTitleGroupItem: function(titleGroup_id) {
-        this.$prompt(
-          '请在文本框内输入\"确认\"\n此操作将删除数据库中存在的成绩类别项及其权重！',
-          '请确认删除操作', {
-            confrimButtonText: '确定',
-            cancelButtonText: '取消',
-            inputPattern: /确认/
-          }
-        ).then(() => {
+        this.$confirm('此操作将彻底删除该成绩类别及其权重，请确认是否删除！', '提示', {
+          confrimButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
           this.$emit('notifyDel', titleGroup_id)
         })
       },
@@ -232,8 +234,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          let error = 0
-          this.currentDataSet.forEach(titleGroup => {
+          const error = 0
+          /* this.currentDataSet.forEach(titleGroup => {
             if (titleGroup.weight === 0) {
               this.$message({
                 type: 'error',
@@ -241,7 +243,7 @@
               })
               error++
             }
-          })
+          })*/
           if (error === 0) {
             this.$emit('notifyChanged', this.currentDataSet)
           }
@@ -273,12 +275,13 @@
       handleInput: function(val, id) {
         let result = 0
         if (isNaN(parseInt(val))) {
-          result = 0
+          result = ''
         } else if (parseInt(val) < 0) {
           result = 0
         } else if (parseInt(val) > 100) {
           result = 100
         } else {
+          // result = parseInt(val)
           result = parseInt(val)
         }
         const title = this.currentDataSet[id]
@@ -371,8 +374,12 @@
       },
       // 数据预处理 初始化锁
       initLocks: function() {
-        for (let i = 0; i < this.currentDataSet.length; i++) {
-          this.titleDisabled[i] = false
+        for (let i = 0; i < this.dataSet.length; i++) {
+          if (this.dataSet[i].name === '加分' || this.dataSet[i].name === '分组') {
+            this.titleDisabled[i] = true
+          } else {
+            this.titleDisabled[i] = false
+          }
         }
       },
       // 处理变化的数据集
@@ -395,7 +402,7 @@
           this.modifyDisabled = false
           this.isError = true
           this.errorType = ''
-          this.errorMsg = '当前课程组下无大项信息'
+          this.errorMsg = '当前课程组下无成绩类别信息'
         } else {
           if (this.weightSum() === 100) {
             this.modifyDisabled = false
@@ -414,25 +421,258 @@
         }
       }
     },
+    directives: {
+      Drag: {
+        bind(el, binding, vnode, oldVnode) {
+          // 弹框可拉伸最小宽高
+          const minWidth = 400
+          const minHeight = 300
+          // 初始非全屏
+          let isFullScreen = false
+          // 当前宽高
+          let nowWidth = 0
+          let nowHight = 0
+          // 当前顶部高度
+          let nowMarginTop = 0
+          // 获取弹框头部（这部分可双击全屏）
+          const dialogHeaderEl = el.querySelector('.el-dialog__header')
+          // 弹窗
+
+          const dragDom = el.querySelector('.el-dialog')
+
+          // 给弹窗加上overflow auto；不然缩小时框内的标签可能超出dialog；
+
+          dragDom.style.overflow = 'auto'
+
+          // 清除选择头部文字效果
+
+          // dialogHeaderEl.onselectstart = new Function("return false");
+
+          // 头部加上可拖动cursor
+
+          dialogHeaderEl.style.cursor = 'move'
+
+          // 获取原有属性 ie dom元素.currentStyle 火狐谷歌 window.getComputedStyle(dom元素, null);
+
+          const sty = dragDom.currentStyle || window.getComputedStyle(dragDom, null)
+
+          const moveDown = (e) => {
+            // 鼠标按下，计算当前元素距离可视区的距离
+
+            const disX = e.clientX - dialogHeaderEl.offsetLeft
+
+            const disY = e.clientY - dialogHeaderEl.offsetTop
+
+            // 获取到的值带px 正则匹配替换
+
+            let styL, styT
+
+            // 注意在ie中 第一次获取到的值为组件自带50% 移动之后赋值为px
+
+            if (sty.left.includes('%')) {
+              styL = +document.body.clientWidth * (+sty.left.replace(/\%/g, '') / 100)
+
+              styT = +document.body.clientHeight * (+sty.top.replace(/\%/g, '') / 100)
+            } else {
+              styL = +sty.left.replace(/\px/g, '')
+
+              styT = +sty.top.replace(/\px/g, '')
+            }
+  
+            document.onmousemove = function(e) {
+              // 通过事件委托，计算移动的距离
+
+              const l = e.clientX - disX
+
+              const t = e.clientY - disY
+
+              // 移动当前元素
+
+              dragDom.style.left = `${l + styL}px`
+
+              dragDom.style.top = `${t + styT}px`
+
+              // 将此时的位置传出去
+
+              // binding.value({x:e.pageX,y:e.pageY})
+            }
+
+            document.onmouseup = function(e) {
+              document.onmousemove = null
+
+              document.onmouseup = null
+            }
+          }
+
+          dialogHeaderEl.onmousedown = moveDown
+
+          // 双击头部全屏效果
+
+          dialogHeaderEl.ondblclick = (e) => {
+            if (isFullScreen === false) {
+              nowHight = dragDom.clientHeight
+
+              nowWidth = dragDom.clientWidth
+
+              nowMarginTop = dragDom.style.marginTop
+
+              dragDom.style.left = 0
+
+              dragDom.style.top = 0
+
+              dragDom.style.height = '100VH'
+
+              dragDom.style.width = '100VW'
+
+              dragDom.style.marginTop = 0
+
+              isFullScreen = true
+
+              dialogHeaderEl.style.cursor = 'initial'
+
+              dialogHeaderEl.onmousedown = null
+            } else {
+              dragDom.style.height = 'auto'
+
+              dragDom.style.width = nowWidth + 'px'
+
+              dragDom.style.marginTop = nowMarginTop
+
+              isFullScreen = false
+
+              dialogHeaderEl.style.cursor = 'move'
+
+              dialogHeaderEl.onmousedown = moveDown
+            }
+          }
+
+          dragDom.onmousemove = function(e) {
+            const moveE = e
+
+            if (e.clientX > dragDom.offsetLeft + dragDom.clientWidth - 10 || dragDom.offsetLeft + 10 > e.clientX) {
+              dragDom.style.cursor = 'w-resize'
+            } else if (el.scrollTop + e.clientY > dragDom.offsetTop + dragDom.clientHeight - 10) {
+              dragDom.style.cursor = 's-resize'
+            } else {
+              dragDom.style.cursor = 'default'
+
+              dragDom.onmousedown = null
+            }
+
+            dragDom.onmousedown = (e) => {
+              const clientX = e.clientX
+
+              const clientY = e.clientY
+
+              const elW = dragDom.clientWidth
+
+              const elH = dragDom.clientHeight
+
+              const EloffsetLeft = dragDom.offsetLeft
+
+              const EloffsetTop = dragDom.offsetTop
+
+              dragDom.style.userSelect = 'none'
+
+              const ELscrollTop = el.scrollTop
+
+              // 判断点击的位置是不是为头部
+
+              if (clientX > EloffsetLeft && clientX < EloffsetLeft + elW && clientY > EloffsetTop && clientY < EloffsetTop + 100) {
+
+                // 如果是头部在此就不做任何动作，以上有绑定dialogHeaderEl.onmousedown = moveDown;
+
+              } else {
+                document.onmousemove = function(e) {
+                  e.preventDefault() // 移动时禁用默认事件
+
+                  // 左侧鼠标拖拽位置
+
+                  if (clientX > EloffsetLeft && clientX < EloffsetLeft + 10) {
+                    // 往左拖拽
+
+                    if (clientX > e.clientX) {
+                      dragDom.style.width = elW + (clientX - e.clientX) * 2 + 'px'
+                    }
+
+                    // 往右拖拽
+
+                    if (clientX < e.clientX) {
+                      if (dragDom.clientWidth < minWidth) {
+
+                      } else {
+                        dragDom.style.width = elW - (e.clientX - clientX) * 2 + 'px'
+                      }
+                    }
+                  }
+
+                  // 右侧鼠标拖拽位置
+
+                  if (clientX > EloffsetLeft + elW - 10 && clientX < EloffsetLeft + elW) {
+                    // 往左拖拽
+
+                    if (clientX > e.clientX) {
+                      if (dragDom.clientWidth < minWidth) {
+
+                      } else {
+                        dragDom.style.width = elW - (clientX - e.clientX) * 2 + 'px'
+                      }
+                    }
+
+                    // 往右拖拽
+
+                    if (clientX < e.clientX) {
+                      dragDom.style.width = elW + (e.clientX - clientX) * 2 + 'px'
+                    }
+                  }
+
+                  // 底部鼠标拖拽位置
+
+                  if (ELscrollTop + clientY > EloffsetTop + elH - 20 && ELscrollTop + clientY < EloffsetTop + elH) {
+                    // 往上拖拽
+
+                    if (clientY > e.clientY) {
+                      if (dragDom.clientHeight < minHeight) {
+
+                      } else {
+                        dragDom.style.height = elH - (clientY - e.clientY) * 2 + 'px'
+                      }
+                    }
+
+                    // 往下拖拽
+
+                    if (clientY < e.clientY) {
+                      dragDom.style.height = elH + (e.clientY - clientY) * 2 + 'px'
+                    }
+                  }
+                }
+
+                // 拉伸结束
+
+                document.onmouseup = function(e) {
+                  document.onmousemove = null
+
+                  document.onmouseup = null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     watch: {
       dataSet: function(val) {
-        // console.log('this.dataSet watch = ' + this.dataSet)
-        // console.log('this.dataSet watch = ' + this.dataSet.length)
         this.initLocks()
         this.btnDisabled = false
         this.dealDataSet()
       }
     },
     created() {
-      // console.log('this.dataSet created = ' + this.dataSet)
-      // console.log('this.dataSet created = ' + this.dataSet.length)
       this.dealAlert()
       this.initLocks()
       this.dealDataSet()
     },
     updated() {
-      // console.log('this.dataSet updated = ' + this.dataSet)
-      // console.log('this.dataSet updated = ' + this.dataSet.length)
       this.dealAlert()
     }
   }
@@ -498,7 +738,7 @@
   }
   .inputBox{
     /*width: 15%;*/
-    width: 80px;
+    width: 100px;
     margin-left: 5px;
     /*border: 1px solid #999;*/
   }
@@ -507,7 +747,7 @@
     /*border: 1px solid #CCCCCC;*/
   }
   .groupName{
-    width: 100px;
+    width: 200px;
     padding: 5px;
     font-size: larger;
   }

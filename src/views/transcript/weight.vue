@@ -17,20 +17,6 @@ table
   <div style="background-color: #dbdbdb">
   <div class="frame">
     <div class="col" v-if="flag">
-        <el-card class="flex-80" style="margin-top: 5px">
-            <div style="display: flex;flex-direction: row; justify-content: space-around">
-                <div style="margin-right: 100px; margin-left: 50px; margin-top: 50px">
-                    <span>学生统计信息</span>
-                    <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                    <p><span>学生总人数：{{total}}</span></p>
-                    <p><span>总分及格率：{{rate}}%</span></p>
-                    <p><span>总分平均分：{{avg}}</span></p>
-                </div>
-                <at-bar  :data-set="gradeSection"></at-bar>
-                <pie-for-weight  :data-set="gradeSection" :title-text="totleText"></pie-for-weight>
-            </div>
-        </el-card>
-
         <el-card style="margin-top: 10px;" class="flex-80">
             <!--雷达图-->
             <div style="display: flex;flex-direction: row; justify-content: space-around">
@@ -46,6 +32,22 @@ table
                     </el-select>
                     <pie-for-title  :data-set="this.dataForTest" :title-text="this.titleText"></pie-for-title>
                 </div>
+            </div>
+        </el-card>
+
+        <el-card class="flex-80" style="margin-top: 5px">
+            <div style="display: flex;flex-direction: row; justify-content: space-around">
+                <div style="margin-right: 50px; margin-left: 50px; margin-top: 50px; width: 250px">
+                    <span>学生统计信息</span>
+                    <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                    <p><span>学生总人数：{{total}}</span></p>
+                    <p><span>总分及格率：{{rate}}%</span></p>
+                    <p><span>总分平均分：{{avg}}</span></p>
+                    <p><span>总分计算方式：</span></p>
+                    <p><span>{{message}}</span></p>
+                </div>
+                <at-bar  :data-set="gradeSection"></at-bar>
+                <pie-for-weight  :data-set="gradeSection" :title-text="totleText"></pie-for-weight>
             </div>
         </el-card>
       <!-- 人数、成绩、及格率、平均分信息 -->
@@ -107,6 +109,11 @@ export default {
       type: Number,
       default: 0
     },
+    // 计算方式
+    message: {
+      type: String,
+      require: true
+    },
     // 及格率
     rate: {
       type: Number,
@@ -140,7 +147,7 @@ export default {
       totleText: '学生总成绩分布占比',
       value: '',
       dataForTest: [],
-      titleText: ''
+      titleText: '各项测试分数分布'
     }
   },
   methods: {

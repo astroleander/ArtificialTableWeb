@@ -136,10 +136,10 @@ const requestDelStudents = (studentIdArray) => {
     })
   })
 }
-const requestPredict = (studentIdArray) => {
+const requestPredict = (studentIdArray, classInfo_id) => {
   // 返回一个promise对象 在对象中进行 axios请求
   return new Promise((resolve, reject) => {
-    getPredict(studentIdArray).then(response => {
+    getPredict(studentIdArray, classInfo_id).then(response => {
       const dataset = response && response.subjects
       // resolve完成对动作成功进行解析
       resolve(dataset)

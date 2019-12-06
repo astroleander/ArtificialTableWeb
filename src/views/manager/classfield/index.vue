@@ -1,5 +1,4 @@
-<!--管理员查看班级信息
-
+<!--管理员查看课程组信息
 -->
 <template>
   <article>
@@ -34,7 +33,7 @@
                 </template>
               </el-table-column>  -->
 
-              <el-table-column label="">
+             <el-table-column label="">
                 <template slot-scope="scope">
                   <el-button @click="showClass(scope.row)" type="primary">修改信息</el-button>
                 </template>
@@ -56,11 +55,13 @@
           </template>
       </el-collapse-item>
     </el-collapse>
+
+    <!--
     <el-dialog title="修改班级信息" class="ClassInfo" :visible.sync="show" :before-close="onDialogClose">
       <el-form :model="InfoForm" ref="infoform">
-        <!--<el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
+        <el-form-item label="班级编号：" prop="cid" style="max-height: 60px">
           <span>{{InfoForm.cid}}</span>
-        </el-form-item>-->
+        </el-form-item>
         <el-form-item label="班级名：" prop="name" style="max-height: 60px">
           <span>{{InfoForm.name}}</span>
         </el-form-item>
@@ -83,7 +84,7 @@
       </el-form>
       <el-button @click="submitChange('infoform')" style="margin-top: 10px" type="primary" plain>提交</el-button>
       <el-button @click="onDialogClose" style="margin-top: 10px" type="primary" plain>取消</el-button>
-    </el-dialog>
+    </el-dialog> -->
   </article>
 </template>
 
@@ -116,17 +117,17 @@ export default {
         { prop: 'room', label: '教室' },
         { prop: 'week', label: '上课时间' }
       ],
-      show: false,
+      /* show: false,
       InfoForm: {
-        lesson_id: '',
+        // lesson_id: '',
         id: '',
-        cid: '',
+        // cid: '',
         name: '',
-        teacher_id: '',
+        // teacher_id: '',
         semester: '',
         room: '',
         week: ''
-      },
+      },*/
       showDisable: false,
       teachers: [],
       IsCanDelete: false
@@ -177,13 +178,11 @@ export default {
       })
     },
     onDeleteClicked(lesson, row) {
-      this.$prompt(
-        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该班级, 所有分数信息都将丢失！', '请确认删除操作', {
-          confrimButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /确认/
-          // type: 'warning',
-        }).then(() => {
+      this.$confirm('此操作将彻底删除该班级，且所有分数信息均被删除，请确认是否删除！', '提示', {
+        confrimButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         ClassInfoViewModel.requestDelClassInfo(row.id).then(res => {
           this.$message({
             type: 'success',
@@ -211,13 +210,11 @@ export default {
 
     },
     onDeleteLessonClicked(lesson) {
-      this.$prompt(
-        '若要继续, 请在文本框内输入\"确认\"\n此操作将彻底删除该课程, 所有该课程下的班级信息都将丢失！', '请确认删除操作', {
-          confrimButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern: /确认/
-          // type: 'warning',
-        }).then(() => {
+      this.$confirm('此操作将彻底删除该课程组以及该课程组下的班级，请确认是否删除！', '提示', {
+        confrimButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         LessonViewModel.requestDelLesson(lesson.id).then(res => {
           this.$message({
             type: 'success',
@@ -232,17 +229,17 @@ export default {
       console.log(row)
       console.log(idx)
     },
-    showClass(row) {
+    /* showClass(row) {
       UserViewModel.requestUsersWithoutPwd({ college_id: this.user_collegeId }, this.token)
         .then(res => {
           this.teachers = res
         })
-      this.InfoForm.lesson_id = row.lesson_id
-      this.InfoForm.teacher_id = row.teacher_id
-      this.InfoForm.id = row.id
-      this.InfoForm.cid = row.cid
+      // this.InfoForm.lesson_id = row.lesson_id
+      // this.InfoForm.teacher_id = row.teacher_id
+      // this.InfoForm.id = row.id
+      // this.InfoForm.cid = row.cid
       this.InfoForm.name = row.name
-      this.InfoForm.teacher_id = row.teacher_id
+      // this.InfoForm.teacher_id = row.teacher_id
       this.InfoForm.semester = row.semester
       this.InfoForm.week = row.week
       this.InfoForm.room = row.room
@@ -250,8 +247,8 @@ export default {
     },
     onDialogClose() {
       this.show = false
-    },
-    submitChange(infoForm) {
+    },*/
+    /* submitChange(infoForm) {
       this.$refs[infoForm].validate((valid) => {
         if (valid) {
           ClassInfoViewModel.requestPutClassInfo(this.InfoForm)
@@ -269,7 +266,7 @@ export default {
             })
         }
       })
-    },
+    },*/
     showDisabled() {
       const button = document.getElementById('deleteButton')
       if (!button.disabled) {

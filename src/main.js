@@ -3,6 +3,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+import plTable from 'pl-table'
+import 'pl-table/themes/index.css'
+
 // lang i18n
 import locale from 'element-ui/lib/locale/lang/en'
 
@@ -10,6 +13,9 @@ import locale from 'element-ui/lib/locale/lang/en'
 // 引入Element UI，同时引入全局css文件
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// import theme-admin/teacher
+// import '@/assets/theme-admin/theme-admin.css'
+// import '@/assets/theme-teacher/theme-teacher.css'
 import '@/styles/index.scss'
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 
@@ -25,6 +31,7 @@ import '@/urls'
 // import './mock'
 
 Vue.use(ElementUI, { locale })
+Vue.use(plTable)
 
 Vue.config.productionTip = false
 
