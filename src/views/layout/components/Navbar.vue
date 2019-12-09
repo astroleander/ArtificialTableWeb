@@ -23,9 +23,9 @@
           </el-dropdown-item>
         </router-link>
 
-         <el-dropdown-item v-if="this.is_manager">
+  <!--       <el-dropdown-item v-if="this.is_manager">
            <span @click="onSwitchChange" style="display:block;">切换身份</span>
-         </el-dropdown-item>
+         </el-dropdown-item>     -->
 
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">退出登陆</span>
@@ -86,7 +86,9 @@ export default {
         return '普通教师'
       }
     },
+    /* 切换身份在这里暂时屏蔽
     onSwitchChange() {
+      this.$router.push({ path: '/' })
       if (this.use_manager) {
         this.$store.dispatch('setUseManager', false)
         this.role = '普通教师'
@@ -102,9 +104,8 @@ export default {
           type: 'success'
         })
       }
-      this.$router.replace({ path: '/' })
       location.reload()
-    },
+    },*/
     logout() {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug

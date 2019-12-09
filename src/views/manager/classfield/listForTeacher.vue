@@ -170,8 +170,8 @@
           // jump to modify pabe
           router.push({
             name: 'addClassField',
-            params: { id: row.id, type: 'modify' }
-            // query: { id: row.id }
+            params: { id: row.id, type: 'modify' },
+            query: { name: row.name }
           })
         }
       },

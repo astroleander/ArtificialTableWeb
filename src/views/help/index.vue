@@ -3,9 +3,10 @@
     <div class="help">
         <div style="height: 40px"></div>
         <div style="margin-left: 50px; color: #999999">Welcome to </div>
-        <div style="margin-left: 80px; margin-top: 10px;font-size: 2em">英语课程成绩管理系统</div>
+        <div style="margin-left: 80px; margin-top: 10px;font-size: 2em">英语课程智慧管理平台</div>
         <section class="position">
             <span class="help_text">{{role}}</span>
+            <el-button v-if="this.is_manager" @click="onSwitchChange" style="margin-left: 50px" type="primary" plain>切换身份</el-button>
             <el-divider></el-divider>
         </section>
 
@@ -156,6 +157,25 @@ export default {
         this.role = '普通教师'
       }
     },
+    onSwitchChange() {
+      // this.$router.push({ path: '/' })
+      if (this.use_manager) {
+        this.$store.dispatch('setUseManager', false)
+        this.role = '普通教师'
+        this.$message({
+          message: '已开启教师身份',
+          type: 'success'
+        })
+      } else {
+        this.$store.dispatch('setUseManager', true)
+        this.role = '教研室主任'
+        this.$message({
+          message: '已开启教研室主任身份',
+          type: 'success'
+        })
+      }
+      location.reload()
+    },
     show() {
       this.$messge({
         message: '1234567',
@@ -166,7 +186,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'use_manager'
+      'use_manager',
+      'is_manager'
     ])
   },
   created() {

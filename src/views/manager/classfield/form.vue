@@ -21,7 +21,7 @@
   <div>
     <el-card>
       <div slot="header">
-        <span class="rowframe title">教学班级管理</span>
+        <span class="rowframe title">{{this.classInfo_name}}班级管理</span>
       </div>
       <!-- 此班级的学生列表-->
       <el-table :data="tableStudents"  @selection-change="delChange">
@@ -143,6 +143,8 @@ export default {
         key: 'id',
         label: 'name'
       },
+      // 路由传递过来的班级名称
+      classInfo_name: '',
       resetField: false,
       renderFunc(h, option) {
         return <span>{option.name}-{option.sid}</span>
@@ -554,7 +556,7 @@ export default {
     },
     output() {
       // console.log('123454321345')
-      // console.log(this.$router.currentRoute.params.id)
+      this.classInfo_name = this.$router.currentRoute.query.name
       if (this.$router.currentRoute.params.id) {
         this.classInfo_id = this.$router.currentRoute.params.id
         this.fetchTableStudentInfo()
