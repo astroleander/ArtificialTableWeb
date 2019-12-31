@@ -593,7 +593,7 @@
    */
 // 将第三页数据拆分成：标题列表，成绩列表，学号列表，课程id
   const submitConverter = (previewPageData, lessonId) => {
-    // console.log('我好像要提交了')
+    console.log('我好像要提交了')
     // console.log(previewPageData)
     const newTitleItemArrayArray = []
     // 放置每一个新增的成绩项 初始权重为1
@@ -612,6 +612,8 @@
         const item = PointMock.getPointPrototype()
         // console.log(item)
         // 加载数据
+        // console.log('我好像知道发生啥了')
+        // console.log(previewPageData.titles[idx]['name'])
         item.pointNumber = point
         item.date = Date.parse(new Date())
         item['sid'] = previewPageData.sid[sIdx]
@@ -629,6 +631,8 @@
       '其中 point 列表需要补充 classInfo_id, student_id, title_id 字段, 最后从创建生成 id 字段.<br/>' +
       '其中 lesson_id 字段包含所在课程 <br/> ' +
       '其中 sid_list 字段包含学生学号列表 <br/> '
+
+    console.log('又发生啥了')
     return {
       // 返回 ：新增标题、成绩，课程ID，学号列，描述
       title_list: newTitleItemArrayArray,
@@ -1008,7 +1012,7 @@
         }
       },
       IsDuplication(titles) {
-        console.log(titles)
+        // console.log(titles)
         for (let i = 0; i < titles.length; i++) {
           for (let j = i + 1; j < titles.length; j++) {
             if (titles[i].name === titles[j].name && titles[i].titleGroup === titles[j].titleGroup) {
@@ -1133,10 +1137,10 @@
       },
       // 进入第三页，将第二页中的标题和数据分开存储到settingsPageData中
       renderPreviewPage() {
-        console.log('1111111' + this.settingsPageData.dataset)
+        // console.log('1111111' + this.settingsPageData.dataset)
         this.previewPageData = {}
         this.previewPageData = previewFilter(this.settingsPageData)
-        console.log('22222222' + this.previewPageData.dataset)
+        // console.log('22222222' + this.previewPageData.dataset)
       },
       // 请求所有课程组信息存储到remoteLessonList中
       fetchLesson() {

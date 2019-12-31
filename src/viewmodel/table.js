@@ -11,5 +11,6 @@ export default {
   addPoint: Point.requestPostPoint,
   addPoints: Point.requestPostPoints,
   deletePoint: Point.requestDelPoint,
-  deleteTitle: Title.requestDelTitle
+  deleteTitle: Title.requestDelTitle,
+  requestWeightData: Point.requestWeightData
 }

@@ -78,7 +78,6 @@ import AtBar from './Bar'
 import PieForWeight from './pieForWeight'
 import PieForTitle from '@/components/Pie'
 import viewmodel from '@/viewmodel/point'
-// import titleGroupViewModel from '@/viewmodel/titlegroups'
 
 export default {
   name: 'transcriptWeight',
@@ -154,16 +153,14 @@ export default {
     selectedTitle() {
       viewmodel.requestTitlePoints(this.id, this.value)
         .then(response => {
-          // console.log('11111' + this.dataForTest)
           this.dataForTest = []
-          // console.log('22222' + this.dataForTest)
           response.forEach(element => {
             this.dataForTest.push(element)
           })
           // console.log('33333' + this.dataForTest)
         })
       // this.titleText = '1654324565432'
-    }
+    },
   }
 }
 </script>

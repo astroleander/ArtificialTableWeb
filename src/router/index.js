@@ -87,12 +87,13 @@ export const adminRouter = [
     children: [{
       path: 'index',
       name: 'comparison',
-      component: () => import('@/views/comparison/index'),
+      component: () => import('@/views/comparison/newIndex'),
       // 路由属性存储
       meta: { title: '班级成绩比较', icon: 'score' }
     }]
 
   },
+  /*
   {
     path: '/manager',
     component: Layout,
@@ -104,7 +105,7 @@ export const adminRouter = [
         component: () => import('@/views/manager/student/list.vue'),
         meta: { title: '学生管理', icon: 'list' }
       }]
-  },
+  },*/
   {
     path: '/manager/user',
     component: Layout,
@@ -183,7 +184,7 @@ export const teacherRouter = [
         path: 'index',
         name: 'mainpage',
         // 左侧菜单栏中标题和图片应用
-        meta: { title: '成绩管理', icon: 'chengji' },
+        meta: { title: '管理学生成绩', icon: 'chengji' },
         // 连接响应vue文件
         component: () => import('@/views/mainpage/index')
       }]

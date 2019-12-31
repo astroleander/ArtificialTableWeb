@@ -1,7 +1,7 @@
 import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
   postPoint, postPoints,
   putPoint, putPoints,
-  deletePoint, deletePoints, importPoints, getTitlePoints } from '@/api/point'
+  deletePoint, deletePoints, importPoints, getTitlePoints, getCompareData, outPut, getWeightData, getWeightChange } from '@/api/point'
 /**
  * @date 2018/12/20
  * @author liqian
@@ -204,11 +204,80 @@ const requestTitlePoints = (classInfo_id, title_id) => {
     })
   })
 }
+/**
+ * 用于班级成绩比较
+ * @param pointIdArray
+ * @returns {Promise<any>}
+ */
+const requestCompareData = (params) => {
+  return new Promise((resolve, reject) => {
+    getCompareData(params).then(response => {
+      const dataset = response && response.data
+      console.log(dataset)
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 用于班级成绩导出
+ * @param classInfo_id
+ * @returns {Promise<any>}
+ */
+const requestOutPut = (classInfo_id) => {
+  return new Promise((resolve, reject) => {
+    outPut(classInfo_id).then(response => {
+      const dataset = response && response.data
+      // console.log(dataset)
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+/**
+ * 用于成绩分析页面数据更新查找
+ * @param classInfo_id
+ * @returns {Promise<any>}
+ */
+/*
+const requestWeightData = (classInfo_id) => {
+
+  return new Promise((resolve, reject) => {
+    getWeightData(classInfo_id).then(response => {
+      const dataset = response && response.data
+      // console.log(dataset)
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}*/
+/**
+ * 用于成绩权重页面更改权重的成绩分布查看
+ * @param classInfo_id, currentDataSet
+ * @returns {Promise<any>}
+ */
+/*
+ const requestWeightChange = (classInfo_id) => {
+  return new Promise((resolve, reject) => {
+    getWeightChange(classInfo_id).then(response => {
+      const dataset = response && response.data
+      // console.log(dataset)
+      resolve(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}*/
 
 export default {
   requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
   requestPutPoint, requestPutPoints,
   requestPostPoint, requestPostPoints,
   requestDelPoint, requestDelPoints,
-  requestImportPoints, requestTitlePoints
+  requestImportPoints, requestTitlePoints, requestCompareData, requestOutPut // , requestWeightData, requestWeightChange
 }

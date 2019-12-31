@@ -4,8 +4,15 @@
       <span>学校：</span>
         <el-input style="width:200px" v-model="remoteUniversity.name"
         :disabled="true" size="mini"></el-input>
+      <!--进行学号和专业的模糊匹配-->
+ <!--     <span style="padding-left: 10px;">学号：</span>
+        <el-input style="width:200px" ></el-input>
       <span style="padding-left: 10px;">专业：</span>
-      <el-cascader
+        <el-input style="width:200px"></el-input>
+      <el-button style="margin-left:10px;">点击搜索</el-button> -->
+
+        <span style="padding-left: 10px;">专业：</span>
+     <el-cascader
         size="small"
         clearable
         :options="remoteCollegeList"
@@ -43,11 +50,11 @@
       <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column prop="sid" label="学号" minWidth="150"></el-table-column>
       <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
-      <el-table-column prop="major_message.name" label="专业"  minWidth="150"></el-table-column>
-      <el-table-column prop="year" label="入学年份"  minWidth="150"></el-table-column>
+      <el-table-column prop="majorName" label="专业"  minWidth="150"></el-table-column>
+      <el-table-column prop="collegeName" label="学院"  minWidth="150"></el-table-column>
       <el-table-column minWidth="150">
           <template slot="header" slot-scope="scope">
-              <el-button title="primary" size="medium" @click="confirmDeleteStudents" type="danger">删除选中</el-button>
+              <el-button size="medium" @click="confirmDeleteStudents" type="danger">删除选中</el-button>
           </template>
         <template slot-scope="scope">
           <el-button @click="deleteStudent(scope.row)" type="danger">删除</el-button>

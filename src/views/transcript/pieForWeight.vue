@@ -49,7 +49,7 @@
             })
             this.data.push({
               value: this.dataSet[4],
-              name: '90-10分'
+              name: '90-100分'
             })
           }
           // 初始化图表

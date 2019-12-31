@@ -314,6 +314,7 @@ export default {
     reset: function(reset) {
       if (reset) {
         this.$refs.hotTable.hotInstance.clear()
+        this.$store.dispatch('saveStudentTable', { table: [] })
       }
     }
   },

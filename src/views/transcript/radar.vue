@@ -31,6 +31,7 @@ export default {
   methods: {
     drawRadar() {
       // 初始化图表
+      console.log(this.dataSet)
       this.chartRadar = echarts.init(document.getElementById('radar' + this.radarId))
       // 绘制
       this.chartRadar.setOption({

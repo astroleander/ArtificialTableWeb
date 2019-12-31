@@ -6,7 +6,6 @@ export default {
     return classInfoMap.infos
   }
 }
-// TODO: classField need add lesson_id
 const classInfoMap = {
   infos: {
     code: 2000,

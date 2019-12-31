@@ -1,7 +1,7 @@
 <template>
   <div class="predictResult">
-    <section class="table" style="width: 55%">
-      <el-table :data="database" v-loading.body="loading" ref="table" id="transcript-predict"
+    <section class="table" style="width: 60%">
+      <el-table :data="dataSet" v-loading.body="loading" ref="table" id="transcript-predict"
                 element-loading-text="Loading" class="table"
       height="500">
         <template slot="empty">
@@ -18,10 +18,10 @@
             {{scope.$index+1}}
           </template>
         </el-table-column>
-        <el-table-column label="学号" prop="sid" sortable></el-table-column>
+        <el-table-column label="学号" prop="sid" sortable min-width="100"></el-table-column>
         <el-table-column label="学生姓名" prop="name"></el-table-column>
-        <el-table-column label="预测下一次考试" prop="pointNumber" sortable min-width="150"></el-table-column>
-        <el-table-column label="预测结果" prop="pass" sortable min-width="150">
+        <el-table-column label="预测分数" prop="pointNumber" sortable min-width="100"></el-table-column>
+        <el-table-column label="预测结果" prop="pass" sortable min-width="100">
           <template slot-scope="scope">
             <span v-if="showPassed(scope.row)">不及格</span>
             <span v-else>及格</span>
@@ -29,8 +29,8 @@
         </el-table-column>
       </el-table>
     </section>
-    <div class="pie-box" style="width: 45%; background-color: white">
-      <at-pie class="pie" :dataSet="currentDataSet"></at-pie>
+    <div class="pie-box" style="width: 40%; background-color: white">
+      <at-pie  v-if="this.number > 1" class="pie" :dataSet="currentDataSet"></at-pie>
     </div>
   </div>
 </template>
@@ -41,11 +41,21 @@
   export default {
     name: 'PredictResult',
     components: { AtPie },
+    props: {
+      dataSet: {
+        type: Array,
+        default: []
+      },
+      number: {
+        type: Number,
+        default: 0
+      }
+    },
     data() {
       return {
-        database: this.getData(),
+        // database: this.getData(),
         loading: true,
-        currentDataSet: this.init()
+        currentDataSet: []
       }
     },
     creare() {
@@ -54,15 +64,13 @@
       setTimeout(() => {
         if (this.loading) this.loading = false
       }, 1000)
+      this.init()
     },
     methods: {
-      getData() {
-        return this.$store.state.table.predictTable
-      },
       init() {
         var countPass = 0
         var countNoPass = 0
-        const Data = this.getData()
+        const Data = this.dataSet
         for (let i = 0; i < Data.length; i++) {
           if (Data[i].pass == 0) {
             countNoPass++
@@ -70,16 +78,15 @@
             countPass++
           }
         }
-        const data = []
-        data.push({
+        this.currentDataSet = []
+        this.currentDataSet.push({
           value: countPass,
           name: '及格'
         })
-        data.push({
+        this.currentDataSet.push({
           value: countNoPass,
           name: '不及格'
         })
-        return data
       },
       showPassed(row) {
         // alert(row.pass)
@@ -87,6 +94,11 @@
           return true
         }
         return false
+      }
+    },
+    watch: {
+      dataSet() {
+        this.init()
       }
     }
   }

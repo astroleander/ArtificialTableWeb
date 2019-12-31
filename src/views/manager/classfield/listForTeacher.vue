@@ -10,7 +10,7 @@
                     :prop="title.prop" align="center">
             </el-table-column>
 
-            <el-table-column label="">
+            <el-table-column align="center">
                 <template slot-scope="scope">
                     <el-button @click="showClass(scope.row)" type="primary">修改班级信息</el-button>
                 </template>

@@ -158,3 +158,54 @@ export function getTitlePoints(classInfo_id, title_id) {
     }
   })
 }
+
+/**
+ * 用于班级成绩比较
+ */
+export function getCompareData(params) {
+  var tempObj = request({
+    url: '/point/comparison',
+    method: 'post',
+    data: params
+  })
+  return tempObj
+}
+
+/**
+ * 用于成绩导出
+ */
+export function outPut(classInfo_id) {
+  return request({
+    url: '/point/output',
+    method: 'get',
+    params: {
+      classInfo_id: classInfo_id
+    }
+  })
+}
+/**
+ * 用于成绩分析界面数据查找更新
+ */
+export function getWeightData(classInfo_id) {
+  return request({
+    url: '/point/getWeightData',
+    method: 'get',
+    params: {
+      classInfo_id: classInfo_id
+    }
+  })
+}
+
+/**
+ * 用于成绩分析界面数据查找更新
+ */
+export function getWeightChange(classInfo_id) {
+  return request({
+    url: '/point/getWeightChange',
+    method: 'get',
+    params: {
+      classInfo_id: classInfo_id
+    }
+  })
+}
+

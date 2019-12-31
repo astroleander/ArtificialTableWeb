@@ -49,7 +49,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="将学生学号、姓名复制到网页表格中（Ctl+V）" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
+      <el-dialog title="将学生学号、姓名、院系、专业复制到网页表格中（Ctl+V）" :center="true" width="70%" :visible.sync="ImportDialogVisible" :before-close="handleClose">
         <add-class-student :class-info_id="this.$router.currentRoute.params.id"
                            @addEnd="handleAddEnd"
                            :reset="resetField"

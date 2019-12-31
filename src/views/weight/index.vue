@@ -57,8 +57,9 @@ div(head)
 
     <div v-if="!empty">
       <div>
-        <!--自定义组件-->
+        <!--自定义成绩类别组件-->
         <at-lesson-card
+          v-if="this.is_manager"
           groupName="成绩类别权重设置"
           :dataSet="titleGroups"
           @notifyChanged="handleBigChanged"
@@ -77,6 +78,7 @@ div(head)
   import titleGroupViewModel from '@/viewmodel/titlegroups'
   // import classInfoModel from '@/viewmodel/classinfos'
   import AtLessonCard from '@/components/Weight/LessonCard'
+  // import AtTitleGroupCard from '@/components/Weight/TitlegroupCard'
   import { mapGetters } from 'vuex'
   export default {
     components: { AtLessonCard },
@@ -261,7 +263,14 @@ div(head)
           .requestByLessonId(data_id)
           .then(response => {
             if (response !== undefined) {
-              this.buildTitleGroup(response)
+              console.log(response)
+              const titleGroup = []
+              response.forEach(result => {
+                if (result.name !== '分组') {
+                  titleGroup.push(result)
+                }
+              })
+              this.buildTitleGroup(titleGroup)
             }
           })
       },

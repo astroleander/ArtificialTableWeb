@@ -179,6 +179,9 @@ DONE: post 返回需要 ID
 <script>
     // import FileSaver from 'file-saver'
     // import XLSX from 'xlsx'
+    // 用于班级成绩导出
+    import pointmodel from '@/viewmodel/point'
+
     import viewmodel from '@/viewmodel/table'
     import titlemodel from '@/viewmodel/title'
     import elTableInfiniteScroll from 'el-table-infinite-scroll'
@@ -307,32 +310,42 @@ DONE: post 返回需要 ID
         },
         ListenToChange() {
           // console.log(this.viewDataset)
-          const titleWeight = []
-          const titleGroupWeight = []
+          // const titleWeight = []
+          // const titleGroupWeight = []
           // console.log('监听成绩变化')
           // titlemodel.requestTitles({ classInfo_id: this.classinfoId })
             // .then(response => {
               // console.log('1111111111111111')
-              this.titles.forEach(title => {
+           /*   this.titles.forEach(title => {
                 titleGroupWeight.push(title.titleGroup_message.weight)
                 titleWeight.push(title.weight)
-              })
+              })*/
               // console.log('44444')
               // console.log(titleWeight)
-              // console.log(this.viewDataset)
+              // console.log(titleGroupWeight)
               this.viewDataset.forEach(view => {
-                const pointNumber = []
+                // const pointNumber = []
+                let sum = 0
                 const point = view.point
                 for (const i of point) {
                   if (i.pointNumber === undefined) {
                     i.pointNumber = 0
+                  }else {
+                      this.titles.forEach(title => {
+                          // titleGroupWeight.push(title.titleGroup_message.weight)
+                          // titleWeight.push(title.weight)
+                          if(i.title_id === title.id){
+                              sum += i.pointNumber * title.titleGroup_message.weight * title.weight / 10000
+                          }
+                      })
                   }
-                  pointNumber.push(i.pointNumber)
+                  // pointNumber.push(i.pointNumber)
                 }
-                let sum = 0
-                for (let i = 0; i < pointNumber.length; i++) {
+                // console.log(pointNumber)
+                // let sum = 0
+                /*for (let i = 0; i < pointNumber.length; i++) {
                   sum += pointNumber[i] * titleWeight[i] * titleGroupWeight[i] / 10000
-                }
+                }*/
                 view.totle = parseFloat(sum).toFixed(2)
               })
 
@@ -546,7 +559,14 @@ DONE: post 返回需要 ID
         formatJson(filterVal, jsonData) {
           return jsonData.map(v => filterVal.map(j => v[j]))
         },
+
+         //              ******************************************               //
         handleExport: function(dialogResult) {
+          // 从后端读取导出数据源
+          /*pointmodel.requestOutPut(this.classInfo_id)
+              .then(response => {
+                  this.outPutExcel = response
+              })*/
           require.ensure([], () => {
             const { export_json_to_excel } = require('../../excel/Export2Excel')
             const tHeader = ['学号', '姓名']

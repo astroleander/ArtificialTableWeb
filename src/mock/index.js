@@ -21,6 +21,7 @@ Mock.mock(/\/table\/class_info\/format/, 'get', courseMock.classInfo)
 // lesson mock
 Mock.mock(/\/table\/lesson\/format/, 'get', lessonMock.info)
 Mock.mock(/\/point\/predictScore/, 'post', lessonMock.analyse)
+Mock.mock(/\/point\/getWeightChange/, 'get', pointMock.weight)
 
 // login mock
 Mock.mock(/\/user\/login/, 'post', loginMock.login)

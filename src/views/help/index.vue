@@ -106,7 +106,7 @@ export default {
 
         },
         {
-          title: '成绩管理',
+          title: '管理学生成绩',
           description: '教师可查看、增加、修改、删除任课班级学生成绩',
           router: '/mainpage/index',
           backgroud: 'background-image: url(\'https://picsum.photos/id/213/200/200\')'

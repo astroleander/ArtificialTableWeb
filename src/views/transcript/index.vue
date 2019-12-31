@@ -195,11 +195,21 @@ export default {
       if (code === this.shownTab) return true
       else false
     },
+    // 请求成绩分析界面数据
+    getWeightData() {
+      viewmodel.requestWeightData(this.id)
+        .then(response => {
+          this.titles_without_attendance = response.titles
+          this.weightData.titleAverage = response.titleAverage
+          this.weightData.total = response.totle
+          this.weightData.avg = response.avg
+          this.weightData.rate = response.rate
+        })
+    },
     // 转换模式 table / state / predict
     switchMode: function(code) {
       /* if (code === 'stats') {
-        this.initTable()
-        this.fetchDataset()
+         this.getWeightData()
       }*/
       this.shownTab = code
     },
@@ -332,7 +342,8 @@ export default {
             result[0].forEach(element => {
               this.model.titles.push({ ...element, max: 100 })
               // console.log('1234567654321' + element)
-              if (element.titleGroup_message.name !== '出勤' && element.titleGroup_message.name !== '其他') {
+              /** 此处在更改数据分析显示后将屏蔽****/
+              if (element.titleGroup_message.name !== '出勤' && element.titleGroup_message.name !== '其他' && element.titleGroup_message.name !== '分组' && element.titleGroup_message.name !== '加分') {
                 this.titles_without_attendance.push({ ...element, max: 100 })
               }
               this.model.titleMap.set(element.id, element)
@@ -360,14 +371,18 @@ export default {
           // 获取大项数据
           if (result[3]) {
             result[3].forEach(element => {
-              this.model.message = this.model.message + element.name + '*' + element.weight + '%' + '+'
+              // console.log('1111111' + element)
+              if (element.weight !== '0.00') {
+                this.model.message = this.model.message + element.name + '*' + element.weight + '%' + '+'
+              }
+              // this.model.message = this.model.message + element.name + '*' + element.weight + '%' + '+'
               this.model.titleGroupMap.set(element.id, element)
               titleGroupSum += element.weight
             })
             this.model.message = this.model.message.substring(0, this.model.message.length - 1)
           }
           this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
-          // 加载成绩分析数据
+          // 加载成绩分析数据 在数据分析更新后更改到setMode函数中
           this.buildWeight()
           // })
           // 加载成绩表
@@ -473,7 +488,7 @@ export default {
     // 计算小项平均分
     buildTitleAverage() {
       this.model.titles.forEach(element => {
-        const titleInfo = { id: element.id, name: element.name, sum: 0, avg: 0, num: 0 }
+        const titleInfo = { id: element.id, name: element.name, title__titleGroup__name: element.titleGroup_message.name, sum: 0, avg: 0, num: 0 }
         this.model.points.forEach(pointItem => {
           if (pointItem.title_id === element.id) {
             titleInfo.num++
@@ -483,8 +498,12 @@ export default {
         // 若此小项下有分数条目，则将分析的结果存入
         if (titleInfo.num !== 0) {
           titleInfo.avg = Math.round(titleInfo.sum / titleInfo.num)
+          // console.log(titleInfo.name)
+          // console.log(titleInfo.avg)
+          if (titleInfo.title__titleGroup__name !== '分组' && titleInfo.title__titleGroup__name !== '出勤' && titleInfo.title__titleGroup__name !== '加分') {
+            this.weightData.titleAverage.push(titleInfo.avg)
+          }
           this.weightData.titlePoint.push(titleInfo)
-          this.weightData.titleAverage.push(titleInfo.avg)
         }
       })
     },
@@ -545,13 +564,13 @@ export default {
       this.init()
       // 判断是否可以继续成绩分析
       if (this.judgeLegal()) {
-        // 加载学生成绩
+        // 加载每个学生成绩表，计算总分平均分
         this.buildStudentScore()
-        // 加载条形图
+        // 计算各个分段学生人数
         this.buildBarData()
         // 若全部学生的成绩都计算出，计算小项平均值
         this.buildTitleAverage()
-        // 若小项平均值计算完成,可显示雷达图显示小项信息
+        // 若小项平均值计算完成,可显示雷达图显示小项信息，计算及格率
         this.weightData.flag = true
         this.weightData.rate = this.getPassExamRate()
       }

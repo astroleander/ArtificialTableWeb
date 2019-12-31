@@ -33,7 +33,7 @@
                 </template>
               </el-table-column>  -->
 
-             <el-table-column label="">
+  <!--           <el-table-column label="">
                 <template slot-scope="scope">
                   <el-button @click="showClass(scope.row)" type="primary">修改信息</el-button>
                 </template>

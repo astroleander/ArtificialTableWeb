@@ -36,10 +36,7 @@
           <!--<el-button @click="dealLeft" :disabled="btnDisabled">一键分配</el-button>-->
           <el-button @click="addTitleGroupItem" type="primary" plain>添加成绩类别</el-button>
           <!--<el-button @click="dealCancel">还原</el-button>-->
-
           <el-button type="primary" @click="openDialog" :disabled="modifyDisabled">确认修改</el-button>
-
-
         </div>
 
       </div>
@@ -78,7 +75,13 @@
         </div>
       </div>
 
-      <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
+  <!--     <div style="width: 50%; display: flex; flex-direction: column; align-items: center">
+           <el-button style="width: 50%" type="primary" plain @click="">
+               重新计算学生成绩分布
+             </el-button>     -->
+           <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
+   <!--    </div>   -->
+
 
       <el-dialog
               title="添加成绩类别"
@@ -105,6 +108,7 @@
 <script>
   import VueSlideBar from 'vue-slide-bar'
   import AtPie from '@/components/Weight/Pie'
+  // import pointModel from '@/viewModel/point'
   export default {
     name: 'LessonCard',
     data() {
@@ -140,6 +144,7 @@
         errorType: '',
         groupId: 0,
         currentDataSet: [],
+        DataForWeightChange: [],
         modifyDisabled: true,
         btnDisabled: false,
         titleDisabled: [],
@@ -179,6 +184,13 @@
       }
     },
     methods: {
+      // 重新计算学生人数分布
+      /*   getDataForweightChange() {
+        pointModel.requestWeightChange(this.classInfo_id, this.currentDataSet)
+          .then(response => {
+            this.DataForWeightChange = response
+          })
+      },    */
       // 打开添加页
       addTitleGroupItem: function() {
         this.dialogFormVisible = true
@@ -598,9 +610,7 @@
                     // 往右拖拽
 
                     if (clientX < e.clientX) {
-                      if (dragDom.clientWidth < minWidth) {
-
-                      } else {
+                      if (dragDom.clientWidth > minWidth) {
                         dragDom.style.width = elW - (e.clientX - clientX) * 2 + 'px'
                       }
                     }
@@ -612,9 +622,7 @@
                     // 往左拖拽
 
                     if (clientX > e.clientX) {
-                      if (dragDom.clientWidth < minWidth) {
-
-                      } else {
+                      if (dragDom.clientWidth > minWidth) {
                         dragDom.style.width = elW - (clientX - e.clientX) * 2 + 'px'
                       }
                     }
@@ -632,9 +640,7 @@
                     // 往上拖拽
 
                     if (clientY > e.clientY) {
-                      if (dragDom.clientHeight < minHeight) {
-
-                      } else {
+                      if (dragDom.clientHeight > minHeight) {
                         dragDom.style.height = elH - (clientY - e.clientY) * 2 + 'px'
                       }
                     }
@@ -743,7 +749,8 @@
     /*border: 1px solid #999;*/
   }
   .pie-box{
-    width: 40%;
+    width: 100%;
+    height: 300px;
     /*border: 1px solid #CCCCCC;*/
   }
   .groupName{

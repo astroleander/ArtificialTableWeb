@@ -440,6 +440,13 @@ const pointMap = {
     count: 47
   }
 }
+
+const DataForWeightChange = {
+  code: '2000',
+  message: 'OK, with Response',
+  subjects: ['9', '30', '50', '40', '10']
+}
+
 export default {
   info: config => {
     return pointMap.point
@@ -450,5 +457,8 @@ export default {
   },
   post: config => {
     return { code: '2004', 'message': 'OK, No Response content' }
+  },
+  weight: config => {
+    return DataForWeightChange
   }
 }

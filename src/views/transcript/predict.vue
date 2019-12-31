@@ -33,9 +33,9 @@
       </el-table>
     </section>
     <el-dialog :visible.sync="showResult"
-               width="50%"
-               title="预测结果">
-      <predict-result></predict-result>
+               title="下一次考试预测结果"
+               width="60%">
+      <predict-result :data-set="this.predictResult" :number="this.sidList.length"></predict-result>
     </el-dialog>
   </div>
 </template>
@@ -61,6 +61,7 @@
     data() {
       return {
         viewDataset: [],
+        predictResult: [],
         multipleSelection: [],
         sidList: [],
         classInfo_id: null,
@@ -71,14 +72,17 @@
       }
     },
     methods: {
-      handlePredictdata: function (val) {
+      handlePredictdata(val) {
         this.multipleSelection.push(val)
         // 获取班级成绩预测
       },
-      handlePredictOne: function (row) {
+      handlePredictOne(row) {
+        this.sidList = []
         this.sidList.push(row.student.id)
         Predictmodel.requestPredict(this.sidList, this.classInfo_id).then(result => {
           // 将传回来的数据存到store
+          console.log('222222222' + this.sidList.length)
+          this.predictResult = result
           this.$store.dispatch('savePredictTable', { table: result })
           // this.$store.dispatch('saveStudentInfoTable', { table: result })
           this.showResult = true
@@ -86,7 +90,7 @@
           // var aaa = this.$store.state.table.predictTable
         })
       },
-      handlePredict: function () {
+      handlePredict() {
         // 所有选中行信息
         var len = this.multipleSelection.length
         if (len === 0) {
@@ -103,7 +107,8 @@
           Predictmodel.requestPredict(this.sidList, this.classInfo_id).then(result => {
             // Predictmodel.requestPredict(JSON.parse(this.sidList)).then(result => {
             // 将传回来的数据存到store
-            this.$store.dispatch('savePredictTable', {table: result})
+            this.predictResult = result
+            this.$store.dispatch('savePredictTable', { table: result })
             this.showResult = true
             // this.$store.dispatch('saveStudentInfoTable', { table: result })
             // this.$router.push({ path: '/predict' })
