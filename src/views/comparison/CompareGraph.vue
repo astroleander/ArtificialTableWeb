@@ -14,7 +14,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      index: 0
+    }
   },
   methods: {
     // 绘制条状图
@@ -28,10 +30,12 @@ export default {
       // 初始化图表
       var myChart = echarts.init(Diagram)
 
+      this.index = 1
+      const that = this
       var option = {
         legend: {
-          orient: 'vertical', // 'vertical' | 'horizontal'
-          x: 'left', // 'center' | 'left' | {number},
+          orient: 'horizontal', // 'vertical' | 'horizontal'
+          x: 'center', // 'center' | 'left' | {number},
           y: 'top' // 'center' | 'bottom' | {number}
         },
         tooltip: {
@@ -41,11 +45,20 @@ export default {
           formatter: function(params) {
             // console.log("toooltip.params");
             // console.log(params);
-            return `
-            ${params[0].value[0]}</br>
+            // return ``;
+
+            if (params.length == 1) {
+              return `
+              ${that.varyArray[0][1]}</br>
+              ${params[0].name}: ${params[0].value[1]}人</br>
+            `
+            } else {
+              return `
+              ${params[0].value[0]}</br>
               ${params[0].seriesName}: ${params[0].value[1]}%</br>
               ${params[1].seriesName}: ${params[0].value[2]}分</br>
             `
+            }
           }
         },
         toolbox: {
@@ -57,7 +70,7 @@ export default {
         },
         dataset: [
           {
-            source: this.dataSet[0].source
+            source: this.varyArray
             // [
             //   ["classes","1班","2班","3班","4班","5班","6班","7班","8班","9班","10班"],
             //   ["0~60", 10, 10, 10, 10, 10, 20, 20, 20, 30, 20],
@@ -76,14 +89,31 @@ export default {
             // ]
           }
         ],
-        xAxis: {
-          type: 'category',
-          axisPointer: {
-            type: 'shadow'
+        xAxis: [
+          {
+            type: 'category',
+            axisPointer: {
+              type: 'shadow'
+            },
+            gridIndex: 0
+          },
+          {
+            type: 'category',
+            axisPointer: {
+              type: 'shadow'
+            },
+            gridIndex: 1
           }
-
-        },
+        ],
         yAxis: [
+          {
+            type: 'value',
+            name: '人数',
+            axisLabel: {
+              formatter: '{value} 人'
+            },
+            gridIndex: 0
+          },
           {
             type: 'value',
             name: '平均分',
@@ -92,7 +122,8 @@ export default {
             interval: 10,
             axisLabel: {
               formatter: '{value} 分'
-            }
+            },
+            gridIndex: 1
           },
           {
             type: 'value',
@@ -102,33 +133,39 @@ export default {
             interval: 10,
             axisLabel: {
               formatter: '{value} %'
-            }
+            },
+            gridIndex: 1
           }
         ],
-        grid: { top: '45%' },
+        grid: [{ bottom: '60%' }, { top: '50%' }],
         series: [
           {
-            type: 'pie',
-            id: 'pie',
-            radius: '30%',
+            name: '各分数段人数',
+            type: 'line',
+            color: '#37A2DA',
             datasetIndex: 0,
-            center: ['50%', '25%'],
-            label: {
-              formatter: '{b}: {@' + this.dataSet[0].source[0][1] + '} 人({d}%)'
-            },
-            encode: {
-              itemName: 'classes',
-              value: this.dataSet[0].source[0][1],
-              tooltip: this.dataSet[0].source[0][1]
-            },
-            color: ['#C23531', '#FFDB5C', '#FF9F7F', '#37A2DA', '#9FE6B8']
+            barMaxWidth: 50,
+            xAxisIndex: 0,
+            yAxisIndex: 0
+            // smooth:true,
+            // label: {
+            //   formatter: "{b}: {@" + this.dataSet[0].source[0][1] + "} 人({d}%)"
+            // },
+            // encode: {
+            //   itemName: "classes",
+            //   value: this.dataSet[0].source[0][1],
+            //   tooltip: this.dataSet[0].source[0][1]
+            // },
           },
           {
             name: '及格率',
             type: 'line',
             color: '#E062AE',
             seriesLayoutBy: 'row',
-            datasetIndex: 1
+            barMaxWidth: 50,
+            datasetIndex: 1,
+            xAxisIndex: 1,
+            yAxisIndex: 1
           },
           {
             name: '平均分',
@@ -136,7 +173,9 @@ export default {
             color: '#67E0E3',
             barMaxWidth: 50,
             seriesLayoutBy: 'row',
-            datasetIndex: 1
+            datasetIndex: 1,
+            xAxisIndex: 1,
+            yAxisIndex: 2
           }
         ]
       }
@@ -145,31 +184,62 @@ export default {
         // console.log("params:");
         // console.log(params);
 
-        if (params.seriesType !== 'pie') {
-          var choiceClassName =
-            params.componentType === 'xAxis' ? params.value : params.name
+        if (params.componentIndex !== 0) {
+          that.index = params.dataIndex + 1
+          console.log('thatIndex:')
+          console.log(that.varyArray)
+
           myChart.setOption({
+            dataset: [
+              {
+                source: that.varyArray
+              }
+            ],
             series: {
-              type: 'pie',
-              id: 'pie',
-              radius: '30%',
+              name: '各分数段人数',
+              type: 'line',
+              color: '#37A2DA',
               datasetIndex: 0,
-              center: ['50%', '25%'],
-              label: {
-                formatter: '{b}: {@' + choiceClassName + '} 人({d}%)'
-              },
-              encode: {
-                itemName: 'classes',
-                value: choiceClassName,
-                tooltip: choiceClassName
-              },
-              color: ['#C23531', '#FFDB5C', '#FF9F7F', '#37A2DA', '#9FE6B8']
+              xAxisIndex: 0,
+              yAxisIndex: 0
+              // smooth:true,
+              // label: {
+              //   formatter: "{b}: {@" + choiceClassName + "} 人({d}%)"
+              // },
+              // encode: {
+              //   itemName: "classes",
+              //   value: choiceClassName,
+              //   tooltip: choiceClassName
+              // },
             }
           })
         }
       })
 
       myChart.setOption(option, true)
+    }
+  },
+  computed: {
+    varyArray: function() {
+      var temp = [
+        ['classes', ''],
+        ['0~60', 0],
+        ['60~70', 0],
+        ['70~80', 0],
+        ['80~90', 0],
+        ['90~100', 0]
+      ]
+
+      if (this.index != 0) {
+        temp[0][1] = this.dataSet[0].source[0][this.index]
+        temp[1][1] = this.dataSet[0].source[1][this.index]
+        temp[2][1] = this.dataSet[0].source[2][this.index]
+        temp[3][1] = this.dataSet[0].source[3][this.index]
+        temp[4][1] = this.dataSet[0].source[4][this.index]
+        temp[5][1] = this.dataSet[0].source[5][this.index]
+      }
+
+      return temp
     }
   },
   watch: {

@@ -72,7 +72,6 @@ index
                          :rate="weightData.rate"
                          :flag="weightData.flag"
                          :titles="titles_without_attendance"
-                         :valid="weightData.studentScore.size-weightData.invalidScore"
                          :grade-section="weightData.gradeSection"
                          :title-average="weightData.titleAverage"
                          :message='this.model.message'>
@@ -156,6 +155,11 @@ export default {
     }
   },
   watch: {
+    shownTab: function(newItem) {
+      if (newItem === 'status') {
+        this.switchMode('status')
+      }
+    }
   },
   computed: {
     isShown: function() {
@@ -199,18 +203,24 @@ export default {
     getWeightData() {
       viewmodel.requestWeightData(this.id)
         .then(response => {
-          this.titles_without_attendance = response.titles
-          this.weightData.titleAverage = response.titleAverage
-          this.weightData.total = response.totle
-          this.weightData.avg = response.avg
-          this.weightData.rate = response.rate
+          this.weightData.total = response.total
+          this.titles_without_attendance = []
+          response.titles.forEach(title => {
+            this.titles_without_attendance.push(title)
+            this.weightData.titleAverage.push(parseFloat(title.titleAverage).toFixed(2))
+          })
+          // this.weightData.total = response.totle
+          this.weightData.avg = parseFloat(response.avg).toFixed(2)
+          this.weightData.rate = parseFloat(response.rate).toFixed(2) * 100
+          this.weightData.gradeSection = response.gradeSection
         })
     },
     // 转换模式 table / state / predict
     switchMode: function(code) {
-      /* if (code === 'stats') {
-         this.getWeightData()
-      }*/
+      if (code === 'stats') {
+        // 加载成绩分析数据 在数据分析更新后更改到setMode函数中
+        this.buildWeight()
+      }
       this.shownTab = code
     },
     // 创建成绩表
@@ -382,8 +392,6 @@ export default {
             this.model.message = this.model.message.substring(0, this.model.message.length - 1)
           }
           this.model.titleGroupMap.set('TitleGroupSum', titleGroupSum)
-          // 加载成绩分析数据 在数据分析更新后更改到setMode函数中
-          this.buildWeight()
           // })
           // 加载成绩表
           this.buildTable()
@@ -450,8 +458,8 @@ export default {
     // 获取学生成绩信息
     buildStudentScore() {
       let flag = false // 判断是否计算出所有学生的成绩，数据为空 暂不加载雷达图
-      let total = 0
-      let num = 0
+      // let total = 0
+      // let num = 0
       this.model.points.forEach(pointItem => {
         // 只计算当前在此班级的学生的分数条目
         if (this.model.studentMap.get(pointItem.student_id)) {
@@ -469,14 +477,14 @@ export default {
             } else {
               // console.log(' console.log(this.weightData.studentScore.get(pointItem.student_id=' + pointItem.student_id + ')) = ' + temp[1])
               this.weightData.studentScore.set(pointItem.student_id, temp[1])
-              num++
+              // num++
             }
-            total += temp[1]
+            // total += temp[1]
           }
         }
       })
       flag = true
-      this.weightData.avg = Math.round(total / num)
+      //    this.weightData.avg = Math.round(total / num)
       return flag
     },
     // 建立条状图，判断分区
@@ -566,13 +574,14 @@ export default {
       if (this.judgeLegal()) {
         // 加载每个学生成绩表，计算总分平均分
         this.buildStudentScore()
+        this.getWeightData()
         // 计算各个分段学生人数
-        this.buildBarData()
+        // this.buildBarData()
         // 若全部学生的成绩都计算出，计算小项平均值
-        this.buildTitleAverage()
+        // this.buildTitleAverage()
         // 若小项平均值计算完成,可显示雷达图显示小项信息，计算及格率
         this.weightData.flag = true
-        this.weightData.rate = this.getPassExamRate()
+        // this.weightData.rate = this.getPassExamRate()
       }
     }
   }

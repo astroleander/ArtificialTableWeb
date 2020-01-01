@@ -1,7 +1,7 @@
 import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
   postPoint, postPoints,
   putPoint, putPoints,
-  deletePoint, deletePoints, importPoints, getTitlePoints, getCompareData, outPut, getWeightData, getWeightChange } from '@/api/point'
+  deletePoint, deletePoints, importPoints, getTitlePoints, getCompareData, outPut, getWeightData } from '@/api/point'
 /**
  * @date 2018/12/20
  * @author liqian
@@ -229,7 +229,7 @@ const requestCompareData = (params) => {
 const requestOutPut = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     outPut(classInfo_id).then(response => {
-      const dataset = response && response.data
+      const dataset = response && response.subjects
       // console.log(dataset)
       resolve(dataset)
     }).catch(error => {
@@ -243,19 +243,18 @@ const requestOutPut = (classInfo_id) => {
  * @param classInfo_id
  * @returns {Promise<any>}
  */
-/*
-const requestWeightData = (classInfo_id) => {
 
+const requestWeightData = (classInfo_id) => {
   return new Promise((resolve, reject) => {
     getWeightData(classInfo_id).then(response => {
-      const dataset = response && response.data
+      const dataset = response && response.subjects
       // console.log(dataset)
       resolve(dataset)
     }).catch(error => {
       reject(error)
     })
   })
-}*/
+}
 /**
  * 用于成绩权重页面更改权重的成绩分布查看
  * @param classInfo_id, currentDataSet
@@ -279,5 +278,5 @@ export default {
   requestPutPoint, requestPutPoints,
   requestPostPoint, requestPostPoints,
   requestDelPoint, requestDelPoints,
-  requestImportPoints, requestTitlePoints, requestCompareData, requestOutPut // , requestWeightData, requestWeightChange
+  requestImportPoints, requestTitlePoints, requestCompareData, requestOutPut, requestWeightData // , requestWeightChange
 }

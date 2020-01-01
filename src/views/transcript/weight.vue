@@ -25,9 +25,9 @@ table
                     <el-select v-model="value" placeholder="请选择测试名称" @change="selectedTitle">
                         <el-option
                             v-for="item in titles"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
+                            :key="item.title__id"
+                            :label="item.title__name"
+                            :value="item.title__id">
                         </el-option>
                     </el-select>
                     <pie-for-title  :data-set="this.dataForTest" :title-text="this.titleText"></pie-for-title>
@@ -104,10 +104,10 @@ export default {
       default: 0
     },
     // 班级有效成绩
-    valid: {
+  /*  valid: {
       type: Number,
       default: 0
-    },
+    },  */
     // 计算方式
     message: {
       type: String,

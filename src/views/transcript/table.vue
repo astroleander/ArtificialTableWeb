@@ -201,10 +201,6 @@ DONE: post 返回需要 ID
           type: Array,
           require: true
         },
-        outPutExcel: {
-          type: Array,
-          require: true
-        },
         message: {
           type: String,
           require: true
@@ -233,6 +229,8 @@ DONE: post 返回需要 ID
             })),
             // show totle
             showTotle: false,
+            // 导出文件
+            outPutExcel: [],
           // 换页所需参数
           row_total:130,  // 默认数据总数
           pagesize:10,  // 每页的数据条数
@@ -563,42 +561,39 @@ DONE: post 返回需要 ID
          //              ******************************************               //
         handleExport: function(dialogResult) {
           // 从后端读取导出数据源
-          /*pointmodel.requestOutPut(this.classInfo_id)
+          pointmodel.requestOutPut(this.classinfoId)
               .then(response => {
+                  console.log('1111111')
                   this.outPutExcel = response
-              })*/
-          require.ensure([], () => {
-            const { export_json_to_excel } = require('../../excel/Export2Excel')
-            const tHeader = ['学号', '姓名']
-            const filterVal = ['student_sid', 'student_name']
-            this.titles.forEach(title => {
-              tHeader.push(title.name)
-              filterVal.push(title.id)
-            })
-            const list = this.outPutExcel
-            const data = this.formatJson(filterVal, list)
-            export_json_to_excel(tHeader, data, dialogResult.filename)
-          })
-          // this.$emit('onExportTable', dialogResult)
-          /* generate workbook object from table */
-          /*
-          const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
-          const size = wb.Sheets[wb.SheetNames[0]]['!ref']
-          const endNumber = size.match(/\d+$/)
-          const newNumber = parseInt(endNumber[0]) / 2
-          const newSize = size.slice(0, endNumber.index) + newNumber
-          wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
-          /* get binary string as output */
-          /*
-          const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-          try {
-            FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
-          } catch (e) {
-            if (typeof console !== 'undefined') {
-              console.log(e, wbout)
-            }
-          }
-          return wbout*/
+                  require.ensure([], () => {
+                      const { export_json_to_excel } = require('../../excel/Export2Excel')
+                      const tHeader = this.outPutExcel.tableHead
+                      const filterVal = this.outPutExcel.firstVal
+                      const list = this.outPutExcel.tableData
+                      const data = this.formatJson(filterVal, list)
+                      export_json_to_excel(tHeader, data, dialogResult.filename)
+                  })
+                  // this.$emit('onExportTable', dialogResult)
+                  /*
+                  const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
+                    /* generate workbook object from table */
+                  const size = wb.Sheets[wb.SheetNames[0]]['!ref']
+                  const endNumber = size.match(/\d+$/)
+                  const newNumber = parseInt(endNumber[0]) / 2
+                  const newSize = size.slice(0, endNumber.index) + newNumber
+                  wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
+                  /* get binary string as output */
+                  /*
+                  const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                  try {
+                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
+                  } catch (e) {
+                    if (typeof console !== 'undefined') {
+                      console.log(e, wbout)
+                    }
+                  }
+                  return wbout*/
+              })
         },
         loadMore(){
           if (this.currentPage < this.totle_page ) {

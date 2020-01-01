@@ -31,7 +31,16 @@ export default {
   methods: {
     drawRadar() {
       // 初始化图表
-      console.log(this.dataSet)
+      // console.log(this.titleData)
+      // console.log(this.dataSet)
+      const titles_name = []
+      this.titleData.forEach(title => {
+        const content = {}
+        content['text'] = title.title__name
+        content['max'] = 100
+        // console.log(content.text)
+        titles_name.push(content)
+      })
       this.chartRadar = echarts.init(document.getElementById('radar' + this.radarId))
       // 绘制
       this.chartRadar.setOption({
@@ -52,7 +61,7 @@ export default {
             }
           },
           // 加载数据
-          indicator: this.titleData,
+          indicator: titles_name,
           radius: 100
         },
         // 各个小项加载

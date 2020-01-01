@@ -23,6 +23,8 @@ export default {
     // 绘制条状图
     drawBar() {
       // 初始化图表
+      console.log('111111111')
+      console.log(this.dataSet)
       this.chartBar = echarts.init(document.getElementById('Diagram' + this.DiagramId))
       // 绘制
       this.chartBar.setOption({
