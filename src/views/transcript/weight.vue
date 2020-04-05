@@ -19,9 +19,9 @@ table
     <div class="col" v-if="flag">
         <el-card style="margin-top: 10px;" class="flex-80">
             <!--雷达图-->
-            <div style="display: flex;flex-direction: row; justify-content: space-around">
+            <div style="display: flex;align-items: center;">
                 <at-radar :title-data="titles" :data-set="titleAverage"></at-radar>
-                <div style="margin-left: 50px">
+                <div style="margin-left: 10%">
                     <el-select v-model="value" placeholder="请选择测试名称" @change="selectedTitle">
                         <el-option
                             v-for="item in titles"
@@ -37,17 +37,21 @@ table
 
         <el-card class="flex-80" style="margin-top: 5px">
             <div style="display: flex;flex-direction: row; justify-content: space-around">
-                <div style="margin-right: 50px; margin-left: 50px; margin-top: 50px; width: 250px">
-                    <span>学生统计信息</span>
+                <div style="width: 30%">
+                    <!--<span>学生统计信息</span>
                     <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                    <p><span>学生总人数：{{total}}</span></p>
+                    <!--<p><span>学生总人数：{{total}}</span></p>
                     <p><span>总分及格率：{{rate}}%</span></p>
                     <p><span>总分平均分：{{avg}}</span></p>
                     <p><span>总分计算方式：</span></p>
-                    <p><span>{{message}}</span></p>
+                    <p><span>{{message}}</span></p>-->
+                    <el-head style="font:italic bold 18px/28px arial">课程文字报告：</el-head>
+                    <el-main style="margin-bottom: -30px">&nbsp&nbsp&nbsp&nbsp{{report[0]}}</el-main>
+                    <el-main style="margin-top: -30px;">&nbsp&nbsp&nbsp&nbsp{{report[1]}}</el-main>
                 </div>
                 <at-bar  :data-set="gradeSection"></at-bar>
-                <pie-for-weight  :data-set="gradeSection" :title-text="totleText"></pie-for-weight>
+                <!--<pie-for-weight  :data-set="gradeSection" :title-text="totleText"></pie-for-weight>-->
+                <at-fun :data-set="gradeSection"></at-fun>
             </div>
         </el-card>
       <!-- 人数、成绩、及格率、平均分信息 -->
@@ -75,13 +79,14 @@ table
 <script>
 import AtRadar from './radar'
 import AtBar from './Bar'
+import AtFun from './funnel'
 import PieForWeight from './pieForWeight'
 import PieForTitle from '@/components/Pie'
 import viewmodel from '@/viewmodel/point'
 
 export default {
   name: 'transcriptWeight',
-  components: { AtBar, AtRadar, PieForWeight, PieForTitle },
+  components: { AtBar, AtRadar, AtFun, PieForWeight, PieForTitle },
   props: {
     // 是否显示提示卡片
     flag: {
@@ -93,6 +98,11 @@ export default {
       type: String,
       default: ''
     },
+      //文字报告
+      report:{
+          type: Array,
+          default: () => []
+      },
     // 班级平均分
     avg: {
       type: Number,
@@ -213,9 +223,13 @@ export default {
 
 .flex-80 {
     display: flex;
-    flex-direction: row;
+    // flex-direction: column;
     float: left;
-    width: 98%;
+    // margin-left: 10px;
+    // margin-right: 10px;
+    width: 98.5%;
+    justify-content: space-around;
+    align-items: center;
     background: white;
 }
 

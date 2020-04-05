@@ -2,6 +2,7 @@
 require('script-loader!file-saver')
 require('./Blob')
 require('script-loader!xlsx/dist/xlsx.core.min')
+import XLSX from 'xlsx-style'
 
 function generateArray(table) {
     var out = []
@@ -94,14 +95,14 @@ function s2ab(s) {
 
 export function export_table_to_excel(id) {
     var theTable = document.getElementById(id);
-    // console.log('a')
+    console.log('a')
     var oo = generateArray(theTable);
     var ranges = oo[1];
 
     /* original data */
     var data = oo[0];
     var ws_name = "SheetJS";
-    // console.log(data);
+    console.log(data);
 
     var wb = new Workbook(), ws = sheet_from_array_of_arrays(data);
 
@@ -122,22 +123,107 @@ function formatJson(jsonData) {
     console.log(jsonData)
 }
 
-export function export_json_to_excel(th, jsonData, defaultTitle) {
+export function export_json_to_excel(multiHeader, multiHeader2, merges, header, data, filename) {
 
+    var myRowFont = '2019'
     /* original data */
+    data = [...data]
+    data.unshift(header)
 
-    var data = jsonData;
-    data.unshift(th);
-    var ws_name = "SheetJS";
 
-    var wb = new Workbook(), ws = sheet_from_array_of_arrays(data);
+    data.unshift(multiHeader2)
 
+    data.unshift(multiHeader)
+
+    var ws_name = "SheetJS"
+    // 创建一个workbook对象，将data信息放置到sheet中
+    var wb = new Workbook(), ws = sheet_from_array_of_arrays(data)
+
+    if (merges.length > 0) {
+        if (!ws['!merges']) ws['!merges'] = [];
+        merges.forEach(item => {
+            ws['!merges'].push(XLSX.utils.decode_range(item))
+        })
+    }
 
     /* add worksheet to workbook */
-    wb.SheetNames.push(ws_name);
-    wb.Sheets[ws_name] = ws;
+    wb.SheetNames.push(ws_name)
+    wb.Sheets[ws_name] = ws
+    // 将导出的唯一sheet内容放置到dataInfo中
+    var dataInfo = wb.Sheets[wb.SheetNames[0]]
+    console.log('1111111111')
+    console.log(dataInfo)
 
-    var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
-    var title = defaultTitle || '列表'
+    // 这是表格特定某一行的样式
+    var tableTitleFont = {
+        font: {
+            name: '宋体',
+            sz: 12,
+            // color: {rgb: "ff0000"},
+            bold: false,
+            italic: false,
+            underline: false
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        },
+    /*    fill: {
+            fgColor: {rgb: "FFFFFF"},
+        },*/
+    };
+    const borderAll = {  //单元格外侧框线
+        right: {
+            style: 'thin'
+        }
+    };
+   for (var i in dataInfo) {
+       if (i !== '!ref' && i !== '!merges' && i !== '!cols' && (i.indexOf('L') > -1 || i === 'A1' || i === 'A2')) {
+           dataInfo[i].s = {
+               border: borderAll
+           }
+       }
+    }
+    //设置主标题样式
+    dataInfo["A1"].s = {
+        font: {
+            name: '宋体',
+            sz: 18,
+            // color: {rgb: "ff0000"},
+            bold: false,
+            italic: false,
+            underline: false
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        },
+        /*    fill: {
+                fgColor: {rgb: "FFFFFF"},
+            },*/
+    };
+    dataInfo["A2"].s = {
+        font: {
+            name: '宋体',
+            sz: 12,
+            // color: {rgb: "ff0000"},
+            bold: false,
+            italic: false,
+            underline: false
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        },
+        /*    fill: {
+                fgColor: {rgb: "FFFFFF"},
+            },*/
+    };
+    var wbout = XLSX.write(wb, {
+        bookType: 'xlsx',
+        bookSST: false,
+        type: 'binary'
+    })
+    var title = filename || '列表'
     saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), title + ".xlsx")
 }

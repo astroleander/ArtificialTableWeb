@@ -23,7 +23,7 @@ DONE: post 返回需要 ID
 
         <!-- table menu-->
         <el-row class="menu">
-            <el-button @click="onClickedExportTable()" type="primary" icon="el-icon-download" plain>导出文件</el-button>
+            <el-button @click="onClickDifirentOne()" type="primary" icon="el-icon-download" plain>导出文件</el-button>
             <!-- <el-button @click="onClickedRefresh()" type="warning" icon="el-icon-refresh" >刷新页面</el-button> -->
             <el-button @click="onClickedUpload()"
               :type="this.$store.state.table.changed? 'warning' : 'primary'" icon="el-icon-upload" plain>保存修改</el-button>
@@ -31,6 +31,7 @@ DONE: post 返回需要 ID
             <!--<el-button @click="reload()" type="primary" icon="">成绩汇总计算</el-button>-->
             <!-- <el-button icon="el-icon-search"></el-button> -->
             <!-- <el-button type="info" icon="el-icon-message" ></el-button> -->
+            <el-button @click="onClickDifirentTwo()" type="primary" icon="el-icon-download" plain>导出固定模版文件</el-button>
         </el-row>
         <!-- table main container   id="transcript-table" class="table" :data="viewDataset.slice((currentPage-1)*pagesize,currentPage*pagesize)" element-loading-text="Loading"-->
         <div style="height: 100%; width: 100%">
@@ -227,6 +228,8 @@ DONE: post 返回需要 ID
                 ab: '欢迎使用pl-table',
                 address: '上海市普陀区金沙江路 1516 弄'
             })),
+            // export to excel
+            Export_Excel: 0,
             // show totle
             showTotle: false,
             // 导出文件
@@ -501,7 +504,15 @@ DONE: post 返回需要 ID
         onClickedAddTitle: function() {
           this.showAddTitleDialog({})
         },
-        onClickedExportTable: function() {
+        onClickDifirentOne(){
+          this.Export_Excel = 1
+          this.onClickedExportTable()
+        },
+        onClickDifirentTwo(){
+           this.Export_Excel = 2
+           this.onClickedExportTable()
+        },
+        onClickedExportTable: function(number) {
           if (this.$store.state.table.changed) {
             this.$alert('当前有未保存的分数修改，请保存后再导出')
           } else {
@@ -560,30 +571,42 @@ DONE: post 返回需要 ID
 
          //              ******************************************               //
         handleExport: function(dialogResult) {
-          // 从后端读取导出数据源
-          pointmodel.requestOutPut(this.classinfoId)
-              .then(response => {
-                  console.log('1111111')
-                  this.outPutExcel = response
-                  require.ensure([], () => {
-                      const { export_json_to_excel } = require('../../excel/Export2Excel')
-                      const tHeader = this.outPutExcel.tableHead
-                      const filterVal = this.outPutExcel.firstVal
-                      const list = this.outPutExcel.tableData
-                      const data = this.formatJson(filterVal, list)
-                      export_json_to_excel(tHeader, data, dialogResult.filename)
-                  })
-                  // this.$emit('onExportTable', dialogResult)
-                  /*
+          if(this.Export_Excel === 2){
+              // 从后端读取导出数据源
+              pointmodel.requestOutPut(this.classinfoId)
+                  .then(response => {
+                      // console.log('1111111')
+                      this.outPutExcel = response
+                      require.ensure([], () => {
+                          const { export_json_to_excel } = require('../../excel/Export2Excel_multiTitle')
+                          const multiHeader = ['北京交通大学']
+                          const multiHeader2 = ['姓名']
+                          const tHeader = this.outPutExcel.tableHead
+                          const merge = ['A1:L1', 'A2:L2'] // ['A1:L1', 'A2: L2']
+                          const filterVal = this.outPutExcel.firstVal
+                          const list = this.outPutExcel.tableData
+                          const data = this.formatJson(filterVal, list)
+                          data.map(item => {
+                              // console.log(item)
+                              item.map((i, index) => {
+                                  if (!i) {
+                                      item[index] = ''
+                                  }
+                              })
+                          })
+                          export_json_to_excel(multiHeader,multiHeader2,merge,tHeader, data, dialogResult.filename)
+                      })
+                      // this.$emit('onExportTable', dialogResult)
+                      /*
                   const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
                     /* generate workbook object from table */
-                  const size = wb.Sheets[wb.SheetNames[0]]['!ref']
-                  const endNumber = size.match(/\d+$/)
-                  const newNumber = parseInt(endNumber[0]) / 2
-                  const newSize = size.slice(0, endNumber.index) + newNumber
-                  wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
-                  /* get binary string as output */
-                  /*
+                      /*    const size = wb.Sheets[wb.SheetNames[0]]['!ref']
+                          const endNumber = size.match(/\d+$/)
+                          const newNumber = parseInt(endNumber[0]) / 2
+                          const newSize = size.slice(0, endNumber.index) + newNumber
+                          wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
+                          /* get binary string as output */
+                      /*
                   const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
                   try {
                     FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
@@ -593,7 +616,45 @@ DONE: post 返回需要 ID
                     }
                   }
                   return wbout*/
-              })
+                  })
+          }else if(this.Export_Excel === 1){
+              // 从后端读取导出数据源
+              pointmodel.requestOutPut(this.classinfoId)
+                  .then(response => {
+                      // console.log('1111111')
+                      this.outPutExcel = response
+                      require.ensure([], () => {
+                          const { export_json_to_excel } = require('../../excel/Export2Excel')
+                          const tHeader = this.outPutExcel.tableHead
+                          const filterVal = this.outPutExcel.firstVal
+                          const list = this.outPutExcel.tableData
+                          const data = this.formatJson(filterVal, list)
+                          export_json_to_excel(tHeader, data, dialogResult.filename)
+                      })
+                      // this.$emit('onExportTable', dialogResult)
+                      /*
+                  const wb = XLSX.utils.table_to_book(document.querySelector('#transcript-table'))
+                    /* generate workbook object from table */
+                      /*    const size = wb.Sheets[wb.SheetNames[0]]['!ref']
+                          const endNumber = size.match(/\d+$/)
+                          const newNumber = parseInt(endNumber[0]) / 2
+                          const newSize = size.slice(0, endNumber.index) + newNumber
+                          wb.Sheets[wb.SheetNames[0]]['!ref'] = newSize
+                          /* get binary string as output */
+                      /*
+                  const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                  try {
+                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), dialogResult.filename + '.xlsx')
+                  } catch (e) {
+                    if (typeof console !== 'undefined') {
+                      console.log(e, wbout)
+                    }
+                  }
+                  return wbout*/
+                  })
+
+          }
+
         },
         loadMore(){
           if (this.currentPage < this.totle_page ) {

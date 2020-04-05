@@ -120,13 +120,23 @@ export function deleteLessons(lessonIdArray) {
  *
  * @param titleGroup
  */
-export function lessonAnalyse(titleGroupId) {
+/* export function lessonAnalyse(titleGroupId) {
   return request({
     url: '/analysis/class',
     method: 'post',
     data: {
       // subjects: lessonSemester
       titleGroupId
+    }
+  })
+}*/
+
+export function lessonAnalyse(lessonId) {
+  return request({
+    url: '/analysis/report',
+    method: 'post',
+    data: {
+      lessonId
     }
   })
 }

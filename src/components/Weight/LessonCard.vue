@@ -75,12 +75,12 @@
         </div>
       </div>
 
-  <!--     <div style="width: 50%; display: flex; flex-direction: column; align-items: center">
-           <el-button style="width: 50%" type="primary" plain @click="">
+       <div style="width: 50%; display: flex; flex-direction: column; align-items: center">
+           <!--<el-button style="width: 50%" type="primary" plain @click="">
                重新计算学生成绩分布
              </el-button>     -->
            <at-pie class="pie-box" :dataSet="currentDataSet" :groupId="groupId"></at-pie>
-   <!--    </div>   -->
+       </div>
 
 
       <el-dialog

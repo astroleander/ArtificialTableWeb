@@ -177,9 +177,9 @@ export default {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             const Teacher = this.form
-            console.log(Teacher)
+            // console.log(Teacher)
             UserViewModel.requestChangeOwnInfo(Teacher).then(response => {
-              console.log(response)
+              // console.log(response)
               if (response.code === '2005') {
                 this.$message({
                   message: '修改用户成功',

@@ -35,7 +35,7 @@
     <el-dialog :visible.sync="showResult"
                title="下一次考试预测结果"
                width="60%">
-      <predict-result :data-set="this.predictResult" :number="this.sidList.length"></predict-result>
+      <predict-result :data-set="this.predictResult" :number="this.sidList.length" :sid='this.sidList' :classId='this.classInfo_id'></predict-result>
     </el-dialog>
   </div>
 </template>
@@ -79,9 +79,10 @@
       handlePredictOne(row) {
         this.sidList = []
         this.sidList.push(row.student.id)
+        this.classInfo_id = this.$router.currentRoute.params.id
         Predictmodel.requestPredict(this.sidList, this.classInfo_id).then(result => {
           // 将传回来的数据存到store
-          console.log('222222222' + this.sidList.length)
+          // console.log('222222222' + this.sidList.length)
           this.predictResult = result
           this.$store.dispatch('savePredictTable', { table: result })
           // this.$store.dispatch('saveStudentInfoTable', { table: result })

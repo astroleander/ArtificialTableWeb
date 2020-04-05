@@ -28,17 +28,17 @@
         <template slot="empty">
             该班级没有学生信息,请点击左上方的 "批量导入" 按钮为班级引入学生
         </template>
-        <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column label="序号" width="60">
+        <el-table-column type="selection" width="50" align="center"></el-table-column>
+        <el-table-column label="序号" width="60" align="center">
           <template slot-scope="scope">
               {{scope.$index+1}}
           </template>
         </el-table-column>
-        <el-table-column prop="sid" label="学号" minWidth="150" sortable></el-table-column>
-        <el-table-column prop="name" label="姓名"  minWidth="150"></el-table-column>
-        <el-table-column prop="majorName" label="专业"  minWidth="150"></el-table-column>
+        <el-table-column prop="sid" label="学号" minWidth="150" sortable align="center"></el-table-column>
+        <el-table-column prop="name" label="姓名"  minWidth="150" align="center"></el-table-column>
+        <el-table-column prop="majorName" label="专业"  minWidth="150" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="350">
+        <el-table-column label="操作" width="350" align="center">
           <template slot="header" slot-scope="scope">
             <el-button type="primary" size="medium"  @click="openImportDialog">批量导入</el-button>
             <!--<el-button type="primary" size="medium"  @click="openAddDialog">添加学生</el-button>-->

@@ -35,7 +35,7 @@ export default {
       var option = {
         legend: {
           orient: 'horizontal', // 'vertical' | 'horizontal'
-          x: 'center', // 'center' | 'left' | {number},
+          x: 'left', // 'center' | 'left' | {number},
           y: 'top' // 'center' | 'bottom' | {number}
         },
         tooltip: {
@@ -47,7 +47,7 @@ export default {
             // console.log(params);
             // return ``;
 
-            if (params.length == 1) {
+            if (params.length === 1) {
               return `
               ${that.varyArray[0][1]}</br>
               ${params[0].name}: ${params[0].value[1]}人</br>
@@ -137,8 +137,24 @@ export default {
             gridIndex: 1
           }
         ],
-        grid: [{ bottom: '60%' }, { top: '50%' }],
+        grid: [{ bottom: '60%', right: '50%' }, { top: '50%' }],
         series: [
+          {
+            type: 'pie',
+            id: 'pie',
+            radius: '30%',
+            datasetIndex: 0,
+            center: ['80%', '25%'],
+            label: {
+              formatter: '{b}: {@' + this.dataSet[0].source[0][1] + '} 人({d}%)'
+            },
+            encode: {
+              itemName: 'classes',
+              value: this.dataSet[0].source[0][1],
+              tooltip: this.dataSet[0].source[0][1]
+            },
+            color: ['#C23531', '#FFDB5C', '#FF9F7F', '#37A2DA', '#9FE6B8']
+          },
           {
             name: '各分数段人数',
             type: 'line',
@@ -189,29 +205,42 @@ export default {
           console.log('thatIndex:')
           console.log(that.varyArray)
 
+          var choiceName = that.varyArray[0][1]
+          console.log(choiceName)
+
           myChart.setOption({
             dataset: [
               {
                 source: that.varyArray
               }
             ],
-            series: {
-              name: '各分数段人数',
-              type: 'line',
-              color: '#37A2DA',
-              datasetIndex: 0,
-              xAxisIndex: 0,
-              yAxisIndex: 0
-              // smooth:true,
-              // label: {
-              //   formatter: "{b}: {@" + choiceClassName + "} 人({d}%)"
-              // },
-              // encode: {
-              //   itemName: "classes",
-              //   value: choiceClassName,
-              //   tooltip: choiceClassName
-              // },
-            }
+            series: [
+              {
+                name: '各分数段人数',
+                type: 'line',
+                color: '#37A2DA',
+                datasetIndex: 0,
+                xAxisIndex: 0,
+                yAxisIndex: 0
+              },
+              {
+                type: 'pie',
+                id: 'pie',
+                radius: '30%',
+                datasetIndex: 0,
+                center: ['80%', '25%'],
+                label: {
+                  formatter:
+                    '{b}: {@' + choiceName + '} 人({d}%)'
+                },
+                encode: {
+                  itemName: 'classes',
+                  value: choiceName,
+                  tooltip: choiceName
+                },
+                color: ['#C23531', '#FFDB5C', '#FF9F7F', '#37A2DA', '#9FE6B8']
+              }
+            ]
           })
         }
       })

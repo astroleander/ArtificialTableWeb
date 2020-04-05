@@ -66,6 +66,7 @@ index
       </transcript-predict>
       <!--v-show判断此刻如果上方标签选择状态分析states 显示成绩分析-->
       <transcript-weight v-show='getMode("stats")'
+                         :report="weightData.report"
                          :avg="weightData.avg"
                          :description="weightData.description"
                          :total="weightData.total"
@@ -92,6 +93,7 @@ import viewmodel from '@/viewmodel/table'
 import titleViewmodel from '@/viewmodel/title'
 import titleGroupViewModel from '@/viewmodel/titlegroups'
 import classinfoViewmodel from '@/viewmodel/classinfos'
+import lessonanalyseViewModel from '@/viewmodel/lesson'
 
 export default {
   // 页面子模版 由三部分组成 1、表头选择（成绩表、成绩分析）2、成绩表 3、成绩分析
@@ -118,6 +120,7 @@ export default {
         message: ''
       },
       weightData: {
+        report: [], // 文字报告
         avg: 0, // 班级平均分
         rate: 0, // 班级及格率
         total: 0, // 班级总人数
@@ -203,16 +206,26 @@ export default {
     getWeightData() {
       viewmodel.requestWeightData(this.id)
         .then(response => {
-          this.weightData.total = response.total
-          this.titles_without_attendance = []
-          response.titles.forEach(title => {
-            this.titles_without_attendance.push(title)
-            this.weightData.titleAverage.push(parseFloat(title.titleAverage).toFixed(2))
-          })
-          // this.weightData.total = response.totle
-          this.weightData.avg = parseFloat(response.avg).toFixed(2)
-          this.weightData.rate = parseFloat(response.rate).toFixed(2) * 100
-          this.weightData.gradeSection = response.gradeSection
+          if (response.total === 0) {
+            this.weightData.flag = false
+            this.weightData.description = '请检查当前班级学生是否导入'
+          } else {
+            this.weightData.total = response.total
+            this.titles_without_attendance = []
+            if (response.titles.length !== 0) {
+              response.titles.forEach(title => {
+                this.titles_without_attendance.push(title)
+                this.weightData.titleAverage.push(parseFloat(title.titleAverage).toFixed(2))
+                this.weightData.avg = parseFloat(response.avg).toFixed(2)
+                this.weightData.rate = parseFloat(response.rate).toFixed(2) * 100
+                this.weightData.gradeSection = response.gradeSection
+                this.weightData.flag = true
+              })
+            } else {
+              this.weightData.flag = false
+              this.weightData.description = '请检查成绩数据是否导入'
+            }
+          }
         })
     },
     // 转换模式 table / state / predict
@@ -222,6 +235,12 @@ export default {
         this.buildWeight()
       }
       this.shownTab = code
+    },
+    // 获取文字报告
+    getReport() {
+      lessonanalyseViewModel.requestAnalyseLessons(this.id).then(response => {
+        this.weightData.report = response.report
+      })
     },
     // 创建成绩表
     buildTable: function() {
@@ -278,6 +297,7 @@ export default {
       })
       // console.log('成绩表创建完成')
       // build title
+      this.getReport()
     },
     // 由id返回学生信息
     findStudentById(student_id) {
@@ -295,8 +315,8 @@ export default {
         title.id = res.succeed_ids[0].id
         title['titleGroup_message'] = res.succeed_ids[0].titleGroup_message
         viewmodel.requestPoints({ classInfo_id: this.id }).then(result => {
-          console.log('I get classInfo_id' + this.id)
-          console.log('I get new points' + result)
+          // console.log('I get classInfo_id' + this.id)
+          // console.log('I get new points' + result)
           if (result) {
             this.model.points = result
             this.model.titles.push(title)
@@ -571,18 +591,18 @@ export default {
       // 初始化
       this.init()
       // 判断是否可以继续成绩分析
-      if (this.judgeLegal()) {
-        // 加载每个学生成绩表，计算总分平均分
-        this.buildStudentScore()
-        this.getWeightData()
-        // 计算各个分段学生人数
-        // this.buildBarData()
-        // 若全部学生的成绩都计算出，计算小项平均值
-        // this.buildTitleAverage()
-        // 若小项平均值计算完成,可显示雷达图显示小项信息，计算及格率
-        this.weightData.flag = true
-        // this.weightData.rate = this.getPassExamRate()
-      }
+      // if (this.judgeLegal()) {
+      // 加载每个学生成绩表，计算总分平均分
+      // this.buildStudentScore()
+      this.getWeightData()
+      // 计算各个分段学生人数
+      // this.buildBarData()
+      // 若全部学生的成绩都计算出，计算小项平均值
+      // this.buildTitleAverage()
+      // 若小项平均值计算完成,可显示雷达图显示小项信息，计算及格率
+      // this.weightData.flag = true
+      // this.weightData.rate = this.getPassExamRate()
+      // }
     }
   }
 }

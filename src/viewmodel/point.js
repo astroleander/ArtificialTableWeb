@@ -1,7 +1,7 @@
 import { getPoints, getByClassInfoId, getByStudentId, getByTitleId,
   postPoint, postPoints,
   putPoint, putPoints,
-  deletePoint, deletePoints, importPoints, getTitlePoints, getCompareData, outPut, getWeightData } from '@/api/point'
+  deletePoint, deletePoints, importPoints, getTitlePoints, getCompareData, outPut, getWeightData, getPrediction } from '@/api/point'
 /**
  * @date 2018/12/20
  * @author liqian
@@ -273,10 +273,23 @@ const requestWeightData = (classInfo_id) => {
   })
 }*/
 
+const requestPrediction = (classInfo_id, student_id) => {
+  return new Promise((resolve, reject) => {
+    getPrediction(classInfo_id, student_id).then(response => {
+      const dataset = response && response.subjects
+      resolve(dataset)
+      console.log('cccccccccccccccccc')
+      //      console.log(dataset)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
 export default {
   requestByStudentId, requestByClassInfoId, requestByTitleId, requestPoints,
   requestPutPoint, requestPutPoints,
   requestPostPoint, requestPostPoints,
   requestDelPoint, requestDelPoints,
-  requestImportPoints, requestTitlePoints, requestCompareData, requestOutPut, requestWeightData // , requestWeightChange
+  requestImportPoints, requestTitlePoints, requestCompareData, requestOutPut, requestWeightData,  requestPrediction// requestWeightChange
 }

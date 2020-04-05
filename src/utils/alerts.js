@@ -37,13 +37,13 @@ export const REQUIRED_AT_LEAST_A_TITLE = {
 
 export const REQUIRED_TITLEGROUP = {
   id: 'DJAIOPHDAIODHA',
-  title: '您尚有未分类的成绩项, 点击表头的「成绩类别」框来为成绩选择一个类别。',
+  title: '您尚有未分类的成绩项, 请点击表格头部中的「成绩类别」框来为成绩选择一个所属类别。',
   type: 'error'
 }
 
 export const REQUIRED_TITLE = {
   id: 'FHAOIFOI',
-  title: '您尚有未命名的成绩项。点击列头的「成绩名」框来为成绩项输入一个名字。',
+  title: '您尚有未命名的成绩项，请点击表格头部中的「成绩项」框来为成绩项写入一个名字。',
   type: 'error'
 }
 

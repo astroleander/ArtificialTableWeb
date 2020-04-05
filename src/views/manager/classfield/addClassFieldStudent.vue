@@ -361,6 +361,7 @@ export default {
   margin-top: 15px;
   display: flex;
   flex-flow: row ;
+  justify-content: center;
 }
 .row {
   display:flex;

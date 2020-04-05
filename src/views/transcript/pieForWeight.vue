@@ -102,7 +102,7 @@
 
 <style lang="scss" scoped>
     .pie{
-       width: 400px;
+       width: 500px;
        height: 300px;
     }
 </style>

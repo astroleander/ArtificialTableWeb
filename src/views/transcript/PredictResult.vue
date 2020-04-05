@@ -1,9 +1,8 @@
 <template>
   <div class="predictResult">
-    <section class="table" style="width: 60%">
+    <section class="table">
       <el-table :data="dataSet" v-loading.body="loading" ref="table" id="transcript-predict"
-                element-loading-text="Loading" class="table"
-      height="500">
+                element-loading-text="Loading">
         <template slot="empty">
           <el-alert id="table-emptyalert"
             title="没有数据"
@@ -28,19 +27,23 @@
           </template>
         </el-table-column>
       </el-table>
+        <div class="pie-box" style="width: 40%; background-color: white">
+            <at-pie  v-if="this.number > 1" class="pie" :dataSet="currentDataSet"></at-pie>
+        </div>
     </section>
-    <div class="pie-box" style="width: 40%; background-color: white">
-      <at-pie  v-if="this.number > 1" class="pie" :dataSet="currentDataSet"></at-pie>
-    </div>
+      <at-para v-if="this.number == 1" class='para' :titles="this.titleNames" :points="this.points"></at-para>
+
   </div>
 </template>
 
 <script>
   import AtPie from './Pie'
+  import AtPara from './parallel'
+  import getPredictionViewModel from '@/viewmodel/point'
 
   export default {
     name: 'PredictResult',
-    components: { AtPie },
+    components: { AtPie, AtPara },
     props: {
       dataSet: {
         type: Array,
@@ -49,13 +52,22 @@
       number: {
         type: Number,
         default: 0
+      },
+      sid: {
+        type: Array,
+        default: []
+      },
+      classId: {
+        type: String
       }
     },
     data() {
       return {
         // database: this.getData(),
         loading: true,
-        currentDataSet: []
+        currentDataSet: [],
+        titleNames: [],
+        points: []
       }
     },
     creare() {
@@ -87,6 +99,7 @@
           value: countNoPass,
           name: '不及格'
         })
+        this.getTitlePoints()
       },
       showPassed(row) {
         // alert(row.pass)
@@ -94,6 +107,15 @@
           return true
         }
         return false
+      },
+      getTitlePoints() {
+        getPredictionViewModel.requestPrediction(
+          this.classId, this.sid[0]).then(response => {
+          // console.log('yyyyyyyyyyyyyyyyyyy')
+          this.titleNames = response.title_names
+          this.points = response.points
+        }
+        )
       }
     },
     watch: {
@@ -107,7 +129,7 @@
 <style scoped>
   .predictResult {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .pie-box {
@@ -119,4 +141,13 @@
     margin-top: 50px;
     margin-left: 50px;
   }
+
+  .para {
+      width: 500px;
+      height: 500px;
+  }
+    .table{
+        display: flex;
+        flex-direction: row;
+    }
 </style>

@@ -160,7 +160,7 @@
             </el-collapse-item>
           </el-collapse>-->
           <div id="menu-data-previewer-two" class="menu-data-previewer-two">
-            <img :src="src" style="margin-top: 0px">
+          <!--  <img :src="src" style="margin-top: 0px">  -->
             <span><el-alert v-for="alert of settingsAlertList" :key="alert.id" :title="alert.title"
                             style="margin-top: 1px" type="error"></el-alert>
             </span>
@@ -195,7 +195,7 @@
               <!-- 自定义表头，用于选择列的属性 -->
               <template slot="header" slot-scope="scope">
                 <div class="settings-table-header">
-                    <el-radio v-model="sidIndex" :label="scope.$index" @change="onSidChecked">学号</el-radio>
+                    <el-radio v-model="sidIndex" :label="title.idx" @change="onSidChecked">学号</el-radio>
 
 
 <!--
@@ -225,21 +225,22 @@
                     <el-radio v-model="title.type" label="useless">丢弃</el-radio>
                     <el-radio v-model="title.type" label="title" style="margin-top: 5px">成绩项</el-radio>
                     <div class="select-container">
-                        <span class="span-title ">
-                            <span v-if="title.name">成绩项名:</span>
+                        <span class="span-title">
+                            <span v-if="title.name">成绩项名: </span>
                             <span v-else style="color: red">*
-                               <span style="color: #898989">
+                               <span style="color: red">
                                    成绩项名:
                                 </span>
                             </span>
-                             <el-input v-model="title.name" placeholder="成绩项名" size="mini" class="title-name">
+                             <el-input v-model="title.name" placeholder="成绩项名"
+                                       size="mini" class="title-name" style="max-width: 133px; margin-left: 4px">
                                  <i slot="suffix" class="el-input__icon el-icon-edit"></i>
                             </el-input>
                          </span>
                       <span class="span-title">
                          <span v-if="title.titleGroup">成绩类别: </span>
                           <span v-else style="color: red">*
-                                <span style="color: #898989">
+                                <span style="color: red">
                                    成绩类别:
                                 </span>
                             </span>
@@ -509,9 +510,13 @@
     }
     // 输出数据集结果
     hotData.forEach((rowArray, rowIdx) => {
+      // console.log('1111111111111')
+      // console.log(rowArray)
       resDataSet[rowIdx] = [];
       [...titleMap.keys()].forEach(colIdx => {
+        // console.log(colIdx)
         if (rowArray[colIdx] && rowArray[colIdx].trim() !== '') {
+          // resDataSet[rowIdx].push(rowArray[colIdx])
           resDataSet[rowIdx][colIdx] = rowArray[colIdx].trim()
         }
       })
@@ -519,6 +524,9 @@
     // 如果是包含项名的输入，则将第一列删除
     if (withHeader) resDataSet.shift()
     if (withTail) resDataSet.pop()
+    // console.log('123456987654')
+    // console.log([...titleMap.values()])
+    // console.log(resDataSet)
     return {
       titles: [...titleMap.values()],
       dataset: resDataSet
@@ -535,7 +543,18 @@
    *           |- dataset // hotData
    */
   const previewFilter = (settingsData) => {
-    const dataset = JSON.parse(JSON.stringify(settingsData.dataset))
+    /*
+    console.log('1111111')
+    console.log(settingsData.titles)
+    console.log(settingsData.dataset) */
+    const settingDataSet = []
+    settingsData.dataset.forEach((rowArray, rowIdx) => {
+      settingDataSet[rowIdx] = []
+      settingsData.titles.forEach(title => {
+        settingDataSet[rowIdx].push(rowArray[title.idx])
+      })
+    })
+    const dataset = JSON.parse(JSON.stringify(settingDataSet))
     const titles = JSON.parse(JSON.stringify(settingsData.titles))
     let sidColIdx
     const deprecatedColIdx = []
@@ -593,7 +612,7 @@
    */
 // 将第三页数据拆分成：标题列表，成绩列表，学号列表，课程id
   const submitConverter = (previewPageData, lessonId) => {
-    console.log('我好像要提交了')
+    // console.log('我好像要提交了')
     // console.log(previewPageData)
     const newTitleItemArrayArray = []
     // 放置每一个新增的成绩项 初始权重为1
@@ -632,7 +651,7 @@
       '其中 lesson_id 字段包含所在课程 <br/> ' +
       '其中 sid_list 字段包含学生学号列表 <br/> '
 
-    console.log('又发生啥了')
+    // console.log('又发生啥了')
     return {
       // 返回 ：新增标题、成绩，课程ID，学号列，描述
       title_list: newTitleItemArrayArray,
@@ -942,12 +961,20 @@
           return ''
         }
       },
+      getSidIndex() {
+        this.settingsPageData.titles.forEach(title => {
+          if (title.type === 'sid') {
+            return title.idx
+          }
+        })
+      },
       onSidChecked(idx) {
         this.$confirm('此操作将会更改学号列，请确定是否真正需要修改', '提示', {
           type: 'warning',
           confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
+          // console.log(this.sidIndex)
           if (this.sidIndex !== false) {
             // idx = idx - 1
             this.settingsPageData.titles.forEach(title => {
@@ -1039,11 +1066,13 @@
                 if (from === 1 && this.importAlertList.length === 0) {
                   if (this.renderSettingsPage()) {
                     // this.sidCheckedList = []
+                    // console.log(this.settingsPageData.dataset)
                     const titles = this.settingsPageData.titles
                     titles.forEach(title => {
                       if (title.type === 'sid') {
                         // this.sidCheckedList.push(true)
                         this.sidIndex = title.idx
+                        // console.log(this.sidIndex)
                       } else {
                         // this.sidCheckedList.push(false)
                       }

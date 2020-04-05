@@ -64,6 +64,11 @@
               </el-form-item>
           </el-form>
       </div>
+      <div>
+       <!--   <a href="http://www.beian.miit.gov.cn" style="color: white;margin-left: 350px">京ICP备19048729号</a > -->
+          <a href="http://www.beian.miit.gov.cn" style="color: white;margin-left: 350px">BJTUICP备20011301</a>
+      </div>
+
   </div>
 </template>
 
@@ -231,8 +236,9 @@ $light_gray: #000000;
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+    align-items: center;
   //background-color: $bg;
   .login-form {
     // position: absolute;

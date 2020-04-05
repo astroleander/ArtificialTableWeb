@@ -174,7 +174,7 @@
           .requestTitleGroups({ 'lesson_id': this.lessonId })
           .then(response => {
             this.titleGroupList = response
-            console.log('response=', this.titleGroupList)
+            // console.log('response=', this.titleGroupList)
           })
       },
       // 接收学期列表

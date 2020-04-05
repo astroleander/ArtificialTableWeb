@@ -313,7 +313,7 @@ export default {
         if (valid) {
           this.form.is_manager = this.role
           const Teacher = this.form
-          console.log(Teacher)
+          // console.log(Teacher)
           if (Teacher.id === this.user.id) {
             this.$message({
               message: '此处无法更改个人信息，请前往个人信息处更改',

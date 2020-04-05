@@ -1,7 +1,7 @@
 <template>
     <div @click="routerTo">
             <el-card class="card" shadow="hover" :style="background">
-                <div slot="header" class="clearfix">
+                <div slot="header" class="clearfix" align="center">
                     {{title}}
                 </div>
                 <div class="text">{{description}}</div>

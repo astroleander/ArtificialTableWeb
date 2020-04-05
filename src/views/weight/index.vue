@@ -161,7 +161,7 @@ div(head)
         }
         titleGroupViewModel
           .requestPostTitleGroup(TitleGroup).then(response => {
-            console.log(response)
+            // console.log(response)
             this.getTitleGroup()
             // TitleGroup.id = response[0].id
             // if (!this.titleGroups) { // 若该大项数组下没有大项
@@ -263,7 +263,7 @@ div(head)
           .requestByLessonId(data_id)
           .then(response => {
             if (response !== undefined) {
-              console.log(response)
+              // console.log(response)
               const titleGroup = []
               response.forEach(result => {
                 if (result.name !== '分组') {

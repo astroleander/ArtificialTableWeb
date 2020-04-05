@@ -209,3 +209,15 @@ export function getWeightChange(classInfo_id) {
   })
 }
 
+// 获取“预测”按钮里面需要的数据
+export function getPrediction(classInfo_id, student_id) {
+  return request({
+    url: '/point/predict',
+    method: 'post',
+    data: {
+      classInfo: classInfo_id,
+      studentId: student_id
+    }
+  })
+}
+
