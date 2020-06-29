@@ -27,26 +27,31 @@
   -->
     </div>
 
-    <el-table v-if="remoteUserList.length > 0" :data="remoteUserList" @selection-change="delChange" style="margin-top: 10px">
+    <el-table
+            v-if="remoteUserList.length > 0"
+            :data="remoteUserList"
+            @selection-change="delChange"
+            style="margin-top: 5px"
+            height="calc(100vh - 100px)">
       <template slot="empty">
         当前学院暂无教师信息！
       </template><!-- <el-table-column type="selection" width="50"></el-table-column> -->
-      <el-table-column label="序号" width="60">        
+      <el-table-column label="序号" width="80" align="center">
         <template slot-scope="scope">
             {{scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column prop="tid" label="教职工号" minWidth="80"></el-table-column>
-      <el-table-column prop="name" label="姓名"  minWidth="80"></el-table-column>
-      <el-table-column prop="email" label="邮箱"  minWidth="80"></el-table-column>
-      <el-table-column prop="mobile" label="电话"  minWidth="80"></el-table-column>
+      <el-table-column prop="tid" label="教职工号" minWidth="80" align="center"></el-table-column>
+      <el-table-column prop="name" label="姓名"  minWidth="80" align="center"></el-table-column>
+      <el-table-column prop="email" label="邮箱"  minWidth="80" align="center"></el-table-column>
+      <el-table-column prop="mobile" label="电话"  minWidth="80" align="center"></el-table-column>
 
-      <el-table-column label="身份"  minWidth="80">
+      <el-table-column label="身份"  minWidth="80" align="center">
         <template slot-scope="scope">
           {{scope.row.is_manager? '教研室主任' : '普通教师'}}
         </template>
       </el-table-column>
-      <el-table-column minWidth="80">
+      <el-table-column minWidth="80" align="center">
         <template slot="header" slot-scope="head">
           <div>
           <el-checkbox v-model="showPwd" size="mini" class="pwd-switch"
@@ -63,13 +68,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column>
+      <el-table-column align="center">
         <template slot-scope="scope">
-          <el-button @click="PutUser(scope.row)" type="primary">更改</el-button>
+          <el-button @click="PutUser(scope.row)" type="primary">更改信息</el-button>
         </template>
       </el-table-column>
 
-      <el-table-column>
+      <el-table-column align="center">
         <template slot-scope="scope">
           <el-button @click="deleteUser(scope.row)" type="danger">删除</el-button>
         </template>

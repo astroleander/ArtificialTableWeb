@@ -24,7 +24,7 @@
         <span class="rowframe title">{{this.classInfo_name}}班级管理</span>
       </div>
       <!-- 此班级的学生列表-->
-      <el-table :data="tableStudents"  @selection-change="delChange">
+      <el-table :data="tableStudents"  @selection-change="delChange" height="calc(100vh - 150px)">
         <template slot="empty">
             该班级没有学生信息,请点击左上方的 "批量导入" 按钮为班级引入学生
         </template>

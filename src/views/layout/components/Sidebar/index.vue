@@ -8,7 +8,7 @@
       :collapse="isCollapse"
       :background-color="this.color"
       text-color="#FFF"
-      active-text-color="gold"
+      active-text-color="#0054AF"
     >
     <sidebar-item  :routes="routes"></sidebar-item>
     </el-menu>
@@ -18,8 +18,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
-const cyan = '#31b7a9'
-const leyan = '#3196a0'
+const cyan = '#0054AF'
+// const cyan = '#31b7a9' :background-color="this.color"
+const leyan = '#0054AF'
 export default {
   components: { SidebarItem },
   data() {

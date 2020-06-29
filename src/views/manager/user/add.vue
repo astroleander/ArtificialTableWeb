@@ -5,31 +5,35 @@ supplement:
 -->
 <!-- 管理员添加教师信息 -->
 <template>
-  <div class="app-container rowframe">
+  <div class="rowframe">
     <el-card class="form-box">
     <div slot="header">
       <span class="rowframe title">添加教师（初始密码6个1）</span>
     </div>
-    <el-form :rules="rules"   ref="ruleForm" :model="form" label-width="100px">
-      <el-form-item label="教师姓名" prop="name">
-      <el-input v-model="form.name"  placeholder="请输入教师姓名"></el-input>
-      </el-form-item>
-      <el-form-item label="教师编号" prop="tid" required>
-        <el-input v-model="form.tid" placeholder="请输入教师编号(至少四位数字)"></el-input>
-      </el-form-item>
-      <el-form-item label="输入密码 " prop="password" required>
-        <el-input v-model="form.password" type="password" placeholder="输入密码" maxlength="18"></el-input>
-      </el-form-item>
-      <el-form-item label="确认密码 " prop="repassword" required>
-        <el-input v-model="form.repassword" type="password" placeholder="初始密码为111111，如不更改请确认再次输入密码" maxlength="18"></el-input>
-      </el-form-item>
+    <el-form style="width: 50%; margin-left: 25%;" :rules="rules"   ref="ruleForm" :model="form">
+        <div class="form">
+            <span style="color: red">*必填项</span>
+            <el-form-item label="教师姓名:" prop="name" style="max-height: 65px">
+                <el-input v-model="form.name"  placeholder="请输入教师姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="教师编号:" prop="tid" required style="max-height: 65px">
+                <el-input v-model="form.tid" placeholder="请输入教师编号(至少四位数字)"></el-input>
+            </el-form-item>
+            <el-form-item label="输入密码:" prop="password" required style="max-height: 65px">
+                <el-input v-model="form.password" type="password" placeholder="输入密码" maxlength="18" show-password="true"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码:" prop="repassword" required style="max-height: 80px">
+                <el-input v-model="form.repassword" type="password" placeholder="初始密码为111111，如不更改请确认再次输入密码" maxlength="18" show-password="true"></el-input>
+            </el-form-item>
+      </div>
       <!--<el-form-item label="管理员权限" prop="is_manager">-->
         <!--<el-switch v-model="form.is_manager"></el-switch>-->
       <!--</el-form-item>-->
-      <el-form-item label="教师邮箱 " prop="email" >
+      <span style="margin-top: 10px">选填项</span>
+      <el-form-item label="教师邮箱：" prop="email" style="max-height: 65px">
         <el-input v-model="form.email" placeholder="请输入邮箱" ></el-input>
       </el-form-item>
-      <el-form-item label="教师电话 " prop="mobile"  >
+      <el-form-item label="教师电话：" prop="mobile" style="max-height: 65px">
         <el-input v-model="form.mobile" placeholder="请输入电话"></el-input>
       </el-form-item>
       <el-form-item>
@@ -202,9 +206,19 @@ export default {
   justify-content:center;
 }
 .form-box{
-  width:100%;
-  min-width: 500px;
-  padding: 20px;
+    width: 100%;
+    //min-width: 500px;
+    // padding: 20px;
+    height: calc(100vh - 50px);
+  // min-width: 500px;
+  // padding: 20px;
   /*border: 1px solid #999999;*/
+}
+.form{
+    .el-input__inner{
+        background-color: rgba(255, 232, 143, 0.94);
+    }
+    .el-form-item__content{
+    }
 }
 </style>

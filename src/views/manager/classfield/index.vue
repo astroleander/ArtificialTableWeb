@@ -24,7 +24,8 @@
                 :key="idx"
                 :label="title.label"
                 :prop="title.prop"
-                v-if=" title.label !== '班级编号'">
+                v-if=" title.label !== '班级编号'"
+                align="center">
               </el-table-column>
 
      <!--         <el-table-column label="">

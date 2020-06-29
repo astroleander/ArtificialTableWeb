@@ -39,7 +39,7 @@
           </router-link>
         </template>
       </el-submenu>
-        <div style="background-color: #ffffff; height: 1px;width: 100%"></div>
+      <p style="background-color: #ffffff; height: 1px;width: 100%"></p>
     </template>
   </div>
 </template>

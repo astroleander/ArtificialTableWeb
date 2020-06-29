@@ -6,8 +6,8 @@
               <div style="width: 88%; margin-left: 10%; display: flex;flex-flow: column;justify-content: center">
                   <hot-table :settings="hotSettings" ref="hotTable" class="table"></hot-table>
                   <div class="card-box">
-                      <el-button type="primary" @click="onResetClicked" style="text-align: center" plain>重置学生信息</el-button>
-                      <el-button type="primary" @click="onSubmitClicked" style="margin-left: 15px;float: right; text-align: center" v-loading.fullscreen.lock="loading" plain>信息预览</el-button>
+                      <el-button type="primary" @click="onResetClicked" style="text-align: center" plain>重置</el-button>
+                      <el-button type="primary" @click="onSubmitClicked" style="margin-left: 15px;float: right; text-align: center" v-loading.fullscreen.lock="loading">提交预览</el-button>
                   </div>
               </div>
           </el-tab-pane>
@@ -17,7 +17,7 @@
                             class="table"
                             height="250"
                             border>
-                      <el-table-column label="序号">
+                      <el-table-column label="序号" align="center">
                           <template slot-scope="scope">
                               {{scope.$index+1}}
                           </template>
@@ -45,7 +45,7 @@
                   </el-table>
                   <div class="card-box">
                       <el-button type="primary" @click="getNext" style="text-align: center" plain>返回上一步</el-button>
-                      <el-button type="primary" @click="submitStudentList" style="margin-left: 15px;float: right; text-align: center" v-loading.fullscreen.lock="loading" plain>确认提交</el-button>
+                      <el-button type="primary" @click="submitStudentList" style="margin-left: 15px;float: right; text-align: center" v-loading.fullscreen.lock="loading">确认提交</el-button>
                   </div>
               </div>
           </el-tab-pane>

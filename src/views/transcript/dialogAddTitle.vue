@@ -1,12 +1,13 @@
 <!--新增列项组件模版-->
 <template>
-  <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose">
+  <el-dialog title="添加新的列项" :visible.sync="visible" :before-close="onDialogClose" class="dialog-form">
   <el-form :rules="rules" :model="titleForm" ref="form">
-    <el-form-item label="新列名称" prop="name">
-      <el-input v-model="titleForm.name" autoComplete="off" size="small" style="width:150px" maxlength="30" show-word-limit></el-input>
+    <div class="form_addTitle">
+    <el-form-item label="新列名称:" prop="name">
+      <el-input v-model="titleForm.name" autoComplete="off" size="small" maxlength="30"show-word-limit></el-input>
     </el-form-item>
-    <el-form-item label="所属类别" prop="titleGroup_id">
-      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small">
+    <el-form-item label="所属成绩类别:" prop="titleGroup_id">
+      <el-select v-model="titleForm.titleGroup_id" placeholder="请选择小项所属的分数类别" size="small" style="width: 100%">
         <el-option v-for='titleGroup in titleGroupList' :key='titleGroup.id'
           :label='titleGroup.name' :value='titleGroup.id'>
         </el-option>
@@ -20,10 +21,11 @@
     <el-form-item label="默认权重" prop="weight">
       <span>{{titleForm.weight}}</span>
     </el-form-item> -->
+    </div>
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="onDialogClose">取 消</el-button>
-    <el-button type="primary" @click="onAddNewTitle('form')">确 定</el-button>
+    <el-button type="primary" @click="onAddNewTitle('form')" :disabled="disabled_button">确 定</el-button>
   </div>
 </el-dialog>
 </template>
@@ -49,6 +51,7 @@ export default {
   props: ['visible', 'classInfo'],
   data() {
     return {
+      disabled_button: false,
       titleForm: titlePrototype,
       titleGroupList: [],
       rules: {
@@ -71,6 +74,7 @@ export default {
     onAddNewTitle: function(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.disabled_button = true
           this.titleForm.name = this.titleForm.name.replace(/\s*/g, '')
           this.titleForm['classInfo_id'] = this.classInfo.id
           this.titleForm['override_tag'] = 0
@@ -101,6 +105,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
+    .form_addTitle {
+        .el-input__inner{
+            background-color: rgba(255, 232, 143, 0.94);
+        }
+    }
 </style>

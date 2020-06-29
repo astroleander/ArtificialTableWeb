@@ -57,10 +57,8 @@
 
             <div class="menu-wrapper">
                 <div>
-                <span v-if="remoteLesson"style="margin-left: 10px;">请选择成绩导入的课程组：</span>
-                    <span v-else style="margin-left: 10px;">请选择成绩导入的课程组
-                        <span style="color: red">(* 必填项):</span>
-                    </span>
+                <span style="margin-left: 10px;">请选择成绩导入的课程组：</span>
+                    <span style="color: red">(* 必填项):</span>
                 <el-select v-model="remoteLesson" placeholder="请选择要导入到的课程" @change="onSelectedLesson"
                            style="margin-left: 10px"
                            >
@@ -73,6 +71,14 @@
                     </el-option>
                 </el-select>
                 </div>
+
+                <el-alert
+                        title="尚未选择课程组，请点击左侧选择框选择"
+                        type="error"
+                        show-icon
+                        style="width: 450px"
+                        v-if="this.showLessonError">
+                </el-alert>
 
                 <!--<el-checkbox v-model="importDataHasHead" style="margin-left: 30px">
                   导入的表格包含表头名
@@ -90,6 +96,13 @@
           <!--<div>
             <el-alert :title="this.ALERT" style="margin: 10px"></el-alert>
           </div>-->
+            <el-alert
+                    title="您尚未引入任何数据信息"
+                    type="error"
+                    description="您可通过'浏览文件夹'或直接在网页表格中输入来引入数据"
+                    show-icon
+                    v-if="this.showDataError">
+            </el-alert>
 
           <div class="inputTable">
             <div id="menu-data-previewer" class="menu-data-previewer">
@@ -671,6 +684,8 @@
     },
     data() {
       return {
+        showLessonError: false,
+        showDataError: false,
         sidIndex: 0,
         // 步骤参数
         src: step,
@@ -1087,10 +1102,7 @@
                 }
                 break
               } else {
-                this.$message({
-                  message: '您首先需要引入数据',
-                  type: 'warning'
-                })
+                this.showDataError = true
               }
             } else {
               this.activeStep = 1
@@ -1152,10 +1164,7 @@
       // 进入第二页，将第一页中的标题和数据分开存储到settingsPageData中
       renderSettingsPage() {
         if (this.remoteLesson === '') {
-          this.$message({
-            message: '尚未选择课程组',
-            type: 'warning'
-          })
+          this.showerror = true
           return false
         } else {
           Object.assign(this.$data.settingsPageData, {})
@@ -1284,6 +1293,11 @@
           duration: 9000
         })
       },
+      importTable: function() {
+        if (this.importTable.length > 1) {
+          this.showDataError = false
+        }
+      },
       settingsAlertList: function() {
         const len = this.settingsAlertList.length
 
@@ -1291,6 +1305,11 @@
           this.showsettingAlert = true
         } else {
           this.showsettingAlert = false
+        }
+      },
+      remoteLesson: function() {
+        if (this.remoteLesson) {
+          this.showLessonError = false
         }
       }
     },

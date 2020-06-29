@@ -10,41 +10,47 @@ supplement: 为课程添加班级form
       <div v-if="!visible">
         <el-alert v-for="(error, idx) in errorList" :key="idx" :title="error.errorMsg" type="error" :closable="false"  show-icon></el-alert>
       </div>
-      <el-form style="width: 60%; margin-left: 20%; margin-top: 5%" :rules="rules"  ref="ruleForm" v-if="visible" :model="form" label-width="110px">
-        <el-form-item label="教学班级名称" prop="name">
-          <el-input v-model="form.name"  placeholder="请输入班级名称"></el-input>
-        </el-form-item>
-        <el-form-item label="所属课程组" prop="lesson_id">
-          <el-select v-model="form.lesson_id" placeholder="请选择所属课程组" style="width: 100%">
-            <el-option
-              v-for="(item,index) in lessons"
-              :key="index"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="开课年份" prop="variableYear">
-          <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required style="width: 100%"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="开课学期" prop="variableSemester">
-          <el-select v-model="form.variableSemester" placeholder="请选择学期" style="width: 100%">
-            <el-option
-              v-for="item in semesters"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-          <el-form-item label="上课时间" prop="week" >
+      <el-form style="width: 60%; margin-left: 20%;" :rules="rules"  ref="ruleForm" v-if="visible" :model="form">
+        <div class="form">
+            <span style="color: red">*必填项</span>
+            <el-form-item label="教学班级名称:" prop="name" style="max-height: 65px">
+                <el-input v-model="form.name"  placeholder="请输入班级名称"></el-input>
+            </el-form-item>
+            <el-form-item label="所属课程组:" prop="lesson_id" style="max-height: 65px">
+                <el-select v-model="form.lesson_id" placeholder="请选择所属课程组" style="width: 100%">
+                    <el-option
+                            v-for="(item,index) in lessons"
+                            :key="index"
+                            :label="item.name"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="开课年份:" prop="variableYear" style="max-height: 65px">
+                <el-date-picker v-model="form.variableYear" type="year"  value-format="yyyy" placeholder="请选择年份" required style="width: 100%"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="开课学期:" prop="variableSemester" style="max-height: 80px">
+                <el-select v-model="form.variableSemester" placeholder="请选择学期" style="width: 100%">
+                    <el-option
+                            v-for="item in semesters"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </div>
+          <div style="margin-top: 10px">
+          <span>选填项</span>
+          <el-form-item label="上课时间:" prop="week" style="max-height: 60px">
           <el-input v-model="form.week" placeholder="请输入上课时间"></el-input>
         </el-form-item>
-        <el-form-item label="上课地点" prop="room" >
+        <el-form-item label="上课地点:" prop="room" style="max-height: 80px">
           <el-input v-model="form.room" placeholder="请输入上课地点"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+          </div>
+        <el-form-item style="display: flex;flex-direction: row; margin-top: 5px">
+          <el-button type="primary" @click="submitForm('ruleForm')" :disabled="disabled_button">添加</el-button>
           <el-button @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -76,6 +82,7 @@ export default {
   data() {
     return {
       visible: false, // 表单是否可见
+      disabled_button: false, // 表单提交按钮是否可用
       errorList: [],
       teachers: [],
       lessons: [],
@@ -194,6 +201,7 @@ export default {
           this.form.teacher_id = this.id
           const classInfo = { ...this.form, semester: semester }
           classInfo['override_tag'] = 0
+          this.disabled_button = true
           classViewModel.requestPostClassInfo(classInfo).then(response => {
             if (response.repeated_message.length === 0) {
               this.$message({
@@ -246,5 +254,12 @@ export default {
     padding: 20px;
     height: calc(100vh - 50px);
     /*border: 1px solid #999999;*/
+  }
+  .form{
+      .el-input__inner{
+          background-color: rgba(255, 232, 143, 0.94);
+      }
+      .el-form-item__content{
+      }
   }
 </style>

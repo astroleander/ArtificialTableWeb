@@ -73,25 +73,24 @@ DONE: post 返回需要 ID
                         <el-tooltip class="item" effect="dark" :content="title.titleGroup_message.name" placement="top">
                             <span>{{title.name}}</span>
                         </el-tooltip>
-                               <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
-                           </div>
-                       </template>
-                       <template slot-scope="scope">
-                           <div class="item-wrapper">
-                               <div
-                                    slot="reference"
-                                    v-if="getPointItem(scope, title)"
-                                    class="point-div">
-
-                                   <!-- using import to excel -->
+                        <div @click='onDeleteColClicked(head, title)' class="delete"><i class="el-icon-plus"></i></div>
+                    </div>
+                </template>
+                <template slot-scope="scope">
+                    <div class="item-wrapper">
+                        <div
+                                slot="reference"
+                                v-if="getPointItem(scope, title)"
+                                class="point-div">
+                            <!-- using import to excel -->
                             <span style="display:none">{{getPointNumber(scope, title).pointNumber}}</span>
-                                 <span class="point">
-                                     <el-form :model="getPointItem(scope, title)">
-                                         <template v-if="title.titleGroup_message.name === '出勤'">
-                                             <el-select
-                                                 v-model="getPointItem(scope, title).pointNumber"
-                                                 placeholder="请选择"
-                                                 @change="onItemChanged(getPointItem(scope, title), title)">
+                            <span class="point">
+                                <el-form :model="getPointItem(scope, title)">
+                                    <template v-if="title.titleGroup_message.name === '出勤'">
+                                        <el-select
+                                                v-model="getPointItem(scope, title).pointNumber"
+                                                placeholder="请选择"
+                                                @change="onItemChanged(getPointItem(scope, title), title)">
                                                      <el-option
                                                          v-for="item in title_map"
                                                          :key="item.id"
@@ -99,9 +98,9 @@ DONE: post 返回需要 ID
                                                          :value="item.id">
                                                      </el-option>
                                              </el-select>
-                                         </template>
-                                         <template v-else>
-                                             <el-input
+                                    </template>
+                                    <template v-else>
+                                        <el-input
                                                  type="number"
                                                  prop="number"
                                                  size="mini"
@@ -113,26 +112,25 @@ DONE: post 返回需要 ID
                                                  @change="onItemChanged(getPointItem(scope, title), title)"
                                                  v-limit>
                                              </el-input>
-                                         </template>
-                                     </el-form>
-                                 </span>
+                                    </template>
+                                </el-form>
+                            </span>
                                  <!-- <span class="point">
                                    {{getPointNumber(scope, title)}}</span> -->
-                            </div>
+                        </div>
                    <!--         <div  class="point-div-addons">
                                 <span class="operator">
                                 </span>
                             </div> -->
-                           <div v-else class="point-div-addons">
-                                  <span class="operator">
-                                    <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
+                        <div v-else class="point-div-addons">
+                            <span class="operator">
+                                <label :for='"at-operator-add-button-"+title.id+"-"+scope.row.student.id'><svg-icon class="svg" icon-class="add" /></label>
                                       <input :id='"at-operator-add-button-"+title.id+"-"+scope.row.student.id' type="button"
                                         @click="onAddClicked({scope, title})" class="operator-button"/>
-                                    </span>
-                            </div>
+                            </span>
                         </div>
-
-                    </template>
+                    </div>
+                </template>
                 </pl-table-column>
             </pl-table>
             </div>

@@ -17,11 +17,11 @@ table
   <div style="background-color: #dbdbdb">
   <div class="frame">
     <div class="col" v-if="flag">
-        <el-card style="margin-top: 10px;" class="flex-80">
+        <el-card style="margin-top: 5px;" class="flex-80">
             <!--雷达图-->
-            <div style="display: flex;align-items: center;">
+            <div style="display: flex; align-items: center; justify-content: space-around">
                 <at-radar :title-data="titles" :data-set="titleAverage"></at-radar>
-                <div style="margin-left: 10%">
+                <div>
                     <el-select v-model="value" placeholder="请选择测试名称" @change="selectedTitle">
                         <el-option
                             v-for="item in titles"
@@ -204,7 +204,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-    width: 100%;
+  width: 100%;
   // align-content:center;
   justify-content: space-around;
   // height: 400px;
@@ -222,13 +222,14 @@ export default {
 }
 
 .flex-80 {
-    display: flex;
-    // flex-direction: column;
-    float: left;
-    // margin-left: 10px;
+    // display: flex;
+    // flex-direction: row;
+    // float: left;
+    // margin-left: 5px;
     // margin-right: 10px;
-    width: 98.5%;
-    justify-content: space-around;
+    width: 99.3%;
+    height: calc((100vh - 110px) / 2);
+    //justify-content: space-around;
     align-items: center;
     background: white;
 }
